@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.psychopath.dogstalking.commons.mapper.UserSqlMapper">
+
+    <insert id="insertUser">
+		INSERT INTO ds_user(userid, userpw, name, email, phone, birthdate) VALUES (
+			#{userid}, #{userpw}, #{name}, #{email}, #{phone}, #{birthdate}
+		)
+	</insert> 
+
+	<select id="selectByUserIdAndPassword" resultType="com.psychopath.dogstalking.dto.UserDto">
+		SELECT * FROM ds_user 
+		WHERE userid = #{userid} 
+		AND userpw = #{userpw}
+	</select>
+	
+
+</mapper>

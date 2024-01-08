@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+ <!-- 카카오 SDK 스크립트 로드 -->
+ <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+ <!-- 카카오 로그인 버튼 이벤트 처리 -->
+ 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>로그인</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        .custom-col {
+            border-right: 1px solid rgb(200, 200, 200);
+
+        }
+
+        .small-text {
+            font-size: 9px;
+        }
+
+        .custom-text-size {
+            font-size: 12px;
+        }
+    </style>
+
+<script>
+    function loginWithKakao() {
+        // Check if Kakao SDK is already initialized
+        if (!Kakao.isInitialized()) {
+            // Initialize Kakao SDK
+            Kakao.init('3483fd0375996622def250d0027dc68f');
+        }
+
+        // Log in with Kakao
+        Kakao.Auth.login({
+            success: function (authObj) {
+                alert(JSON.stringify(authObj));
+                // Log in success, make API request
+                Kakao.API.request({
+                    url: '/v2/user/me',
+                    success: function (res) {
+                        console.log(JSON.stringify(res));
+                        window.location.href = './setLoginScript';                    },
+                    fail: function (error) {
+                        alert(JSON.stringify(error));
+                    }
+                });
+            },
+            fail: function (err) {
+                alert(JSON.stringify(err));
+            }
+        });
+    }
+        /*  
+        function kakaoLogout() {
+            Kakao.Auth.logout(function (response) {
+                alert(response + 'logout');
+            });
+        } */      
+    
+</script>
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="row  my-5">
+
+            <div class="col-8  mx-auto x-0">
+
+                <form action="./loginProcess" method="post">
+                    <div class="row mt-5 text-center my-5">
+                        <div class="fw-bold fs-1 mb-4">
+                            <img th:src="@{/public/image/dogdog_web.gif}" class="img-fluid" style="width: 50%;">
+                            <Br>멍s토킹
+                        </div>
+                    </div>
+                    <div class="row mt-3 text-center">
+                        <div class="col">
+                            <input class="form-control custom-text-size" type="text" name="userid" placeholder="아이디">
+                        </div>
+                    </div>
+                    <div class="row mt-2 text-center">
+                        <div class="col">
+                            <input class="form-control custom-text-size" type="password" name="userpw"
+                                placeholder="비밀번호">
+                        </div>
+                    </div>
+                    <div class="row justify-content-between ">
+                        <div class="col">
+                            <a href="./registerPage" class="small-text">회원가입</a>
+                        </div>
+                        <div class="col text-end">
+                            <a href="" class="small-text">아이디/비밀번호 찾기</a>
+                        </div>
+                    </div>
+                    <div class="row mt-3 text-center">
+                        <div class="col d-grid">
+                            <input type="submit" class="btn btn-secondary custom-text-size" value="로그인">
+                        </div>
+                    </div>
+                </form>
+                <div class="row mt-2 text-center" onclick="loginWithKakao()">
+                    <img th:src="@{/public/image/kakao_login_medium_wide.png}" class="img-fluid" alt="Kakao Login">
+                </div>
+
+                <!--
+                    <div class="row mt-5 text-center">
+                    <span class="small-text" style="color: gray;">또는</span>
+                </div>
+                -->
+
+
+
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
