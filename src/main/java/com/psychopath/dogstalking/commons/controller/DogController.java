@@ -27,7 +27,7 @@ public class DogController {
     public String registerDogProcess(DogDto dogDto, HttpSession session){
 
         UserDto userDto = (UserDto)session.getAttribute("sessionUser");
-        dogDto.setUserpk(userDto.getId());
+        dogDto.setUserpk(userDto.getUser_pk());
         dogService.registerDog(dogDto);
 
         return"redirect:./registerDogPage";
