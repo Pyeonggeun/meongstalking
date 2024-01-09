@@ -51,7 +51,7 @@ public class UserController {
 	}
 
     @RequestMapping("registerProcess")
-	public String registerProcess(UserDto params,MultipartFile[] imageFiles) {
+	public String registerProcess(UserDto params) {
 		userService.register_user(params);
 
 		return "redirect:./loginPage";
