@@ -4,13 +4,13 @@
 <mapper namespace="com.psychopath.dogstalking.commons.mapper.UserSqlMapper">
 
     <insert id="insertUser">
-		INSERT INTO ds_user(userid, userpw, name, email, phone, birthdate) VALUES (
-			#{userid}, #{userpw}, #{name}, #{email}, #{phone}, #{birthdate}
+		INSERT INTO ms_user(userid, userpw, name, gender, email, phone, birthdate, image) VALUES (
+			#{userid}, #{userpw}, #{name}, #{gender}, #{email}, #{phone}, #{birthdate}, 'imagelink'
 		)
 	</insert> 
 
 	<select id="selectByUserIdAndPassword" resultType="com.psychopath.dogstalking.dto.UserDto">
-		SELECT * FROM ds_user 
+		SELECT * FROM ms_user 
 		WHERE userid = #{userid} 
 		AND userpw = #{userpw}
 	</select>

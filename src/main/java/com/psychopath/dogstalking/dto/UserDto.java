@@ -11,8 +11,10 @@ public class UserDto {
     private String userid;
     private String userpw;
     private String name;
+    private String gender;
     private String email;
     private String phone;
     private LocalDate birthdate;
+    private String image;
     private LocalDateTime created_at;
 }

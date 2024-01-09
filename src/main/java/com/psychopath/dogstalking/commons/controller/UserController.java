@@ -1,8 +1,14 @@
 package com.psychopath.dogstalking.commons.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.psychopath.dogstalking.commons.service.UserServiceImpl;
 import com.psychopath.dogstalking.dto.UserDto;
@@ -45,8 +51,9 @@ public class UserController {
 	}
 
     @RequestMapping("registerProcess")
-	public String registerProcess(UserDto params) {
+	public String registerProcess(UserDto params,MultipartFile[] imageFiles) {
 		userService.register_user(params);
+
 		return "redirect:./loginPage";
 	} 
 
