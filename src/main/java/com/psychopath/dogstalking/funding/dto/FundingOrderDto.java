@@ -11,4 +11,5 @@ public class FundingOrderDto {
     private int product_pk;
     private int quantity;
     private LocalDateTime order_date;
+    private LocalDateTime created_at;
 }

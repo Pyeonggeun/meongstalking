@@ -17,5 +17,6 @@ public class FundingProductDto {
     private int price;
     private int amount;
     private String success_fail;
+    private LocalDateTime created_at;
 
 }
