@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.psychopath.dogstalking.trade.mapper.TradeSqlMapper">
+
+    <select id="getDogListByUser" resultType="com.psychopath.dogstalking.dto.DogDto">
+        select * from ms_dog
+        where userpk = #{userPk}
+    </select>
+
+	<insert id="insertTradeArticleDto">
+        insert into 
+        ms_trade_article(user_pk, title, content, start_care_date, end_care_date, read_count, location, isPickup, isDelete)
+        values
+        (
+            #{user_pk},
+            '',
+            '',
+            #{start_care_date},
+            #{end_care_date},
+            0,
+            '경상북도 영주시 대학로324 (107-702)',
+            #{isPickup},
+            'N'
+        )
+    </insert>
+
+    <select id="getRecentTradeArticlePk" resultType="int">
+        select pk from ms_trade_article
+        order by created_at desc
+        Limit 1    
+    </select>
+
+    <insert id="insertCareDog">
+        insert into 
+        ms_trade_dog(dog_pk, article_pk)
+        values
+        (
+            #{dog_pk},
+            #{article_pk}
+        )
+    </insert>
+
+
+
+</mapper>
