@@ -30,7 +30,7 @@ public class DogController {
         dogDto.setUserpk(userDto.getUser_pk());
         dogService.registerDog(dogDto);
 
-        return"redirect:./registerDogPage";
+        return"redirect:../mainPage";
     }
 
 
