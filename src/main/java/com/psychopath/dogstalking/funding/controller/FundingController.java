@@ -7,10 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.ibatis.annotations.Param;
+import org.checkerframework.common.util.report.qual.ReportWrite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.psychopath.dogstalking.dto.UserDto;
@@ -50,15 +53,11 @@ public class FundingController {
     }
 
     @RequestMapping("insertProductInfoProcess")
-    public String insertProductInfoProcess(HttpSession session,FundingProductDto productDto, MultipartFile imageFile1,  MultipartFile imageFile2){
+    public String insertProductInfoProcess(HttpSession session,FundingProductDto productDto, @RequestParam("imageFile1") MultipartFile imageFile1, @RequestParam("imageFile2")MultipartFile imageFile2){
         
         //이미지 넣기
-
+        System.out.println("ㅁㅁㅁㅁㅁㅁㅁㅁㅁ");
         if(imageFile1 != null){
-                if(imageFile1.isEmpty()){
-                    
-                }
-
                 String rootPath = "C:/uploadFiles/";
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd/");
@@ -89,46 +88,42 @@ public class FundingController {
                 productDto.setTitle_image(todayPath + fileName);
                 }
 
-                if(imageFile2 != null){
-                    if(imageFile2.isEmpty()){
-                        
-                    }
+        if(imageFile2 != null){
+            String rootPath = "C:/uploadFiles/";
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd/");
+            String todayPath = sdf.format(new Date());
+
+            File todayFolderForCreate = new File(rootPath + todayPath);
+
+            if(!todayFolderForCreate.exists()){
+                todayFolderForCreate.mkdirs();
+            }
+
+            String originaFileName = imageFile2.getOriginalFilename();
+            System.out.println(originaFileName);
+
+            String uuid = UUID.randomUUID().toString();
+            long currentTime = System.currentTimeMillis();
+            String fileName = uuid + "_" + currentTime;
+
+            String ext = originaFileName.substring(originaFileName.lastIndexOf("."));
+            fileName += ext;
+
+            try{
+                imageFile1.transferTo(new File(rootPath+todayPath+fileName));
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
+            productDto.setExplain_image(todayPath + fileName);
+            }        
     
-                    String rootPath = "C:/uploadFiles/";
-    
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd/");
-                    String todayPath = sdf.format(new Date());
-    
-                    File todayFolderForCreate = new File(rootPath + todayPath);
-    
-                    if(!todayFolderForCreate.exists()){
-                        todayFolderForCreate.mkdirs();
-                    }
-    
-                    String originaFileName = imageFile2.getOriginalFilename();
-                    System.out.println(originaFileName);
-    
-                    String uuid = UUID.randomUUID().toString();
-                    long currentTime = System.currentTimeMillis();
-                    String fileName = uuid + "_" + currentTime;
-    
-                    String ext = originaFileName.substring(originaFileName.lastIndexOf("."));
-                    fileName += ext;
-    
-                    try{
-                        imageFile1.transferTo(new File(rootPath+todayPath+fileName));
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-    
-                    productDto.setExplain_image(todayPath + fileName);
-                    }        
-            
 
 
         //세션 정보 뽑아 넣기 
-        UserDto sessionInfo  = (UserDto)session.getAttribute("sessionInfo");
-        productDto.setUser_pk(sessionInfo.getUser_pk());
+        UserDto sessionUser  = (UserDto)session.getAttribute("sessionUser");
+        productDto.setUser_pk(sessionUser.getUser_pk());
         fundingService.insertProductInfo(productDto);
         System.out.println("productDto userpk"+productDto.getUser_pk());
         System.out.println("productDto title image"+productDto.getTitle_image());        
@@ -193,8 +188,14 @@ public class FundingController {
     //     return "#";
     // }
 
-    // @RequestMapping("productPurchase")
-    // public String productPurchase(){
+    // @RequestMapping("productPurchasePage")
+    // public String productPurchasePage(){
+
+    //     return"#"; 
+    // }
+
+    // @RequestMapping("productPurchaseProcess")
+    // public String productPurchaseProcess(){
 
     //     return"#"; 
     // }
