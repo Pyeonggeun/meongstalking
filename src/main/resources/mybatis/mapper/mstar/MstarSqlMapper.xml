@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.psychopath.dogstalking.mstar.mapper.MstarSqlMapper">
+   
+    <insert id="insertCommonInfo">
+        INSERT into ms_mstar_profile_info(user_pk, profile_photo)
+        values(
+            #{user_pk}, #{profile_photo}
+        )
+    </insert>
+    <select id="selectCount" resultType="int">
+        SELECT max(user_pk) from ms_user
+    </select>
+
+    <select id="selectMyProfileInfoDto" resultType="com.psychopath.dogstalking.mstar.dto.ProfileInfoDto">
+        SELECT profile_photo from ms_mstar_profile_info
+        where user_pk = #{user_pk}
+    </select>
+
+    
+
+</mapper>

@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,9 +38,6 @@ public class UserController {
 		}else {
 			// 인증 성공
 			session.setAttribute("sessionUser", sessionUser);
-            System.out.println("-------------");
-            System.out.println(sessionUser.getName());
-            System.out.println("-------------");
 			return "redirect:./mainPage";
 		}
     }
@@ -53,13 +51,19 @@ public class UserController {
     @RequestMapping("registerProcess")
 	public String registerProcess(UserDto params) {
 		userService.register_user(params);
-
+        
 		return "redirect:./loginPage";
 	} 
 
     @RequestMapping("mainPage")
-	public String mainPage() {
+	public String mainPage(Model model, HttpSession session) {
+		UserDto userDto = (UserDto)session.getAttribute("sessionUser");
+
+		int user_pk = userDto.getUser_pk();
+		String path = userService.getProfilePhotoPath(user_pk).getProfile_photo();
 		
+		model.addAttribute("path", path);
+
 		return "commons/mainPage";
 	}
 }
