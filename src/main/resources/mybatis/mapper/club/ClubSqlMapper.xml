@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.psychopath.dogstalking.club.mapper.ClubSqlMapper">
+
+    <insert id="insertFreeBoard">
+        INSERT INTO ms_club_freeboard(club_pk,user_pk,title,content)
+        VALUES (#{club_pk},#{user_pk},#{title},#{content})
+    </insert>
+
+
+    <select id="selectFreeBoardAll" resultType="map">
+        SELECT *
+        FROM ms_club_freeboard
+        JOIN ms_user ON ms_user.USER_PK = ms_club_freeboard.user_pk
+        where ms_club_freeboard.club_pk=1
+    </select>
+
+    <!-- 댓글 -->
+
+	<insert id="insertComment">
+		INSERT INTO ms_club_freeboard_comment(user_pk,clubfreeboard_pk,content)
+        VALUES (#{user_pk},#{clubfreeboard_pk},#{content})
+        
+	</insert>
+
+    <select id="selectCommentAll" resultType="map">
+    SELECT * FROM ms_club_freeboard_comment
+    JOIN ms_user ON ms_user.USER_PK = ms_club_freeboard_comment.user_pk
+    WHERE clubfreeboard_pk = #{clubfreeboard_pk}
+    </select>
+
+    <!-- 길드 가입 여부 -->
+    <select id="applyClubUserTF" resultType="map">
+    <![CDATA[
+        SELECT 
+        CASE WHEN COUNT(*) > 0 THEN 'T' ELSE 'F' END AS user_exists,
+        ms_club_user.*,
+        ms_user.*,
+        ms_club.*,
+        ms_club.name AS clubname,
+        ms_club.content AS clubcontent 
+        FROM 
+            ms_club_user
+            JOIN ms_user ON ms_user.user_pk = ms_club_user.user_pk
+            JOIN ms_club ON ms_club.club_pk = ms_club_user.club_pk 
+        WHERE 
+            ms_user.user_pk = #{user_pk}
+    ]]>
+    </select>
+
+
+    <!--길드 개설-->
+    <insert id="insertClub">
+		INSERT INTO ms_club(name,content)
+        VALUES (#{name},#{content})
+	</insert>
+
+    <insert id="insertClubUser">
+		INSERT INTO ms_club_user(content)
+        VALUES ("길드 개설자")
+	</insert>
+
+    
+     
+    
+</mapper>
