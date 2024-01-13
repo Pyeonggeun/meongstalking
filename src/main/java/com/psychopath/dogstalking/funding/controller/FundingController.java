@@ -170,7 +170,11 @@ public class FundingController {
 
 
     @RequestMapping("fundingSellerMyPage")
-    public String fundingSellerMyPage(){
+    public String fundingSellerMyPage(Model model){
+
+        List<Map<String,Object>> fundingList = fundingService.fundingListCall();            
+        model.addAttribute("list", fundingList);
+
         return "funding/fundingSellerMyPage";
     }
 
@@ -180,13 +184,16 @@ public class FundingController {
         return "funding/fundingUserMyPage";
     }
 
+    @RequestMapping("productControlPage")
+    public String productControlPage(){
+        return "funding/productControlPage";
+    }
 
-
-    // @RequestMapping("productDetailPage")
-    // public String productDetailPage(){
+    @RequestMapping("productDetailPage")
+    public String productDetailPage(){
         
-    //     return "#";
-    // }
+         return "funding/productDetailPage";
+    }
 
     // @RequestMapping("productPurchasePage")
     // public String productPurchasePage(){
