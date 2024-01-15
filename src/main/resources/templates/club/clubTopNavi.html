@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        .scrollable-menu {
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        /* 추가된 스타일 */a
+        .scrollable-menu .col {
+            display: flex;
+            flex-wrap: nowrap;
+        }
+
+        .scrollable-menu span {
+            flex: 0 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div th:fragment="topNavi">
+        <div class="row">
+            <div class="col-2 mt-3 px-0 mb-3">
+                <button class="btn" onclick="goBack()">
+                    <i class="bi bi-arrow-left"></i>
+                </button>
+            </div>
+            <div class="col mt-3 px-0 mb-3 d-flex align-items-center">
+                유지아 - [유기동물 봉사 동호회]
+            </div>
+        </div>
+        <div class="row scrollable-menu">
+            <div class="col justify-content-between fw-bold">
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">게시판</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">사진첩</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='##'">채팅</span>
+            </div>
+        </div>
+    </div>
+
+    <div th:fragment="footer">
+        <div class="row justify-content-center my-3">
+            <img th:src="@{/public/image/foot_webp.webp}" class="img-fluid" alt="Image" style="width: 80px;"> <!-- 이미지 크기를 작게 조절 -->
+            <span class="text-center mt-2" style="color: gray; font-size:0.7em;">북스북스 내용은 유익하셨나요?<br>
+            도서 꿀팁! 이젠, 북스북스에서 만나보세요!
+            </span><br>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+
+</html>

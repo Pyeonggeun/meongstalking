@@ -1,4 +1,6 @@
 package com.psychopath.dogstalking.funding.mapper;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -21,4 +23,8 @@ public interface FundingSqlMapper {
     public List<FundingNewsDto> selectNewsById(int product_pk);
 
     public void insertCheeringText(FundingCheeringDto paraCheeringDto);
+
+    public int countFinishDay(int product_pk);
+
+    public int totalSales(int product_pk);
 }

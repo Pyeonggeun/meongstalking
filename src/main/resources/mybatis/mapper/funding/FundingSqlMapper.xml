@@ -57,4 +57,15 @@
     );
 </insert>
 
+<select id="countFinishDay" resultType="int">
+    select DATEDIFF(finish_date,now()) from ms_funding_product 
+    where product_pk=#{product_pk}
+</select>
+
+<select id="totalSales" resultType="int">
+    select
+    IFNULL((select sum(quantity) from ms_funding_order mfo where product_pk =#{product_pk})*price,0) 
+    from ms_funding_product mfp where mfp.product_pk=#{product_pk};
+</select>
+
 </mapper>

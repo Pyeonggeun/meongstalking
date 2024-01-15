@@ -37,9 +37,6 @@ public class UserController {
 		}else {
 			// 인증 성공
 			session.setAttribute("sessionUser", sessionUser);
-            System.out.println("-------------");
-            System.out.println(sessionUser.getName());
-            System.out.println("-------------");
 			return "redirect:./mainPage";
 		}
     }

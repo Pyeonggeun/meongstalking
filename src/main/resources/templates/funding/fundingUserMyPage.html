@@ -10,6 +10,7 @@
 </head>
 
 <body>
+
     <div class="container">'
         <div class="row">
             <div class="col">
@@ -19,7 +20,67 @@
 
                 <!--메인 콜 시작-->
                 <div class="col">   
-                    <div class="row"><div class="col"> 마이페이지 for 일반유저</div></div>
+                    <div class="row border-bottom mb-1"><div class="col fw-bold" style="font-size: 1.4em;"> 마이페이지 <span style="font-size: 0.7em; color:gray">for 일반 회원</span></div></div>
+                    <div class="row border-bottom py-1"><div class="col">일단 비움</div></div>
+
+                    <div class="row py-1 my-2">
+                        <div class="col-3 px-0 text-center" style="font-size:1.3em;">
+                            <i class="bi bi-person-circle" style="font-size:1.45em;"></i>
+                        </div>
+                        <div class="col px-0">
+                            <div class="row">
+                                <div class="col px-0" th:text="${session.sessionUser.name}"><span style="font-size: 0.75em; color:gray">님</span>></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row"><div class="col"></div></div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="row"><div class="col" th:text="${session.sessionUser.name}">께서 펀딩한 상품 <span>0</span></div></div>
+                            
+                            <div class="row">
+                                <div class="col border rounded">
+                                    <div class="row"><div class="col"></div></div>
+                                    <div class="row">
+                                        <div class="col px-0" style="background-color: gainsboro;">
+                                            <div class="col-6 px-0"><span><i class="bi bi-credit-card"></i></span>결제정보관리</div>
+                                            <div class="col-5 px-0">카드등록</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>    
+                        </div>    
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="row"><div class="col" th:text="${session.sessionUser.name}">최근에 본 상품들<span></span></div></div>
+                            
+                            <div class="row mb-2">
+                                <th:block th:each="list : ${list}">
+                                <div class="col-6 border px-0"><a th:href="@{./productControlPage(id = ${list.list.product_pk})}">
+                                    <div class="row"><div class="col"></div></div>
+                                    <div class="row d-grid"><img class="img-fluid" th:src="@{'/uploadFiles/'+${list.list.title_image}}" alt="이미지 등록 필요"></div>
+                                    <div class="row"><div class="col" style="font-size:0.7em;" th:text="${list.list.product_name}"></div></div>
+                                    <div class="row"><div class="col py-1" style="font-size:0.60em; color: gray;">추후 진행상태 업로드</div></div>
+                                </a></div>
+                                </th:block> 
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+
+
+                    <div class="row"><div class="col">내 문의 내역</div></div>
+                    <div class="row"><div class="col">고객센터</div></div>
+                    <div class="row"><div class="col"></div></div>
+
+                    
 
                 
 
