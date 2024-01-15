@@ -11,4 +11,9 @@ public class FollowServiceImpl {
     @Autowired
     private FollowSqlMapper followSqlMapper;
 
+    public boolean isFirstTimeMark(int user_pk) {
+
+        return followSqlMapper.isFirstTimeMark(user_pk) > 0 ? false : true;
+    }
+
 }
