@@ -65,5 +65,19 @@ public class ClubServiceImpl {
 	public void insertClubUser(ClubUserDto clubUserDto) {
 		clubSqlMapper.insertClubUser(clubUserDto);
 	}
+
+	public int checka(){
+		return clubSqlMapper.checka();
+	}
+
+	//리스트
+	public List<Map<String, Object>> selectClubList(){
+		return clubSqlMapper.selectClubList();	
+	}
+
+	public Map<String, Object> showclubpk(int club_pk){
+		return clubSqlMapper.showclubpk(club_pk);	
+	}
+	
 	
 }

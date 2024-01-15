@@ -92,7 +92,7 @@
 
      <!-- TemplateT -->
     <div class="container">
-        <div th:if="${clubTF['user_exists'] == 'T'}">   
+        <div th:if="${clubTF['user_exists'] == 'T' or showclubpk['clubpk_ck'] == 1}">  
             <th:block th:replace="~{club/clubTopNavi.html :: topNavi}"></th:block>
             <div class="row border-bottom border-2 border-gray">
                 <div class="col-md-4  px-0">
@@ -117,17 +117,15 @@
                 <button class="btn btn-secondary col-12 signup-button" onclick="loadSignupModal()">가입하기</button>
             </div>
         </div>
-        <div th:else>
+        <div th:if="${clubTF['user_exists'] == 'F'}">
             <!-- 소속된 동호회가 없는 경우의 내용 -->
             <p>소속된 동호회가 없습니다.</p>
-            
-            <!-- 길드 개설하기 버튼 -->
             <a href="./createClubPage" class="btn btn-secondary p-3">
                 길드 개설하기
             </a>
-            
-            <!-- 길드 추천받기 버튼 -->
-            <button onclick="getRecommendedGuilds()" class="btn btn-secondary p-3">길드 추천받기</button>
+            <a href="./clubListPage" class="btn btn-secondary p-3">
+                길드 추천받기
+            </a>
         </div>
     </div>
     <div id="loadSignupModal" class="modal fade bottom-modal" tabindex="-1" role="dialog" aria-labelledby="loadSignupModalLabel" aria-hidden="true">
