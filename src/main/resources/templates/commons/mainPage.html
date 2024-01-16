@@ -67,7 +67,7 @@
                         <div class="col px-4 py-2">
                             <div class="row">
                                 <div class="col-2">
-                                    <img onclick="location.href='../mstar/profilePage'" class="img-fluid rounded-circle float-start" th:src="${path}" style="aspect-ratio: 1/1;">
+                                    <img th:onclick="|location.href='@{../mstar/profilePage(user_pk=${session.sessionUser.user_pk})}'|" class="img-fluid rounded-circle float-start" th:src="${path}" style="aspect-ratio: 1/1; cursor: pointer;">
                                 </div>
                                 <div class="col-1"></div>
                                 <div class="col text-center fw-bold align-self-center">

@@ -30,6 +30,10 @@ public class UserServiceImpl {
 
         mstarSqlMapper.insertCommonInfo(profileInfoDto);
 
+        int profile_info_pk = mstarSqlMapper.selectMaxProfilePk();
+        String nick_name = "멍스토킹@S"+profile_info_pk+"01lec";
+        mstarSqlMapper.updateFirstNickName(profile_info_pk, nick_name);
+        
     }
 
     public UserDto getUserInfoByUserIdAndPassword(UserDto userDto){
@@ -39,7 +43,7 @@ public class UserServiceImpl {
 	}
 
     public ProfileInfoDto getProfilePhotoPath(int user_pk){
-        return mstarSqlMapper.selectMyProfileInfoDto(user_pk);
+        return mstarSqlMapper.selectProfileInfoDto(user_pk);
     }
     
 
