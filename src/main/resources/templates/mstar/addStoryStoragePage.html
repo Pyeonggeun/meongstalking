@@ -16,42 +16,25 @@
                 const key = urlParams.get("user_pk");
                 user_pk = key;
             }
-           
-
-            function loadMyProfileInfo(){
-                const url = "./loadMyProfileInfo";
-
-                fetch(url, {
-                     method: "post",
-                     headers: {
-                        "Content-Type": "application/x-www-form-urlencoded"
-                    },
-                     body: "user_pk="+user_pk
-            	})
+            let profileInfoDto = null;
+            function getProfileInfoDto(){
+                const url = "./myProfileInfoDto?user_pk="+user_pk;
+                fetch(url)
                 .then(response => response.json())
                 .then((response) =>{
-
-                    const profilePhoto = document.querySelector("#profilePhoto");
-                    profilePhoto.setAttribute("src", response.data.profileInfoDto.profile_photo);
-
-                    const nickName = document.querySelector("#nickName");
-                    nickName.value = response.data.profileInfoDto.nick_name;
-
-                    const status_message = document.querySelector("#status_message");
-                    if(response.data.profileInfoDto.status_message != null){
-                        status_message.value = response.data.profileInfoDto.status_message
-                    }else{
-                        status_message.setAttribute("placeholder", "상태 메세지를 입력해주세요.")
-                    }
-                   
-                    
-                })
+                    profileInfoDto = response.data;
+                    const profile_info_pk = profileInfoDto.profile_info_pk;
+                    const insertButton = document.querySelector("#insertButton");
+                    insertButton.setAttribute("onclick" , "insertStoryStorage("+profile_info_pk+")");
+                });
+                
             }
+
             // 파일 업로드 감지 이베트
-            function profilePhotoUpload(){
+            function coverPhotoUpload(){
                 const fileUpload = document.querySelector("#fileUpload");
                 fileUpload.click();
-                const profilePhoto = document.getElementById("profilePhoto");
+                const coverPhoto = document.getElementById("coverPhoto");
             
                 const handleFiles = (e) => {
                     const selectedFile = [...fileUpload.files];
@@ -63,42 +46,45 @@
                         
                             
                             fileReader.onload = function () {
-                                profilePhoto.src = fileReader.result;
+                                coverPhoto.src = fileReader.result;
                             }  
                         }; 
                     };
                 fileUpload.addEventListener("change", handleFiles);
             }
 
-            function updateProfile(){
-                const profilePhoto = document.querySelector("#profilePhoto");
+            function insertStoryStorage(profile_info_pk){
+                const coverPhoto = document.querySelector("#coverPhoto");
                 const fileUpload = document.querySelector("#fileUpload");
                 const imageFiles = fileUpload.files[0];
                 const formData = new FormData();
 
                 const xhr = new XMLHttpRequest();
-                xhr.open('POST', './updateProfileProcess', true);
+                xhr.open('POST', './insertStoryStorage', true);
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === 4 && xhr.status === 200) {
                         console.log(xhr.responseText);
                     }
                 };
-                const nickName = document.querySelector("#nickName").value;
-                const status_message = document.querySelector("#status_message").value;
+                let storage_name = document.querySelector("#storage_name").value;
+                if(storage_name == null){
+                    storage_name = "하이라이트";
+                }
+                
+            
 
                 formData.append("imageFiles", imageFiles)
-                formData.append("user_pk", user_pk);
-                formData.append("nick_name", nickName);
-                formData.append("status_message", status_message);
+                formData.append("profile_info_pk", profile_info_pk);
+                formData.append("storage_name", storage_name);
                 
 
-                 xhr.send(formData);
+                xhr.send(formData);
 
                 location.href='./profilePage?user_pk='+user_pk;
             }
             window.addEventListener("DOMContentLoaded", () =>{
                 getUrlKey();
-                loadMyProfileInfo();
+                getProfileInfoDto()
             });
         </script>
         <style>
@@ -112,7 +98,7 @@
 
             body {
                 font-family: 'omyu_pretty';
-                min-width: 320px;
+                
             }
             #d-none-scroll::-webkit-scrollbar {
                 display: none;
@@ -143,41 +129,30 @@
                 <div onclick=window.history.back(); class="col fw-bold ms-3 fs-5">
                     취소
                 </div>
-                <div onclick="updateProfile()" class="col text-end text-primary fs-5 me-3">
+                <div class="col-6 text-center fw-bold">스토리 하이라이트</div>
+                <div id="insertButton" class="col text-end text-primary fs-5 me-3">
                     완료
                 </div>
             </div>
-            <div class="row">
+            <div class="row mt-5">
                 <div class="col">
-                    
                     <div class="row mt-3">
                         <div class="col text-center">
-                            <img onclick="profilePhotoUpload()" id="profilePhoto" class="img-fluid rounded-circle border border-primary border-1" alt="" style="aspect-ratio: 1/1; height: 30vw;">
+                            <img onclick="coverPhotoUpload()" src="/public/image/commons/commonsDogImg1.png" id="coverPhoto" class="img-fluid rounded-circle border border-primary border-1" alt="" style="aspect-ratio: 1/1; height: 30vw;">
                         </div>
                     </div>
                     <div class="row mt-2">
-                        <input id="fileUpload" name="imageFiles" class="d-none" type="file" accept="image/*">
-                        <div onclick="profilePhotoUpload()" class="col text-center border-bottom pb-2 text-primary">
-                            프로필 사진 수정
+                        <input id="fileUpload" class="d-none" type="file" accept="image/*">
+                        <div onclick="coverPhotoUpload()" class="col text-center pb-2 text-primary">
+                            커버 사진 수정
                         </div>
                     </div>
                     <div class="row mt-3">
-                        <div class="col ms-3 fw-bold " >
-                            닉네임
+                        <div class="col"></div>
+                        <div class="col fw-bold " >
+                            <input id="storage_name" class="form-control border text-center" type="text" placeholder="하이라이트">
                         </div>
-                        <div class="col-8">
-                            <input id="nickName" name="nick_name" class="form-control py-0" type="text" style="border-top: none; border-left: none; border-right: none; border-color: rgb(205, 205, 205);">
-                        </div>
-                        <div class="col-1"></div>
-                    </div>
-                    <div class="row mt-3">
-                        <div  class="col ms-3 fw-bold " >
-                            소개
-                        </div>
-                        <div class="col-8">
-                            <textarea id="status_message" name="status_message" class="form-control py-0" rows="2" type="text" style="border-color: rgb(205, 205, 205);"></textarea>
-                        </div>
-                        <div class="col-1"></div>
+                        <div class="col"></div>
                     </div>
                 </div>   
             </div>       

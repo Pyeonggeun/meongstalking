@@ -9,6 +9,180 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
+        <script th:inline="javascript">
+            let user_pk = null;
+            function getUrlKey() {
+                const urlParams = new URLSearchParams(location.search);
+                const key = urlParams.get("user_pk");
+                user_pk = key;
+            }
+            let profileInfoDto = null;
+            function getProfileInfoDto(){
+                const url = "./myProfileInfoDto?user_pk="+user_pk;
+                fetch(url)
+                .then(response => response.json())
+                .then((response) =>{
+                    profileInfoDto = response.data;
+                    const profile_info_pk = profileInfoDto.profile_info_pk;
+                    loadMyArticleFirstImgList(profile_info_pk); 
+                    loadStoryStorageList(profile_info_pk)   
+                });
+                
+            }
+
+            function loadMyProfileInfo(){
+                const url = "./loadMyProfileInfo";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "user_pk="+user_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+
+                    const profilePhoto = document.querySelector("#profilePhoto");
+                    profilePhoto.setAttribute("src", "/uploadFiles/"+response.data.profileInfoDto.profile_photo);                    
+
+                    const articleCount = document.querySelector("#articleCount");
+                    articleCount.innerText = response.data.articleCount;
+
+                    const followCount = document.querySelector("#followCount");
+                    followCount.innerText = response.data.followCount;
+                    
+                    const followingCount = document.querySelector("#followingCount");
+                    followingCount.innerText = response.data.followingCount;
+
+                    const nickName = document.querySelector("#nickName");
+                    nickName.innerText = response.data.profileInfoDto.nick_name;
+
+                    const status_message = document.querySelector("#status_message");
+                    status_message.innerText = response.data.profileInfoDto.status_message;
+
+                    const updateProfilePageButton = document.querySelector("#updateProfilePageButton");
+                    updateProfilePageButton.setAttribute("onclick", "location.href='./updateProfilePage?user_pk="+response.data.profileInfoDto.user_pk+"'");
+                })
+            }
+
+            function loadMyArticleFirstImgList(profile_info_pk){
+                const url = "./loadMyArticeleList";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    const articleListBox = document.querySelector("#articleListBox");
+                    for(e of response.data){
+                        const articleListWrapper = document.querySelector("#articleListTemplete .articleListWrapper").cloneNode(true);
+                        const articleFirstImg = articleListWrapper.querySelector(".articleFirstImg");
+                        articleFirstImg.src = "/uploadFiles/"+e.artPhotoList[0].photo_path;
+                        articleFirstImg.style.objectFit = "fill";
+                        
+                        
+                        const icon = articleListWrapper.querySelector(".icon");
+                        if(e.artPhotoList.length >= 2){
+                            icon.classList.add("fa-copy" ,"fa-solid")
+                        }
+                        articleListBox.appendChild(articleListWrapper);
+
+                    }
+                });
+            }
+            function loadStoryStorageList(profile_info_pk){
+                const url = "./loadStoryStorageList";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    const storyStorageListBox = document.querySelector("#storyStorageListBox");
+                    if(response.data[0] != null){
+                        for(e of response.data){
+
+                            const storyStorageListWrapper = document.querySelector("#storyStorageListTemplete .storyStorageListWrapper").cloneNode(true);
+                            const storage_name = storyStorageListWrapper.querySelector(".storage_name");
+                            storage_name.innerText = e.storage_name;
+                            const storage_img = storyStorageListWrapper.querySelector(".storage_img");
+                            storage_img.src = "/uploadFiles/"+e.storage_img;
+                            
+                            storyStorageListBox.appendChild(storyStorageListWrapper);
+
+                        }
+                        const storageAddButton = document.querySelector("#storageAddButton");
+                        storageAddButton.remove();
+                        const addButton = document.createElement("div");
+                        addButton.classList.add("col-auto");
+                        addButton.setAttribute("onclick", "location.href='./addStoryStoragePage?user_pk="+user_pk+"'");
+                        addButton.setAttribute("id", "storageAddButton");
+                        const row1 = document.createElement("div");
+                        row1.classList.add("row");
+                        const col1 = document.createElement("div");
+                        col1.classList.add("col","fs-5", "text-center");
+                        const i = document.createElement("i");
+                        i.classList.add("fa-solid","fa-plus" ,"rounded-circle","border","border-black","py-3","px-3");
+                        i.setAttribute("style","height: 15vw; aspect-ratio: 1/1;")
+                        col1.appendChild(i);
+                        row1.appendChild(col1);
+
+                        const row2 = document.createElement("div");
+                        row2.classList.add("row");
+                        const col2 = document.createElement("div");
+                        col2.classList.add("col","py-0", "text-center");
+                        col2.setAttribute("style","font-size: small;")
+
+                        row2.appendChild(col2);
+
+                        addButton.appendChild(row1);
+                        addButton.appendChild(row2);
+
+                        storyStorageListBox.appendChild(addButton);
+                    }
+                });
+            }
+
+            function downStoryStoreList(){
+                const stroyList = document.querySelector("#d-none-scroll")
+                stroyList.classList.add("d-none");
+                const storyButton = document.querySelector("#storyButton");
+                storyButton.classList.remove("fa-chevron-up")
+                storyButton.classList.add("fa-chevron-down")
+                storyButton.removeAttribute("onclick");
+                storyButton.setAttribute("onclick", "upStoryStoreList()");
+
+            }
+            function upStoryStoreList(){
+                const stroyList = document.querySelector("#d-none-scroll")
+                stroyList.classList.remove("d-none");
+                const storyButton = document.querySelector("#storyButton");
+                storyButton.classList.add("fa-chevron-up")
+                storyButton.classList.remove("fa-chevron-down")
+                storyButton.removeAttribute("onclick");
+                storyButton.setAttribute("onclick", "downStoryStoreList()");
+            }
+
+        
+            
+            window.addEventListener("DOMContentLoaded", () =>{
+                getUrlKey();
+                getProfileInfoDto();
+                loadMyProfileInfo();
+                
+                
+            });
+        </script>
+
         <style>
 
             @font-face {
@@ -20,7 +194,7 @@
 
             body {
                 font-family: 'omyu_pretty';
-                min-width: 320px;
+                
             }
             #d-none-scroll::-webkit-scrollbar {
                 display: none;
@@ -48,8 +222,8 @@
                 </div>
             </div>
             <div class="row mt-2">
-                <div class="col fw-bold ms-3 fs-5">
-                    jo_inChun_
+                <div  class="col fw-bold ms-3 fs-5" th:text="${session.sessionUser.userid} ">
+                
                 </div>
                 <div class="col text-end fs-5 me-3">
                     <i class="fa-regular fa-square-plus me-2"></i>
@@ -60,11 +234,11 @@
                 <div class="col">
                     <div class="row mt-3">
                         <div class="col-3 ms-3">
-                            <img class="img-fluid rounded-circle border border-primary border-1" src="../../3img/miu.jpeg " alt="" style="aspect-ratio: 1/1;">
+                            <img id="profilePhoto" class="img-fluid rounded-circle border border-primary border-1" alt="" style="aspect-ratio: 1/1;">
                         </div>
-                        <div class="col p">
+                        <div class="col">
                             <div class="row mt-2">
-                                <div class="col fs-4 text-center">
+                                <div id="articleCount" class="col fs-4 text-center">
                                     0
                                 </div>
                             </div>
@@ -76,7 +250,7 @@
                         </div>
                         <div class="col">
                             <div class="row mt-2">
-                                <div class="col fs-4 text-center">
+                                <div id="followCount" class="col fs-4 text-center">
                                     398
                                 </div>
                             </div>
@@ -88,7 +262,7 @@
                         </div>
                         <div class="col">
                             <div class="row mt-2">
-                                <div class="col fs-4 text-center">
+                                <div id="followingCount" class="col fs-4 text-center">
                                     329
                                 </div>
                             </div>
@@ -100,12 +274,17 @@
                         </div>
                     </div>
                     <div class="row mt-2">
-                        <div class="col ms-3">
+                        <div id="nickName" class="col ms-3">
                             춘이야박사
                         </div>
                     </div>
+                    <div class="row" style="font-size: small;">
+                        <div id="status_message" class="col ms-3">
+
+                        </div>
+                    </div>
                     <div class="row mt-3">
-                        <div onclick="location.href='./updateProfilePage'" class="col ms-3 fw-bold text-center rounded border" style="background-color: rgb(231, 229, 229);">
+                        <div id="updateProfilePageButton" class="col ms-3 fw-bold text-center rounded border" style="background-color: rgb(231, 229, 229);">
                             프로필 편집
                         </div>
                         <div class="col mx-3 fw-bold text-center rounded border" style="background-color: rgb(231, 229, 229);">
@@ -120,8 +299,7 @@
                             스토리 하이라이트 
                         </div>
                         <div class="col text-end me-3" style="font-size: small;">
-                            <i class="fa-solid fa-chevron-up text-center"></i>
-                           <!--아래로 내리는 아이콘 <i class="fa-solid fa-chevron-down"></i> -->
+                            <i id="storyButton" onclick="downStoryStoreList()" class="fa-solid fa-chevron-up text-center"></i>
                         </div>
                     </div>
                     <div class="row">
@@ -131,32 +309,8 @@
                     </div>
                     <div id="d-none-scroll" class="row mt-3 overflow-x-auto">
                         <div class="col">
-                            <div class="row" style="width: 200%;">
-                                <div class="col-auto ms-3">
-                                    <div class="row">
-                                        <div class="col">
-                                            <img class="img-fluid rounded-circle border border-black"  src="../../3img/miu.jpeg" alt="" style="aspect-ratio: 1/1; height: 15vw;">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col py-0" style="font-size: small;">
-                                            미우는 고양이
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <div class="row">
-                                        <div class="col">
-                                            <img class="img-fluid rounded-circle border border-black"  src="../../3img/miu2.jpeg" alt="" style="aspect-ratio: 1/1; height: 15vw;">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col py-0" style="font-size: small;">
-                                            고양이 외계인
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-auto">
+                            <div id="storyStorageListBox" class="row" style="width: 200%;">
+                                <div id="storageAddButton" th:onclick="|location.href='@{./addStoryStoragePage(user_pk=${session.sessionUser.user_pk})}'|" class="col-auto">
                                     <div class="row">
                                         <div class="col fs-5 text-center">
                                             <i class="fa-solid fa-plus rounded-circle border border-black py-3 px-3" style="height: 15vw; aspect-ratio: 1/1;"></i>
@@ -185,26 +339,8 @@
                     </div>
                 </div>
             </div>  
-            <div class="row row-cols-3 ps-0">
-                <div class="col px-0 position-relative">
-                    <img class="img-fluid" src="../../3img/miu2.jpeg" alt="">
-                    <i class="fa-solid fa-copy position-absolute top-0 end-0 text-white pe-2 pt-2" style="font-size: small;"></i>
-                </div>
-                <div class="col px-0 position-relative">
-                    <img class="img-fluid" src="../../3img/miu2.jpeg" alt="">
-                    <i class="fa-solid fa-video position-absolute top-0 end-0 text-white pe-2 pt-2" style="font-size: small;"></i>
-                </div>
-                <div class="col px-0 position-relative">
-                    <img class="img-fluid" src="../../3img/miu2.jpeg" alt="">
-                </div>
-                <div class="col px-0 position-relative">
-                    <img class="img-fluid" src="../../3img/miu2.jpeg" alt="">
-                    <i class="fa-solid fa-copy position-absolute top-0 end-0 text-white pe-2 pt-2" style="font-size: small;"></i>
-                </div>
-                <div class="col px-0 position-relative">
-                    <img class="img-fluid" src="../../3img/miu2.jpeg" alt="">
-                    <i class="fa-solid fa-copy position-absolute top-0 end-0 text-white pe-2 pt-2" style="font-size: small;"></i>
-                </div>
+            <div id="articleListBox" class="row row-cols-3 ps-0">
+                
             </div>
             <div class="row bg-white border-top sticky-bottom">
                 <div class="col px-4 py-2">
@@ -235,17 +371,17 @@
                         </div>
                         <div class="col text-center ps-0" style="font-size: 4vw;">
                             <div class="row">
-                                <div class="col text-body-tertiary">
+                                <div th:onclick="|location.href='@{./writeArticlePage(user_pk=${session.sessionUser.user_pk})}'|" class="col text-body-tertiary">
                                     <i class="fa-solid fa-hand-holding-medical"></i>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col text-secondary">
-                                    멍냥닥터
+                                    추가
                                 </div>
                             </div>
                         </div>
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
+                        <div th:onclick="|location.href='@{./uploadStoryPage(user_pk=${session.sessionUser.user_pk})}'|" class="col text-center ps-0" style="font-size: 4vw;">
                             <div class="row">
                                 <div class="col">
                                     <i class="fa-solid fa-pen-to-square"></i>
@@ -269,6 +405,28 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="articleListTemplete" class="d-none">
+            <div class="col-4 px-0 positiond-relative articleListWrapper">
+                <img class="img-fluid articleFirstImg"  alt="" style="aspect-ratio: 1/1;">
+                <i class="position-absolute top-0 end-0 text-white pe-2 pt-2 icon" style="font-size: small;"></i>
+            </div>
+        </div>
+        
+        <div id="storyStorageListTemplete" class="d-none">
+            <div class="col-auto ms-3 storyStorageListWrapper">
+                <div class="row">
+                    <div class="col">
+                        <img class="img-fluid rounded-circle border border-black storage_img"  src="" alt="" style="aspect-ratio: 1/1; height: 15vw;">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col py-0 storage_name" style="font-size: small;">
+                        미우는 고양이
                     </div>
                 </div>
             </div>

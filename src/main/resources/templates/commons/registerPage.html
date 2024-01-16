@@ -36,25 +36,6 @@
             color: white;
         }
     </style>
-     <script>
-        function previewImage() {
-            var fileInput = document.getElementById('fileInput');
-            var imagePreview = document.getElementById('imagePreview');
-
-            var file = fileInput.files[0];
-            if (file) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    imagePreview.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        imagePreview.addEventListener('click', function () {
-            fileInput.click();
-        });
-    </script>
 </head>
 
 <body>
@@ -62,7 +43,6 @@
     <div class="container">
         <h2 class="text-center mb-4">회원가입</h2>
         <form action="./registerProcess" method="post">
-            
             <div class="row">
                 <div class="col text-center my-3">
                     <label for="fileInput">

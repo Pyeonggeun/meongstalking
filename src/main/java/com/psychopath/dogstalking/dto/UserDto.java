@@ -15,6 +15,5 @@ public class UserDto {
     private String email;
     private String phone;
     private LocalDate birthdate;
-    private String image;
     private LocalDateTime created_at;
 }

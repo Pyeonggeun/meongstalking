@@ -51,7 +51,7 @@
                 min-width: 320px;
             }
            .bg-img{
-                 background-image: url(../../3img/img.jpg);
+                 background-image: url(/public/image/commons/img.jpg);
                  background-repeat: no-repeat;
                  background-size:contain
            }
@@ -67,7 +67,7 @@
                         <div class="col px-4 py-2">
                             <div class="row">
                                 <div class="col-2">
-                                    <img onclick="location.href='../mstar/profilePage'" class="img-fluid rounded-circle float-start" src="../../3img/miu2.jpeg" style="aspect-ratio: 1/1;">
+                                    <img th:onclick="|location.href='@{../mstar/profilePage(user_pk=${session.sessionUser.user_pk})}'|" class="img-fluid rounded-circle float-start" th:src="${path}" style="aspect-ratio: 1/1; cursor: pointer;">
                                 </div>
                                 <div class="col-1"></div>
                                 <div class="col text-center fw-bold align-self-center">
@@ -99,7 +99,7 @@
                             </div>
                         </div>
                         <div class="col-5 position-absolute start-50 ps-3">
-                            <img class="img-fluid rounded-circle" src="../../3img/miu.jpeg" alt="" style="aspect-ratio: 1/1; height: 8em; z-index: -2;">
+                            <img class="img-fluid rounded-circle" src="/public/image/commons/miu.jpeg" alt="" style="aspect-ratio: 1/1; height: 8em; z-index: -2;">
                         </div>
                     </div>
                     <div class="row mt-3">
@@ -224,7 +224,7 @@
                 <div class="col">
                     <div class="row">
                         <div class="col">
-                            <img class="img-fluid rounded" src="../../3img/dog1.jpeg" alt="" style="aspect-ratio: 1/1;">
+                            <img class="img-fluid rounded" src="/public/image/commons/dog2.avif" alt="" style="aspect-ratio: 1/1;">
                         </div>
                     </div>
                     <div class="row">
@@ -236,7 +236,7 @@
                 <div class="col">
                     <div class="row">
                         <div class="col">
-                            <img class="img-fluid rounded" src="../../3img/dog2.avif" alt="" style="aspect-ratio: 1/1;">
+                            <img class="img-fluid rounded" src="/public/image/commons/list1.jpeg" alt="" style="aspect-ratio: 1/1;">
                         </div>
                     </div>
                     <div class="row">
@@ -250,7 +250,7 @@
                 <div class="col">
                     <div class="row">
                         <div class="col">
-                            <img class="img-fluid rounded" src="../../3img/dog3.jpeg" alt="" style="aspect-ratio: 1/1;">
+                            <img class="img-fluid rounded" src="/public/image/commons/dog3.jpeg" alt="" style="aspect-ratio: 1/1;">
                         </div>
                     </div>
                     <div class="row">
@@ -262,7 +262,7 @@
                 <div class="col">
                     <div class="row">
                         <div class="col">
-                            <img class="img-fluid rounded" src="../../3img/dog4.jpeg" alt="" style="aspect-ratio: 1/1;">
+                            <img class="img-fluid rounded" src="/public/image/commons/dog4.jpeg" alt="" style="aspect-ratio: 1/1;">
                         </div>
                     </div>
                     <div class="row">
