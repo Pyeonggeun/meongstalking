@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>채팅방</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://kit.fontawesome.com/784384f602.js" crossorigin="anonymous"></script>
+
+
+
+    <script>
+        function enterChatMessage(chatRoomPk){
+            
+
+            const chatMessage = document.getElementById("chat-message");
+
+            const url = "./registerChatMessage?chatroom_pk=" + chatRoomPk + "&message=" + chatMessage.value;
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+        
+                chatMessage.value = "";
+                reloadChatMessage();                
+       
+            });
+
+
+        }
+
+        function reloadChatMessage(){
+            const chatRoomPk = document.getElementById("chatRoomPk").value;
+
+            const url = "./getChatMessageList?chatRoomPk=" + chatRoomPk;
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                
+                const chatMessageListBox = document.getElementById("chatMessageListBox");
+                chatMessageListBox.innerHTML = "";
+
+                const sessionUserPk = document.getElementById("sessionUserPk").value;
+
+                let lastDisplayedDate = "";
+
+                for(e of response.data){
+                    const chatMessageWrapper = document.querySelector("#template .chatMessageWrapper").cloneNode(true);
+                
+                    const message = chatMessageWrapper.querySelector(".message");
+                    message.innerText = e.message;
+                    message.value = e.user_pk;
+
+                    const messagePosition = chatMessageWrapper.querySelector(".messagePosition");
+
+                    if(sessionUserPk == e.user_pk){
+                        messagePosition.classList.add("text-end");
+                        const createdAt = chatMessageWrapper.querySelector(".createdat-start");
+                        
+                        if(e.isRead == 'N'){
+                        const isRead = chatMessageWrapper.querySelector(".isRead-start");
+                        isRead.innerText = 1;
+                        }
+
+                        const date = e.created_at;
+                        let timeString = getMessageCreatedAt(date);
+                        createdAt.innerText = timeString;
+
+                        const year = date[0];
+                        const month = date[1];
+                        const day = date[2];
+                        
+                        const messageDate = year + '년 ' + month + '월 ' + day + '일';
+
+                        if(lastDisplayedDate != messageDate){
+                            const showDateBox = chatMessageWrapper.querySelector(".showDateBox");
+                            const date = showDateBox.querySelector(".date");
+                            date.innerText = messageDate;
+
+                            lastDisplayedDate = messageDate;
+                            showDateBox.classList.remove("d-none");
+                        }               
+                        
+                    }else{
+                        messagePosition.classList.add("text-start");
+                        const createdAt = chatMessageWrapper.querySelector(".createdat-end");
+                        
+                        if(e.isRead == 'N'){
+                        const isRead = chatMessageWrapper.querySelector(".isRead-end");
+                        isRead.innerText = 1;
+                        }
+
+                        const date = e.created_at;
+                        let timeString = getMessageCreatedAt(date);
+                        createdAt.innerText = timeString;
+
+                        const year = date[0];
+                        const month = date[1];
+                        const day = date[2];
+                        
+                        const messageDate = year + '년 ' + month + '월 ' + day + '일';
+
+                        if(lastDisplayedDate != messageDate){
+                            const showDateBox = chatMessageWrapper.querySelector(".showDateBox");
+                            const date = showDateBox.querySelector(".date");
+                            date.innerText = messageDate;
+
+                            lastDisplayedDate = messageDate;
+                            showDateBox.classList.remove("d-none");
+
+
+                        }    
+                    }
+                
+                    chatMessageListBox.appendChild(chatMessageWrapper);
+                }
+                reloadProfileImage();    
+
+            });
+            
+        }  
+
+        function reloadProfileImage(){
+            const chatMessageWrappers = document.querySelectorAll("#chatMessageListBox .chatMessageWrapper");
+            
+            let count = 0;
+            let isProfileImage = false;
+            let nextUserPk;
+            let currentUserPk;
+            const sessionUserPk = document.getElementById("sessionUserPk").value;
+
+            for(const chatMessageWrapper of chatMessageWrappers){
+
+                if(count == chatMessageWrappers.length-1){
+                    if(chatMessageWrapper.querySelector(".message").value != sessionUserPk){
+                        const profileImage = chatMessageWrapper.querySelector(".profileImage");
+                        profileImage.classList.remove("d-none");
+                        return;
+                    }else{
+                        return;
+                    }
+                }
+
+                currentUserPk = chatMessageWrapper.querySelector(".message").value;
+                nextUserPk = chatMessageWrappers.item(count+1).querySelector(".message").value;
+
+                if(currentUserPk != nextUserPk && sessionUserPk != currentUserPk){
+                    isProfileImage = true;
+
+                }else if(!chatMessageWrappers.item(count+1).querySelector(".showDateBox.d-none") && sessionUserPk != currentUserPk){
+                    isProfileImage = true;
+                }else{
+                    isProfileImage = false;
+                }
+
+                if(isProfileImage){
+                    const profileImage = chatMessageWrapper.querySelector(".profileImage");
+                    profileImage.classList.remove("d-none");
+                    
+                }
+
+                count += 1;
+            }
+
+
+        }
+
+
+        function getMessageCreatedAt(date){
+            const hours = date[3];
+            const minutes = date[4];
+
+            let timeString;
+
+            if (hours >= 13) {
+                timeString = `오후 ${hours - 12}:${minutes}`;
+            } else if (hours === 12) {
+                timeString = `오후 12:${minutes}`;
+            } else {
+                timeString = `오전 ${hours}:${minutes}`;
+            }
+
+            return timeString;
+        }
+
+        function showDate(currentDate, date){
+
+            const year = data[0];
+            const month = data[1];
+            const day = data[2];
+            
+            const messageDate = year + '.' + month + '.' + day;
+
+            if(currentDate != messageDate){
+
+
+            }
+
+
+        }
+
+
+        // function updateChatMessageIsRead(chatMessagePk){
+		
+        //     const url = "./chatMessageIsRead?chatMessagePk=" + chatMessagePk;
+            
+        //     fetch(url)
+        //     .then(response => response.json())
+        //     .then(response => {
+                
+        //     });
+        // }  
+
+
+
+        function templete(){
+		
+            const url = "";
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                
+            });
+        }  
+        
+        setInterval(reloadChatMessage, 2000);
+
+        window.addEventListener("DOMContentLoaded", () => {
+            
+            reloadChatMessage();
+        });  
+
+
+    </script>
+
+
+
+
+
+    <style>
+        .footer{
+            position: fixed;
+            bottom: 0;
+        }        
+
+        .text-box{
+            background-color: white; 
+            border-radius: 2em; 
+            border-width: 1;
+            border-style: solid;
+            border-color: #f5f5f5; 
+            height: 2.8em;
+            width: 93%; 
+            font-size: 0.8em; 
+            padding-left: 1em;
+            position: absolute; 
+            top: 50%; 
+            right: calc(0% + 0.8em);
+            transform: translate(0, -50%);
+            
+        }
+        .icon-circle{
+            width: 1.8em; 
+            height: 1.8em; 
+            border-radius: 100%; 
+            background-color: #fafafa;
+            position: absolute; 
+            top: 50%; 
+            right: calc(0% + 0.8em);
+            transform: translate(-10%, -50%);
+        }
+        .enter-icon{
+            position: absolute; 
+            top: 50%; 
+            right: calc(0% + 1.6em);
+            transform: translate(-10%, -50%);
+            font-size: 0.9em;
+        }
+        .plus-icon{
+            font-size: 1em; 
+            position: absolute; 
+            top: 50%; 
+            left: calc(50% + 0.5em); 
+            transform: translate(-50%, -50%);
+        }
+
+        .message-box{
+            font-size: 1em; 
+            background-color: #f7f7f7; 
+            border-radius: 0.5em; 
+            display: inline-block;
+        }
+
+        .message{
+            padding-left: 0.6em;
+            padding-right: 0.6em;
+            padding-top: 0.3em;
+            padding-bottom: 0.3em;
+            color: #444444;
+            font-size: 0.8em;
+        }
+
+    </style>
+
+
+
+
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row" style="height: 3.3em;">
+            <div class="col-3" style="position: relative;">
+                <div style="font-size: 1em; position: absolute; top: 50%; left: 0.8em; transform: translate(0, -50%);"><i class="fa-solid fa-arrow-left"></i></div>
+            </div>
+            <div class="col" style="position: relative;">
+                <div class="fw-bold" style="font-size: 1em; position: absolute; top: 50%; left:50%; transform: translate(-50%, -50%);">채팅방</div>
+            </div>
+            <div class="col-3" style="position: relative;">
+                <div style="font-size: 1em; position: absolute; top: 50%; right: 0.8em; transform: translate(0, -50%);"><i class="fa-solid fa-bars"></i></div>
+            </div>
+        </div>        
+        
+        <!--채팅 메시지-->
+        <div class="row">
+            <div id="chatMessageListBox" class="col">
+
+            </div>
+        </div>
+
+        <div class="row" style="height: 10em;"></div>
+    </div>
+
+
+    <!--메시지 입력-->
+    <div class="container-fluid footer">
+        <div class="row pt-2 pb-2" style="height: 3.8em;">
+            <div class="col-1" style="position: relative;">
+                <div class="plus-icon"><i class="fa-solid fa-plus"></i></div>
+            </div>
+            <div class="col" style="position: relative;">
+                <input id="chat-message" class="text-box" type="text">
+                <div class="icon-circle"></div>
+                <div class="enter-icon" th:value="${chatRoomPk}" onclick="enterChatMessage(this.getAttribute('value'))"><i class="fa-solid fa-arrow-up"></i></div>
+            </div>
+        </div>
+    </div> 
+    
+    <!--템플릿-->
+    <div id="template" class="d-none">
+
+        <!--채팅 메시지-->
+        <div class="row chatMessageWrapper" style="padding-top: 0.3em; padding-bottom: 0.3em;">
+            <div class="col">
+                <div class="showDateBox row d-none" style="padding-bottom: 1em; padding-top: 1em;">
+                    <div class="col text-center">
+                        <div class="date" style="font-size: 0.7em;"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2 pe-0 me-0" style="position: relative;">
+                        <img class="profileImage d-none" th:src="@{/public/image/trade/puppy1.jpg}" style="width: 2em; height: 2em; border-radius: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                    </div>
+                    <div class="col messagePosition ps-0 ms-0">
+                        <span class="isRead-start" style="font-size: 0.55em; color: red;  display: inline-block; vertical-align: bottom;"></span>
+                        <span class="createdat-start" style="font-size: 0.55em; color: #777777; display: inline-block; vertical-align: bottom;"></span>
+                        <span class="message-box" style="overflow: hidden; max-width: 65%; vertical-align: middle;">
+                            <div class="message"></div>
+                        </span>
+                        <span class="createdat-end" style="font-size: 0.55em; color: #777777;  display: inline-block; vertical-align: bottom;"></span>
+                        <span class="isRead-end" style="font-size: 0.55em; color: red;  display: inline-block; vertical-align: bottom;"></span>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+
+
+        
+    </div>
+
+    <!--chatRoomPk-->
+    <input id="chatRoomPk" type="hidden" th:value="${chatRoomPk}">
+    <!--sessionUserPk-->
+    <input id="sessionUserPk" type="hidden" th:value="${session.sessionUser.user_pk}">
+
+
+    <script src="https://kit.fontawesome.com/784384f602.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+
+</html>

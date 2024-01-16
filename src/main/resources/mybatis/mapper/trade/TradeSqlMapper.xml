@@ -10,7 +10,7 @@
 
 	<insert id="insertTradeArticleDto">
         insert into 
-        ms_trade_article(user_pk, title, content, start_care_date, end_care_date, read_count, location, isPickup, isDelete)
+        ms_care_article(user_pk, title, content, start_care_date, end_care_date, read_count, location, isPickup, isDelete)
         values
         (
             #{user_pk},
@@ -26,14 +26,14 @@
     </insert>
 
     <select id="getRecentTradeArticlePk" resultType="int">
-        select pk from ms_trade_article
+        select pk from ms_care_article
         order by created_at desc
         Limit 1    
     </select>
 
     <insert id="insertCareDog">
         insert into 
-        ms_trade_dog(dog_pk, article_pk)
+        ms_care_dog(dog_pk, article_pk)
         values
         (
             #{dog_pk},
@@ -41,6 +41,101 @@
         )
     </insert>
 
+    <update id="updateTradeArticle">
+        update ms_care_article
+        set title = #{title}, content = #{content}
+        where pk=#{pk}
+    </update>
+
+    <insert id="insertCarePrice">
+        insert into 
+        ms_care_price(article_pk, price)
+        values
+        (
+            #{article_pk},
+            #{price}
+        )
+    </insert>
+
+    <select id="getArticleList" resultType="com.psychopath.dogstalking.trade.dto.TradeArticleDto">
+        select * from ms_care_article
+        order by created_at desc
+    </select>
+
+    <select id="getUserDto" resultType="com.psychopath.dogstalking.dto.UserDto">
+        select * from ms_user
+        where user_pk = #{userPk}
+    </select>
+
+    <select id="getCarePriceByArticlePk" resultType="int">
+        select price from ms_care_price
+        where article_pk = #{articlePk}
+        order by created_at desc
+        Limit 1
+    </select>
+
+    <select id="getCareDogListByArticlePk" resultType="com.psychopath.dogstalking.trade.dto.CareDogDto">
+        select * from ms_care_dog
+        where article_pk = #{articlePk}
+    </select>
+
+    <select id="getArticleDto" resultType="com.psychopath.dogstalking.trade.dto.TradeArticleDto">
+        select * from ms_care_article
+        where pk=#{articlePk}
+    </select>
+
+    <insert id="insertChatRoomDto">
+        insert into 
+        ms_care_chatroom(article_pk, sender_pk, reciever_pk)
+        values
+        (
+            #{article_pk},
+            #{sender_pk},
+            #{reciever_pk}
+        )        
+    </insert>
+
+    <select id="getRecentChatRoomPk">
+        select pk from ms_care_chatroom
+        order by pk desc
+        limit 1
+    </select>
+
+    <insert id="insertChatMessage">
+        insert into 
+        ms_care_chatmessage(chatroom_pk, user_pk, message, isRead)
+        values
+        (
+            #{chatroom_pk},
+            #{user_pk},
+            #{message},
+            'N'
+        )
+    </insert>
+
+    <select id="getChatRoomList" resultType="com.psychopath.dogstalking.trade.dto.ChatRoomDto">
+        select * from ms_care_chatroom
+        where sender_pk=#{userPk} or reciever_pk=#{userPk}
+    </select>
+
+    <select id="getChatMessageByChatRoomPk" resultType="com.psychopath.dogstalking.trade.dto.ChatMessageDto">
+        SELECT * FROM ms_care_chatmessage
+        where chatroom_pk = #{chatRoomPk}
+    </select>
+
+    <update id="updateChatMessageIsRead">
+        update ms_care_chatmessage
+        set isRead='Y'
+        where pk = #{messagePk}
+    </update>
+
+    <select id="getlastChatMessage" resultType="com.psychopath.dogstalking.trade.dto.ChatMessageDto">
+        select * from ms_care_chatmessage
+        where chatroom_pk = #{chatRoomPk}
+        order by created_at desc
+        Limit 1
+    </select>
+    
 
 
 </mapper>
