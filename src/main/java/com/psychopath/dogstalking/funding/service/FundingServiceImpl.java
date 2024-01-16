@@ -2,14 +2,14 @@ package com.psychopath.dogstalking.funding.service;
 
 import java.util.List;
 import java.util.Map;
-import java.time.LocalDate;
+
 import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
+
 
 import com.psychopath.dogstalking.dto.UserDto;
 import com.psychopath.dogstalking.funding.dto.FundingCheeringDto;
@@ -18,7 +18,7 @@ import com.psychopath.dogstalking.funding.dto.FundingProductDto;
 import com.psychopath.dogstalking.funding.dto.FundingWishlistDto;
 import com.psychopath.dogstalking.funding.mapper.FundingSqlMapper;
 
-import jakarta.servlet.http.HttpSession;
+
 
 @Service
 public class FundingServiceImpl {
