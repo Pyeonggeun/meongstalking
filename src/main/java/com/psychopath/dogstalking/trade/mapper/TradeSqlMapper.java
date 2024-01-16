@@ -60,4 +60,8 @@ public interface TradeSqlMapper {
 
     // 채팅 메시지 읽음으로 업데이트
     public void updateChatMessageIsRead(int messagePk);
+
+    // 마지막 채팅 메시지 출력
+    public ChatMessageDto getlastChatMessage(int chatRoomPk);
+
 }

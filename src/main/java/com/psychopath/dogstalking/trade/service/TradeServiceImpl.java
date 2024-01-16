@@ -138,7 +138,13 @@ public class TradeServiceImpl {
             }
             
             map.put("chatRoomDto", chatRoomDto);
-            
+
+            int chatRoomPK = chatRoomDto.getPk();
+
+            map.put("chatMessageList", tradeMapper.getChatMessageByChatRoomPk(chatRoomPK));
+            map.put("lastChatMessage", tradeMapper.getlastChatMessage(chatRoomPK));
+
+
             list.add(map);
         }
 
@@ -149,8 +155,8 @@ public class TradeServiceImpl {
         
         
         return tradeMapper.getChatMessageByChatRoomPk(chatRoomPk);
-
     }
+
 
     public void chatMessageRead(int messagePk){
 

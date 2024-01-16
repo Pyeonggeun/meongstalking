@@ -158,6 +158,8 @@ public class RestTradeController {
 	}    	
 
 
+
+
 	public RestResponseTradeDto template() {
 		RestResponseTradeDto restResponseDto = new RestResponseTradeDto();
 		

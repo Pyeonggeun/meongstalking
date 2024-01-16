@@ -28,41 +28,40 @@
                 name.innerText = e.theOtherUserDto.name;
                 name.setAttribute("onclick", "location.href='./chatRoomPage?chatRoomPk="+ e.chatRoomDto.pk +"'");
 
-                chatRoomListBox.appendChild(chatRoomWrapper);
-
-                const count = reloadLastMessageByChatRoom(e.chatRoomDto.pk);
-                console.log(count);
-                
                 const lastMessage = chatRoomWrapper.querySelector(".lastMessage");
 
-            }
-
-        });
-    }
-
-    function reloadLastMessageByChatRoom(chatRoomPk){
-
-        const sessionUserPk = document.getElementById("userPk").value;
-
-        const url = "./getChatMessageList?chatRoomPk=" + chatRoomPk;
-        
-        fetch(url)
-        .then(response => response.json())
-        .then(response => {
-            
-            let count= 0;
-            
-            for(e of response.data){
+                let count= 0;
                 
-                if(sessionUserPk != e.user_pk && e.isRead == "N"){
-
-                    count += 1;
+                for(chatMessageDto of e.chatMessageList){
+                    
+                    if(sessionUserPk != chatMessageDto.user_pk && chatMessageDto.isRead == "N"){
+                        
+                        count += 1;
+                    }
                 }
+                console.log(count);
+
+                if(count == 0){
+                    const lastMessage = chatRoomWrapper.querySelector(".lastMessage");
+                    lastMessage.innerText = e.lastChatMessage.message;
+
+                }else if(count == 1){
+                    const lastMessage = chatRoomWrapper.querySelector(".lastMessage");
+                    lastMessage.innerText = e.lastChatMessage.message;
+                    lastMessage.classList.add("fw-bold");
+
+                }else{
+                    const lastMessage = chatRoomWrapper.querySelector(".lastMessage");
+                    lastMessage.innerText = "새 메시지 " + count + "개";
+                    lastMessage.classList.add("fw-bold");
+                }
+
+                chatRoomListBox.appendChild(chatRoomWrapper);
+
             }
+            
 
-            return count;
         });
-
     }
 
 

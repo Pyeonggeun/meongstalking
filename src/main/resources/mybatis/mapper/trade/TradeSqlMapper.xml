@@ -128,6 +128,13 @@
         set isRead='Y'
         where pk = #{messagePk}
     </update>
+
+    <select id="getlastChatMessage" resultType="com.psychopath.dogstalking.trade.dto.ChatMessageDto">
+        select * from ms_care_chatmessage
+        where chatroom_pk = #{chatRoomPk}
+        order by created_at desc
+        Limit 1
+    </select>
     
 
 
