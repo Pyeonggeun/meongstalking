@@ -1,0 +1,35 @@
+:root {
+    --icon-fill-fill: 'FILL' 1;
+    --icon-fill-empty: 'FILL' 0;
+
+    --border-circular: 50%;
+    --color-white: white;
+    --color-black: black;
+    --box-shadow-color: rgb(0, 0, 0, 0.5); 
+
+    --myposition-firstCircle-color: rgb(0, 0, 0, 0.1);
+    --myposition-secondCircle-boxshadow: 0 0 2px 2px var(--box-shadow-color);
+    --myposition-firstCircle-opacity: 10%;
+    --myPosition-firstCircle-diameter: 2rem;
+    --myPosition-secondCircle-diameter: 0.9rem;
+    --myPosition-thirdCircle-diameter: 0.65625rem;
+
+    --reloadPosition-diameter: 2.5rem;
+    --reloadPosition-border: 1.5px solid #E5E5E5;
+    --reloadPosition-boxshadow: 0 1px 1px 0.5px var(--box-shadow-color);
+    --reloadPosition-icon-color: #6D6D6D;
+    --reloadPosition-icon-size: 1.5rem;
+
+    --action-background-circle-diameter: 50rem;
+    --action-background-circle-color: radial-gradient(rgb(125, 131, 199, 1) 0%, rgb(255, 255, 255, 0) 70%, rgb(255, 255, 255, 0) 100%);
+    --action-menu-button-diameter: 3rem;
+    --action-menu-button-color: linear-gradient(to bottom, rgb(251, 207, 208) 0%, rgb(229, 100, 124) 100%);
+    --action-close-button-out-diameter: 2.5rem;
+    --action-close-button-in-diameter: 2rem;
+    --action-out-circle-diameter: 3.5rem;
+    --action-in-circle-diameter: 3rem;
+    --action-out-circle-color: rgb(233, 233, 233, 0.3);
+    --action-out-circle-border: 2px solid rgba(46, 51, 116, 0.4);
+    --action-in-circle-border: 2px solid rgb(80, 89, 205);
+    --action-main-color: rgb(80, 89, 205);
+}
