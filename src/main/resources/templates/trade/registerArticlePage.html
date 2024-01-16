@@ -37,7 +37,7 @@
                     const dogImage = dogWrapper.querySelector(".dogImage");
                     dogImage.addEventListener('click', function(){
                         dogName.classList.toggle("selected");
-                        dogName.classList.toggle("non-selected");
+                        dogName.classList.toggle("not-selected");
 
                         const isPlace = document.getElementById("isPlace");
                         const isPickup = document.getElementById("isPickup");
@@ -171,6 +171,7 @@
             .then(response => response.json())
             .then(response => {
                 
+                
             });
 
         }
@@ -220,6 +221,10 @@
         .non-selected{
             color:#a9a9a9;
         }
+
+        .not-selected{
+            color: white;
+        }
         /* 날짜선택 placeholder
         input[type='date']::before {
             content: attr(data-placeholder);
@@ -230,6 +235,16 @@
             position: fixed;
             bottom: 0;
         }
+
+        .dogImage{
+            border-width: 0px; 
+            border-radius: 2em; 
+            width: 4em; 
+            height: 4em; 
+            margin: auto; 
+            background-repeat: round;
+        }
+
 
     </style>
 
@@ -408,15 +423,17 @@
 
         <div class="col dogWrapper">
             <div class="row">
-                <div class="col text-center">
-                    <div>
-                        <button class="dogImage" style="border-width: 0px; border-radius: 2em; width: 4em; height: 4em;"></button>
+                <div class="col">
+                    <div style="width: 5em; height: 8em; background-color: #787878; margin: auto; border-radius: 3em;">
+                        <div style="height: 0.5em;"></div>
+                        <div class="dogImage" th:style="'background-image:url('+ @{/public/image/trade/puppy1.jpg} +');'"></div>
+                        <div style="height: 1.2em;"></div>
+                        <div class="fw-bold dogName not-selected" style="font-size: 0.75em; width: fit-content; margin: auto;"></div>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col text-center">
-                    <div class="fw-bold dogName non-selected" style="font-size: 0.7em;"></div>
                 </div>
             </div>
         </div>

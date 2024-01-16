@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>돌봄 글 상세 페이지</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://kit.fontawesome.com/784384f602.js" crossorigin="anonymous"></script>
+
+    <script th:inline = "javascript">
+        const articlePk = /*[[${articlePk}]]*/
+    </script>   
+
+
+
+    <script>
+        function reloadArticleInfo(){
+
+            const url = "./getArticleInfo?articlePk=" + articlePk;
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                const articleTitles = document.querySelectorAll(".article-title");
+                const e = response.data;
+
+                for(const element of articleTitles){
+                    element.innerText = e.tradeArticleDto.title;
+                }
+
+                const writerNames = document.querySelectorAll(".writer-name");
+                for(const element of writerNames){
+                    element.innerText = e.userDto.name;
+                }
+
+                const articleContents = document.querySelectorAll(".article-content");
+                for(const element of articleContents){
+                    element.innerText = e.tradeArticleDto.content;
+                }
+
+            });
+        }
+    
+        
+        function createChatRoom(sessionUserPk){
+		
+            console.log(sessionUserPk);
+            console.log(articlePk);
+            const url = "./createChatRoom?articlePk=" + articlePk + "&senderPk=" + sessionUserPk;
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                
+                window.location.href = "./chatRoomPage?chatRoomPk=" + response.data;
+
+            });
+        }
+
+
+        function templete(){
+		
+            const url = "";
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                
+            });
+        }  
+
+
+        window.addEventListener("DOMContentLoaded", () => {
+            reloadArticleInfo();
+	    });  
+
+
+
+
+
+    </script>
+
+
+
+
+
+
+    <style>
+        .footer{
+            position: fixed;
+            bottom: 0;
+        }        
+
+    </style>
+
+
+
+
+
+</head>
+
+<body>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-1 text-start" style="padding-left: 1em; padding-top: 0.5em;">
+                <span class="fw-bold" style="font-size: 0.8em;"><i class="fa-solid fa-arrow-left"></i></span>
+            </div>
+            <div class="col text-start" style="padding-left: 1em; padding-top: 0.5em;">
+                <span class="fw-bold" style="font-size: 18px;">[</span><span class="fw-bold writer-name" style="font-size: 0.9em;"></span><span class="fw-bold" style="font-size: 18px;">]</span>
+                <span class="fw-bold article-title" style="font-size: 0.9em;"></span>
+            </div>
+        </div>
+        <div class="row" style="height: 0.7em;"></div>
+        <div class="row pt-0">
+            <div class="col px-0 mx-0">
+                <img class="img-fluid" th:src="@{/public/image/trade/dog.jpg}">
+            </div>
+        </div>
+        <div class="row" style="height: 20px;"></div>
+
+        <div class="row">
+            <div class="col-4 text-center">
+                <img th:src="@{/public/image/trade/carrot.jpg}" style="width: 80px; height: 80px; border-radius: 1.3em;">
+            </div>
+            <div class="col-6 ps-0">
+                <div class="row pt-2">
+                    <div class="col">
+                        <div class="fw-bold" style="font-size: 10px; color: #868e96;">돌봄님 집에서 돌봄</div>
+                    </div>
+                </div>
+                <div class="row pt-2">
+                    <div class="col">
+                        <div class="writer-name" style="font-size: 18px; font-weight: 900;"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col" style="padding-top: 2px;">
+                        <div class="fw-bold" style="font-size: 10px; color: #FF4500;">강남역 2번 출구</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col pt-2 text-end">
+                <div><i class="fa-solid fa-star" style="color: #FF8A3D; font-size: 20px;"></i></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col" style="padding-top: 10px; padding-left: 26px;">
+                <div class="fw-bold" style="font-size: 12px;">#반려 15년 #여성 #34세 #1인가구</div>
+            </div>
+        </div>
+        <div class="row" style="height: 20px;"></div>
+        <div class="row">
+            <div class="col" style="height: 70px; background-color: #f8f9fa; margin-left: 8px; margin-right: 8px;">
+            </div>
+        </div>
+        <div class="row" style="height: 30px;"></div>
+
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <div class="fw-bold" style="font-size: 13px;">소개글</div>
+                    </div>
+                </div>
+                <div class="row" style="height: 15px;"></div>
+                <div class="row">
+                    <div class="col">
+                        <div class="article-content" style="font-size: 12px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row" style="height: 10em;"></div>
+    </div>
+
+
+    <!--채팅 신청 버튼-->
+    <div class="container-fluid footer">
+        <div class="row">
+            <div class="col-3 pe-0">
+                <button class="fw-bold" th:value="${session.sessionUser.user_pk}" onclick="createChatRoom(this.getAttribute('value'))" style="width: 100%; height: 3em; border-width: 1; border-radius: 0.5em; color: #FF8A3D; border-color: #FF8A3D; background-color: white; font-size: 0.9em;">펫봄톡</button>
+            </div>
+            <div class="col">
+                <button class="fw-bold" style="width: 100%; height: 3em; border-width: 0; border-radius: 0.5em; color: white; background-color: #FF8A3D; font-size: 0.9em;">돌봄신청</button>
+            </div>
+        </div>
+    </div>    
+
+
+    <script src="https://kit.fontawesome.com/784384f602.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+
+</html>
