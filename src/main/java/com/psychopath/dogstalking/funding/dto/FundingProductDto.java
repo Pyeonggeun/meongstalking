@@ -13,7 +13,7 @@ public class FundingProductDto {
     private String title_image;
     private String explain_image;
     private LocalDateTime start_date;
-    private LocalDateTime finsih_date;
+    private LocalDateTime finish_date;
     private int price;
     private int amount;
     private String success_fail;

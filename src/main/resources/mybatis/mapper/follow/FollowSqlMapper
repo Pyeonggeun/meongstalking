@@ -3,4 +3,10 @@
 
 <mapper namespace="com.psychopath.dogstalking.follow.mapper.FollowSqlMapper">
 
+    <select id="isFirstTimeMark" resultType="int">
+        SELECT COUNT(*) FROM ms_follow_user_more
+        where user_pk = #{user_pk}
+    </select>
+    <!-- <select id="" resultType=""></select> -->
+
 </mapper>

@@ -15,7 +15,7 @@
     <div class="container">
         <div class="row border-bottom"><div class="col">일단 비움</div></div>
     
-        <div class="row border-bottom"><div class="col">일단비움</div></div>
+        <div class="row border-bottom"><div class="col"><a href="./fundingSellerMyPage">마이페이지(판매자용) 임시 링크</a></div></div>
     
         <div class="row border-bottom"><div class="col"><a href="./prepareRgstrPage">상품 등록 임시 링크</a></div></div>
     
@@ -28,97 +28,36 @@
                     <div class="col-4 text-end p-0" style="font-size: 0.5;"> 최신순</div>
                 </div>
 
-                <div class="row pb-3">
-                    <div class="col-6">
-                        <img class="img-fluid" th:src="@{/public/image/aaa.jpg}" style="max-width: 10em; max-height:2en;">
-                    </div>
-                    <div class="col-6">
-                        <div class="row">
-                            <div class="col fw-bold text-truncate" style="font-size:0.9em; max-width: 10em; max-height:2en;">[누적1천+]너만 없는 인플루언서 필수품!ms개밥그릇</div>
+                <th:block th:each="list : ${list}">                
+                    <div class="row pb-3">
+                        <div class="col-6">
+                            <img class="img-fluid" th:src="@{'/uploadFiles/'+${list.list.title_image}}" alt="nothing" style="max-width: 10em; max-height:2en;">
                         </div>
-                        <div class="row">
-                            <div class="col text-secondary" style="font-size:0.6em; font-color: 0.65;">미우아빠</div>
-                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col fw-bold text-truncate" style="font-size:0.9em; max-width: 10em; max-height:2en;"><td th:text=${list.list.product_name}></td></div>
+                            </div>
+                            <div class="row">
+                                <div class="col text-secondary" style="font-size:0.6em; font-color: 0.65;"><td th:text=${list.list.simple_explain}></td></div>
+                            </div>
 
-                        <div class="row">
-                            <div class="col fw-bold" style="font-size:1em; color: gold;">총구매 100건</div>
-                        </div>
-                        <div class="row">
-                            
-                            <div class="col border rounded text-center ms-1 me-1 p-0" style="font-size:0.65em; background-color:gainsboro;">5,000만원+</div>
-                            <div class="col border rounded text-center ms-1 me-1 p-0" style="font-size:0.65em; background-color:gainsboro;">5일 남음</div>
+                            <div class="row">
+                                <div class="col fw-bold" style="font-size:1em; color: gold;">총구매 100건</div>
+                                <div class="col"><i class="bi bi-heart" href="./insertWishlistProcess"></i></div>
+                                <div class="col"></div>
+                            </div>
+                            <div class="row">
+                                
+                                <div class="col border rounded text-center ms-1 me-1 p-0" style="font-size:0.65em; background-color:gainsboro;"><td th:text=${list.t_sales}></td></div>
+                                <div class="col border rounded text-center ms-1 me-1 p-0" style="font-size:0.65em; background-color:gainsboro;"><td th:text=${list.f_day}></td></div>
+                            </div>
                         </div>
                     </div>
-                </div> 
+                 
+                </th:block>
 
-                <div class="row  pb-3">
-                    <div class="col-6">
-                        
-                    </div>
-                    <div class="col-6">
-                        <div class="row">
-                            <div class="col fw-bold text-truncate" style="font-size:0.9em; max-width: 10em; max-height:2en;">[누적1천+]너만 없는 인플루언서 필수품!ms개밥그릇</div>
-                        </div>
-                        <div class="row">
-                            <div class="col text-secondary" style="font-size:0.6em; font-color: 0.65;">미우아빠</div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col fw-bold" style="font-size:1em; color: gold;">총구매 100건</div>
-                        </div>
-                        <div class="row">
-                            
-                            <div class="col border rounded text-center ms-1 me-1 p-0" style="font-size:0.65em; background-color:rgb(182, 181, 181);">5,000만원+</div>
-                            <div class="col border rounded text-center ms-1 me-1 p-0" style="font-size:0.65em; background-color:rgb(182, 181, 181);">5일 남음</div>
-                        </div>
-                    </div>
-                </div> 
-
-                <div class="row  pb-3">
-                    <div class="col-6">
-                        
-                    </div>
-                    <div class="col-6">
-                        <div class="row">
-                            <div class="col fw-bold text-truncate" style="font-size:0.9em; max-width: 10em; max-height:2en;">[누적1천+]너만 없는 인플루언서 필수품!ms개밥그릇</div>
-                        </div>
-                        <div class="row">
-                            <div class="col text-secondary" style="font-size:0.6em; font-color: 0.65;">미우아빠</div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col fw-bold" style="font-size:1em; color: gold;">총구매 100건</div>
-                        </div>
-                        <div class="row">
-                            
-                            <div class="col border rounded text-center ms-1 me-1 p-0" style="font-size:0.65em; background-color:rgb(182, 181, 181);">5,000만원+</div>
-                            <div class="col border rounded text-center ms-1 me-1 p-0" style="font-size:0.65em; background-color:rgb(182, 181, 181);">5일 남음</div>
-                        </div>
-                    </div>
-                </div> 
-
-                <div class="row  pb-3">
-                    <div class="col-6">
-                        
-                    </div>
-                    <div class="col-6">
-                        <div class="row">
-                            <div class="col fw-bold text-truncate" style="font-size:0.9em; max-width: 10em; max-height:2en;">[누적1천+]너만 없는 인플루언서 필수품!ms개밥그릇</div>
-                        </div>
-                        <div class="row">
-                            <div class="col text-secondary" style="font-size:0.6em; font-color: 0.65;">미우아빠</div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col fw-bold" style="font-size:1em; color: gold;">총구매 100건</div>
-                        </div>
-                        <div class="row">
-                            
-                            <div class="col border rounded text-center ms-1 me-1 p-0" style="font-size:0.65em; background-color:rgb(182, 181, 181);">5,000만원+</div>
-                            <div class="col border rounded text-center ms-1 me-1 p-0" style="font-size:0.65em; background-color:rgb(182, 181, 181);">5일 남음</div>
-                        </div>
-                    </div>
-                </div> 
+                
+            </div> 
         
             </div>
             

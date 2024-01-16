@@ -48,7 +48,7 @@
                         </div>
 
                         
-                        <form action="./insertProductInfoProcess" method="post">
+                        <form action="./insertProductInfoProcess" method="post" enctype="multipart/form-data">
                             <div class="row"><div class="col">
                                 <div class="row"><div class="col" style="font-size: 1em;">상품 제목 <span style="font-size: 0.5em"></span></sapn></div></div>
                                 <div class="row"><div class="col"><input class="form-control" type="text" name="product_name" ></div></div>
@@ -70,6 +70,7 @@
                                 <div class="col">
                                     <div class="row">
                                         <div class="col" style="font-size: 1em;">대표이미지 <span style="font-size: 0.7em;"><i class="bi bi-question-circle"></i></span></div>
+                                        <input name="imageFile1" type="file" accept="image/*" multiple>
                                     </div>
                                     <div class="row">
                                         <div class="col rounded" style="background-color: gainsboro;">
@@ -88,6 +89,7 @@
                                 <div class="col">
                                     <div class="row">
                                         <div class="col" style="font-size: 1em;">상세이미지 <span style="font-size: 0.7em;"><i class="bi bi-question-circle"></i></span></div>
+                                        <input name="imageFile2" type="file" accept="image/*" multiple>
                                     </div>
                                     <div class="row">
                                         <div class="col rounded" style="background-color: gainsboro;">
@@ -110,21 +112,21 @@
                                     <div class="row"><div class="col" style="font-size: 0.9em;"> 시작일 종료일 설정 가이드</div></div>
                                     <div class="row"><div class="col" style="font-size: 0.8em;"> 상품 등록 신청 후 심사에 통상 일주일의 기간이 소요됩니다.</div></div>
                                     <div class="row"><div class="col" style="font-size: 0.8em;"> 신청일로부터 일주일 후를 기준으로 시작일을 설정해주시기 바랍니다.</div></div>
-                                    <div class="row"><div class="col" style="font-size: 0.8em;"> 종료일은</div></div>
+                                    <div class="row"><div class="col" style="font-size: 0.8em;"> 종료일은 오픈일 + 최대 60일 안에서 지정해주시기 바랍니다</div></div>
                                 </div>
                             </div>    
                             
                             <div class="row"><div class="col">
-                                <div class="row"><div class="col">시작일 설정</div></div>
-                                <div class="row"><div class="col"><input type="text" name="start_date"></div></div>
+                                <div class="row"><div class="col">시작일 설정 | 'yyyy-MM--dd nn:nn:nn'</div></div>
+                                <div class="row"><div class="col"><input type="datetime-local" name="start_date"></div></div>
                             </div></div>
 
                             <div class="row"><div class="col" style="padding: 0.3em;"></div></div>  
 
 
                             <div class="row"><div class="col">
-                                <div class="row"><div class="col">종료일 설정</div></div>
-                                <div class="row"><div class="col"><input type="text" name="finish_date"></div></div>
+                                <div class="row"><div class="col">종료일 설정 | 'yyyy-MM--dd nn:nn:nn'</div></div>
+                                <div class="row"><div class="col"><input type="datetime-local" name="finish_date"></div></div>
                             </div></div>
                             
                             <div class="row">
@@ -133,8 +135,6 @@
                                     <div class="row"><div class="col"><input type="text" name="price"></div></div>
                                 </div>
                             </div> 
-
-
 
                             <div class="row">
                                 <div class="col">

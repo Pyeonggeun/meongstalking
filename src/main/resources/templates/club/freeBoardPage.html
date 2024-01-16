@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        .scrollable-menu {
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .scrollable-menu .col {
+            display: flex;
+            flex-wrap: nowrap;
+        }
+
+        .scrollable-menu span {
+            border-bottom: 2px solid transparent;
+            padding-bottom: 2px;
+            transition: border-color 0.3s;
+        }
+
+        .scrollable-menu span:hover {
+            border-color: #000;
+        }
+
+        .imtext {
+            position: absolute;
+            top: 120px;
+            left: 13px;
+            z-index: 1;
+            color: rgb(190, 190, 190);
+            font-size: 0.7em;
+            width: auto;
+            font-weight: bold;
+
+        }
+
+        .custom-border {
+            border-right: 1.5px solid rgb(190, 190, 190);
+            height: 100vh;
+        }
+
+        .custom-list {
+            border-radius: 10px;
+            /* 리스트 주변의 둥근 모서리 설정 */
+        }
+
+        .custom-span {
+            color: black;
+            font-size: 0.7em;
+            display: inline-block;
+        }
+        @media (min-width: 576px) {
+        .modal.bottom-modal .modal-dialog {
+            position: fixed;
+            bottom: -10%; 
+            left: 50%;
+            transform: translateX(-50%) translateY(100%);
+            margin: 0;
+            transition: transform 0.3s ease-out;
+        }
+
+        .modal.show .modal-dialog {
+            transform: translateX(-50%) translateY(0%);
+        }
+
+    }
+    </style>
+    <script>
+        function loadSignupModal(){
+            const modal = bootstrap.Modal.getOrCreateInstance("#loadSignupModal");
+            modal.show();
+            
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{commons/club/clubTopNavi.html :: topNavi}"></div>
+
+        <div th:each="qwer : ${freeBoardList}">
+            <div class="row">
+                <div class="col-7 mt-3 mb-3">
+                    <img th:src="@{/public/image/dog_img.png}" class="img-fluid rounded-circle" width="30">
+                    <span class="fw-bold" th:text="${qwer['name']}"></span>
+                </div>
+                <a th:href="@{./freeBoardReadPage/{postId}(postId=${qwer['id']})}" class="col mx-3 btn d-flex justify-content-center align-items-center" style="border: none;">
+                    <span class="text-center"><i class="bi bi-heart"></i></span>
+                </a>
+                    <a th:href="@{'./freeBoardReadPage?clubfreeboard_pk=' + ${qwer['clubfreeboard_pk']}}" class="col mx-3 btn d-flex justify-content-center align-items-center" style="border: none;">
+                        <span class="text-center"><i class="bi bi-chat-dots"></i></span>
+                    </a>
+     
+            </div>
+            <div class="row mx-3" th:text="${qwer['content']}"></div>
+        </div>
+        
+        <div class="position-fixed bottom-0 end-0 m-3">
+            <a href="./freeBoardWritePage" class="btn btn-secondary rounded-circle p-3">
+                <i class="bi bi-pencil"></i>
+            </a>
+        </div>
+    </div>  
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

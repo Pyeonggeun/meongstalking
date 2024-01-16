@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.psychopath.dogstalking.funding.mapper.FundingSqlMapper">
+
+<insert id="insertProductInfo">
+    insert into ms_funding_product(
+        user_pk,
+        product_name,
+        simple_explain,
+        title_image,
+        explain_image,
+        start_date,
+        finish_date,
+        price,
+        amount,
+        success_fail
+    ) values (
+        #{user_pk},
+        #{product_name},
+        #{simple_explain},
+        #{title_image},
+        #{explain_image},
+        #{start_date},
+        #{finish_date},
+        #{price},
+        #{amount},
+        #{success_fail}
+    )
+</insert>
+
+<select id="fundingListCall" resultType="com.psychopath.dogstalking.funding.dto.FundingProductDto">
+    select * from ms_funding_product order by product_pk desc
+</select>
+
+<select id="selectUserInfo" resultType="com.psychopath.dogstalking.dto.UserDto">
+    select * from ms_user where user_pk = #{user_pk}
+</select>
+
+<insert id="insertNews">
+    insert into ms_funding_news(
+        product_pk,
+        content,
+    )valuse(
+        #{product_pk},
+        #{content}
+    )
+</insert>
+
+<insert id="insertCheeringText">
+    insert into ms_funding_cheering (
+        product_pk,
+        content
+    )values(
+        #{product_pk},
+        #{content}
+    );
+</insert>
+
+<select id="countFinishDay" resultType="int">
+    select DATEDIFF(finish_date,now()) from ms_funding_product 
+    where product_pk=#{product_pk}
+</select>
+
+<select id="totalSales" resultType="int">
+    select
+    IFNULL((select sum(quantity) from ms_funding_order mfo where product_pk =#{product_pk})*price,0) 
+    from ms_funding_product mfp where mfp.product_pk=#{product_pk};
+</select>
+
+</mapper>
