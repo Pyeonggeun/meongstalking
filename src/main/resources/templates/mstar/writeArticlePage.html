@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+        <script th:inline="javascript">
+            let user_pk = null;
+            function getUrlKey() {
+                const urlParams = new URLSearchParams(location.search);
+                const key = urlParams.get("user_pk");
+                user_pk = key;
+            }
+            let profileInfoDto = null;
+            function getProfileInfoDto(){
+                const url = "./myProfileInfoDto?user_pk="+user_pk;
+                fetch(url)
+                .then(response => response.json())
+                .then((response) =>{
+                    profileInfoDto = response.data;
+                });
+                
+            }
+            
+            function articlePhotoUpload(){
+                const photeUpload = document.querySelector("#photeUpload");
+                photeUpload.click();
+                const photoListBox = document.getElementById("photoListBox");
+                const handleFiles = (e) => {
+                    const selectedFile = [...photeUpload.files];
+                    
+                        if (e.target.files.length === 0) {  
+                            return   
+                        }else{
+                            const addButton = document.querySelector("#addButton");
+                            addButton.remove();
+                            const addButtonDiv = document.createElement("div");
+                            addButtonDiv.classList.add("col-auto", "fs-3", "ms-2", "fw-bold", "py-4","align-self-center", "rounded", "text-center")
+                            addButtonDiv.setAttribute("onclick","articlePhotoUpload()");
+                            addButtonDiv.setAttribute("style","border: 1px dashed rgb(0, 0, 0)","cursor: pointer","width: 20vw");
+                            addButtonDiv.setAttribute("id","addButton");
+                            const itag = document.createElement("i");
+                            itag.classList.add("bi", "bi-plus-lg");
+                            addButtonDiv.appendChild(itag);
+
+                            
+
+                            for(let f = 0; f <= e.target.files.length-1; f++){
+                                const fileReader = new FileReader();
+                                
+                                fileReader.readAsDataURL(selectedFile[f]);
+                                const div = document.createElement("div");
+                                div.classList.add("col-auto","ms-2", "rounded","border", "px-0","align-self-center" );
+                                div.setAttribute("id","photo"+0);
+
+                                
+                                const img = document.createElement("img");
+                                img.classList.add("img-fluid", "h-auto");
+                                img.setAttribute("style", "width: 20vw");
+                                div.appendChild(img);
+                                photoListBox.appendChild(div);
+                                photoListBox.appendChild(addButtonDiv);
+                                
+                                fileReader.onload = function () {
+                                    img.setAttribute("src",fileReader.result )
+                                }
+                                
+                            }
+                            const photoCount = document.querySelector("#photoCount");
+                            photoCount.innerText = e.target.files.length+"/ 6";
+                           
+                        }; 
+                    };
+                    photeUpload.addEventListener("change", handleFiles);
+                    
+            }
+
+
+            function insertArticleInfo(){
+                const photeUpload = document.querySelector("#photeUpload");
+
+                const imageFiles = photeUpload.files;
+                const formData = new FormData();
+
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', './insertArticleInfo', true);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        console.log(xhr.responseText);
+                    }
+                };
+                for (let i = 0; i < imageFiles.length; i++) {
+                    formData.append("imageFiles", imageFiles[i]);
+                }
+                const content = document.querySelector("#content").value;            
+                const profile_info_pk = profileInfoDto.profile_info_pk;
+                formData.append("profile_info_pk", profile_info_pk);
+                formData.append("content", content);
+                 xhr.send(formData);
+
+                location.href='./profilePage?user_pk='+user_pk;
+            }
+            window.addEventListener("DOMContentLoaded", () =>{
+                getUrlKey();
+                getProfileInfoDto();
+            });
+        </script>
+
+        <style>
+
+            @font-face {
+                font-family: 'omyu_pretty';
+                src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
+                font-weight: normal;
+                font-style: normal;
+            }
+
+            body {
+                font-family: 'omyu_pretty';
+                min-width: 320px;
+            }
+            #d-none-scroll::-webkit-scrollbar {
+                display: none;
+            }
+
+        </style>
+        
+    </head>
+
+    <body>
+        <div class="container-fluid">
+            <div class="row border-bottom mt-2">
+                <div onclick=window.history.back(); class="col">
+                    <i class="bi bi-arrow-left"></i>
+                </div>
+                <div class="col text-center">
+                    새 게시물
+                </div>
+                <div onclick="insertArticleInfo()" class="col text-end">
+                    다음
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div  class="col">
+                    사진등록
+                </div>
+                <div id="photoCount" class="col text-secondary text-end">
+                    순서편집 0/6
+                </div>
+            </div>
+            <div id="d-none-scroll" class="row border-bottom border-top py-2 overflow-x-auto">
+                <div class="col">
+                    <div id="photoListBox" class="row" style="height: 30vw; cursor: pointer; width: 160vw;">
+                        <input id="photeUpload" name="imageFiles" class="d-none" type="file" accept="image/*" multiple="multiple">
+                        <div id="addButton" onclick="articlePhotoUpload()" class="col-auto fs-3 ms-2 fw-bold py-4 align-self-center rounded text-center" style="border: 1px dashed rgb(0, 0, 0); cursor: pointer; width: 20vw;">
+                            <i class="bi bi-plus-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    동영상 등록
+                </div>
+                <div class="col text-secondary text-end">
+                    순서편집 0/2
+                </div>
+            </div>
+            <div class="row border-bottom border-top py-2">
+                <div class="col">
+                    <div  class="row" style="height: 30vw; cursor: pointer;">
+                        <div class="col-2 fs-3 ms-2 fw-bold align-self-center py-4 rounded text-center" style="border: 1px dashed rgb(0, 0, 0);">
+                            <i class="bi bi-plus-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <textarea  class="form-control" name="" id="content" rows="3" placeholder="작성할 내용을 입력하세요."></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    사람 태그
+                </div>
+                <div class="col text-end">
+                    <i class="bi bi-chevron-right"></i>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    공개 대상
+                </div>
+                <div class="col text-end">
+                   <span class="text-secondary">모든 사람</span> <i class="bi bi-chevron-right" style="font-size: small;"></i>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    위치 추가
+                </div>
+                <div class="col text-end">
+                    <i class="bi bi-chevron-right"></i>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    </body>
+
+</html>

@@ -1,15 +1,11 @@
 package com.psychopath.dogstalking.mstar.dto;
-
 import java.time.LocalDateTime;
-
 import lombok.Data;
 
 @Data
-public class ProfileInfoDto {
+public class ArticleDto {
+    private int article_pk;
     private int profile_info_pk;
-    private int user_pk;
-    private String profile_photo;
-    private String nick_name;
-    private String status_message;
+    private String content;
     private LocalDateTime created_at;
 }

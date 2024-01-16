@@ -28,16 +28,38 @@ public class TradeController {
     }
 
     @RequestMapping("registerArticlePage")
-    public String registerArticlePage(){
-
+    public String registerArticlePage(int userPk, Model model){
+        model.addAttribute("userPk", userPk);
 
         return "/trade/registerArticlePage";
     }
 
     @RequestMapping("registerArticlePageSecond")
-    public String registerArticlePageSecond(int articlePk){
+    public String registerArticlePageSecond(int articlePk, Model model){
+        model.addAttribute("articlePk", articlePk);
         
         return "/trade/registerArticlePageSecond";
+    }
+
+    @RequestMapping("articleDetailPage")
+    public String articleDetailPage(int articlePk, Model model){
+        model.addAttribute("articlePk", articlePk);
+
+        return "/trade/articleDetailPage";
+    }
+
+    @RequestMapping("chatRoomPage")
+    public String chatRoomPage(int chatRoomPk, Model model){
+        model.addAttribute("chatRoomPk", chatRoomPk);
+
+        return "/trade/chatRoomPage";
+    }
+
+    @RequestMapping("chatRoomListPage")
+    public String chatRoomListPage(int userPk, Model model){
+        model.addAttribute("userPk", userPk);
+
+        return "/trade/chatRoomListPage";
     }
 
 

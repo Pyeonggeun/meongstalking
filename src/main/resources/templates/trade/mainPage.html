@@ -29,6 +29,37 @@
         }
 
 
+        function reloadArticleList(){
+
+            const url = "./getArticleList";
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                
+                const articleListBox = document.getElementById("articleListBox");
+                articleListBox.innerHTML="";
+
+                for(e of response.data){
+                    const articleWrapper = document.querySelector("#template .articleWrapper").cloneNode(true);
+
+                    const userName = articleWrapper.querySelector(".user-name");
+                    userName.innerText = e.userDto.name;
+                    userName.setAttribute("onclick", "location.href='./articleDetailPage?articlePk="+e.tradeArticleDto.pk+"'");
+
+                    const carePrice = articleWrapper.querySelector(".care-price");
+                    carePrice.innerText = e.carePrice;
+
+                    articleListBox.appendChild(articleWrapper);
+                }
+
+
+
+            });
+
+
+        }
+
         function templete(){
 		
             const url = "";
@@ -42,7 +73,7 @@
 
 
     window.addEventListener("DOMContentLoaded", () => {
-
+        reloadArticleList();
 		rotateRegisterBar();
 	});  
 
@@ -50,48 +81,133 @@
     </script>
 
 
+    <style>
+    .search-box{
+        background-color: white; 
+        border-radius: 2em; 
+        border-width: 0.1em;
+        border-style: solid;
+        border-color: #f5f5f5; 
+        height: 2.5em;
+        width: 95%; 
+        box-shadow: 0px 0px 12px 1px #EFEFEF;
+    }
+
+    .service-box{
+        background-color: white; 
+        border-radius: 0.1em; 
+        border-width: 0.1em;
+        border-style: solid;
+        border-color: #f5f5f5; 
+        height: 35px;
+    }
+
+    .icon-circle{
+        width: 2em; 
+        height: 2em; 
+        border-width: 0.01em; 
+        border-style: solid; 
+        border-radius: 100%; 
+        border-color: #A0A0A0;
+        position: absolute; 
+        top: 50%; 
+        left: 50%;
+        transform: translate(-52%, -50%);
+    }
+    .filter-icon{
+        position: absolute; 
+        top: 50%; 
+        left: 50%; 
+        transform: translate(-50%, -50%); 
+        font-size: 0.8em;
+    }
+    .search-text1{
+        position: absolute; 
+        top: 35%; 
+        left: 22%; 
+        transform: translate(0, -50%); 
+        font-size: 0.55em;
+    }
+    .search-text2{
+        position: absolute; 
+        top: 65%; 
+        left: 22%; 
+        transform: translate(0, -50%); 
+        font-size: 0.55em; 
+        color: #777777;
+    }
+    .search-icon{
+        font-size: 1em; 
+        position: absolute; 
+        top: 50%; 
+        left: 12%; 
+        transform: translate(0, -50%);
+    }
+
+    </style>
+
+
 </head>
 
 
 <body>
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-3 text-start" style="padding-left: 1em; padding-top: 0.5em;">
-                <span class="fw-bold" style="font-size: 0.9em;">송도동</span>
-                <span class="fw-bold" style="font-size: 0.8em;"><i class="bi bi-chevron-down"></i></span>
+        <div class="row pt-3">
+            <div class="col text-center pe-0 me-0" style="position: relative;">
+                <input class="search-box" type="text">
+                <div class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                <div class="search-text1">강아지를 돌봐주세요! </div>
+                <div class="search-text2">어디든지 언제든 돌봄이 가능해요.</div>
             </div>
-            <div class="col text-center" style="padding-top: 0.5em;">
-            </div>
-            <div class="col-3 text-end" style="padding-right: 1em; padding-top: 0.5em;">
-                <div style="font-size: 0.9m;"><i class="fa-solid fa-magnifying-glass"></i></div>
+            <div class="col-2" style="position: relative;">
+                <div class="icon-circle"></div>
+                <div class="filter-icon"><i class="fa-solid fa-sliders"></i></div>
             </div>
         </div>
-        <div class="row" style="height: 1em;"></div>
-        <div class="row" style="padding-bottom: 0.5em;">
-            <div class="col-2">
-                <button style="width: 2em; height: 2em; border-width: 0; border-radius: 0.5em;">
-                    <i class="bi bi-list"></i>
-                </button>
+        <div class="row pt-2 pb-2" style="border-bottom-color: #fafafa; border-bottom-style: solid;">
+            <div class="col">
+                <div class="row">
+                    <div class="col text-center">
+                        <div style="font-size: 1.6em;"><i class="fa-solid fa-bone"></i></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col text-center">
+                        <div class="fw-bold" style="font-size: 0.7em; color: #777777;">댕댕</div>
+                    </div>
+                </div>
             </div>
-            <div class="col-2" style="padding-left: 0;">
-                <button style="width: 4em; height: 2em; border-width: 0; border-radius: 0.5em; padding-bottom: 0.3em;">
-                    <span style="font-size: 0.6em;"><i class="bi bi-search-heart"></i></span>
-                    <span style="font-size: 0.6em;">펫시터</span>
-                </button>
-            </div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
             <div class="col"></div>
         </div>
 
+        <!-- 
+        <div class="row service-box mx-2" style="line-height: 1;">
+            <div class="col">
+                <span style="font-size: 10px;">상세정보 및 이용 약관</span>
+            </div>
+        </div> -->
 
+        
+
+        <!--돌봄 글 리스트-->
         <div class="row">
-            <div id="boardListBox" class="col">
+            <div id="articleListBox" class="col">
 
             </div>
         </div>
 
-
-
-
+        <div class="row" style="height: 5em;"></div>
+        <!--채팅-->
+        <div id="register-bar" style="position: fixed; bottom: 80px; right: 20px; width: 3em; height: 3em;">
+            <button type="button" th:onclick="|location.href='@{./chatRoomListPage(userPk=${session.sessionUser.user_pk})}'|" class="fw-bold" style="transform: rotate(0deg); width: 100%; height: 100%; color: #FF8A3D; border-radius: 2em; border-width: 0; background-color: white; border-color: #FF8A3D;">
+                <i style="font-size: 2.2em; position: absolute; top: 50%; left: 50%; transform: translate(-50.5%, -53%);" class="bi bi-plus"></i>
+            </button>           
+        </div>
+        
+        <!--글 등록 버튼-->
         <div id="register-bar" style="position: fixed; bottom: 20px; right: 20px; width: 3em; height: 3em;">
             <button id="register-button" type="button" th:onclick="|location.href='@{./registerArticlePage(userPk=${session.sessionUser.user_pk})}'|" class="fw-bold" style="transform: rotate(0deg); width: 100%; height: 100%; color: white; border-radius: 2em; border-width: 0; background-color: #FF8A3D;">
                 <i style="font-size: 2.2em; position: absolute; top: 50%; left: 50%; transform: translate(-50.5%, -53%);" class="bi bi-plus"></i>
@@ -105,39 +221,48 @@
 
   
 
+    <!--템플릿-->
+    <div id="template" class="d-none">
 
-    <div id="templete" class="d-none">
-
-
-        <div class="row boardWrapper pb-2" style="border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #E2E2E2; padding-top: 0.5em; padding-bottom: 0.5em;">
-            <div class="col-4">
-                <img class="img-fluid" th:src="@{/public/image/carrot.jpg}" style="height: 5.5em; width: 5.5em; border-radius: 0.5em;">
-            </div>
+        <div class="row articleWrapper" style="padding-top: 2.2em;">
             <div class="col">
-                <div class="row pt-1">
+                <div class="row px-2">
+                    <div class="col" style="position: relative;">
+                        <img class="img-fluid" th:src="@{/public/image/trade/puppy1.jpg}" style="border-radius: 1em; width: 100%;">
+                        <div style="position: absolute; top: 3%; right: calc(3% + 0.8em);"><i class="fa-regular fa-heart" style="font-size: 1.3em;"></i></div>
+                    </div>
+                </div>                
+                <div class="row" style="padding-top: 0.6em; padding-left: 0.8em; padding-right: 0.8em;">
                     <div class="col">
-                        <div class="boardTitle" style="font-weight: 600; font-size: 0.8em;">제목 나오는 곳</div>
+                        <div class="row" style="line-height: 1; padding-bottom: 0.1em;">
+                            <div class="col">
+                                <span class="user-name fw-bold" style="font-size: 0.8em; color: #444444;"></span>        
+                            </div>
+                            <div class="col-3 text-end">
+                                <span><i class="fa-solid fa-star" style="font-size: 0.8em;"></i></span>
+                                <span style="font-size: 0.8em;">36.5</span>
+                            </div>                                            
+                        </div>
+                        <div class="row" style="line-height: 1; padding-bottom: 0.1em;">
+                            <div class="col">
+                                <span style="font-size: 0.8em; color: #777777;">강남구 테헤란로 8길</span>        
+                            </div>
+                        </div>
+                        <div class="row" style="line-height: 1; padding-bottom: 0.1em;">
+                            <div class="col">
+                                <span style="font-size: 0.8em; color: #777777;">1월 28일 ~ 2월 2일</span>        
+                            </div>
+                        </div>                        
+                        <div class="row" style="line-height: 1; padding-top: 0.2em;">
+                            <div class="col">
+                                <span class="fw-bold" style="font-size: 0.9em;">₩</span><span class="care-price fw-bold" style="font-size: 13px; color: #444444;"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="row" style="height: 1.3em;">
-                    <div class="col">
-                        <span class="text-black-50 fw-bold" style="font-size: 0.6em;">송도동</span>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <span class="fw-bold" style="font-size: 0.8em;">50000원</span>
-                    </div>
-                </div>    
-                <div class="row" style="height: 0.5em;">
-                    <div class="col-7"></div>
-                    <div class="col text-end">
-                        <span style="font-size: 0.9em;"><i class="fa-sharp fa-regular fa-comments"></i> 3</span>
-                        <span style="font-size: 0.9em;"><i class="fa-sharp fa-regular fa-heart"></i> 4</span>
-                    </div>
-                </div>                              
             </div>
         </div>
+
 
         
     </div>

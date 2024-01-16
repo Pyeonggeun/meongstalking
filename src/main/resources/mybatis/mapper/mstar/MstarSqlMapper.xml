@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.psychopath.dogstalking.mstar.mapper.MstarSqlMapper">
+   <!--회원가입시 자동 프로필 저장-->
+    <insert id="insertCommonInfo">
+        INSERT into ms_mstar_profile_info(user_pk, profile_photo)
+        values(
+            #{user_pk}, #{profile_photo}
+        )
+    </insert>
+    <!--회원가입시 유저 pk값 추출-->
+    <select id="selectCount" resultType="int">
+        SELECT max(user_pk) from ms_user
+    </select>
+    <!--프로필 인서트 후 pk값 추출(닉네임 랜덤값 부여용))-->
+    <select id="selectMaxProfilePk" resultType="int">
+        SELECT max(profile_info_pk) from ms_mstar_profile_info
+    </select>
+    <!--프로필Pk 값으로 초기 닉네임 업데이트-->
+    <update id="updateFirstNickName">
+        UPDATE ms_mstar_profile_info
+        SET nick_name = #{nick_name}
+        where profile_info_pk = #{profile_info_pk}
+    </update>
+
+
+    <!--유저 프로필 DTO -->
+    <select id="selectProfileInfoDto" resultType="com.psychopath.dogstalking.mstar.dto.ProfileInfoDto">
+        SELECT * from ms_mstar_profile_info
+        where user_pk = #{user_pk}
+    </select>
+    <!--게시물 카운트 -->
+    <select id="selectArticleCount" resultType="int">
+        SELECT count(*) from ms_mstar_article
+        where profile_info_pk = #{user_info_pk}
+    </select>
+    <!--팔로우 카운트 -->
+    <select id="selectFollowCount" resultType="int">
+        SELECT count(*) from ms_mstar_follow
+        where follow_user_pk = #{user_info_pk}
+    </select>
+    <!--팔로잉 카운트 -->
+    <select id="selectFollowingCount" resultType="int">
+        SELECT count(*) from ms_mstar_follow
+        where following_user_pk = #{user_info_pk}
+    </select>
+    <!--유저 프로필 업데이트-->
+    <update id="updateProfileInfoDto">
+        UPDATE ms_mstar_profile_info
+        SET nick_name = #{nick_name},
+            profile_photo = #{profile_photo},
+            status_message = #{status_message}
+        where profile_info_pk  = (
+                SELECT profile_info_pk from ms_mstar_profile_info
+                where user_pk  = #{user_pk})
+    </update>
+    <!--게시물 인서트 -->
+    <insert id="insertArticle">
+        INSERT into ms_mstar_article(profile_info_pk, content)
+        values(#{profile_info_pk}, #{content})
+    </insert>
+    <!--게시물 pk값 가지고 오기-->
+    <select id="selectMaxArticlePk" resultType="int">
+        select Max(article_pk) from ms_mstar_article
+    </select>
+    <!--게시물 사진리스트 인서트-->
+     <insert id="insertArticlePhoto">
+        INSERT into ms_mstar_art_photo(article_pk, photo_path)
+        values(#{article_pk} , #{photo_path})
+    </insert>
+
+    <!--프로필 페이지 내 게시물 리스트 셀렉트-->
+    <select id="selectMyArticleDtoList" resultType="com.psychopath.dogstalking.mstar.dto.ArticleDto">
+        SELECT * from ms_mstar_article
+        where profile_info_pk = #{profile_info_pk}
+    </select>
+    <!--아티클Dto로 사진리스트 셀렉트-->
+    <select id="selectArticlePhotoList" resultType="com.psychopath.dogstalking.mstar.dto.ArtPhotoDto">
+        SELECT * from ms_mstar_art_photo
+        where article_pk  = #{article_pk}
+    </select>
+    <!--스토리 저장소 리스트 출력-->
+    <select id="selectStoryStorageList" resultType="com.psychopath.dogstalking.mstar.dto.StorageDto">
+        SELECT * from ms_mstar_storage
+        where profile_info_pk = #{profile_info_pk}
+    </select>
+    <!--하이라이트 인서트-->
+    <insert id="insertStoryStroageDto">
+        INSERT into ms_mstar_storage(profile_info_pk, storage_name, storage_img)
+        values(#{profile_info_pk} , #{storage_name}, #{storage_img})
+    </insert>
+    <!--스토리 인서트-->
+    <insert id="insertStoryDto">
+        INSERT into ms_mstar_story(profile_info_pk, story_photo, story_text, x_coordinates, y_coordinates, text_color)
+        values(#{profile_info_pk}, #{story_photo}, #{story_text}, #{x_coordinates}, #{y_coordinates}, #{text_color})
+    </insert>
+    
+
+</mapper>

@@ -29,31 +29,31 @@
                 </div>
 
                 <th:block th:each="list : ${list}">                
-                    <div class="row pb-3">
-                        <div class="col-6">
+                    <div class="row pb-3 d-grid"><a class="btn px-0 mx-0 py-0 my-0" th:href="@{./productDetailPage(id = ${list.list.product_pk})}">
+                        <div class="col-3">
                             <img class="img-fluid" th:src="@{'/uploadFiles/'+${list.list.title_image}}" alt="nothing" style="max-width: 10em; max-height:2en;">
                         </div>
-                        <div class="col-6">
+                        <div class="col-5">
                             <div class="row">
-                                <div class="col fw-bold text-truncate" style="font-size:0.9em; max-width: 10em; max-height:2en;"><td th:text=${list.list.product_name}></td></div>
+                                <div class="col  px-0 fw-bold text-truncate" style="font-size:0.9em; max-width: 9.8em; max-height:1.9em;"><td th:text=${list.list.product_name}></td></div>
                             </div>
                             <div class="row">
-                                <div class="col text-secondary" style="font-size:0.6em; font-color: 0.65;"><td th:text=${list.list.simple_explain}></td></div>
+                                <div class="col px-0 text-secondary" th:text=${list.list.simple_explain} style="font-size:0.6em; font-color: 0.65;"></div>
                             </div>
 
                             <div class="row">
-                                <div class="col fw-bold" style="font-size:1em; color: gold;">총구매 100건</div>
-                                <div class="col"><i class="bi bi-heart" href="./insertWishlistProcess"></i></div>
-                                <div class="col"></div>
+                                <div class="col-9 mx-0 px-0 fw-bold" style="font-size:1em; color: gold;">총구매 100건</div>
+                                <div class="col mx-0 px-0">
+                                    <div class="row" th:if="${wish == 0}"><i class="bi bi-heart" style="color:red" th:href="@{./insertWishlistProcess(id+${list.list.product_pk})}"></i></div>
+                                    <div class="row" th:unless="${wish != 0}"><i class="bi bi-heart-fill" style="color:red" th:href="@{./deleteWishlistProcess(id+${list.list.product_pk})}"></i></div>
+                                </div>
                             </div>
                             <div class="row">
-                                
-                                <div class="col border rounded text-center ms-1 me-1 p-0" style="font-size:0.65em; background-color:gainsboro;"><td th:text=${list.t_sales}></td></div>
-                                <div class="col border rounded text-center ms-1 me-1 p-0" style="font-size:0.65em; background-color:gainsboro;"><td th:text=${list.f_day}></td></div>
+                                <div class="col-5 border rounded text-center ms-1 me-1 p-0" style="font-size:0.65em; background-color:gainsboro;"><td th:text=${list.t_sales}></td></div>
+                                <div class="col-5 border rounded text-center ms-1 me-1 p-0" style="font-size:0.65em; background-color:gainsboro;"><td th:text=${list.f_day}></td></div>
                             </div>
                         </div>
-                    </div>
-                 
+                    </a></div>
                 </th:block>
 
                 

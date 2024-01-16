@@ -37,6 +37,12 @@
     select * from ms_user where user_pk = #{user_pk}
 </select>
 
+<select id="selectProductInfo" resultType="com.psychopath.dogstalking.funding.dto.FundingProductDto">
+    select * from ms_funding_product
+    where product_pk = #{product_pk}
+</select>
+
+
 <insert id="insertNews">
     insert into ms_funding_news(
         product_pk,
@@ -67,5 +73,50 @@
     IFNULL((select sum(quantity) from ms_funding_order mfo where product_pk =#{product_pk})*price,0) 
     from ms_funding_product mfp where mfp.product_pk=#{product_pk};
 </select>
+
+<insert id="insertWish">
+    insert into ms_funding_wishlist (
+        product_pk,
+        user_pk
+    )values(
+        #{product_pk},
+        #{user_pk}
+    )
+</insert>
+
+<delete id="deleteWish">
+    DELETE FROM ms_funding_wishlist
+    where product_pk= #{product_pk}
+    AND user_pk= #{user_pk}
+</delete>
+
+<select id="selectWistlistByPk" resultType="int">
+    select count(*) from ms_funding_wishlist 
+    where product_pk =1
+    AND user_pk=4;
+</select>
+
+<select id="selectNewsForDetail" resultType="com.psychopath.dogstalking.funding.dto.FundingNewsDto">
+    select COALESCE(content,'새소식이 아직 없습니다') from ms_funding_news 
+    where product_pk = #{product_pk}
+    LIMIT 1;
+</select>
+
+<select id="countPercentByPk" resultType="int">
+SELECT
+    IFNULL(
+            TRUNCATE(((SELECT sum(quantity) FROM ms_funding_order mfo WHERE product_pk = #{product_pk}) * price) / (SELECT amount FROM ms_funding_product mfp WHERE product_pk = #{product_pk}) * 100, 0),0
+        ) AS result
+FROM ms_funding_product mfp
+WHERE mfp.product_pk = #{product_pk}
+</select>
+
+
+
+
+
+
+
+
 
 </mapper>

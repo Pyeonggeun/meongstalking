@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.ibatis.annotations.Param;
-import org.checkerframework.common.util.report.qual.ReportWrite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +18,7 @@ import com.psychopath.dogstalking.dto.UserDto;
 import com.psychopath.dogstalking.funding.dto.FundingCheeringDto;
 import com.psychopath.dogstalking.funding.dto.FundingNewsDto;
 import com.psychopath.dogstalking.funding.dto.FundingProductDto;
+import com.psychopath.dogstalking.funding.dto.FundingWishlistDto;
 import com.psychopath.dogstalking.funding.service.FundingServiceImpl;
 
 import jakarta.servlet.http.HttpSession;
@@ -32,9 +31,14 @@ public class FundingController {
     private FundingServiceImpl fundingService;
 
     @RequestMapping("listPage")
-    public String listPage(Model model){
+    public String listPage(Model model, HttpSession session, FundingWishlistDto paraWishDto){
         List<Map<String,Object>> fundingList = fundingService.fundingListCall();            
         model.addAttribute("list", fundingList);
+
+        UserDto sessionUser=(UserDto)session.getAttribute("sessionUser");
+        paraWishDto.setUser_pk(sessionUser.getUser_pk());
+        int wish = fundingService.selectWistlistByPk(paraWishDto);
+        model.addAttribute("wish",wish);
 
         return "funding/listPage";
     }
@@ -43,7 +47,6 @@ public class FundingController {
     public String prepareRgstrPage(){
         return "funding/prepareRgstrPage";
     }
-
 
     //rgstr = register
     @RequestMapping("productRgstrPage")
@@ -119,8 +122,6 @@ public class FundingController {
             productDto.setExplain_image(todayPath + fileName);
             }        
     
-
-
         //세션 정보 뽑아 넣기 
         UserDto sessionUser  = (UserDto)session.getAttribute("sessionUser");
         productDto.setUser_pk(sessionUser.getUser_pk());
@@ -131,7 +132,6 @@ public class FundingController {
 
         return "funding/productRgstrCompletePage";
     }
-
 
     @RequestMapping("newsRgstrPage")
     public String newsRgstrPage(){
@@ -190,9 +190,10 @@ public class FundingController {
     }
 
     @RequestMapping("productDetailPage")
-    public String productDetailPage(){
-        
-         return "funding/productDetailPage";
+    public String productDetailPage(Model model, @RequestParam("id")int product_pk){
+        Map<String,Object> productMap= fundingService.selectProductInfo(product_pk);
+        model.addAttribute("product",productMap);
+        return "funding/productDetailPage";
     }
 
     // @RequestMapping("productPurchasePage")
@@ -206,6 +207,26 @@ public class FundingController {
 
     //     return"#"; 
     // }
+
+    //찜하기
+    @RequestMapping("insertWishlistProcess")
+    public String insertWishlistProcess(HttpSession session,FundingWishlistDto paraWishDto){
+        UserDto sessionUser = (UserDto)session.getAttribute("sessionUser");
+        paraWishDto.setUser_pk(sessionUser.getUser_pk());
+        fundingService.insertWish(paraWishDto);
+
+        return "redirect:./listPage";
+    }
+
+    @RequestMapping("deleteWishlistProcess")
+    public String deleteWishlistProcess(HttpSession session,FundingWishlistDto paraWishDto){
+        UserDto sessionUser = (UserDto)session.getAttribute("sessionUser");
+        paraWishDto.setUser_pk(sessionUser.getUser_pk());
+        fundingService.deleteWish(paraWishDto);
+
+        return "redirect:./listPage";
+    }
+
 
 
 }
