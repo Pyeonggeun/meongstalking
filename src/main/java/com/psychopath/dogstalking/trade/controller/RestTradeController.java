@@ -136,25 +136,27 @@ public class RestTradeController {
 	}    
 
 	@RequestMapping("getChatMessageList")
-	public RestResponseTradeDto getChatMessageList(int chatRoomPk) {
+	public RestResponseTradeDto getChatMessageList(int chatRoomPk, HttpSession session) {
 		RestResponseTradeDto restResponseDto = new RestResponseTradeDto();
-		
-		restResponseDto.setData(tradeService.getChatMessage(chatRoomPk));
+		UserDto userDto = (UserDto)session.getAttribute("sessionUser");
+		int sessionUserPk = userDto.getUser_pk();
+
+		restResponseDto.setData(tradeService.getChatMessage(chatRoomPk, sessionUserPk));
 		restResponseDto.setResult("success");
 		
 		return restResponseDto;
 	}    
 
-	@RequestMapping("chatMessageIsRead")
-	public RestResponseTradeDto chatMessageIsRead(int chatMessagePk) {
-		RestResponseTradeDto restResponseDto = new RestResponseTradeDto();
-		tradeService.chatMessageRead(chatMessagePk);
+	// @RequestMapping("chatMessageIsRead")
+	// public RestResponseTradeDto chatMessageIsRead(int chatMessagePk) {
+	// 	RestResponseTradeDto restResponseDto = new RestResponseTradeDto();
+	// 	tradeService.chatMessageRead(chatMessagePk);
 
-		restResponseDto.setData(null);
-		restResponseDto.setResult("success");
+	// 	restResponseDto.setData(null);
+	// 	restResponseDto.setResult("success");
 		
-		return restResponseDto;
-	}    	
+	// 	return restResponseDto;
+	// }    	
 
 
 

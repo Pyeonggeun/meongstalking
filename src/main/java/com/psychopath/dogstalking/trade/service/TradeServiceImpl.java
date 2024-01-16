@@ -151,17 +151,32 @@ public class TradeServiceImpl {
         return list;
     }
 
-    public List<ChatMessageDto> getChatMessage(int chatRoomPk){
+    public List<ChatMessageDto> getChatMessage(int chatRoomPk, int sessionUserPk){
+        List<ChatMessageDto> list = tradeMapper.getChatMessageByChatRoomPk(chatRoomPk);
         
-        
+        for(ChatMessageDto chatMessageDto : list){
+            chatMessageDto.getIsRead();
+
+            System.out.println("--------------------------------------");
+            System.out.println(chatMessageDto.getIsRead());
+            System.out.println(sessionUserPk);
+            System.out.println(chatMessageDto.getUser_pk());
+
+            if(chatMessageDto.getIsRead().equals("N") && chatMessageDto.getUser_pk() != sessionUserPk){
+                tradeMapper.updateChatMessageIsRead(chatMessageDto.getPk());
+                System.out.println("성공");
+            }
+        }
+
+
         return tradeMapper.getChatMessageByChatRoomPk(chatRoomPk);
     }
 
 
-    public void chatMessageRead(int messagePk){
+    // public void chatMessageRead(int messagePk){
 
-        tradeMapper.updateChatMessageIsRead(messagePk);
-    }
+    //     tradeMapper.updateChatMessageIsRead(messagePk);
+    // }
 
 
 }
