@@ -29,6 +29,13 @@ public class ClubController {
         UserDto userDto = (UserDto) session.getAttribute("sessionUser");
         Map<String, Object> clubTF = clubService.applyClubUserTF(userDto.getUser_pk());
         model.addAttribute("clubTF", clubTF);
+
+        List<Map<String, Object>> clublist = clubService.selectClubList();
+        model.addAttribute("clublist", clublist);
+
+        // Map<String, Object> showclubpk = clubService.showclubpk(1);
+        // model.addAttribute("showclubpk", showclubpk);
+        
         return "club/clubHomePage";
     }
 
@@ -101,7 +108,7 @@ public class ClubController {
       
         Map<String, Object> showclubpk = clubService.showclubpk(clubPk);
         model.addAttribute("showclubpk", showclubpk);
-        System.out.println(showclubpk);
+        //System.out.println(showclubpk);
         return "redirect:./clubHomePage";
     }
 }

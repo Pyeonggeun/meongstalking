@@ -33,7 +33,7 @@
     <!-- 길드 가입 여부 -->
     <select id="applyClubUserTF" resultType="map">
     <![CDATA[
-        SELECT 
+        SELECT  
         CASE WHEN COUNT(*) > 0 THEN 'T' ELSE 'F' END AS user_exists,
         ms_club_user.*,
         ms_user.*,
