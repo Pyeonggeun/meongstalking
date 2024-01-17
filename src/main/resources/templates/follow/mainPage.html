@@ -32,7 +32,7 @@
 
         <script>
 
-            let user_pk=0;
+            let user_pk;
 
             let map;
 
@@ -156,18 +156,24 @@
                     if(isFirstTimeMark_boolean) {
                         showMoreInfoAlertModal();
                     }else {
-
+                        showWriteMarkModal();
                     }
 
                 });
 
             }
 
+            function textToUpperCase(target) {
+
+                target.value = target.value.toUpperCase();
+
+            }
+
             function saveMoreInfo() {
                 const height = document.getElementById("moreInfoHeight").value;
                 const weight = document.getElementById("moreInfoWeight").value;
-                const bloodType = document.getElementById("moreInfoBloodType").value.toUpperCase();
-                const mbtiType = document.getElementById("moreInfoMbtiType").value.toUpperCase();
+                const bloodType = document.getElementById("moreInfoBloodType").value;
+                const mbtiType = document.getElementById("moreInfoMbtiType").value;
                 const hobby = document.getElementById("moreInfoHobby").value;
                 const drink = document.querySelector('input[name="isDrink"]:checked').value;
                 const smoke = document.querySelector('input[name="isSmoke"]:checked').value;
@@ -184,24 +190,66 @@
                 fetch(url)
                 .then(response => response.json())
                 .then(response => {
-
+                    showSuccessMoreInfoAlertModal();
                 });
+            }
+
+            function inputImage() {
+                const input = document.getElementById("writeMarkImage");
+                input.click();
+            }
+
+            function previewImage() {
+                const input = document.getElementById("writeMarkImage");
+                const writeMarkImageHere = document.getElementById("writeMarkImageHere");
+                if([...input.files].length === 0) {
+                    return;
+                }else {
+                    const imageUrl = URL.createObjectURL(input.files[0]);
+                    document.getElementById("writeMarkNoimage").hidden = true;
+                    writeMarkImageHere.style.background = "url(" + imageUrl + ") no-repeat center";
+                    writeMarkImageHere.style.backgroundSize = "cover";
+                };
+            }
+
+            function insertArticleInfo(){
+                const photeUpload = document.querySelector("#photeUpload");
+
+                const imageFiles = photeUpload.files;
+                const formData = new FormData();
+
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', './insertArticleInfo', true);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        console.log(xhr.responseText);
+                    }
+                };
+                for (let i = 0; i < imageFiles.length; i++) {
+                    formData.append("imageFiles", imageFiles[i]);
+                }
+                const content = document.querySelector("#content").value;            
+                const profile_info_pk = profileInfoDto.profile_info_pk;
+                formData.append("profile_info_pk", profile_info_pk);
+                formData.append("content", content);
+                 xhr.send(formData);
+
+                location.href='./profilePage?user_pk='+user_pk;
+            }
+
+            function saveWriteMarkInfo() {
+
             }
 
             function showMoreInfoAlertModal() {
                 const modal = bootstrap.Modal.getOrCreateInstance("#moreInfoAlertModal");
                 modal.show();
             }
-
+            
             function showModal() {
-                const modal = bootstrap.Modal.getOrCreateInstance("#moreInfoModal");
-                resetMoreInfoInput();
+                const modal = bootstrap.Modal.getOrCreateInstance("#writeMarkModal");
+                resetWriteMarkInput();
                 modal.show();
-                
-                setTimeout(() => {
-                    const height = document.querySelector("#moreInfoHeight");
-                    height.focus();
-                }, 500);
             }
             
             function showMoreInfoModal() {
@@ -226,6 +274,25 @@
                 }, 1500);
             }
 
+            function showSuccessMoreInfoAlertModal() {
+                const modal = bootstrap.Modal.getOrCreateInstance("#successMoreInfoAlertModal");
+                modal.show();
+                const moreInfoModal = bootstrap.Modal.getOrCreateInstance("#moreInfoModal");
+                moreInfoModal.hide();
+
+                setTimeout(() => {
+                    modal.hide();
+                    showWriteMarkModal();
+                }, 1500);
+
+            }
+
+            function showWriteMarkModal() {
+                const modal = bootstrap.Modal.getOrCreateInstance("#writeMarkModal");
+                resetWriteMarkInput();
+                modal.show();
+            }
+
             function resetMoreInfoInput() {
                 document.getElementById("moreInfoHeight").value = "";
                 document.getElementById("moreInfoWeight").value = "";
@@ -235,6 +302,12 @@
                 document.getElementById("yesDrink").checked = false;
                 document.getElementById("yesSmoke").checked = false;
                 document.getElementById("moreInfoPreference").value = 0;
+            }
+
+            function resetWriteMarkInput() {
+                document.getElementById("writeMarkNoimage").hidden = false;
+                document.getElementById("writeMarkImageHere").style.removeProperty("background", "background-size");
+                document.getElementById("writeMarkContent").value = "";
             }
 
             window.addEventListener("DOMContentLoaded", () => {
@@ -314,6 +387,7 @@
                                 <svg class="track_icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#5059cd" transform="rotate(0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path fill="none" d="M0 0h24v24H0z"></path> <path d="M4 18h5.5v1.25a2.75 2.75 0 1 1-5.5 0V18zm4.058-4l.045-.132C8.87 11.762 9 11.37 9 11c0-.75-.203-1.643-.528-2.273C8.23 8.257 8.06 8.12 8 8.12 6.72 8.12 5.5 9.484 5.5 11c0 .959.075 1.773.227 2.758l.038.242h2.293zM8 6.12c2 0 3 2.88 3 4.88 0 1-.5 2-1 3.5L9.5 16H4c0-1-.5-2.5-.5-5S5.498 6.12 8 6.12zm12.054 7.978l-.217 1.231a2.75 2.75 0 0 1-5.417-.955l.218-1.23 5.416.954zm-1.05-4.246c.165-.5.301-.895.303-.9.202-.658.361-1.303.485-2.008.263-1.492-.702-3.047-1.962-3.27-.059-.01-.25.095-.57.515-.43.565-.784 1.41-.915 2.147-.058.33-.049.405.27 2.263.045.256.082.486.116.717l.02.138 2.254.398zm-.826-8.147c2.464.434 4.018 3.124 3.584 5.586-.434 2.463-1.187 3.853-1.36 4.838l-5.417-.955-.232-1.564c-.232-1.564-.55-2.636-.377-3.62.347-1.97 1.832-4.632 3.802-4.285z"></path> </g> </g></svg>
                             </div>
                         </div>
+                        <div style="width: 100%; height: 23vh; position: absolute; z-index: 1500; top: 75%;"></div>
                     </div>
                 </div>
             </div>
@@ -349,6 +423,16 @@
             </div>
         </div>
 
+        <div id="successMoreInfoAlertModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2200; background: rgb(0, 0, 0, 0.4);">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content mx-auto text-white" style="width: 50%; background: #D96161;">
+                    <div class="modal-body text-center" style="font-size: 0.9rem;">
+                        등록이 완료되었습니다
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="moreInfoModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2100; background: rgb(0, 0, 0, 0.4);">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -364,7 +448,7 @@
                                     <div class="col-3 text-end">신장</div>
                                     <div class="col">
                                         <div class="input-group">
-                                            <input id="moreInfoHeight" class="form-control py-0 rounded text-end" type="number" min="140" max="200" style="box-shadow: none;" placeholder="소수점 제외">
+                                            <input id="moreInfoHeight" class="form-control py-1 rounded text-end" type="number" min="140" max="200" style="box-shadow: none; font-size: 0.8rem;" placeholder="소수점 제외 | 140~200">
                                             <span class="ms-2">cm</span>
                                         </div>
                                     </div>
@@ -373,7 +457,7 @@
                                     <div class="col-3 text-end">몸무게</div>
                                     <div class="col">
                                         <div class="input-group">
-                                            <input id="moreInfoWeight" class="form-control py-0 rounded text-end" type="number" min="30" max="200" style="box-shadow: none;" placeholder="소수점 제외">
+                                            <input id="moreInfoWeight" class="form-control py-1 rounded text-end" type="number" min="30" max="200" style="box-shadow: none; font-size: 0.8rem;" placeholder="소수점 제외 | 30~200">
                                             <span class="ms-2">kg</span>
                                         </div>
                                     </div>
@@ -382,7 +466,7 @@
                                     <div class="col-3 text-end">혈액형</div>
                                     <div class="col">
                                         <div class="input-group">
-                                            <input id="moreInfoBloodType" class="form-control py-0 rounded text-end" type="text" style="text-transform: uppercase; box-shadow: none;" pattern="A|B|AB|O|a|b|ab|o" maxlength="2">
+                                            <input id="moreInfoBloodType" oninput="textToUpperCase(this)" class="form-control py-0 rounded text-end" type="text" style="text-transform: uppercase; box-shadow: none;" pattern="A|B|AB|O" maxlength="2">
                                             <span class="ms-2">형</span>
                                         </div>
                                     </div>
@@ -390,7 +474,7 @@
                                 <div class="row mt-2">
                                     <div class="col-3 text-end">MBTI</div>
                                     <div class="col">
-                                        <input id="moreInfoMbtiType" class="form-control py-0 rounded" type="text" style="text-transform: uppercase; box-shadow: none;" pattern="ESTJ|ESTP|ESFJ|ESFP|ENTJ|ENTP|ENFJ|ENFP|ISTJ|ISTP|ISFJ|ISFP|INTJ|INTP|INFJ|INFP|estj|estp|esfj|esfp|entj|entp|enfj|enfp|istj|istp|isfj|isfp|intj|intp|infj|infp" maxlength="4">
+                                        <input id="moreInfoMbtiType" oninput="textToUpperCase(this)" class="form-control py-0 rounded" type="text" style="text-transform: uppercase; box-shadow: none;" pattern="ESTJ|ESTP|ESFJ|ESFP|ENTJ|ENTP|ENFJ|ENFP|ISTJ|ISTP|ISFJ|ISFP|INTJ|INTP|INFJ|INFP" maxlength="4">
                                     </div>
                                 </div>
                                 <div class="row mt-2">
@@ -447,6 +531,58 @@
                     <div class="modal-footer pb-2 border-0 justify-content-center">
                         <button type="button" class="btn btn-secondary py-1" data-bs-dismiss="modal">닫기</button>
                         <button onclick="saveMoreInfo()" class="btn py-1 text-white" style="background: #D96161;">저장하기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="writeMarkModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2100; background: rgb(0, 0, 0, 0.4);">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col">
+                                <div class="row">
+                                    <div onclick="inputImage()" onchange="previewImage()" id="writeMarkImageHere" class="col border rounded-pill mx-3 px-0" style="aspect-ratio: 4/3;">
+                                        <!-- hidden -->
+                                        <div id="writeMarkNoimage" class="row text-center align-items-center" style="height: 100%;">
+                                            <div class="col">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <span class="material-symbols-outlined" style="color: #BFBFBF; font-size: 2rem;">
+                                                            add_photo_alternate
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col" style="color: #BFBFBF; font-size: 1rem;">
+                                                        이미지 추가하기
+                                                    </div>
+                                                </div>
+                                                <input id="writeMarkImage" type="file" accept="image/*" hidden>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col">
+                                        <span class="material-symbols-outlined align-middle" style="font-size: 1.1rem;">
+                                            stylus_note
+                                        </span>
+                                        한줄글
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col">
+                                        <textarea id="writeMarkContent" class="form-control" rows="2" placeholder="체취와 함께 흔적을 남겨주세요" maxlength="50" style="resize: none;"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer pb-2 border-0 justify-content-center">
+                        <button type="button" class="btn btn-secondary py-1" data-bs-dismiss="modal">닫기</button>
+                        <button onclick="saveWriteMarkInfo()" class="btn py-1 text-white" style="background: #D96161;">체취등록</button>
                     </div>
                 </div>
             </div>

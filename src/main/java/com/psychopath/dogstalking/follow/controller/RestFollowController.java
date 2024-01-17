@@ -45,8 +45,9 @@ public class RestFollowController {
     public RestResponseDto insertMoreInfo(UserMoreDto params) {
 
         RestResponseDto restResponseDto = new RestResponseDto();
-        System.out.println("11111111111111111111111111111");
-        System.out.println(params.getHobby());
+
+        followService.insertMoreInfo(params);
+
         restResponseDto.setResult("success");
         
         return restResponseDto;

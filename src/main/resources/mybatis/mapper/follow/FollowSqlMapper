@@ -3,6 +3,12 @@
 
 <mapper namespace="com.psychopath.dogstalking.follow.mapper.FollowSqlMapper">
 
+    <insert id="insertMoreInfo">
+        insert into ms_follow_user_more(
+            user_pk, height, weight, blood_type, mbti_type, hobby, drinking, smoking, preference
+        ) values(#{user_pk}, #{height}, #{weight}, #{blood_type}, #{mbti_type}, #{hobby}, #{drinking}, #{smoking}, #{preference})
+    </insert>
+
     <select id="isFirstTimeMark" resultType="int">
         SELECT COUNT(*) FROM ms_follow_user_more
         where user_pk = #{user_pk}
