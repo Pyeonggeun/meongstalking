@@ -13,6 +13,7 @@ import com.psychopath.dogstalking.dto.UserDto;
 
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -28,6 +29,13 @@ public class ClubController {
         UserDto userDto = (UserDto) session.getAttribute("sessionUser");
         Map<String, Object> clubTF = clubService.applyClubUserTF(userDto.getUser_pk());
         model.addAttribute("clubTF", clubTF);
+
+        List<Map<String, Object>> clublist = clubService.selectClubList();
+        model.addAttribute("clublist", clublist);
+
+        // Map<String, Object> showclubpk = clubService.showclubpk(1);
+        // model.addAttribute("showclubpk", showclubpk);
+        
         return "club/clubHomePage";
     }
 
@@ -68,23 +76,39 @@ public class ClubController {
         return "club/createClubPage";
     }
 
+    @RequestMapping("clubListPage")
+    public String clubListPage(Model model) {
+        List<Map<String, Object>> clublist = clubService.selectClubList();
+        model.addAttribute("clublist", clublist);
+
+        return "club/clubListPage";
+    }
+    
     @RequestMapping("createclubProcess")
-    public String createclubProcess(HttpSession session, ClubDto clubDto, ClubUserDto clubUserDto) {
-        
-        
+    public String createclubProcess(HttpSession session, ClubDto clubDto, ClubUserDto clubUserDto, Model model) {
+                
         clubService.insertClub(clubDto);
 
         UserDto userDto = (UserDto) session.getAttribute("sessionUser");
 
-        System.out.println("확인하기");
-        System.out.println(clubDto);
-        
+        int clubpk = clubService.checka();
 
-        clubUserDto.setClub_pk(clubDto.getClub_pk());
+        clubUserDto.setClub_pk(clubpk+1);
         clubUserDto.setUser_pk(userDto.getUser_pk());
+        
         clubService.insertClubUser(clubUserDto);
 
+        Map<String, Object> clubTF = clubService.applyClubUserTF(userDto.getUser_pk());
+        model.addAttribute("clubTF", clubTF);
         return "redirect:./clubHomePage";
     }
 
+    @RequestMapping("clubHomeProcess")
+    public String clubHomeProcess(@RequestParam("club_pk") int clubPk, Model model, HttpSession session) {
+      
+        Map<String, Object> showclubpk = clubService.showclubpk(clubPk);
+        model.addAttribute("showclubpk", showclubpk);
+        //System.out.println(showclubpk);
+        return "redirect:./clubHomePage";
+    }
 }

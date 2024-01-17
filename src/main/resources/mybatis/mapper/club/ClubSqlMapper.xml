@@ -33,7 +33,7 @@
     <!-- 길드 가입 여부 -->
     <select id="applyClubUserTF" resultType="map">
     <![CDATA[
-        SELECT 
+        SELECT  
         CASE WHEN COUNT(*) > 0 THEN 'T' ELSE 'F' END AS user_exists,
         ms_club_user.*,
         ms_user.*,
@@ -57,11 +57,24 @@
 	</insert>
 
     <insert id="insertClubUser">
-		INSERT INTO ms_club_user(content)
-        VALUES ("길드 개설자")
+		INSERT INTO ms_club_user(user_pk,club_pk,content)
+        VALUES (#{user_pk},#{club_pk},"길드 개설자")
 	</insert>
 
+    <select id="checka" resultType="int">
+        SELECT MAX(club_user_pk) FROM ms_club_user
+    </select>
     
+    <select id="selectClubList" resultType="map">
+        SELECT * FROM ms_club ORDER BY RAND()
+    </select>
      
+    <select id="showclubpk" resultType="map">
+        SELECT 
+            1 AS clubpk_ck,
+            ms_club.*
+        FROM ms_club 
+        WHERE ms_club.club_pk = #{club_pk}
+    </select>
     
 </mapper>

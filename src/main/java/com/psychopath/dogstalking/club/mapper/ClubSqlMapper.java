@@ -32,5 +32,10 @@ public interface ClubSqlMapper {
     
     //가입
     public Map<String, Object> applyClubUserTF(int user_pk);
+    public int checka();
+
+    //리스트
+    public List<Map<String, Object>> selectClubList();
+    public Map<String, Object> showclubpk(int club_pk);
 
 }
