@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.psychopath.dogstalking.club.dto.ClubDto;
 import com.psychopath.dogstalking.club.dto.ClubFreeBoardDto;
+import com.psychopath.dogstalking.club.dto.ClubStatusLogDto;
 import com.psychopath.dogstalking.club.dto.ClubUserDto;
+import com.psychopath.dogstalking.club.dto.ClubUserRanklogDto;
 import com.psychopath.dogstalking.club.dto.CommentDto;
 import com.psychopath.dogstalking.club.mapper.ClubSqlMapper;
 
@@ -23,8 +25,8 @@ public class ClubServiceImpl {
 
 	}
 
-    public List<Map<String, Object>> selectFreeBoardAll() {
-		return clubSqlMapper.selectFreeBoardAll();
+    public List<Map<String, Object>> selectFreeBoardAll(int pk) {
+		return clubSqlMapper.selectFreeBoardAll(pk);
 	}
     
 	//게시판
@@ -66,6 +68,10 @@ public class ClubServiceImpl {
 		clubSqlMapper.insertClubUser(clubUserDto);
 	}
 
+	public void insertClubUsers(ClubUserDto clubUserDto) {
+		clubSqlMapper.insertClubUsers(clubUserDto);
+	}
+
 	public int checka(){
 		return clubSqlMapper.checka();
 	}
@@ -79,5 +85,11 @@ public class ClubServiceImpl {
 		return clubSqlMapper.showclubpk(club_pk);	
 	}
 	
-	
+	public void insertUserStatusLog(ClubStatusLogDto clubStatusLogDto){
+		clubSqlMapper.insertUserStatusLog(clubStatusLogDto);
+	}
+
+	public void insertLeader(ClubUserRanklogDto clubUserRanklogDto){
+		clubSqlMapper.insertLeader(clubUserRanklogDto);
+	}
 }

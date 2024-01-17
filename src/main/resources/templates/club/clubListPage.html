@@ -1,15 +1,98 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>로그인</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
+        .scrollable-menu {
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .scrollable-menu .col {
+            display: flex;
+            flex-wrap: nowrap;
+        }
+
+        .scrollable-menu span {
+            border-bottom: 2px solid transparent;
+            padding-bottom: 2px;
+            transition: border-color 0.3s;
+        }
+
+        .scrollable-menu span:hover {
+            border-color: #000;
+        }
+
+        .imtext {
+            position: absolute;
+            top: 120px;
+            left: 13px;
+            z-index: 1;
+            color: rgb(190, 190, 190);
+            font-size: 0.7em;
+            width: auto;
+            font-weight: bold;
+
+        }
+
+        .custom-border {
+            border-right: 1.5px solid rgb(190, 190, 190);
+            height: 100vh;
+        }
+
+        .custom-list {
+            border-radius: 10px;
+        }
+
+        .custom-span {
+            color: black;
+            font-size: 0.7em;
+            display: inline-block;
+        }
+
+        @media (min-width: 576px) {
+
+            .modal.bottom-modal .modal-dialog {
+                position: fixed;
+                bottom: -10%;
+                left: 50%;
+                transform: translateX(-50%) translateY(100%);
+                margin: 0;
+                transition: transform 0.3s ease-out;
+            }
+        }
+
+        .modal.show .modal-dialog {
+            transform: translateX(-50%) translateY(0%);
+        }
+
+        .bold-text {
+            font-weight: bold;
+        }
+
+        .clickable {
+            cursor: pointer;
+            flex-grow: 1;
+        }
+
+        .active {
+            /* 선택된 상태의 스타일 지정 */
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .no-club {
+            display: none;
+            /* Hide the div initially */
+        }
+
         .card {
             border: 1px solid #ddd;
             border-radius: 10px;
@@ -46,29 +129,68 @@
             -webkit-box-orient: vertical;
         }
     </style>
+    <script>
+        function loadSignupModal() {
+            const modal = bootstrap.Modal.getOrCreateInstance("#loadSignupModal");
+            modal.show();
+
+        }
+
+    </script>
 </head>
 
 <body>
-    <div class="container">
-        <div th:each="qwer : ${clublist}" class="card mb-3" style="max-width: 540px;">
-            <div class="row g-0">
-                <div class="col-4">
-                    <img th:src="@{/public/image/dog_img.png}" class="col card-img-top img-fluid" alt="Club Image" style="object-fit: cover;">
-                </div>
-                <div class="col-8">
-                    <div class="card-body">
-                        <a th:href="@{./clubHomeProcess?club_pk={club_pk}(club_pk=${qwer['club_pk']})}" class="card-title text-decoration-none" th:text="${qwer['name']}" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: inherit;"></a>
-                        <p class="card-text" th:text="${qwer['content']}"></p>
-                    </div>
-                    
-                </div>
-                
-                               
+    <div class="container p-0">
+        <th:block th:replace="~{club/clubTopNavi.html :: topNavi}"></th:block>
+        <div class="row border-bottom border-2 border-gray">
+            <div class="col-md-4  px-0">
+                <img th:src="@{../public/image/guild_mainImg.png}" class="img-fluid">
             </div>
         </div>
 
+        <div class="row border-bottom border-5 border-gray">
+            <div class="col-md-8 my-3">
+                <p th:text="${showclubpk.name}" class="bold-text"></p>
+                <p th:utext="${showclubpk.content}"></p>
+            </div>
+        </div>
+
+        <div class="row p-3">
+            <p><strong>사진첩</strong></p>
+            우왕 사진들
+        </div>
+        <div class="row">
+        <button class="btn btn-secondary col-12 " onclick="loadSignupModal()">가입하기</button>
+        </div>
     </div>
 
+
+    <div id="loadSignupModal" class="modal fade bottom-modal" tabindex="-1" role="dialog"
+        aria-labelledby="loadSignupModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <form action="./createUserProcess" method="post">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" >가입인사를 작성해주세요.</h5>
+                        <buttontype="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <textarea class="form-control"  id="content" name="content" rows="3"></textarea>
+                        
+                    </div>
+                    <div class="modal-footer d-flex">
+                        <button type="button" class="flex-fill btn border-gray border-end"
+                            style="background-color: white; color: blue; border: none;" data-bs-dismiss="modal">취소</button>
+                        <button type="submit" class="flex-fill btn"
+                            style="background-color: white; color: blue; border: none; opacity: 0.8;">제출</button>
+                    </div>
+                    <input type="hidden" name="club_pk" th:value="${showclubpk.club_pk}">
+                </div>
+            </form>
+        </div>
+     </div>   
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
