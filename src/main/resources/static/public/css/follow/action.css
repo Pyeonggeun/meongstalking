@@ -1,0 +1,205 @@
+/* action */
+#actionBackgroundCircle {
+    position: absolute;
+    z-index: 2000;
+    width: var(--action-background-circle-diameter);
+    height: var(--action-background-circle-diameter);
+    top: calc(110% - var(--action-background-circle-diameter) / 2);
+    left: calc(50% - var(--action-background-circle-diameter) / 2);
+    background: var(--action-background-circle-color);
+}
+
+#actionMenuButton {
+    position: absolute;
+    z-index: 2000;
+    width: var(--action-menu-button-diameter);
+    height: var(--action-menu-button-diameter);
+    top: calc(87% - var(--action-menu-button-diameter) / 2);
+    left: calc(50% - var(--action-menu-button-diameter) / 2);
+    background: var(--action-menu-button-color);
+    border-radius: var(--border-circular);
+    border: 0.5px solid #CACACA;
+    box-shadow: 0 2px 1px 0.5px var(--box-shadow-color);
+}
+
+#actionMenuButton:active {
+    box-shadow: 0 1px 0 rgb(0,0,0,0.3);
+    top: calc(87.3% - var(--action-menu-button-diameter) / 2);;
+}
+
+.actionCircleOut {
+    position: absolute;
+    z-index: 2000;
+    width: var(--action-out-circle-diameter);
+    height: var(--action-out-circle-diameter);
+    background: var(--action-out-circle-color);
+    border: var(--action-out-circle-border);
+    border-radius: var(--border-circular);
+}
+
+.actionCircleIn {
+    position: absolute;
+    width: var(--action-in-circle-diameter);
+    height: var(--action-in-circle-diameter);
+    top: calc(50% - var(--action-in-circle-diameter) / 2);
+    left: calc(50% - var(--action-in-circle-diameter) / 2);
+    background: var(--color-white);
+    border: var(--action-in-circle-border);
+    border-radius: var(--border-circular);
+}
+
+.actionCircleCloseOut {
+    position: absolute;
+    z-index: 2000;
+    width: var(--action-close-button-out-diameter);
+    height: var(--action-close-button-out-diameter);
+    top: calc(87% - var(--action-close-button-out-diameter) / 2);
+    left: calc(50% - var(--action-close-button-out-diameter) / 2);
+    background: var(--action-out-circle-color);
+    border: var(--action-out-circle-border);
+    border-radius: var(--border-circular);
+}
+
+.actionCircleCloseIn {
+    position: absolute;
+    width: var(--action-close-button-in-diameter);
+    height: var(--action-close-button-in-diameter);
+    top: calc(50% - var(--action-close-button-in-diameter) / 2);
+    left: calc(50% - var(--action-close-button-in-diameter) / 2);
+    background: var(--color-white);
+    border: var(--action-in-circle-border);
+    border-radius: var(--border-circular);
+}
+
+.markOut {
+    top: calc(83% - var(--action-out-circle-diameter) / 2);
+    left: calc(36% - var(--action-out-circle-diameter) / 2);
+}
+
+.scanOut {
+    top: calc(79% - var(--action-out-circle-diameter) / 2);
+    left: calc(50% - var(--action-out-circle-diameter) / 2);
+}
+
+.trackOut {
+    top: calc(83% - var(--action-out-circle-diameter) / 2);
+    right: calc(36% - var(--action-out-circle-diameter) / 2);
+}
+
+.action_text {
+    font-size: 1rem;
+    position: absolute;
+    top: -30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #313681;
+    user-select: none;
+}
+
+@keyframes markButtonSpreadOut {
+    from {
+        transform: translate(0, 0);
+        animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-2rem, -2rem);
+        opacity: 1;
+    }
+}
+
+@keyframes markButtonSpreadIn {
+    from {
+        transform: translate(-2rem, -2rem);
+        animation-timing-function: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+        opacity: 1;
+    }
+    to {
+        transform: translate(0, 0);
+        opacity: 0;
+    }
+}
+
+@keyframes scanButtonSpreadOut {
+    from {
+        transform: translate(0, 0);
+        animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(-2rem);
+        opacity: 1;
+    }
+}
+
+@keyframes scanButtonSpreadIn {
+    from {
+        transform: translateY(-2rem);
+        animation-timing-function: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+        opacity: 1;
+    }
+    to {
+        transform: translate(0, 0);
+        opacity: 0;
+    }
+}
+
+@keyframes trackButtonSpreadOut {
+    from {
+        transform: translate(0, 0);
+        animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        opacity: 0;
+    }
+    to {
+        transform: translate(2rem, -2rem);
+        opacity: 1;
+    }
+}
+
+@keyframes trackButtonSpreadIn {
+    from {
+        transform: translate(2rem, -2rem);
+        animation-timing-function: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+        opacity: 1;
+    }
+    to {
+        transform: translate(0, 0);
+        opacity: 0;
+    }
+}
+
+@keyframes showBackgroundCircle {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+@keyframes hideBackgroundCircle {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(0);
+    }
+}
+
+@keyframes showSomthing {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes hideSomthing {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.psychopath.dogstalking.dto.RestResponseDto;
 import com.psychopath.dogstalking.dto.UserDto;
+import com.psychopath.dogstalking.follow.dto.UserMoreDto;
 import com.psychopath.dogstalking.follow.service.FollowServiceImpl;
 
 import jakarta.servlet.http.HttpSession;
@@ -35,6 +36,18 @@ public class RestFollowController {
         RestResponseDto restResponseDto = new RestResponseDto();
         
         restResponseDto.setData(followService.isFirstTimeMark(user_pk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+    
+    @RequestMapping("insertMoreInfo")
+    public RestResponseDto insertMoreInfo(UserMoreDto params) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+
+        followService.insertMoreInfo(params);
+
         restResponseDto.setResult("success");
         
         return restResponseDto;

@@ -10,175 +10,16 @@
         <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
-        <style>
-            /* 글꼴 */
-            @font-face {
-                font-family: 'omyu_pretty';
-                src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
-                font-weight: normal;
-                font-style: normal;
-            }
-
-            body {
-                font-family: 'omyu_pretty';
-                min-width: 375px;
-            }
-
-        </style>
-        
-        <style>
-            div.clickEffect{
-                position: fixed;
-                box-sizing: border-box;
-                border-style: solid;
-                border-color: #BFBFBF;
-                border-radius: 50%;
-                animation: clickEffect 0.8s ease-out;
-                z-index: 1500;
-            }
-            @keyframes clickEffect{
-                from {
-                    opacity:1;
-                    width:0.5rem; height:0.5rem;
-                    margin:-0.25rem;
-                    border-width:0.2rem;
-                }
-                to {
-                    opacity:0.1;
-                    width:10rem; height:10rem;
-                    margin:-5rem;
-                    border-width:0.01rem;
-                }
-            }
-        </style>
+        <link rel="stylesheet" th:href="@{/public/css/follow/root.css}" />
+        <link rel="stylesheet" th:href="@{/public/css/follow/font.css}" />
+        <link rel="stylesheet" th:href="@{/public/css/follow/clickEffect.css}" />
+        <link rel="stylesheet" th:href="@{/public/css/follow/icon.css}" />
+        <link rel="stylesheet" th:href="@{/public/css/follow/marker.css}" />
+        <link rel="stylesheet" th:href="@{/public/css/follow/myPosition.css}" />
+        <link rel="stylesheet" th:href="@{/public/css/follow/myBag.css}" />
+        <link rel="stylesheet" th:href="@{/public/css/follow/action.css}" />
 
         <style>
-            /* icon */
-            .my_location_icon {
-                font-variation-settings:
-                var(--icon-fill-fill);
-                position: absolute;
-                color: var(--reloadPosition-icon-color);
-                font-size: var(--reloadPosition-icon-size);
-                top: calc(50% - var(--reloadPosition-icon-size) / 2);
-                left: calc(50% - var(--reloadPosition-icon-size) / 2);
-                user-select: none;
-            }
-
-            .bi-backpack2-fill {
-                position: absolute;
-                font-size: 1.2rem;
-                top: calc(50% - 0.6rem);
-                left: 10%;
-                color: #6D6D6D;
-            }
-
-            .bi-gift-fill {
-                position: absolute;
-                font-size: 1.2rem;
-                top: calc(50% - 0.6rem);
-                left: calc(50% - 0.6rem);
-                color: #6D6D6D;
-            }
-
-            .military_tech_icon {
-                font-variation-settings:
-                var(--icon-fill-fill);
-                position: absolute;
-                font-size: 1.5rem;
-                top: calc(50% - 0.55rem);
-                right: 10%;
-                color: #6D6D6D;
-                user-select: none;
-            }
-
-            .pets_icon {
-                position: absolute;
-                font-size: 2rem;
-                top: calc(50% - 1rem);
-                left: calc(50% - 1rem);
-                background: linear-gradient(to bottom, #fff 0%, #CACACA 120%);
-                background-clip: text;
-                -webkit-text-fill-color: transparent;
-                user-select: none;
-            }
-
-            .close_icon {
-                position: absolute;
-                font-size: 1.5rem;
-                top: calc(50% - 0.75rem);
-                left: calc(50% - 0.75rem);
-                color: var(--action-main-color);
-                user-select: none;
-            }
-
-            .mark_icon {
-                position: absolute;
-                width: 1.8rem;
-                height: 1.8rem;
-                top: calc(50% - 0.9rem);
-                left: calc(50% - 0.9rem);
-                color: var(--action-main-color);
-            }
-            
-            .scan_icon {
-                position: absolute;
-                width: 1.8rem;
-                height: 1.8rem;
-                top: calc(50% - 0.9rem);
-                left: calc(50% - 0.9rem);
-                color: var(--action-main-color);
-                border-radius: var(--border-circular);
-            }
-
-            .track_icon {
-                position: absolute;
-                width: 2rem;
-                height: 2rem;
-                top: calc(50% - 1rem);
-                left: calc(50% - 1rem);
-                color: var(--action-main-color);
-            }
-
-        </style>
-
-        <style>
-            /* base */
-            :root {
-                --icon-fill-fill: 'FILL' 1;
-                --icon-fill-empty: 'FILL' 0;
-
-                --border-circular: 50%;
-                --color-white: white;
-                --color-black: black;
-                --box-shadow-color: rgb(0, 0, 0, 0.5); 
-
-                --myposition-firstCircle-color: rgb(0, 0, 0, 0.1);
-                --myposition-secondCircle-boxshadow: 0 0 2px 2px var(--box-shadow-color);
-                --myposition-firstCircle-opacity: 10%;
-                --myPosition-firstCircle-diameter: 2rem;
-                --myPosition-secondCircle-diameter: 0.9rem;
-                --myPosition-thirdCircle-diameter: 0.65625rem;
-
-                --reloadPosition-diameter: 2.5rem;
-                --reloadPosition-border: 1.5px solid #E5E5E5;
-                --reloadPosition-boxshadow: 0 1px 1px 0.5px var(--box-shadow-color);
-                --reloadPosition-icon-color: #6D6D6D;
-                --reloadPosition-icon-size: 1.5rem;
-
-                --action-background-circle-diameter: 50rem;
-                --action-background-circle-color: radial-gradient(rgb(125, 131, 199, 1) 0%, rgb(255, 255, 255, 0) 70%, rgb(255, 255, 255, 0) 100%);
-                --action-menu-button-diameter: 3rem;
-                --action-menu-button-color: linear-gradient(to bottom, rgb(251, 207, 208) 0%, rgb(229, 100, 124) 100%);
-                --action-close-button-out-diameter: 2.5rem;
-                --action-close-button-in-diameter: 2rem;
-                --action-out-circle-diameter: 3.5rem;
-                --action-in-circle-diameter: 3rem;
-                --action-out-circle-color: rgb(233, 233, 233, 0.3);
-                --action-out-circle-border: 2px solid rgba(46, 51, 116, 0.4);
-                --action-in-circle-border: 2px solid rgb(80, 89, 205);
-                --action-main-color: rgb(80, 89, 205);
-            }
 
             #map {
                 position: relative;
@@ -189,295 +30,9 @@
 
         </style>
 
-        <style>
-            /* 위치 */
-            .myPosition {
-                position: absolute;
-                z-index: 2000;
-                top: calc(50% - var(--myPosition-radius));
-                left: calc(50% - var(--myPosition-radius));
-                border-radius: var(--border-circular);
-            }
-
-            #thirdCircle {
-                width: var(--myPosition-thirdCircle-diameter);
-                height: var(--myPosition-thirdCircle-diameter);
-                --myPosition-radius: var(--myPosition-thirdCircle-diameter) / 2;
-                background: var(--color-black);
-            }
-
-            #secondCircle {
-                width: var(--myPosition-secondCircle-diameter);
-                height: var(--myPosition-secondCircle-diameter);
-                --myPosition-radius: var(--myPosition-secondCircle-diameter) / 2;
-                background: var(--color-white);
-                box-shadow: var(--myposition-secondCircle-boxshadow);
-            }
-
-           #firstCircle {
-                width: var(--myPosition-firstCircle-diameter);
-                height: var(--myPosition-firstCircle-diameter);
-                --myPosition-radius: var(--myPosition-firstCircle-diameter) / 2;
-                background: var(--myposition-firstCircle-color);
-           }
-
-        </style>
-
-        <style>
-            /* 내 위치 */
-            #reloadPositionButton {
-                position: absolute;
-                z-index: 2000;
-                width: var(--reloadPosition-diameter);
-                height: var(--reloadPosition-diameter);
-                top: 80%;
-                right: 4%;
-                border-radius: var(--border-circular);
-                background: rgb(255, 255, 255, 0.8);;
-                border: var(--reloadPosition-border);
-                box-shadow: var(--reloadPosition-boxshadow);
-            }
-
-            #reloadPositionButton:active {
-                box-shadow: 0 1px 0 rgb(0,0,0,0.3);
-                top: 80.2%;
-            }
-
-        </style>
-
-        <style>
-            /* 내 가방 */
-            #collectionButton {
-                position: absolute;
-                z-index: 2000;
-                width: 7rem;
-                height: 2.5rem;
-                top: 87%;
-                right: 0%;
-                border-radius: 12.5% 0% 0% 12.5% / 25% 0% 0% 25% ;
-                background: rgb(255, 255, 255, 0.8);
-                box-shadow: var(--reloadPosition-boxshadow);
-            }
-
-            #collectionButton:active {
-                box-shadow: 0 1px 0 rgb(0,0,0,0.3);
-                top: 87.2%;
-            }
-        </style>
-
-        <style>
-            /* action */
-            #actionBackgroundCircle {
-                position: absolute;
-                z-index: 2000;
-                width: var(--action-background-circle-diameter);
-                height: var(--action-background-circle-diameter);
-                top: calc(110% - var(--action-background-circle-diameter) / 2);
-                left: calc(50% - var(--action-background-circle-diameter) / 2);
-                background: var(--action-background-circle-color);
-            }
-
-            #actionMenuButton {
-                position: absolute;
-                z-index: 2000;
-                width: var(--action-menu-button-diameter);
-                height: var(--action-menu-button-diameter);
-                top: calc(87% - var(--action-menu-button-diameter) / 2);
-                left: calc(50% - var(--action-menu-button-diameter) / 2);
-                background: var(--action-menu-button-color);
-                border-radius: var(--border-circular);
-                border: 0.5px solid #CACACA;
-                box-shadow: 0 2px 1px 0.5px var(--box-shadow-color);
-            }
-
-            #actionMenuButton:active {
-                box-shadow: 0 1px 0 rgb(0,0,0,0.3);
-                top: calc(87.3% - var(--action-menu-button-diameter) / 2);;
-            }
-
-            .actionCircleOut {
-                position: absolute;
-                z-index: 2000;
-                width: var(--action-out-circle-diameter);
-                height: var(--action-out-circle-diameter);
-                background: var(--action-out-circle-color);
-                border: var(--action-out-circle-border);
-                border-radius: var(--border-circular);
-            }
-
-            .actionCircleIn {
-                position: absolute;
-                width: var(--action-in-circle-diameter);
-                height: var(--action-in-circle-diameter);
-                top: calc(50% - var(--action-in-circle-diameter) / 2);
-                left: calc(50% - var(--action-in-circle-diameter) / 2);
-                background: var(--color-white);
-                border: var(--action-in-circle-border);
-                border-radius: var(--border-circular);
-            }
-
-            .actionCircleCloseOut {
-                position: absolute;
-                z-index: 2000;
-                width: var(--action-close-button-out-diameter);
-                height: var(--action-close-button-out-diameter);
-                top: calc(87% - var(--action-close-button-out-diameter) / 2);
-                left: calc(50% - var(--action-close-button-out-diameter) / 2);
-                background: var(--action-out-circle-color);
-                border: var(--action-out-circle-border);
-                border-radius: var(--border-circular);
-            }
-
-            .actionCircleCloseIn {
-                position: absolute;
-                width: var(--action-close-button-in-diameter);
-                height: var(--action-close-button-in-diameter);
-                top: calc(50% - var(--action-close-button-in-diameter) / 2);
-                left: calc(50% - var(--action-close-button-in-diameter) / 2);
-                background: var(--color-white);
-                border: var(--action-in-circle-border);
-                border-radius: var(--border-circular);
-            }
-
-            .markOut {
-                top: calc(83% - var(--action-out-circle-diameter) / 2);
-                left: calc(36% - var(--action-out-circle-diameter) / 2);
-            }
-
-            .scanOut {
-                top: calc(79% - var(--action-out-circle-diameter) / 2);
-                left: calc(50% - var(--action-out-circle-diameter) / 2);
-            }
-
-            .trackOut {
-                top: calc(83% - var(--action-out-circle-diameter) / 2);
-                right: calc(36% - var(--action-out-circle-diameter) / 2);
-            }
-
-            .action_text {
-                font-size: 1rem;
-                position: absolute;
-                top: -30%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                color: #313681;
-                user-select: none;
-            }
-
-            @keyframes markButtonSpreadOut {
-                from {
-                    transform: translate(0, 0);
-                    animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                    opacity: 0;
-                }
-                to {
-                    transform: translate(-2rem, -2rem);
-                    opacity: 1;
-                }
-            }
-
-            @keyframes markButtonSpreadIn {
-                from {
-                    transform: translate(-2rem, -2rem);
-                    animation-timing-function: cubic-bezier(0.6, -0.28, 0.735, 0.045);
-                    opacity: 1;
-                }
-                to {
-                    transform: translate(0, 0);
-                    opacity: 0;
-                }
-            }
-
-            @keyframes scanButtonSpreadOut {
-                from {
-                    transform: translate(0, 0);
-                    animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateY(-2rem);
-                    opacity: 1;
-                }
-            }
-
-            @keyframes scanButtonSpreadIn {
-                from {
-                    transform: translateY(-2rem);
-                    animation-timing-function: cubic-bezier(0.6, -0.28, 0.735, 0.045);
-                    opacity: 1;
-                }
-                to {
-                    transform: translate(0, 0);
-                    opacity: 0;
-                }
-            }
-
-            @keyframes trackButtonSpreadOut {
-                from {
-                    transform: translate(0, 0);
-                    animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                    opacity: 0;
-                }
-                to {
-                    transform: translate(2rem, -2rem);
-                    opacity: 1;
-                }
-            }
-
-            @keyframes trackButtonSpreadIn {
-                from {
-                    transform: translate(2rem, -2rem);
-                    animation-timing-function: cubic-bezier(0.6, -0.28, 0.735, 0.045);
-                    opacity: 1;
-                }
-                to {
-                    transform: translate(0, 0);
-                    opacity: 0;
-                }
-            }
-
-            @keyframes showBackgroundCircle {
-                from {
-                    transform: scale(0);
-                }
-                to {
-                    transform: scale(1);
-                }
-            }
-
-            @keyframes hideBackgroundCircle {
-                from {
-                    transform: scale(1);
-                }
-                to {
-                    transform: scale(0);
-                }
-            }
-
-            @keyframes showSomthing {
-                from {
-                    opacity: 0;
-                }
-                to {
-                    opacity: 1;
-                }
-            }
-
-            @keyframes hideSomthing {
-                from {
-                    opacity: 1;
-                }
-                to {
-                    opacity: 0;
-                }
-            }
-
-        </style>
-
         <script>
 
             let user_pk;
-            let isFirstTimeMark_boolean;
 
             let map;
 
@@ -504,28 +59,38 @@
 
             function showActionMenu() {
                 document.getElementById("actionMenuButton").hidden = true;
-                document.getElementById("actionBackgroundCircle").hidden = false;
-                document.getElementById("actionBackgroundCircle").style.animation = 'showBackgroundCircle 0.3s linear 1';
                 document.getElementById("actionCloseButton").hidden = false;
+
+                const actionBackgroundCircle = document.getElementById("actionBackgroundCircle");
+                actionBackgroundCircle.hidden = false;
+                actionBackgroundCircle.style.animation = 'showBackgroundCircle 0.3s linear 1';
+                
                 for(e of document.getElementsByClassName("actionCircleOut")) {
                     e.hidden = false;
                     e.style.animation = e.id + 'SpreadOut 0.4s linear 1';
                     e.style.animationFillMode = 'both';
                 }
 
-                document.getElementById("reloadPositionButton").style.animation = 'hideSomthing 0.2s linear 1';
-                document.getElementById("reloadPositionButton").style.animationFillMode = 'both';
-                document.getElementById("collectionButton").style.animation = 'hideSomthing 0.2s linear 1';
-                document.getElementById("collectionButton").style.animationFillMode = 'both';
+                const reloadPositionButton = document.getElementById("reloadPositionButton");
+                reloadPositionButton.style.animation = 'hideSomthing 0.2s linear 1';
+                reloadPositionButton.style.animationFillMode = 'both';
+                
+                const collectionButton = document.getElementById("collectionButton");
+                collectionButton.style.animation = 'hideSomthing 0.2s linear 1';
+                collectionButton.style.animationFillMode = 'both';
+
                 setTimeout(() => {
-                    document.getElementById("reloadPositionButton").hidden = true;
-                    document.getElementById("collectionButton").hidden = true;
+                    reloadPositionButton.hidden = true;
+                    collectionButton.hidden = true;
                 }, 200)
 
             }
 
             function hideActionMenu() {
-                for(e of document.getElementsByClassName("actionCircleOut")) {
+
+                const actionCircleOut = document.getElementsByClassName("actionCircleOut");
+
+                for(e of actionCircleOut) {
                     e.style.animation = e.id + 'SpreadIn 0.3s linear 1';
                     e.style.animationFillMode = 'both';
                 }
@@ -533,22 +98,29 @@
                 setTimeout(() => {
                     document.getElementById("actionCloseButton").hidden = true;
 
-                    document.getElementById("actionMenuButton").style.animation = 'showSomthing 0.3s linear 1';
-                    document.getElementById("actionMenuButton").style.animationFillMode = 'both';
-                    document.getElementById("actionMenuButton").hidden = false;
+                    const actionMenuButton = document.getElementById("actionMenuButton");
+                    actionMenuButton.style.animation = 'showSomthing 0.3s linear 1';
+                    actionMenuButton.style.animationFillMode = 'both';
+                    actionMenuButton.hidden = false;
 
-                    document.getElementById("reloadPositionButton").style.animation = 'showSomthing 0.3s linear 1';
-                    document.getElementById("reloadPositionButton").style.animationFillMode = 'both';
-                    document.getElementById("collectionButton").style.animation = 'showSomthing 0.3s linear 1';
-                    document.getElementById("collectionButton").style.animationFillMode = 'both';
-                    document.getElementById("reloadPositionButton").hidden = false;
-                    document.getElementById("collectionButton").hidden = false;
+                    const reloadPositionButton = document.getElementById("reloadPositionButton");
+                    reloadPositionButton.style.animation = 'showSomthing 0.3s linear 1';
+                    reloadPositionButton.style.animationFillMode = 'both';
+
+                    const collectionButton = document.getElementById("collectionButton");
+                    collectionButton.style.animation = 'showSomthing 0.3s linear 1';
+                    collectionButton.style.animationFillMode = 'both';
+
+                    reloadPositionButton.hidden = false;
+                    collectionButton.hidden = false;
                 }, 150);
 
-                document.getElementById("actionBackgroundCircle").style.animation = 'hideBackgroundCircle 0.3s linear 1';
+                const actionBackgroundCircle = document.getElementById("actionBackgroundCircle");
+                actionBackgroundCircle.style.animation = 'hideBackgroundCircle 0.3s linear 1';
+                
                 setTimeout(() => {
-                    document.getElementById("actionBackgroundCircle").hidden = true;
-                    for(e of document.getElementsByClassName("actionCircleOut")) {
+                    actionBackgroundCircle.hidden = true;
+                    for(e of actionCircleOut) {
                         e.hidden = true;
                     }
                 }, 300);
@@ -579,9 +151,163 @@
                 fetch(url)
                 .then(response => response.json())
                 .then(response => {
-                    isFirstTimeMark_boolean = response.data;
+                    let isFirstTimeMark_boolean = response.data;
+
+                    if(isFirstTimeMark_boolean) {
+                        showMoreInfoAlertModal();
+                    }else {
+                        showWriteMarkModal();
+                    }
+
                 });
 
+            }
+
+            function textToUpperCase(target) {
+
+                target.value = target.value.toUpperCase();
+
+            }
+
+            function saveMoreInfo() {
+                const height = document.getElementById("moreInfoHeight").value;
+                const weight = document.getElementById("moreInfoWeight").value;
+                const bloodType = document.getElementById("moreInfoBloodType").value;
+                const mbtiType = document.getElementById("moreInfoMbtiType").value;
+                const hobby = document.getElementById("moreInfoHobby").value;
+                const drink = document.querySelector('input[name="isDrink"]:checked').value;
+                const smoke = document.querySelector('input[name="isSmoke"]:checked').value;
+                const preference = document.getElementById("moreInfoPreference").value;
+
+                if(height == "" || weight == "" || bloodType == "" || mbtiType == "" || hobby == "" || drink == "" || smoke == "" || preference == "0") {
+                    showFillMoreInfoAlertModal();
+                    return;
+                }
+
+                const url = "./insertMoreInfo?user_pk="+user_pk+"&height="+height+"&weight="+weight+
+                    "&blood_type="+bloodType+"&mbti_type="+mbtiType+"&hobby="+hobby+"&drinking="+drink+"&smoking="+smoke+"&preference="+preference;
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+                    showSuccessMoreInfoAlertModal();
+                });
+            }
+
+            function inputImage() {
+                const input = document.getElementById("writeMarkImage");
+                input.click();
+            }
+
+            function previewImage() {
+                const input = document.getElementById("writeMarkImage");
+                const writeMarkImageHere = document.getElementById("writeMarkImageHere");
+                if([...input.files].length === 0) {
+                    return;
+                }else {
+                    const imageUrl = URL.createObjectURL(input.files[0]);
+                    document.getElementById("writeMarkNoimage").hidden = true;
+                    writeMarkImageHere.style.background = "url(" + imageUrl + ") no-repeat center";
+                    writeMarkImageHere.style.backgroundSize = "cover";
+                };
+            }
+
+            function insertArticleInfo(){
+                const photeUpload = document.querySelector("#photeUpload");
+
+                const imageFiles = photeUpload.files;
+                const formData = new FormData();
+
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', './insertArticleInfo', true);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        console.log(xhr.responseText);
+                    }
+                };
+                for (let i = 0; i < imageFiles.length; i++) {
+                    formData.append("imageFiles", imageFiles[i]);
+                }
+                const content = document.querySelector("#content").value;            
+                const profile_info_pk = profileInfoDto.profile_info_pk;
+                formData.append("profile_info_pk", profile_info_pk);
+                formData.append("content", content);
+                 xhr.send(formData);
+
+                location.href='./profilePage?user_pk='+user_pk;
+            }
+
+            function saveWriteMarkInfo() {
+
+            }
+
+            function showMoreInfoAlertModal() {
+                const modal = bootstrap.Modal.getOrCreateInstance("#moreInfoAlertModal");
+                modal.show();
+            }
+            
+            function showModal() {
+                const modal = bootstrap.Modal.getOrCreateInstance("#writeMarkModal");
+                resetWriteMarkInput();
+                modal.show();
+            }
+            
+            function showMoreInfoModal() {
+                const moreInfoAlertModal = bootstrap.Modal.getOrCreateInstance("#moreInfoAlertModal");
+                moreInfoAlertModal.hide();
+                const modal = bootstrap.Modal.getOrCreateInstance("#moreInfoModal");
+                resetMoreInfoInput();
+                modal.show();
+
+                setTimeout(() => {
+                    const height = document.querySelector("#moreInfoHeight");
+                    height.focus();
+                }, 500);
+            }
+
+            function showFillMoreInfoAlertModal() {
+                const modal = bootstrap.Modal.getOrCreateInstance("#fillMoreInfoAlertModal");
+                modal.show();
+
+                setTimeout(() => {
+                    modal.hide();
+                }, 1500);
+            }
+
+            function showSuccessMoreInfoAlertModal() {
+                const modal = bootstrap.Modal.getOrCreateInstance("#successMoreInfoAlertModal");
+                modal.show();
+                const moreInfoModal = bootstrap.Modal.getOrCreateInstance("#moreInfoModal");
+                moreInfoModal.hide();
+
+                setTimeout(() => {
+                    modal.hide();
+                    showWriteMarkModal();
+                }, 1500);
+
+            }
+
+            function showWriteMarkModal() {
+                const modal = bootstrap.Modal.getOrCreateInstance("#writeMarkModal");
+                resetWriteMarkInput();
+                modal.show();
+            }
+
+            function resetMoreInfoInput() {
+                document.getElementById("moreInfoHeight").value = "";
+                document.getElementById("moreInfoWeight").value = "";
+                document.getElementById("moreInfoBloodType").value = "";
+                document.getElementById("moreInfoMbtiType").value = "";
+                document.getElementById("moreInfoHobby").value = "";
+                document.getElementById("yesDrink").checked = false;
+                document.getElementById("yesSmoke").checked = false;
+                document.getElementById("moreInfoPreference").value = 0;
+            }
+
+            function resetWriteMarkInput() {
+                document.getElementById("writeMarkNoimage").hidden = false;
+                document.getElementById("writeMarkImageHere").style.removeProperty("background", "background-size");
+                document.getElementById("writeMarkContent").value = "";
             }
 
             window.addEventListener("DOMContentLoaded", () => {
@@ -593,6 +319,18 @@
             });
 
         </script>
+
+        <style>
+            .more-info-check:checked {
+                background-color: #D96161;
+                border-color: #D96161;
+            }
+
+            input:invalid {
+                background: rgb(217, 97, 97, 0.3);
+                border: 2px solid #D96161;
+            }
+        </style>
 
     </head>
 
@@ -618,7 +356,7 @@
                         </div>
                         <!-- action -->
                         <div id="actionBackgroundCircle" hidden></div>
-                        <div onclick="showActionMenu()" id="actionMenuButton" style="object-fit: ;">
+                        <div onclick="showActionMenu()" id="actionMenuButton">
                             <span class="material-symbols-outlined pets_icon">
                                 pets
                             </span>
@@ -630,7 +368,8 @@
                                 </span>
                             </div>
                         </div>
-                        <div id="markButton" class="actionCircleOut markOut" hidden>
+                        <!-- <div onclick="marking()" id="markButton" class="actionCircleOut markOut" hidden> -->
+                        <div onclick="showModal()" id="markButton" class="actionCircleOut markOut" hidden>
                             <div class="action_text">체취</div>
                             <div class="actionCircleIn">
                                 <svg class="mark_icon" fill="#5059cd" height="200px" width="200px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 480.001 480.001" xml:space="preserve" stroke="#5059cd" stroke-width="14.400029999999997"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <g> <path d="M288.399,58.009c1.339,0,2.699-0.271,4.004-0.841l9.838-4.305c5.06-2.214,7.366-8.11,5.152-13.17 s-8.111-7.365-13.17-5.152l-9.838,4.305c-5.06,2.214-7.366,8.11-5.152,13.17C280.876,55.77,284.547,58.009,288.399,58.009z"></path> <path d="M325.114,41.949c1.341,0,2.702-0.271,4.009-0.843l0.916-0.401c0.309-0.135,0.607-0.284,0.896-0.446 c0.315-0.102,0.627-0.221,0.936-0.356l0.916-0.401c0.308-0.135,0.606-0.284,0.893-0.445c0.316-0.102,0.631-0.222,0.941-0.358 l0.915-0.401c0.308-0.135,0.605-0.284,0.892-0.445c0.315-0.102,0.627-0.221,0.937-0.356l0.916-0.401 c0.309-0.135,0.607-0.285,0.896-0.447c0.314-0.102,0.627-0.22,0.936-0.356l0.916-0.401c0.308-0.134,0.607-0.284,0.894-0.445 c0.315-0.102,0.629-0.221,0.939-0.357l0.916-0.401c0.309-0.135,0.607-0.285,0.895-0.446c0.314-0.102,0.627-0.221,0.937-0.356 l0.916-0.401c5.059-2.216,7.362-8.114,5.146-13.172c-2.217-5.059-8.115-7.362-13.173-5.146l-0.916,0.401 c-0.309,0.135-0.608,0.285-0.896,0.446c-0.314,0.103-0.627,0.221-0.937,0.357l-0.916,0.401c-0.308,0.135-0.606,0.284-0.893,0.445 c-0.315,0.102-0.629,0.221-0.939,0.358l-0.916,0.401c-0.309,0.135-0.608,0.285-0.896,0.447c-0.314,0.102-0.627,0.22-0.937,0.356 l-0.916,0.401c-0.309,0.135-0.607,0.285-0.896,0.446c-0.315,0.103-0.63,0.222-0.939,0.358l-0.915,0.401 c-0.308,0.135-0.604,0.283-0.891,0.444c-0.315,0.102-0.628,0.221-0.939,0.357l-0.916,0.401c-0.309,0.136-0.607,0.285-0.896,0.446 c-0.315,0.102-0.627,0.221-0.936,0.356l-0.916,0.401c-5.059,2.217-7.362,8.114-5.146,13.173 C317.594,39.712,321.263,41.949,325.114,41.949z"></path> <path d="M365.409,24.303c1.337,0,2.695-0.27,3.998-0.839l9.838-4.298c5.061-2.211,7.372-8.106,5.161-13.167 c-2.213-5.061-8.109-7.371-13.167-5.16l-9.838,4.298c-5.061,2.21-7.372,8.105-5.161,13.167 C357.883,22.062,361.554,24.303,365.409,24.303z"></path> <path d="M378.55,147.207l-9.568-4.912c-4.91-2.521-10.941-0.583-13.463,4.33c-2.522,4.913-0.584,10.941,4.33,13.463l9.568,4.912 c1.461,0.75,3.022,1.105,4.559,1.105c3.63,0,7.133-1.983,8.904-5.435C385.403,155.757,383.465,149.73,378.55,147.207z"></path> <path d="M342.926,128.901l-0.89-0.456c-0.3-0.154-0.604-0.291-0.91-0.412c-0.278-0.18-0.568-0.348-0.869-0.502l-0.89-0.456 c-0.3-0.154-0.603-0.291-0.91-0.412c-0.278-0.18-0.568-0.348-0.869-0.502l-0.89-0.456c-0.3-0.154-0.604-0.291-0.91-0.412 c-0.278-0.18-0.568-0.348-0.869-0.502l-0.89-0.457c-0.3-0.154-0.604-0.291-0.91-0.412c-0.278-0.18-0.568-0.348-0.869-0.502 l-0.89-0.457c-0.3-0.154-0.603-0.291-0.91-0.412c-0.278-0.18-0.568-0.348-0.869-0.502l-0.89-0.457 c-0.299-0.153-0.602-0.29-0.907-0.411c-0.279-0.18-0.569-0.348-0.871-0.503l-0.89-0.456c-0.3-0.154-0.604-0.291-0.91-0.412 c-0.279-0.181-0.57-0.349-0.872-0.504l-0.424-0.217c-4.915-2.519-10.942-0.579-13.461,4.337 c-2.52,4.914-0.578,10.941,4.336,13.461l0.424,0.217c0.299,0.153,0.602,0.29,0.907,0.41c0.278,0.18,0.568,0.348,0.869,0.502 l0.89,0.457c0.299,0.153,0.602,0.29,0.907,0.411c0.279,0.18,0.569,0.348,0.871,0.503l0.89,0.457 c0.3,0.154,0.603,0.291,0.91,0.412c0.278,0.18,0.568,0.348,0.869,0.502l0.89,0.456c0.3,0.154,0.603,0.291,0.91,0.412 c0.278,0.18,0.568,0.348,0.869,0.502l0.89,0.456c0.3,0.154,0.604,0.291,0.91,0.412c0.278,0.18,0.568,0.348,0.869,0.502 l0.89,0.456c0.3,0.154,0.604,0.291,0.91,0.412c0.278,0.18,0.568,0.348,0.869,0.502l0.89,0.457c0.3,0.154,0.603,0.291,0.91,0.412 c0.278,0.18,0.568,0.348,0.869,0.502l0.89,0.457c1.461,0.75,3.021,1.105,4.558,1.105c3.63,0,7.133-1.984,8.904-5.437 C349.779,137.45,347.841,131.422,342.926,128.901z"></path> <path d="M303.798,108.812l-9.539-4.911c-4.908-2.528-10.94-0.598-13.468,4.313c-2.528,4.911-0.597,10.941,4.313,13.468 l9.539,4.911c1.465,0.754,3.027,1.111,4.569,1.111c3.625,0,7.125-1.979,8.898-5.424 C310.639,117.369,308.708,111.34,303.798,108.812z"></path> <path d="M296.66,68.209c-5.522,0-10,4.477-10,10s4.478,10,10,10h10.736c5.522,0,10-4.477,10-10s-4.478-10-10-10H296.66z"></path> <path d="M347.552,68.209c-0.338,0-0.671,0.017-1,0.049c-0.329-0.033-0.662-0.049-1-0.049h-1c-0.338,0-0.671,0.017-1,0.049 c-0.329-0.033-0.662-0.049-1-0.049h-1c-0.338,0-0.671,0.017-1,0.049c-0.329-0.033-0.662-0.049-1-0.049h-1 c-0.338,0-0.671,0.017-1,0.049c-0.329-0.033-0.662-0.049-1-0.049h-1c-0.338,0-0.671,0.017-1,0.049 c-0.329-0.033-0.662-0.049-1-0.049h-1c-5.522,0-10,4.477-10,10s4.478,10,10,10h1c0.338,0,0.671-0.017,1-0.049 c0.329,0.033,0.662,0.049,1,0.049h1c0.338,0,0.671-0.017,1-0.049c0.329,0.033,0.662,0.049,1,0.049h1c0.338,0,0.671-0.017,1-0.049 c0.329,0.033,0.662,0.049,1,0.049h1c0.338,0,0.671-0.017,1-0.049c0.329,0.033,0.662,0.049,1,0.049h1c0.338,0,0.671-0.017,1-0.049 c0.329,0.033,0.662,0.049,1,0.049h0.505c5.522,0,10-4.477,10-10s-4.478-10-10-10H347.552z"></path> <path d="M381.023,68.209H370.3c-5.522,0-10,4.477-10,10s4.478,10,10,10h10.723c5.522,0,10-4.477,10-10 S386.546,68.209,381.023,68.209z"></path> <path d="M216.457,142.399v-6.095h32.959c5.522,0,10-4.477,10-10V40.377c0-5.523-4.478-10-10-10H163.48c-5.522,0-10,4.477-10,10 v85.928c0,5.523,4.478,10,10,10h32.977v6.111c-63.738,5.007-107.408,57.95-107.408,132.191v75.445 c-0.093,0.805-0.098,1.603,0,2.377v117.572c0,5.523,4.478,10,10,10h214.816c5.522,0,10-4.477,10-10v-163.93 c0-0.011,0-0.025,0-0.038v-31.426c0-36.194-10.872-69.244-30.613-93.061C273.871,158.164,247.472,144.753,216.457,142.399z M173.48,116.305V50.377h65.936v22.997c-0.244-0.018-0.488-0.037-0.736-0.037h-21.486c-5.522,0-10,4.477-10,10s4.478,10,10,10 h21.486c0.248,0,0.492-0.02,0.736-0.037v23.005H173.48z M303.865,460.002H109.049v-22.96h194.816V460.002z M303.866,417.042 L303.866,417.042H109.049v-65.204c0.845-3.798,4.069-16.559,11.624-28.996c11.16-18.376,26.47-27.694,45.503-27.694 c6.992,0,11.729,1.453,14.479,4.441c6.168,6.703,4.782,23.359,3.559,38.055c-1.498,17.997-3.047,36.607,7.155,48.204 c5.154,5.859,12.494,9.042,21.813,9.458c1.333,0.06,2.657,0.09,3.982,0.09c29.224-0.002,56.629-14.504,79.474-42.132 c2.605-3.151,5.011-6.305,7.228-9.397V417.042z M303.865,304.136c-4.98,11.092-35.537,73.637-89.79,71.191 c-5.543-0.248-7.159-2.085-7.69-2.689c-4.581-5.207-3.338-20.15-2.24-33.333c1.641-19.713,3.337-40.097-8.774-53.257 c-6.654-7.231-16.477-10.898-29.195-10.898c-23.087,0-42.656,10.063-57.127,29.232v-29.773 c0-56.041,30.119-112.586,97.408-112.586s97.408,56.545,97.408,112.585V304.136z"></path> </g> </g> </g> </g></svg>
@@ -648,11 +387,204 @@
                                 <svg class="track_icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#5059cd" transform="rotate(0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path fill="none" d="M0 0h24v24H0z"></path> <path d="M4 18h5.5v1.25a2.75 2.75 0 1 1-5.5 0V18zm4.058-4l.045-.132C8.87 11.762 9 11.37 9 11c0-.75-.203-1.643-.528-2.273C8.23 8.257 8.06 8.12 8 8.12 6.72 8.12 5.5 9.484 5.5 11c0 .959.075 1.773.227 2.758l.038.242h2.293zM8 6.12c2 0 3 2.88 3 4.88 0 1-.5 2-1 3.5L9.5 16H4c0-1-.5-2.5-.5-5S5.498 6.12 8 6.12zm12.054 7.978l-.217 1.231a2.75 2.75 0 0 1-5.417-.955l.218-1.23 5.416.954zm-1.05-4.246c.165-.5.301-.895.303-.9.202-.658.361-1.303.485-2.008.263-1.492-.702-3.047-1.962-3.27-.059-.01-.25.095-.57.515-.43.565-.784 1.41-.915 2.147-.058.33-.049.405.27 2.263.045.256.082.486.116.717l.02.138 2.254.398zm-.826-8.147c2.464.434 4.018 3.124 3.584 5.586-.434 2.463-1.187 3.853-1.36 4.838l-5.417-.955-.232-1.564c-.232-1.564-.55-2.636-.377-3.62.347-1.97 1.832-4.632 3.802-4.285z"></path> </g> </g></svg>
                             </div>
                         </div>
+                        <div style="width: 100%; height: 23vh; position: absolute; z-index: 1500; top: 75%;"></div>
                     </div>
                 </div>
             </div>
             <div class="row fixed-bottom">
                 <div class="col bg-white" style="height: 41px;"></div>
+            </div>
+        </div>
+
+        <div id="moreInfoAlertModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2100; background: rgb(0, 0, 0, 0.4);">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body text-center" style="font-size: 0.9rem;">
+                        <p class="mb-0">😍 체취를 처음 남기실 경우 <span style="color: #D96161;">추가 정보</span>를 입력해 주셔야 합니다</p>
+                        <!-- <p class="mb-0">추가 정보는 수집하는 누군가가 확인할 수 있습니다</p>
+                        <p class="mb-0">민감한 개인정보는 다루지 않으니 안심하셔도 됩니다</p>
+                        <p class="mb-0">전 문항을 양심에 따라 솔직히 입력해 주시기 바랍니다</p> -->
+                    </div>
+                    <div class="modal-footer pt-0 pb-2 border-0 justify-content-center">
+                        <button type="button" class="btn btn-secondary py-1" data-bs-dismiss="modal">닫기</button>
+                        <button onclick="showMoreInfoModal()" class="btn py-1 text-white" style="background: #D96161;">추가정보 입력</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="fillMoreInfoAlertModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2200; background: rgb(0, 0, 0, 0.4);">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content mx-auto text-white" style="width: 50%; background: #D96161;">
+                    <div class="modal-body text-center" style="font-size: 0.9rem;">
+                        빈칸을 모두 채워주세요
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="successMoreInfoAlertModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2200; background: rgb(0, 0, 0, 0.4);">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content mx-auto text-white" style="width: 50%; background: #D96161;">
+                    <div class="modal-body text-center" style="font-size: 0.9rem;">
+                        등록이 완료되었습니다
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="moreInfoModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2100; background: rgb(0, 0, 0, 0.4);">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col ps-4 pe-5">
+                                <div class="row">
+                                    <div class="col text-center fw-bold" style="font-size: 1.3rem;">
+                                        추가 정보
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-3 text-end">신장</div>
+                                    <div class="col">
+                                        <div class="input-group">
+                                            <input id="moreInfoHeight" class="form-control py-1 rounded text-end" type="number" min="140" max="200" style="box-shadow: none; font-size: 0.8rem;" placeholder="소수점 제외 | 140~200">
+                                            <span class="ms-2">cm</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-3 text-end">몸무게</div>
+                                    <div class="col">
+                                        <div class="input-group">
+                                            <input id="moreInfoWeight" class="form-control py-1 rounded text-end" type="number" min="30" max="200" style="box-shadow: none; font-size: 0.8rem;" placeholder="소수점 제외 | 30~200">
+                                            <span class="ms-2">kg</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-3 text-end">혈액형</div>
+                                    <div class="col">
+                                        <div class="input-group">
+                                            <input id="moreInfoBloodType" oninput="textToUpperCase(this)" class="form-control py-0 rounded text-end" type="text" style="text-transform: uppercase; box-shadow: none;" pattern="A|B|AB|O" maxlength="2">
+                                            <span class="ms-2">형</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-3 text-end">MBTI</div>
+                                    <div class="col">
+                                        <input id="moreInfoMbtiType" oninput="textToUpperCase(this)" class="form-control py-0 rounded" type="text" style="text-transform: uppercase; box-shadow: none;" pattern="ESTJ|ESTP|ESFJ|ESFP|ENTJ|ENTP|ENFJ|ENFP|ISTJ|ISTP|ISFJ|ISFP|INTJ|INTP|INFJ|INFP" maxlength="4">
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-3 text-end">취미</div>
+                                    <div class="col">
+                                        <div class="input-group">
+                                            <input id="moreInfoHobby" class="form-control py-0 rounded" type="text" maxlength="10" style="box-shadow: none;">
+                                            <span class="ms-2 mt-3" style="font-size: 0.65rem;">최대 10글자 이내</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-3 text-end">음주여부</div>
+                                    <div class="col">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input more-info-check moreInfoDrink" type="radio" name="isDrink" id="yesDrink" value="Y" style="box-shadow: none;">
+                                            <label class="form-check-label" for="yesDrink">Y</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input more-info-check moreInfoDrink" type="radio" name="isDrink" id="noDrink" value="N" style="box-shadow: none;" checked>
+                                            <label class="form-check-label" for="noDrink">N</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-3 text-end">흡연여부</div>
+                                    <div class="col">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input more-info-check moreInfoSmoke" type="radio" name="isSmoke" id="yesSmoke" value="Y" style="box-shadow: none;">
+                                            <label class="form-check-label" for="yesSmoke">Y</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input more-info-check moreInfoSmoke" type="radio" name="isSmoke" id="noSmoke" value="N" style="box-shadow: none;" checked>
+                                            <label class="form-check-label" for="noSmoke">N</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-3 text-end">지향</div>
+                                    <div class="col">
+                                        <select id="moreInfoPreference" class="form-select py-0" style="box-shadow: none;">
+                                            <option hidden selected value="0">
+                                                선택해주세요
+                                            </option>
+                                            <option value="M">남자가 좋아요</option>
+                                            <option value="W">여자가 좋아요</option>
+                                            <option value="B">성별은 상관없어요</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer pb-2 border-0 justify-content-center">
+                        <button type="button" class="btn btn-secondary py-1" data-bs-dismiss="modal">닫기</button>
+                        <button onclick="saveMoreInfo()" class="btn py-1 text-white" style="background: #D96161;">저장하기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="writeMarkModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2100; background: rgb(0, 0, 0, 0.4);">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col">
+                                <div class="row">
+                                    <div onclick="inputImage()" onchange="previewImage()" id="writeMarkImageHere" class="col border rounded-pill mx-3 px-0" style="aspect-ratio: 4/3;">
+                                        <!-- hidden -->
+                                        <div id="writeMarkNoimage" class="row text-center align-items-center" style="height: 100%;">
+                                            <div class="col">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <span class="material-symbols-outlined" style="color: #BFBFBF; font-size: 2rem;">
+                                                            add_photo_alternate
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col" style="color: #BFBFBF; font-size: 1rem;">
+                                                        이미지 추가하기
+                                                    </div>
+                                                </div>
+                                                <input id="writeMarkImage" type="file" accept="image/*" hidden>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col">
+                                        <span class="material-symbols-outlined align-middle" style="font-size: 1.1rem;">
+                                            stylus_note
+                                        </span>
+                                        한줄글
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col">
+                                        <textarea id="writeMarkContent" class="form-control" rows="2" placeholder="체취와 함께 흔적을 남겨주세요" maxlength="50" style="resize: none;"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer pb-2 border-0 justify-content-center">
+                        <button type="button" class="btn btn-secondary py-1" data-bs-dismiss="modal">닫기</button>
+                        <button onclick="saveWriteMarkInfo()" class="btn py-1 text-white" style="background: #D96161;">체취등록</button>
+                    </div>
+                </div>
             </div>
         </div>
 

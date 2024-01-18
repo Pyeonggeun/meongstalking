@@ -1,0 +1,18 @@
+/* 내 위치 */
+#reloadPositionButton {
+    position: absolute;
+    z-index: 2000;
+    width: var(--reloadPosition-diameter);
+    height: var(--reloadPosition-diameter);
+    top: 80%;
+    right: 4%;
+    border-radius: var(--border-circular);
+    background: rgb(255, 255, 255, 0.8);;
+    border: var(--reloadPosition-border);
+    box-shadow: var(--reloadPosition-boxshadow);
+}
+
+#reloadPositionButton:active {
+    box-shadow: 0 1px 0 rgb(0,0,0,0.3);
+    top: 80.2%;
+}

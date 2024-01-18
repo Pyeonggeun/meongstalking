@@ -74,17 +74,12 @@
     }
     </style>
     <script>
-        function loadSignupModal(){
-            const modal = bootstrap.Modal.getOrCreateInstance("#loadSignupModal");
-            modal.show();
-            
-        }
     </script>
 </head>
 
 <body>
     <div class="container">
-        <div th:replace="~{commons/club/clubTopNavi.html :: topNavi}"></div>
+        <div th:replace="~{club/clubTopNavi.html :: topNavi}"></div>
 
         <div th:each="qwer : ${freeBoardList}">
             <div class="row">
