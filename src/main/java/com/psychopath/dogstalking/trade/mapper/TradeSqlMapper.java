@@ -12,19 +12,18 @@ import com.psychopath.dogstalking.trade.dto.CarePriceDto;
 import com.psychopath.dogstalking.trade.dto.ChatMessageDto;
 import com.psychopath.dogstalking.trade.dto.ChatRoomDto;
 import com.psychopath.dogstalking.trade.dto.TradeArticleDto;
+import com.psychopath.dogstalking.trade.dto.WishListDto;
 
 @Mapper
 public interface TradeSqlMapper {
 
     public List<DogDto> getDogListByUser(int userPk);
 
+    public int createArticlePk();
+
     public void insertTradeArticleDto(TradeArticleDto tradeArticleDto);
 
-    public int getRecentTradeArticlePk();
-
     public void insertCareDog(CareDogDto careDogDto);
-
-    public void updateTradeArticle(TradeArticleDto tradeArticleDto);
 
     public void insertCarePrice(CarePriceDto carePriceDto);
 
@@ -63,5 +62,11 @@ public interface TradeSqlMapper {
 
     // 마지막 채팅 메시지 출력
     public ChatMessageDto getlastChatMessage(int chatRoomPk);
+
+
+    // 찜
+    public void insertWishList(WishListDto wishListDto);
+    public void deleteWishList(WishListDto wishListDto);
+    public int getCountWishListByUserPkAndArticlePk(WishListDto wishListDto);
 
 }
