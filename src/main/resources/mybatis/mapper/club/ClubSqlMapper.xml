@@ -69,6 +69,11 @@
     <select id="checka" resultType="int">
         SELECT MAX(club_user_pk) FROM ms_club_user
     </select>
+
+    <select id="checkb" resultType="int">
+        SELECT MAX(club_pk) FROM ms_club;
+    </select>
+    
     
     <select id="selectClubList" resultType="map">
         SELECT * FROM ms_club ORDER BY RAND()

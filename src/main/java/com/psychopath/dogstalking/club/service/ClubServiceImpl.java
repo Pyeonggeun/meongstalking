@@ -76,6 +76,10 @@ public class ClubServiceImpl {
 		return clubSqlMapper.checka();
 	}
 
+	public int checkb(){
+		return clubSqlMapper.checkb();
+	}
+
 	//리스트
 	public List<Map<String, Object>> selectClubList(){
 		return clubSqlMapper.selectClubList();	

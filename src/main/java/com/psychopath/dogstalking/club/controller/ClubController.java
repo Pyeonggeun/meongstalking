@@ -103,9 +103,14 @@ public class ClubController {
         UserDto userDto = (UserDto) session.getAttribute("sessionUser");
 
         int clubpk = clubService.checka();
+        if (clubpk == 0) {
+            clubpk = 1;
+        }
+        int checkb = clubService.checkb();
 
-        clubUserDto.setClub_pk(clubpk+1);
+        clubUserDto.setClub_user_pk(clubpk+1);
         clubUserDto.setUser_pk(userDto.getUser_pk());
+        clubUserDto.setClub_pk(checkb);
         clubService.insertClubUser(clubUserDto);
 
         clubUserRanklogDto.setClub_user_pk(userDto.getUser_pk());
@@ -131,7 +136,7 @@ public class ClubController {
     }
 
     @RequestMapping("createUserProcess")
-    public String createUserProcess(@RequestParam("club_pk")String clubPkString, HttpSession session, ClubDto clubDto, ClubUserDto clubUserDto,  ClubStatusLogDto clubStatusLogDto, Model model) {
+    public String createUserProcess(@RequestParam("club_pk") String clubPkString, HttpSession session, ClubDto clubDto, ClubUserDto clubUserDto,  ClubStatusLogDto clubStatusLogDto, Model model) {
         UserDto userDto = (UserDto) session.getAttribute("sessionUser");
         
         int clubPk = Integer.parseInt(clubPkString);
