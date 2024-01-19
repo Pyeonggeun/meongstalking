@@ -53,6 +53,30 @@ public class RestFollowController {
         return restResponseDto;
     }
 
+    @RequestMapping("checkWriteMarkDistance")
+    public RestResponseDto checkWriteMarkDistance(
+        int user_pk, int markingRadius, int markingDate, double latitude, double longitude) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+
+        restResponseDto.setData(
+            followService.checkWriteMarkDistance(user_pk, markingRadius, markingDate, latitude, longitude));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
+    @RequestMapping("checkWriteMarkCount")
+    public RestResponseDto checkWriteMarkCount(int user_pk) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(followService.checkWriteMarkCount(user_pk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
     public RestResponseDto a() {
 
         RestResponseDto restResponseDto = new RestResponseDto();

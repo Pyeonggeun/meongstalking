@@ -19,12 +19,14 @@
         <link rel="stylesheet" th:href="@{/public/css/follow/myBag.css}" />
         <link rel="stylesheet" th:href="@{/public/css/follow/action.css}" />
 
+        <script src="/public/js/commons/lockLikeMobile.js"></script>
+
         <style>
 
             #map {
                 position: relative;
                 overflow: hidden;
-                width: 100vw;
+                width: 100%;
                 height: 92.8vh;
             }
 
@@ -41,6 +43,10 @@
 
             let currentLat;
             let currentLng;
+
+            const totalMarkingCountEveryDay = 3;
+            const markingRadius = 100;
+            const markingDate = 7;
 
             function clickEffect(e) {
                 const d = document.createElement("div");
@@ -156,7 +162,7 @@
                     if(isFirstTimeMark_boolean) {
                         showMoreInfoAlertModal();
                     }else {
-                        showWriteMarkModal();
+                        checkWriteMarkDistance();
                     }
 
                 });
@@ -179,8 +185,9 @@
                 const smoke = document.querySelector('input[name="isSmoke"]:checked').value;
                 const preference = document.getElementById("moreInfoPreference").value;
 
-                if(height == "" || weight == "" || bloodType == "" || mbtiType == "" || hobby == "" || drink == "" || smoke == "" || preference == "0") {
-                    showFillMoreInfoAlertModal();
+                if(height == "" || weight == "" || bloodType == "" || mbtiType == "" ||
+                    hobby == "" || drink == "" || smoke == "" || preference == "0") {
+                    showFillAlertModal();
                     return;
                 }
 
@@ -204,12 +211,12 @@
                 const writeMarkImageHere = document.getElementById("writeMarkImageHere");
                 if([...input.files].length === 0) {
                     return;
-                }else {
-                    const imageUrl = URL.createObjectURL(input.files[0]);
-                    document.getElementById("writeMarkNoimage").hidden = true;
-                    writeMarkImageHere.style.background = "url(" + imageUrl + ") no-repeat center";
-                    writeMarkImageHere.style.backgroundSize = "cover";
                 };
+
+                const imageUrl = URL.createObjectURL(input.files[0]);
+                document.getElementById("writeMarkNoimage").hidden = true;
+                writeMarkImageHere.style.background = "url(" + imageUrl + ") no-repeat center";
+                writeMarkImageHere.style.backgroundSize = "cover";
             }
 
             function insertArticleInfo(){
@@ -241,6 +248,50 @@
 
             }
 
+            function checkWriteMarkDistance() {
+
+                getMyLocation();
+
+                const url = "./checkWriteMarkDistance?user_pk=" + user_pk + "&markingRadius=" + markingRadius +
+                    "&markingDate=" + markingDate + "&latitude=" + currentLat + "&longitude=" + currentLng;
+                
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+
+                    if(response.data.length === 0) {
+                        showWriteMarkModal();
+                    }else {
+
+                        for(e of response.data) {
+
+                            
+
+                        }
+                        
+                        // asdf
+                    }
+
+                });
+
+            }
+
+            function checkWriteMarkCount() {
+
+                const url = "./checkWriteMarkCount?user_pk=" + user_pk;
+
+                fetch(url)
+                .then(response => response)
+                .then(response => {
+                    if(totalMarkingCountEveryDay - response.data == 0) {
+                        showAllUsedAlertModal();
+                    }else {
+                        // asdf
+                    }
+                })
+
+            }
+
             function showMoreInfoAlertModal() {
                 const modal = bootstrap.Modal.getOrCreateInstance("#moreInfoAlertModal");
                 modal.show();
@@ -265,8 +316,8 @@
                 }, 500);
             }
 
-            function showFillMoreInfoAlertModal() {
-                const modal = bootstrap.Modal.getOrCreateInstance("#fillMoreInfoAlertModal");
+            function showFillAlertModal() {
+                const modal = bootstrap.Modal.getOrCreateInstance("#fillAlertModal");
                 modal.show();
 
                 setTimeout(() => {
@@ -293,6 +344,15 @@
                 modal.show();
             }
 
+            function showAllUsedAlertModal() {
+                const modal = bootstrap.Modal.getOrCreateInstance("#allUsedAlertModal");
+                modal.show();
+
+                setTimeout(() => {
+                    modal.hide();
+                }, 1500);
+            }
+
             function resetMoreInfoInput() {
                 document.getElementById("moreInfoHeight").value = "";
                 document.getElementById("moreInfoWeight").value = "";
@@ -315,6 +375,7 @@
                 // getUserPk();
                 createMap();
                 getMyLocation();
+                checkWriteMarkCount();
                 
             });
 
@@ -413,7 +474,7 @@
             </div>
         </div>
         
-        <div id="fillMoreInfoAlertModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2200; background: rgb(0, 0, 0, 0.4);">
+        <div id="fillAlertModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2200; background: rgb(0, 0, 0, 0.4);">
             <div class="modal-dialog modal-sm modal-dialog-centered">
                 <div class="modal-content mx-auto text-white" style="width: 50%; background: #D96161;">
                     <div class="modal-body text-center" style="font-size: 0.9rem;">
@@ -428,6 +489,16 @@
                 <div class="modal-content mx-auto text-white" style="width: 50%; background: #D96161;">
                     <div class="modal-body text-center" style="font-size: 0.9rem;">
                         등록이 완료되었습니다
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="allUsedAlertModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2200; background: rgb(0, 0, 0, 0.4);">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content mx-auto text-white" style="width: 50%; background: #D96161;">
+                    <div class="modal-body text-center" style="font-size: 0.9rem;">
+                        횟수를 전부 사용하셨습니다
                     </div>
                 </div>
             </div>
@@ -597,7 +668,7 @@
                 const mapContainer = document.getElementById("map");
                 mapOption = {
                     center: new kakao.maps.LatLng(staticLat, staticLng),
-                    level: 1
+                    level: 4
                 };
 
                 map = new kakao.maps.Map(mapContainer, mapOption);
@@ -636,6 +707,10 @@
                 }
                 myMarker.setMap(map);
                 map.setCenter(locPosition);
+            }
+
+            function displayMarkedMine() {
+
             }
 
         </script>

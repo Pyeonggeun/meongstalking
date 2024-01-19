@@ -13,6 +13,26 @@
         SELECT COUNT(*) FROM ms_follow_user_more
         where user_pk = #{user_pk}
     </select>
+
+    <select id="checkWriteMarkDistance" resultType="com.psychopath.dogstalking.follow.dto.LogDto">
+        SELECT * FROM ms_follow_log mfl
+        where mfl.user_pk = #{user_pk}
+        <![CDATA[
+            and date(now()) - date(mfl.created_date) <= #{markingDate}
+            and (
+                SELECT get_distance(
+                    #{latitude}, #{longitude}, mfl.latitude, mfl.longitude
+                ) AS distance
+            ) <= #{markingRadius}
+        ]]>
+    </select>
+
+    <select id="checkWriteMarkCount" resultType="int">
+        SELECT COUNT(*) FROM ms_follow_log
+        where user_pk = #{user_pk}
+        and date(created_date) = date(now())
+    </select>
+
     <!-- <select id="" resultType=""></select> -->
 
 </mapper>
