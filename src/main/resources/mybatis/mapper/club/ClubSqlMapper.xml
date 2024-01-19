@@ -13,7 +13,7 @@
         SELECT *
         FROM ms_club_freeboard
         JOIN ms_user ON ms_user.USER_PK = ms_club_freeboard.user_pk
-        where ms_club_freeboard.club_pk=1
+        where ms_club_freeboard.club_pk=#{club_pk}
     </select>
 
     <!-- 댓글 -->
@@ -61,9 +61,19 @@
         VALUES (#{user_pk},#{club_pk},"길드 개설자")
 	</insert>
 
+    <insert id="insertClubUsers">
+		INSERT INTO ms_club_user(user_pk,club_pk,content)
+        VALUES (#{user_pk},#{club_pk},#{content})
+	</insert>
+
     <select id="checka" resultType="int">
         SELECT MAX(club_user_pk) FROM ms_club_user
     </select>
+
+    <select id="checkb" resultType="int">
+        SELECT MAX(club_pk) FROM ms_club;
+    </select>
+    
     
     <select id="selectClubList" resultType="map">
         SELECT * FROM ms_club ORDER BY RAND()
@@ -77,4 +87,16 @@
         WHERE ms_club.club_pk = #{club_pk}
     </select>
     
+
+    <!--회원 신청 상태-->
+    <insert id="insertUserStatusLog">
+        INSERT INTO ms_club_user_statuslog(club_user_pk,clubcategory_pk)
+        VALUES (#{club_user_pk},2); 
+    </insert>
+
+    <!--개설시 리더 자동 위임-->
+    <insert id="insertLeader">
+        INSERT INTO ms_club_user_ranklog(club_user_pk,clubuserranklogcategory_pk)
+        VALUES (#{club_user_pk},1); 
+    </insert>
 </mapper>

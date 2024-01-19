@@ -9,25 +9,63 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <script src="https://kit.fontawesome.com/784384f602.js" crossorigin="anonymous"></script>
 
+    
+
     <script>
-        function clickRegisterButton(articlePk){
+        function clickRegisterButton(){
 
             const title = document.getElementById("title").value;
             const content = document.getElementById("content").value;
             const price = document.getElementById("price").value;
 
 
-            const url = "./registerTradeArticleSecond?pk=" + articlePk + "&title=" + title + "&content=" + content + "&price=" + price;
+            const url = "./registerTradeArticleSecond?title=" + title + "&content=" + content + "&price=" + price;
             
             fetch(url)
             .then(response => response.json())
             .then(response => {
-                
+
+
             });
 
-            window.location.href = "./mainPage";
-
         }
+
+        function registerImage() {
+            const imageFiles = document.getElementById("imageFiles").files;
+
+            let formdata = new FormData();
+
+            // 이미지 파일을 FormData에 추가
+            for (let i = 0; i < imageFiles.length; i++) {
+                formdata.append("imageFiles", imageFiles[i]);
+            }
+
+            const url = "./registerImage";
+
+            fetch(url, {
+                method: "post",
+                body: formdata // FormData 객체 전달
+            })
+            .then(response => response.json())
+            .then(response => {
+                
+                const imageListBox = document.getElementById("imageListBox");
+                imageListBox.innerHTML="";
+
+                for(e of response.data){
+                    const imageWrapper = document.querySelector("#template .imageWrapper").cloneNode(true);
+
+                    const image = imageWrapper.querySelector(".image");
+                    image.setAttribute("src", "/uploadFiles/"+ e.image +"");
+
+                    imageListBox.appendChild(imageWrapper);
+
+                }
+
+                document.getElementById("imageFiles").value = "";
+
+            });
+        }      
 
 
 
@@ -137,6 +175,40 @@
         </div>
         <div class="row" style="height: 2.2em;"></div>
 
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <span class="fw-bold" style="font-size: 1em;">이미지</span>
+                        <span class="fw-bold" style="font-size: 1em; color: #FF8A3D;">*</span>
+                    </div>
+                </div>
+                
+                <div class="row" style="height: 1em;"></div>
+                <div class="row">
+                    <div class="col">
+                        <div class="fw-bold text-secondary" style="font-size: 0.6em;">* 이미지요~</div>
+                    </div>
+                </div>
+                <div class="row" style="height: 1em;"></div>   
+                <div class="row">
+                    <div class="col-4" style="padding-top: 0.2em;">
+                        <div class="fw-bold" style="font-size: 12px;">ㅋㅋ</div>
+                    </div>
+                    <div class="col">
+                        <input id="imageFiles" accept="image/*" oninput="registerImage()" multiple type="file" style="font-size: 0.8em; border-width: 0.13em; border-style: solid; border-color: #e9e9e9; border-radius: 0.4em; height: 2em; width: 100%;">
+                    
+                    </div>
+                </div> 
+                <div class="row">
+                    <div class="col" id="imageListBox">
+
+                    </div>
+                </div>            
+            </div>            
+        </div>
+        <div class="row" style="height: 8em;"></div>        
+
 
 
     </div>
@@ -144,10 +216,29 @@
     <div class="container-fluid footer">
         <div class="row">
             <div class="col">
-                <button th:value="${articlePk}" onclick="clickRegisterButton(this.getAttribute('value'))" class="fw-bold" style="width: 100%; height: 3em; border-width: 0; border-radius: 0.5em; color: white; background-color: #FF8A3D; font-size: 0.9em;">등록</button>
+                <button onclick="clickRegisterButton()" class="fw-bold" style="width: 100%; height: 3em; border-width: 0; border-radius: 0.5em; color: white; background-color: #FF8A3D; font-size: 0.9em;">등록</button>
             </div>
         </div>
     </div>    
+
+
+    <div id="template" class="d-none">
+
+    <div class="row imageWrapper">
+        <div class="col" style="padding-top: 2.5em;">
+            <div class="row">
+                <div class="col-5"></div>
+                <div class="col">
+                    <img class="img-fluid image" style="border-radius: 1em; border-style: solid; border-width: 0.1em;">
+                </div>
+                <div class="col-5"></div>
+            </div>
+        </div>
+    </div>
+
+        
+    </div>
+
 
 
     <script src="https://kit.fontawesome.com/784384f602.js" crossorigin="anonymous"></script>

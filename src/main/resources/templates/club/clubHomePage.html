@@ -57,6 +57,7 @@
             display: inline-block;
         }
         @media (min-width: 576px) {
+
         .modal.bottom-modal .modal-dialog {
             position: fixed;
             bottom: -10%; 
@@ -160,9 +161,6 @@
 
 <body>
 
-     <!-- TemplateT 
-     or showclubpk['clubpk_ck'] == 1
-    -->
      <div class="container p-0">
         <div th:if="${clubTF['user_exists'] == 'T'}">  
             <th:block th:replace="~{club/clubTopNavi.html :: topNavi}"></th:block>
@@ -187,9 +185,7 @@
                 <button class="btn btn-secondary col-12 signup-button" onclick="loadSignupModal()">가입하기</button>
             </div>
         </div>
-        <!-- 소속된 동호회가 없는 경우의 내용 
-        or showclubpk['clubpk_ck'] == 0
-        -->
+
         <div th:if="${clubTF['user_exists'] == 'F' }">  
             <th:block th:replace="~{club/clubTopNavi.html :: mainTopNavi}"></th:block>
             <div class="row pt-3 scrollable-menu d-flex justify-content-around align-items-center fw-bold text-center">
@@ -212,7 +208,7 @@
                 </div>
                 <p class="ms-3 mb-0 text-center" style="display: flex; align-items: center;">원하는 동호회를 찾지 못했나요?</p>
             
-                <a href="./createClubPage" class="text-center col-10 btn btn-primary px-3 py-3 mx-3 my-2 text-center" style="font-size: 0.8rem; border-radius: 12px; opacity: 0.8; display: flex; align-items: center; justify-content: space-between; text-decoration: none;">
+                <a th:href="@{./createClubPage}" class="text-center col-10 btn btn-primary px-3 py-3 mx-3 my-2 text-center" style="font-size: 0.8rem; border-radius: 12px; opacity: 0.8; display: flex; align-items: center; justify-content: space-between; text-decoration: none;">
                     <span style="font-size: 0.8rem;">관심사에 맞는 동호회를<br>직접 운영해 보시는 건 어때요?</span>
                     <button type="button" class="btn btn-light mx-2" style="border-radius: 12px; opacity: 0.9; font-size: 0.5rem; padding: 3px 10px; color: #007bff;">
                         동호회 만들기
@@ -221,7 +217,7 @@
             </div>
 
             <div id="aaa" class="row pt-2 fw-bold justify-content-center">
-               
+               <!--
                 <p class="ms-3 mb-0 text-center" style="display: flex; align-items: center;">원하는 동호회를 찾지 못했나요?</p>
             
                 <a href="./createClubPage" class="text-center col-10 btn btn-primary px-3 py-3 mx-3 my-2 text-center" style="font-size: 0.8rem; border-radius: 12px; opacity: 0.8; display: flex; align-items: center; justify-content: space-between; text-decoration: none;">
@@ -229,7 +225,7 @@
                     <button type="button" class="btn btn-light mx-2" style="border-radius: 12px; opacity: 0.9; font-size: 0.5rem; padding: 3px 10px; color: #007bff;">
                         동호회 만들기
                     </button>
-                </a>
+                </a>-->
             </div>
         </div>
     </div>
