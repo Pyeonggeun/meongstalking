@@ -125,6 +125,10 @@
         }
     </style>
     <script th:inline="javascript">
+        function goBack() {
+        window.history.back();
+        }
+
         function aaa() {
             // JavaScript logic for '인기 많은 동호회'
             var aaaContent = document.getElementById('aaa');
@@ -161,14 +165,33 @@
 
 <body>
 
-     <div class="container p-0">
+     <div class="container">
         <div th:if="${clubTF['user_exists'] == 'T'}">  
-            <th:block th:replace="~{club/clubTopNavi.html :: topNavi}"></th:block>
-            <div class="row border-bottom border-2 border-gray">
-                <div class="col-md-4  px-0">
-                    <img th:src="@{../public/image/guild_mainImg.png}" class="img-fluid">
+            <div class="row">
+                <div class="col-2 my-2 ms-1">
+                    <button class="btn" onclick="goBack()">
+                        <i class="bi bi-arrow-left"></i>
+                    </button>
+                </div>
+                <div th:text="${clubTF.clubname}" class="col d-flex align-items-center px-0">
+                </div>
+                <div class="col-1 d-flex align-items-center me-4">
+                    <span style="cursor: pointer;" onclick="location.href='./clubLeaderPage'"><i class="bi bi-gear"></i></span>
                 </div>
             </div>
+            <div class="row scrollable-menu px-0">
+                <div class="col justify-content-between fw-bold">
+                    <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
+                    <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">게시판</span>
+                    <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">사진첩</span>
+                    <span class="mx-3" style="cursor: pointer;" onclick="location.href='##'">채팅</span>
+            
+                </div>
+            </div>
+            <div class="row border-bottom border-2 border-gray px-0">
+                <img th:src="@{../public/image/guild_mainImg.png}" class="img-fluid d-flex px-0">
+            </div>
+            
 
             <div class="row border-bottom border-5 border-gray">
                 <div class="col-md-8 my-3" >

@@ -37,6 +37,7 @@ public interface ClubSqlMapper {
     public Map<String, Object> applyClubUserTF(int user_pk);
     public int checka();
     public int checkb();
+    public int selectClubPK(int user_pk);
 
     //리스트
     public List<Map<String, Object>> selectClubList();
@@ -47,5 +48,8 @@ public interface ClubSqlMapper {
 
     //리더 위임
     public void insertLeader(ClubUserRanklogDto clubUserRanklogDto);
+
+    //신청 리스트
+    public List<Map<String, Object>> selectApplyList(int club_pk);
 
 }

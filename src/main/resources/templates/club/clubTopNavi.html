@@ -24,6 +24,11 @@
             flex: 0 0 auto;
         }
     </style>
+    <script>
+        function goBack() {
+        window.history.back();
+    }
+    </script>
 </head>
 
 <body>
@@ -47,7 +52,29 @@
             </div>
         </div>
     </div>
-
+    <div th:fragment="leaderTopNavi">
+    <div class="row">
+            <div class="col-2 my-2 ms-1">
+                <button class="btn" onclick="goBack()">
+                    <i class="bi bi-arrow-left"></i>
+                </button>
+            </div>
+            <div class="col d-flex align-items-center px-0">
+                동호회 관리
+            </div>
+            <div class="col-1 d-flex align-items-center me-4">
+                <span style="cursor: pointer;" onclick="location.href='./clubLeaderPage'"><i class="bi bi-gear"></i></span>
+            </div>
+        </div>
+        <div class="row scrollable-menu px-0">
+            <div class="col justify-content-between fw-bold">
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubSignupPage'">동호회 정보 수정</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubSignupPage'">가입 승인</span>
+                
+            </div>
+        </div>
+    </div>
     <div th:fragment="mainTopNavi">
         <div class="row">
             <div id="carouselExampleCaptions" class="carousel slide">

@@ -32,7 +32,7 @@ public class ClubController {
         UserDto userDto = (UserDto) session.getAttribute("sessionUser");
         Map<String, Object> clubTF = clubService.applyClubUserTF(userDto.getUser_pk());
         model.addAttribute("clubTF", clubTF);
-
+        
         List<Map<String, Object>> clublist = clubService.selectClubList();
         model.addAttribute("clublist", clublist);
 
@@ -43,16 +43,19 @@ public class ClubController {
     }
 
     @RequestMapping("freeBoardPage")
-    public String freeBoardPage(Model model, ClubDto clubDto) {
-        int pk = clubDto.getClub_pk();
+    public String freeBoardPage(HttpSession session, Model model, ClubDto clubDto) {
+        UserDto userDto = (UserDto) session.getAttribute("sessionUser");
+        // Map<String, Object> clubTF = clubService.applyClubUserTF(userDto.getUser_pk());
+        // model.addAttribute("clubTF", clubTF);
 
-        System.out.println("pk 확인하기");
-        System.out.println(pk);
+        int useid = userDto.getUser_pk();
+        int pk = clubService.selectClubPK(useid);
 
         List<Map<String, Object>> freeBoardList = clubService.selectFreeBoardAll(pk);
         model.addAttribute("freeBoardList", freeBoardList);
 
-        System.out.println(freeBoardList);
+        Map<String, Object> clubTF = clubService.applyClubUserTF(userDto.getUser_pk());
+        model.addAttribute("clubTF", clubTF);
         return "club/freeBoardPage";
     }
 
@@ -84,6 +87,41 @@ public class ClubController {
         return "club/createClubPage";
     }
 
+    @RequestMapping("clubLeaderPage")
+    public String clubLeaderPage(HttpSession session, Model model, ClubDto clubDto) {
+        UserDto userDto = (UserDto) session.getAttribute("sessionUser");
+
+
+        Map<String, Object> clubTF = clubService.applyClubUserTF(userDto.getUser_pk());
+        model.addAttribute("clubTF", clubTF);
+        return "club/clubLeaderPage";
+    }
+
+    @RequestMapping("clubSignupPage")
+    public String clubSignupPage(HttpSession session, Model model, ClubDto clubDto) {
+        UserDto userDto = (UserDto) session.getAttribute("sessionUser");
+
+        Map<String, Object> clubTF = clubService.applyClubUserTF(userDto.getUser_pk());
+        model.addAttribute("clubTF", clubTF);
+        
+        int pk = (int) clubTF.get("club_pk");
+        List<Map<String, Object>> applyList = clubService.selectApplyList(pk);
+
+        if (applyList != null && !applyList.isEmpty()) {
+            model.addAttribute("applyList", applyList);
+            return "club/clubSignupPage";
+        } else {
+            return "club/clubNoSignupPage";
+        }
+    }
+
+
+    @RequestMapping("clubNoSignupPage")
+    public String clubNoSignupPage() {
+        return "club/clubNoSignupPage";
+    }
+    
+    
     @RequestMapping("clubListPage")
     public String clubListPage(Model model) {
         List<Map<String, Object>> clublist = clubService.selectClubList();
@@ -120,6 +158,7 @@ public class ClubController {
         int pk=clubUserDto.getUser_pk();
         clubStatusLogDto.setClub_user_pk(pk);
         clubStatusLogDto.setClubstatuslog_pk(1);
+        clubStatusLogDto.setClubcategory_pk(1); 
         clubService.insertUserStatusLog(clubStatusLogDto);
 
         Map<String, Object> clubTF = clubService.applyClubUserTF(userDto.getUser_pk());
@@ -147,7 +186,7 @@ public class ClubController {
         
         int pk=clubUserDto.getUser_pk();
         clubStatusLogDto.setClub_user_pk(pk);
-       // clubStatusLogDto.setClubstatuslog_pk(2);
+        clubStatusLogDto.setClubcategory_pk(2);
         clubService.insertUserStatusLog(clubStatusLogDto);
 
 

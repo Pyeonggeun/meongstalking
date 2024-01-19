@@ -33,19 +33,24 @@
     <!-- 길드 가입 여부 -->
     <select id="applyClubUserTF" resultType="map">
     <![CDATA[
-        SELECT  
-        CASE WHEN COUNT(*) > 0 THEN 'T' ELSE 'F' END AS user_exists,
-        ms_club_user.*,
-        ms_user.*,
-        ms_club.*,
-        ms_club.name AS clubname,
-        ms_club.content AS clubcontent 
-        FROM 
-            ms_club_user
-            JOIN ms_user ON ms_user.user_pk = ms_club_user.user_pk
-            JOIN ms_club ON ms_club.club_pk = ms_club_user.club_pk 
-        WHERE 
-            ms_user.user_pk = #{user_pk}
+        SELECT 
+    COALESCE(CASE WHEN COUNT(*) > 0 THEN 'T' ELSE 'F' END, 'F') AS user_exists,
+    ms_club_user.*,
+    ms_user.*,
+    ms_club.*,
+    ms_club_user_statuslog.*,
+    ms_club.name AS clubname,
+    ms_club.content AS clubcontent
+    FROM 
+        ms_user
+    LEFT JOIN 
+        ms_club_user ON ms_user.user_pk = ms_club_user.user_pk
+    LEFT JOIN 
+        ms_club ON ms_club.club_pk = ms_club_user.club_pk 
+    left join 
+        ms_club_user_statuslog on ms_club_user_statuslog.club_user_pk = ms_club_user.user_pk  
+    WHERE 
+        ms_club_user.user_pk = #{user_pk}
     ]]>
     </select>
 
@@ -67,13 +72,16 @@
 	</insert>
 
     <select id="checka" resultType="int">
-        SELECT MAX(club_user_pk) FROM ms_club_user
+        SELECT COALESCE(MAX(club_user_pk), 0) FROM ms_club_user
     </select>
 
     <select id="checkb" resultType="int">
         SELECT MAX(club_pk) FROM ms_club;
     </select>
     
+    <select id="selectClubPK" resultType="int">
+        SELECT * FROM ms_club_user WHERE user_pk = #{user_pk};
+    </select>
     
     <select id="selectClubList" resultType="map">
         SELECT * FROM ms_club ORDER BY RAND()
@@ -90,8 +98,8 @@
 
     <!--회원 신청 상태-->
     <insert id="insertUserStatusLog">
-        INSERT INTO ms_club_user_statuslog(club_user_pk,clubcategory_pk)
-        VALUES (#{club_user_pk},2); 
+        INSERT INTO ms_club_user_statuslog(club_user_pk)
+        VALUES (#{club_user_pk}); 
     </insert>
 
     <!--개설시 리더 자동 위임-->
@@ -99,4 +107,17 @@
         INSERT INTO ms_club_user_ranklog(club_user_pk,clubuserranklogcategory_pk)
         VALUES (#{club_user_pk},1); 
     </insert>
+
+    <!--가입신청목록-->
+    <select id="selectApplyList" resultType="map">
+        SELECT 
+            ms_user.*,
+            ms_club_user.*,
+            ms_club_user_statuslog.*,
+            ms_club_user_statuslog.created_at AS applydate
+        FROM ms_club_user
+        LEFT JOIN ms_club_user_statuslog ON ms_club_user_statuslog.club_user_pk = ms_club_user.user_pk
+        left join ms_user on ms_user.user_pk =ms_club_user.user_pk 
+        WHERE ms_club_user.club_pk = #{club_pk} AND ms_club_user_statuslog.clubcategory_pk = 2
+    </select>
 </mapper>

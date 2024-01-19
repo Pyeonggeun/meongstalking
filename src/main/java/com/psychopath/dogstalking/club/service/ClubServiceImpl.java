@@ -80,6 +80,10 @@ public class ClubServiceImpl {
 		return clubSqlMapper.checkb();
 	}
 
+	public int selectClubPK(int user_pk){
+		return clubSqlMapper.selectClubPK(user_pk);
+	}
+
 	//리스트
 	public List<Map<String, Object>> selectClubList(){
 		return clubSqlMapper.selectClubList();	
@@ -96,4 +100,10 @@ public class ClubServiceImpl {
 	public void insertLeader(ClubUserRanklogDto clubUserRanklogDto){
 		clubSqlMapper.insertLeader(clubUserRanklogDto);
 	}
+
+	public List<Map<String, Object>> selectApplyList(int club_pk){
+		return clubSqlMapper.selectApplyList(club_pk);	
+	}
+
+	
 }
