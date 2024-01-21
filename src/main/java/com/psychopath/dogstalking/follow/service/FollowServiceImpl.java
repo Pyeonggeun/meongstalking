@@ -1,6 +1,7 @@
 package com.psychopath.dogstalking.follow.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,16 @@ public class FollowServiceImpl {
     public int checkWriteMarkCount(int user_pk) {
 
         return followSqlMapper.checkWriteMarkCount(user_pk);
+    }
+
+    public void insetWriteMarkInfo(LogDto logDto) {
+
+        followSqlMapper.insetWriteMarkInfo(logDto);
+    }
+
+    public List<Map<String, Object>> getScanResult(int user_pk, double latitude, double longitude) {
+
+        return followSqlMapper.getScanResult(user_pk, latitude, longitude);
     }
 
 }
