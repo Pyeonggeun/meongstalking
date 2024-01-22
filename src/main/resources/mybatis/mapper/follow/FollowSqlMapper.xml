@@ -14,6 +14,10 @@
         values(#{user_pk}, #{image_link}, #{content}, #{latitude}, #{longitude})
     </insert>
 
+    <insert id="insertCollectionInfo">
+        insert into ms_follow_collection(user_pk, log_pk) values(#{user_pk}, #{log_pk});
+    </insert>
+
     <select id="isFirstTimeMark" resultType="int">
         SELECT COUNT(*) FROM ms_follow_user_more
         where user_pk = #{user_pk}
@@ -78,14 +82,14 @@
                 SELECT t2.*, (
                     CASE
                         <![CDATA[
-                            when (t2.rnum / max(t2.max_count)) > 0.36 then 'oneStar'
-                            when (t2.rnum / max(t2.max_count)) > 0.25 then 'twoStar'
-                            when (t2.rnum / max(t2.max_count)) > 0.15 then 'threeStar'
-                            when (t2.rnum / max(t2.max_count)) > 0.11 then 'fourStar'
-                            when (t2.rnum / max(t2.max_count)) > 0.07 then 'fiveStar'
-                            when (t2.rnum / max(t2.max_count)) > 0.054 then 'S'
-                            when (t2.rnum / max(t2.max_count)) > 0.005 then 'SR'
-                            when (t2.rnum / max(t2.max_count)) > 0.001 then 'SSR'
+                            when (t2.rnum / t2.max_count) > 0.36 then 'oneStar'
+                            when (t2.rnum / t2.max_count) > 0.25 then 'twoStar'
+                            when (t2.rnum / t2.max_count) > 0.15 then 'threeStar'
+                            when (t2.rnum / t2.max_count) > 0.11 then 'fourStar'
+                            when (t2.rnum / t2.max_count) > 0.07 then 'fiveStar'
+                            when (t2.rnum / t2.max_count) > 0.054 then 'S'
+                            when (t2.rnum / t2.max_count) > 0.005 then 'SR'
+                            when (t2.rnum / t2.max_count) > 0.001 then 'SSR'
                         ]]>
                     END
                 ) as star_rating
@@ -140,6 +144,69 @@
         )t6
         order by RAND()
         LIMIT 5
+    </select>
+
+    <select id="getCollectionPersonList" resultType="map">
+        SELECT t1.*, t3.star_rating, mmpi.profile_photo FROM (
+            SELECT mfl.user_pk, count(*) as collect_count, (
+                CASE 
+                    <![CDATA[
+                        when count(*) >= 100 then '10'
+                        when count(*) >= 80 then '9'
+                        when count(*) >= 64 then '8'
+                        when count(*) >= 49 then '7'
+                        when count(*) >= 36 then '6'
+                        when count(*) >= 24 then '5'
+                        when count(*) >= 14 then '4'
+                        when count(*) >= 7 then '3'
+                        when count(*) >= 2 then '2'
+                        else '1'
+                    ]]>
+                END
+            ) as open_rating FROM ms_follow_collection mfc
+            inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
+            where mfc.user_pk = #{user_pk}
+            GROUP BY mfl.user_pk
+        )t1
+        inner join (
+            SELECT t2.user_pk, (
+                CASE
+                    <![CDATA[
+                        when (t2.rnum / t2.max_count) > 0.36 then 'oneStar'
+                        when (t2.rnum / t2.max_count) > 0.25 then 'twoStar'
+                        when (t2.rnum / t2.max_count) > 0.15 then 'threeStar'
+                        when (t2.rnum / t2.max_count) > 0.11 then 'fourStar'
+                        when (t2.rnum / t2.max_count) > 0.07 then 'fiveStar'
+                        when (t2.rnum / t2.max_count) > 0.054 then 'S'
+                        when (t2.rnum / t2.max_count) > 0.005 then 'SR'
+                        when (t2.rnum / t2.max_count) > 0.001 then 'SSR'
+                    ]]>
+                END
+            ) as star_rating
+            from (
+                SELECT mfum.*, ROW_NUMBER() over (order by (
+                    (
+                        SELECT COUNT(*) FROM ms_follow_collection mfc
+                        inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
+                        where mfl.user_pk = mfum.user_pk
+                        GROUP BY mfl.user_pk
+                    ) * 0.8 + (
+                        SELECT COUNT(*) FROM ms_follow_comment mfc
+                        inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
+                        where mfl.user_pk = mfum.user_pk
+                        GROUP BY mfl.user_pk
+                    ) * 0.1 + (
+                        SELECT COUNT(*) FROM ms_follow_like mfl
+                        where user_writer_pk = mfum.user_pk
+                        GROUP BY mfl.user_writer_pk		
+                    ) * 0.1
+                )) as rnum, (
+                    SELECT COUNT(*) FROM ms_follow_user_more
+                ) as max_count
+                FROM ms_follow_user_more mfum
+            )t2
+        )t3 on t1.user_pk = t3.user_pk
+        inner join ms_mstar_profile_info mmpi on t1.user_pk = mmpi.user_pk
     </select>
 
     <!-- <select id="" resultType=""></select> -->

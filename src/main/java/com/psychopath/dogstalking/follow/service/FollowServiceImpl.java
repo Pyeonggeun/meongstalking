@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.psychopath.dogstalking.follow.dto.CollectionDto;
 import com.psychopath.dogstalking.follow.dto.LogDto;
 import com.psychopath.dogstalking.follow.dto.UserMoreDto;
 import com.psychopath.dogstalking.follow.mapper.FollowSqlMapper;
@@ -50,6 +51,16 @@ public class FollowServiceImpl {
     public List<Map<String, Object>> getScanResult(int user_pk, double latitude, double longitude) {
 
         return followSqlMapper.getScanResult(user_pk, latitude, longitude);
+    }
+
+    public void insertCollectionInfo(CollectionDto collectionDto) {
+
+        followSqlMapper.insertCollectionInfo(collectionDto);
+    }
+
+    public List<Map<String, Object>> getCollectionPersonList(int user_pk) {
+
+        return followSqlMapper.getCollectionPersonList(user_pk);
     }
 
 }

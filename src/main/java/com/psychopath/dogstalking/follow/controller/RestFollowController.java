@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.psychopath.dogstalking.dto.RestResponseDto;
 import com.psychopath.dogstalking.dto.UserDto;
+import com.psychopath.dogstalking.follow.dto.CollectionDto;
 import com.psychopath.dogstalking.follow.dto.LogDto;
 import com.psychopath.dogstalking.follow.dto.UserMoreDto;
 import com.psychopath.dogstalking.follow.service.FollowServiceImpl;
@@ -149,6 +150,30 @@ public class RestFollowController {
         return restResponseDto;
     }
 
+    @RequestMapping("insertCollectionInfo")
+    public RestResponseDto insertCollectionInfo(CollectionDto params) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+
+        followService.insertCollectionInfo(params);
+        
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
+    @RequestMapping("getCollectionPersonList")
+    public RestResponseDto getCollectionPersonList(int user_pk) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+
+        restResponseDto.setData(followService.getCollectionPersonList(user_pk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
+    @RequestMapping("a")
     public RestResponseDto a() {
 
         RestResponseDto restResponseDto = new RestResponseDto();

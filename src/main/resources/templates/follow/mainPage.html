@@ -334,11 +334,138 @@
                         const position = new kakao.maps.LatLng(e.latitude, e.longitude);
                         displayMarkedMine(position, e);
 
-                        //asdf
-
                     }
                     
                 });
+
+            }
+
+            function collectMarkedInfo(e) {
+                
+                const url = "./insertCollectionInfo?user_pk=" + user_pk + "&log_pk=" + e.log_pk;
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+                    document.getElementById("showMarkedImage").style.background = 
+                        "url(/uploadFiles/" + e.image_link + ") no-repeat center";
+                    document.getElementById("showMarkedImage").style.backgroundSize = "cover";
+                    document.getElementById("showMarkedContent").innerText = e.content;
+                    document.getElementById("collectButton").hidden = true;
+                    document.getElementById("showMarkedHideContent").hidden = true;
+                    document.getElementById("showMarkedHideImage").hidden = true;
+
+                    removeMarkedMineMarkers();
+                    removeEventListener("click", collectMarkedInfo);
+                });
+            }
+
+            function reloadCollectionPersonList() {
+
+                const url = "./getCollectionPersonList?user_pk=" + user_pk;
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+                    console.log(response.data);
+                    if(response.data.length == 0) {
+                        return;
+                    }
+
+                    const collectionPersonBox = document.getElementById("collectionPersonBox");
+
+                    for(e of response.data) {
+
+                        const collectionPersonWrapper = document.querySelector("#templete .collectionPersonWrapper").cloneNode(true);
+
+                        collectionPersonWrapper.querySelector(".collectionPersonRateCircle");
+                        const collectionPersonImage = collectionPersonWrapper.querySelector(".collectionPersonImage");
+
+                        if(e.open_rating >= 9) {
+                            collectionPersonImage.innerText = "";
+                            collectionPersonImage.style.background = "url(/uploadFiles/" + e.profile_photo + ") no-repeat center";
+                            collectionPersonImage.style.backgroundSize = "cover";
+                        }
+
+                        const collectionPersonRateContent = collectionPersonWrapper.querySelector(".collectionPersonRateContent");
+                        let cnt = 0;
+
+                        if(e.star_rating == 'one_star') {
+                            cnt = 1;
+                        }else if(e.star_rating == 'two_star') {
+                            cnt = 2;
+                        }else if(e.star_rating == 'three_star') {
+                            cnt = 3;
+                        }else if(e.star_rating == 'four_star') {
+                            cnt = 4;
+                        }else if(e.star_rating == 'five_star') {
+                            cnt = 5;
+                        }else if(e.star_rating == 'S') {
+                            collectionPersonRateContent.innerText = e.star_rating;
+                        }else if(e.star_rating == 'SR') {
+                            collectionPersonRateContent.innerText = e.star_rating;
+                        }else {
+                            collectionPersonRateContent.innerText = e.star_rating;
+                        }
+
+                        for(let i = 0 ; i < cnt ; i++) {
+                            const star_icon = document.querySelector("#templete .star_icon").cloneNode(true);
+                            collectionPersonRateContent.appendChild(star_icon);
+                        }
+
+                        let goalCount = 0;
+
+                        if(e.open_rating == 1) {
+                            goalCount = 2;
+                        }else if(e.open_rating == 2) {
+                            goalCount = 7;
+                        }else if(e.open_rating == 3) {
+                            goalCount = 14;
+                        }else if(e.open_rating == 4) {
+                            goalCount = 24;
+                        }else if(e.open_rating == 5) {
+                            goalCount = 36;
+                        }else if(e.open_rating == 6) {
+                            goalCount = 49;
+                        }else if(e.open_rating == 7) {
+                            goalCount = 64;
+                        }else if(e.open_rating == 8) {
+                            goalCount = 80;
+                        }else if(e.open_rating == 9) {
+                            goalCount = 100;
+                        }
+
+                        const collectionPersonProgress = collectionPersonWrapper.querySelector(".collectionPersonProgress");
+                        collectionPersonProgress.style.width = (e.collect_count / goalCount) + "%";
+                        collectionPersonProgress.innerText = e.collect_count + ' / ' + goalCount;
+                        
+                        if(e.open_rating == 10) {
+                            collectionPersonProgress.style.width = "100%";
+                            collectionPersonProgress.innerText = e.collect_count + ' / ∞';
+                        }
+
+                        collectionPersonWrapper.addEventListener("click", showDetailCollectionPersonInfo(e));
+                        collectionPersonBox.appendChild(collectionPersonWrapper);
+
+                    }
+
+                });
+
+            }
+
+            function showDetailCollectionPersonInfo(e) {
+
+                
+                
+            }
+            
+            function openMyBag() {
+                resetMyBagInput();
+                const modal = bootstrap.Modal.getOrCreateInstance("#myBagModal");
+                modal.show();
+
+                bootstrap.Tab.getOrCreateInstance("#pills-home-tab").show();
+                reloadCollectionPersonList();
 
             }
 
@@ -415,8 +542,14 @@
                         "url(/uploadFiles/" + e.image_link + ") no-repeat center";
                     document.getElementById("showMarkedImage").style.backgroundSize = "cover";
                     document.getElementById("showMarkedContent").innerText = e.content;
+                    document.getElementById("collectButton").hidden = true;
+                    document.getElementById("showMarkedHideContent").hidden = true;
+                    document.getElementById("showMarkedHideImage").hidden = true;
                 }else {
-
+                    document.getElementById("collectButton").addEventListener('click', collectMarkedInfo(e))
+                    document.getElementById("collectButton").hidden = false;
+                    document.getElementById("showMarkedHideContent").hidden = false;
+                    document.getElementById("showMarkedHideImage").hidden = false;
                 }
 
                 modal.show();
@@ -429,6 +562,11 @@
                 setTimeout(() => {
                     modal.hide();
                 }, 1500);
+            }
+
+            function showDetailCollectionPersonInfoModal() {
+                const modal = bootstrap.Modal.getOrCreateInstance("#detailCollectionPersonInfoModal");
+                modal.show();
             }
 
             function resetMoreInfoInput() {
@@ -451,6 +589,10 @@
             function resetShowMarkedInput() {
                 document.getElementById("showMarkedImage").style.removeProperty("background", "background-size");
                 document.getElementById("showMarkedContent").innerText = "";
+            }
+
+            function resetMyBagInput() {
+                document.getElementById("collectionPersonBox").innerHTML = "";
             }
 
             window.addEventListener("DOMContentLoaded", () => {
@@ -530,6 +672,11 @@
                 --myPosition-radius: var(--myPosition-firstCircle-diameter) / 2;
                 background: rgb(255, 166, 0, 0.1);
             }
+
+            .star_icon {
+                font-variation-settings:
+                'FILL' 1
+            }
         </style>
 
     </head>
@@ -547,7 +694,8 @@
                             </span>
                         </div>
                         <!-- my bag -->
-                        <div id="collectionButton">
+                        <!-- <div onclick="openMyBag()" id="collectionButton"> -->
+                        <div onclick="showDetailCollectionPersonInfoModal()" id="collectionButton">
                             <i class="bi bi-backpack2-fill"></i>
                             <i class="bi bi-gift-fill"></i>
                             <span class="material-symbols-outlined military_tech_icon">
@@ -825,7 +973,15 @@
                             <div class="col">
                                 <div class="row">
                                     <div id="showMarkedImage" class="col border rounded-pill mx-3 px-0" style="aspect-ratio: 4/3;">
-                                        
+                                        <div id="showMarkedHideImage" class="row text-center align-items-center" style="height: 100%;" hidden>
+                                            <div class="col">
+                                                <div class="row">
+                                                    <div class="col" style="color: #BFBFBF; font-size: 1rem;">
+                                                        ? ? ?
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row mt-4">
@@ -838,7 +994,7 @@
                                 </div>
                                 <div class="row mt-2">
                                     <div id="showMarkedContent" class="col">
-                                        
+                                        <span id="showMarkedHideContent" style="color: #BFBFBF; font-size: 1rem;" hidden>?????</span>
                                     </div>
                                 </div>
                             </div>
@@ -846,10 +1002,137 @@
                     </div>
                     <div class="modal-footer pb-2 border-0 justify-content-center">
                         <button type="button" class="btn btn-secondary py-1" data-bs-dismiss="modal">닫기</button>
-                        <button onclick="collectMarkedInfo()" class="btn py-1 text-white" style="background: #D96161;" hidden>수집하기</button>
+                        <button id="collectButton" class="btn py-1 text-white" style="background: #D96161;" hidden>수집하기</button>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div id="myBagModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 3000; background: rgb(138, 142, 184);">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content mx-auto" style="width: 97%;">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col">
+                                <ul class="nav nav-underline nav-fill" id="pills-tab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">꾸욱 List</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">수집도감</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">내 체취/흔적</button>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" id="pills-tabContent">
+                                    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
+                                        <div class="row">
+                                            <div class="col text-center">
+                                                <span class="material-symbols-outlined" style="font-size: 5rem; color: #BFBFBF;">
+                                                    engineering
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col text-center">
+                                                <span class="material-symbols-outlined" style="font-size: 1.1rem; color: #BFBFBF;">
+                                                    서비스 준비 중
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
+                                        <div class="row">
+                                            <div class="col">
+                                                <div id="collectionPersonBox" class="row row-cols-3 px-4">
+
+                                                 <!-- wrapper -->
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab" tabindex="0">
+                                        <div class="row">
+                                            <div class="col text-center">
+                                                <span class="material-symbols-outlined" style="font-size: 5rem; color: #BFBFBF;">
+                                                    engineering
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col text-center">
+                                                <span class="material-symbols-outlined" style="font-size: 1.1rem; color: #BFBFBF;">
+                                                    서비스 준비 중
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="actionCloseButton" class="actionCircleCloseOut" data-bs-dismiss="modal" style="position: fixed;">
+                            <div class="actionCircleCloseIn">
+                                <span class="material-symbols-outlined close_icon">
+                                    close
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="detailCollectionPersonInfoModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 3000; background: rgb(138, 142, 184);">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content mx-auto" style="width: 97%;">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col">
+                                
+                            </div>
+                        </div>
+                        <div id="actionCloseButton" class="actionCircleCloseOut" data-bs-dismiss="modal" style="position: fixed;">
+                            <div class="actionCircleCloseIn">
+                                <span class="material-symbols-outlined close_icon">
+                                    close
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="templete" class="d-none">
+            <div class="collectionPersonWrapper col px-4 mt-5">
+                <div class="row">
+                    <div class="collectionPersonRateCircle col mx-3 d-grid align-items-center" style="aspect-ratio: 1/1; border-radius: 50%; border: 1px solid #40BAE5;">
+                        <div class="row">
+                            <div class="collectionPersonImage col mx-1 text-center fw-bold d-grid align-items-center" style="aspect-ratio: 1/1; border-radius: 50%; border: 1px solid #BFBFBF; color: #BFBFBF;">
+                                ???
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="collectionPersonRateContent col px-1 text-center" style="word-spacing: -1rem;">
+                        
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col px-2">
+                        <div class="progress" role="progressbar" style="height: 0.5rem;">
+                            <div class="collectionPersonProgress progress-bar text-bg-warning" style="width: 75%; font-size: 0.6rem;">3 / 100</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <span class="star_icon material-symbols-outlined" style="font-size: 0.8rem;">
+                star_rate
+            </span>
         </div>
 
         <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a277eb582a644847f86de6196a42745f"></script>
@@ -899,7 +1182,7 @@
                     myMarker.setPosition(locPosition);
                 }
                 myMarker.setMap(map);
-                map.setCenter(locPosition);
+                map.panTo(locPosition);
             }
 
             function markedScan() {
@@ -939,9 +1222,7 @@
 
                 markedMineMarkers.push(customOverlay);
 
-                content.addEventListener('click', () => {
-                    showMarkedModal(e);
-                })
+                content.addEventListener('click', showMarkedModal(e));
 
             }
 
