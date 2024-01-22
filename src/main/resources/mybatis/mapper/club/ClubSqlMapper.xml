@@ -50,7 +50,7 @@
     left join 
         ms_club_user_statuslog on ms_club_user_statuslog.club_user_pk = ms_club_user.user_pk  
     WHERE 
-        ms_club_user.user_pk = #{user_pk}
+        ms_club_user.user_pk = #{user_pk} 
     ]]>
     </select>
 
@@ -80,7 +80,7 @@
     </select>
     
     <select id="selectClubPK" resultType="int">
-        SELECT * FROM ms_club_user WHERE user_pk = #{user_pk};
+        SELECT ms_club_user.club_pk FROM ms_club_user WHERE user_pk = #{user_pk};
     </select>
     
     <select id="selectClubList" resultType="map">
@@ -120,4 +120,30 @@
         left join ms_user on ms_user.user_pk =ms_club_user.user_pk 
         WHERE ms_club_user.club_pk = #{club_pk} AND ms_club_user_statuslog.clubcategory_pk = 2
     </select>
+
+    <!--가입 승인-->
+    <update id="updateApplyClub">
+        UPDATE ms_club_user_statuslog
+        SET clubcategory_pk = 1
+        WHERE club_user_pk = #{club_user_pk};
+    </update>
+
+
+    <update id="updatenotApplyClub">
+        UPDATE ms_club_user_statuslog
+        SET clubcategory_pk = 0
+        WHERE club_user_pk = #{club_user_pk};
+    </update>
+
+
+    <select id="selectClubUserId" resultType="int">
+        SELECT ms_club_user.club_user_pk  FROM ms_club_user WHERE user_pk = #{user_pk};
+    </select>
+
+    <!--길드 정보 수정-->
+    <update id="updateClub">
+        UPDATE ms_club
+        SET name = #{name}, content = #{content}
+        WHERE club_pk = #{club_pk}; 
+    </update>
 </mapper>

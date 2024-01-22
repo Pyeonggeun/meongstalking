@@ -52,4 +52,12 @@ public interface ClubSqlMapper {
     //신청 리스트
     public List<Map<String, Object>> selectApplyList(int club_pk);
 
+    //가입상태
+    public void updateApplyClub(ClubStatusLogDto clubStatusLogDto);
+    public void updatenotApplyClub(ClubStatusLogDto clubStatusLogDto);
+    public int selectClubUserId(int s);
+
+    //길드 수정
+    public void updateClub(ClubDto clubDto);
+
 }

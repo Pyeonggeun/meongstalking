@@ -105,5 +105,21 @@ public class ClubServiceImpl {
 		return clubSqlMapper.selectApplyList(club_pk);	
 	}
 
+	public void updateApplyClub(ClubStatusLogDto clubStatusLogDto) {
+		clubSqlMapper.updateApplyClub(clubStatusLogDto);
+	}
+
+	public int selectClubUserId(int pk){
+		return clubSqlMapper.selectClubUserId(pk);
+	}
+
+	public void updatenotApplyClub(ClubStatusLogDto clubStatusLogDto) {
+		clubSqlMapper.updatenotApplyClub(clubStatusLogDto);
+	}
+
+	public void updateClub(ClubDto clubDto) {
+		clubSqlMapper.updateClub(clubDto);
+	}
+	
 	
 }
