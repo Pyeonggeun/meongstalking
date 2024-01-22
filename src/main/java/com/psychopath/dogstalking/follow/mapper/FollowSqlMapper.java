@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.psychopath.dogstalking.follow.dto.LogDto;
 import com.psychopath.dogstalking.follow.dto.UserMoreDto;
@@ -16,11 +17,14 @@ public interface FollowSqlMapper {
     public void insertMoreInfo(UserMoreDto userMoreDto);
 
     public List<LogDto> checkWriteMarkDistance(
-        int user_pk, int markingRadius, int markingDate, double latitude, double longitude);
+        @RequestParam("user_pk") int user_pk, @RequestParam("markingRadius") int markingRadius,
+        @RequestParam("markingDate") int markingDate, @RequestParam("latitude") double latitude, @RequestParam("longitude") double longitude);
     public int checkWriteMarkCount(int user_pk);
 
     public void insetWriteMarkInfo(LogDto logDto);
+    public LogDto getJustBeforeIMarked(int user_pk);
 
-    public List<Map<String, Object>> getScanResult(int user_pk, double latitude, double longitude);
+    public List<Map<String, Object>> getScanResult(@RequestParam("user_pk") int user_pk,
+        @RequestParam("latitude") double latitude, @RequestParam("longitude") double longitude);
 
 }

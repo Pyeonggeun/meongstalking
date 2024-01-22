@@ -88,7 +88,7 @@ public class RestFollowController {
     public RestResponseDto saveWriteMarkInfo(LogDto params, MultipartFile imageFile) {
 
         RestResponseDto restResponseDto = new RestResponseDto();
-
+        System.out.println(imageFile);
         if(imageFile != null) {
             String rootPath = "C:/uploadFiles/";
 
@@ -127,6 +127,17 @@ public class RestFollowController {
         return restResponseDto;
     }
 
+    @RequestMapping("getJustBeforeIMarked")
+    public RestResponseDto getJustBeforeIMarked(int user_pk) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(followService.getJustBeforeIMarked(user_pk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
     @RequestMapping("getScanResult")
     public RestResponseDto getScanResult(int user_pk, double latitude, double longitude) {
 
@@ -134,7 +145,7 @@ public class RestFollowController {
 
         restResponseDto.setData(followService.getScanResult(user_pk, latitude, longitude));
         restResponseDto.setResult("success");
-        
+        System.out.println(followService.getScanResult(user_pk, latitude, longitude));
         return restResponseDto;
     }
 

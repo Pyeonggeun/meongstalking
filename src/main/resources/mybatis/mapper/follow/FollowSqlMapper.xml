@@ -38,9 +38,17 @@
         and date(created_date) = date(now())
     </select>
 
+    <select id="getJustBeforeIMarked" resultType="com.psychopath.dogstalking.follow.dto.LogDto">
+        SELECT * FROM ms_follow_log
+        where user_pk = #{user_pk}
+        order by created_date desc
+        limit 1
+    </select>
+
     <select id="getScanResult" resultType="map">
         SELECT t6.* FROM (
-            SELECT t1.log_pk, t1.image_link, t1.content, t1.latitude, t1.longitude, t1.created_date ,t3.*, t5.cnt, t5.open_rating FROM (
+            SELECT t1.log_pk, t1.image_link, t1.content, t1.latitude, t1.longitude, t1.created_date,
+                t3.*, IFNULL(t5.cnt, 0) as cnt, IFNULL(t5.open_rating, 1) as open_rating FROM (
                 SELECT * FROM ms_follow_log mfl
                 where mfl.user_pk != #{user_pk}
                 <![CDATA[
@@ -70,14 +78,14 @@
                 SELECT t2.*, (
                     CASE
                         <![CDATA[
-                            when (t2.rnum / max(t2.rnum)) > 0.36 then 'oneStar'
-                            when (t2.rnum / max(t2.rnum)) > 0.25 then 'twoStar'
-                            when (t2.rnum / max(t2.rnum)) > 0.15 then 'threeStar'
-                            when (t2.rnum / max(t2.rnum)) > 0.11 then 'fourStar'
-                            when (t2.rnum / max(t2.rnum)) > 0.07 then 'fiveStar'
-                            when (t2.rnum / max(t2.rnum)) > 0.054 then 'S'
-                            when (t2.rnum / max(t2.rnum)) > 0.005 then 'SR'
-                            when (t2.rnum / max(t2.rnum)) > 0.001 then 'SSR'
+                            when (t2.rnum / max(t2.max_count)) > 0.36 then 'oneStar'
+                            when (t2.rnum / max(t2.max_count)) > 0.25 then 'twoStar'
+                            when (t2.rnum / max(t2.max_count)) > 0.15 then 'threeStar'
+                            when (t2.rnum / max(t2.max_count)) > 0.11 then 'fourStar'
+                            when (t2.rnum / max(t2.max_count)) > 0.07 then 'fiveStar'
+                            when (t2.rnum / max(t2.max_count)) > 0.054 then 'S'
+                            when (t2.rnum / max(t2.max_count)) > 0.005 then 'SR'
+                            when (t2.rnum / max(t2.max_count)) > 0.001 then 'SSR'
                         ]]>
                     END
                 ) as star_rating
@@ -98,14 +106,16 @@
                             where user_writer_pk = mfum.user_pk
                             GROUP BY mfl.user_writer_pk		
                         ) * 0.1
-                    )) as rnum
+                    )) as rnum, (
+                        SELECT COUNT(*) FROM ms_follow_user_more
+                    ) as max_count
                     FROM ms_follow_user_more mfum
                 )t2
             )t3
             on t1.user_pk = t3.user_pk
-            inner join (
+            left join (
                 SELECT t4.*, (
-                    CASE 
+                    CASE
                         <![CDATA[
                             when cnt >= 100 then '10'
                             when cnt >= 80 then '9'

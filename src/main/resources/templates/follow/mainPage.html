@@ -223,43 +223,21 @@
                 writeMarkImageHere.style.backgroundSize = "cover";
             }
 
-            // function insertArticleInfo(){
-            //     const photeUpload = document.querySelector("#photeUpload");
-
-            //     const imageFiles = photeUpload.files;
-            //     const formData = new FormData();
-
-            //     const xhr = new XMLHttpRequest();
-            //     xhr.open('POST', './insertArticleInfo', true);
-            //     xhr.onreadystatechange = function () {
-            //         if (xhr.readyState === 4 && xhr.status === 200) {
-            //             console.log(xhr.responseText);
-            //         }
-            //     };
-            //     for (let i = 0; i < imageFiles.length; i++) {
-            //         formData.append("imageFiles", imageFiles[i]);
-            //     }
-            //     const content = document.querySelector("#content").value;            
-            //     const profile_info_pk = profileInfoDto.profile_info_pk;
-            //     formData.append("profile_info_pk", profile_info_pk);
-            //     formData.append("content", content);
-            //      xhr.send(formData);
-
-            //     location.href='./profilePage?user_pk='+user_pk;
-            // }
-
             function saveWriteMarkInfo() {
 
                 const input = document.getElementById("writeMarkImage");
                 const content = document.getElementById("writeMarkContent").value;
+                const formData = new FormData();
+                formData.append("user_pk", user_pk);
+                formData.append("content", content);
+                formData.append("latitude", currentLat);
+                formData.append("longitude", currentLng);
+                formData.append("imageFile", input.files[0]);
 
                 const url = "./saveWriteMarkInfo";
                 const option = {
                     method: "post",
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded"
-                    },
-                    body: "user_pk=" + user_pk + "&content=" + content + "&latitude=" + currentLat + "&longitude=" + currentLng + "&imageFile=" + input.files[0]
+                    body: formData
                 };
 
                 fetch(url, option)
@@ -269,15 +247,28 @@
                     hideActionMenu();
                     const modal = bootstrap.Modal.getOrCreateInstance("#writeMarkModal");
                     modal.hide();
-                    var position = new kakao.maps.LatLng(currentLat, currentLng);
-                    displayMarkedMine(position);
+                    showJustBeforeIMarked();
                 });
+
+            }
+
+            function showJustBeforeIMarked() {
+
+                const url = "./getJustBeforeIMarked?user_pk=" + user_pk;
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+                    var position = new kakao.maps.LatLng(currentLat, currentLng);
+                    displayMarkedMine(position, response.data);
+                })
 
             }
 
             function checkWriteMarkDistanceWithScan() {
 
                 markedScan();
+                hideActionMenu();
                 setTimeout(() => {
                     checkWriteMarkDistance();
                 }, 3000);
@@ -291,19 +282,19 @@
                 fetch(url)
                 .then(response => response.json())
                 .then(response => {
-
-                    if(response.data == null) {
+                    
+                    if(response.data.length == 0) {
                         showWriteMarkModal();
                     }else {
 
                         for(e of response.data) {
                             var position = new kakao.maps.LatLng(e.latitude, e.longitude)
-                            displayMarkedMine(position);
+                            displayMarkedMine(position, e);
                         }
 
                         setTimeout(() => {
-                            showAllreadyMakredAlertModal();
-                        }, 1000);
+                            showAlreadyMakredAlertModal();
+                        }, 500);
 
                     }
 
@@ -315,7 +306,7 @@
                 const url = "./checkWriteMarkCount?user_pk=" + user_pk;
 
                 fetch(url)
-                .then(response => response)
+                .then(response => response.json())
                 .then(response => {
                     if(totalMarkingCountEveryDay - response.data == 0) {
                         document.getElementById("markButton").classList.add("disabled");
@@ -327,20 +318,21 @@
 
             function showScanResult() {
                 
-                const url = "./getScanResult?user_pk=" + user_pk + "&latitude=" + latitude + "&longitude=" + longitude;
-
+                const url = "./getScanResult?user_pk=" + user_pk + "&latitude=" + currentLat + "&longitude=" + currentLng;
+                console.log(url);
                 fetch(url)
                 .then(response => response.json())
                 .then(response => {
-
-                    if(response.data == null) {
+                    console.log(response.data);
+                    if(response.data.length == 0) {
+                        showNoMakredAlertModal();
                         return;
                     }
                     
                     for(e of response.data) {
 
                         const position = new kakao.maps.LatLng(e.latitude, e.longitude);
-                        displayMarkedMine(position);
+                        displayMarkedMine(position, e);
 
                         //asdf
 
@@ -352,12 +344,6 @@
 
             function showMoreInfoAlertModal() {
                 const modal = bootstrap.Modal.getOrCreateInstance("#moreInfoAlertModal");
-                modal.show();
-            }
-            
-            function showModal() {
-                const modal = bootstrap.Modal.getOrCreateInstance("#writeMarkModal");
-                resetWriteMarkInput();
                 modal.show();
             }
             
@@ -411,8 +397,33 @@
                 }, 1500);
             }
 
-            function showAllreadyMakredAlertModal() {
-                const modal = bootstrap.Modal.getOrCreateInstance("#allreadyMakredAlertModal");
+            function showAlreadyMakredAlertModal() {
+                const modal = bootstrap.Modal.getOrCreateInstance("#alreadyMakredAlertModal");
+                modal.show();
+
+                setTimeout(() => {
+                    modal.hide();
+                }, 1500);
+            }
+
+            function showMarkedModal(e) {
+                const modal = bootstrap.Modal.getOrCreateInstance("#showMarkedModal");
+                resetShowMarkedInput();
+                console.log(e);
+                if(user_pk == e.user_pk) {
+                    document.getElementById("showMarkedImage").style.background = 
+                        "url(/uploadFiles/" + e.image_link + ") no-repeat center";
+                    document.getElementById("showMarkedImage").style.backgroundSize = "cover";
+                    document.getElementById("showMarkedContent").innerText = e.content;
+                }else {
+
+                }
+
+                modal.show();
+            }
+
+            function showNoMakredAlertModal() {
+                const modal = bootstrap.Modal.getOrCreateInstance("#noMakredAlertModal");
                 modal.show();
 
                 setTimeout(() => {
@@ -435,6 +446,11 @@
                 document.getElementById("writeMarkNoimage").hidden = false;
                 document.getElementById("writeMarkImageHere").style.removeProperty("background", "background-size");
                 document.getElementById("writeMarkContent").value = "";
+            }
+
+            function resetShowMarkedInput() {
+                document.getElementById("showMarkedImage").style.removeProperty("background", "background-size");
+                document.getElementById("showMarkedContent").innerText = "";
             }
 
             window.addEventListener("DOMContentLoaded", () => {
@@ -617,7 +633,7 @@
         </div>
 
         <div id="allUsedAlertModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2200; background: rgb(0, 0, 0, 0.4);">
-            <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content mx-auto text-white" style="width: 50%; background: #D96161;">
                     <div class="modal-body text-center" style="font-size: 0.9rem;">
                         횟수를 전부 사용하셨습니다
@@ -626,11 +642,21 @@
             </div>
         </div>
 
-        <div id="allreadyMakredAlertModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2200; background: rgb(0, 0, 0, 0.4);">
+        <div id="alreadyMakredAlertModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2200; background: rgb(0, 0, 0, 0.4);">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content mx-auto text-white" style="width: 50%; background: #D96161;">
+                    <div class="modal-body text-center" style="font-size: 0.9rem;">
+                        근처에 이미 체취를 남기셨습니다
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="noMakredAlertModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2200; background: rgb(0, 0, 0, 0.4);">
             <div class="modal-dialog modal-sm modal-dialog-centered">
                 <div class="modal-content mx-auto text-white" style="width: 50%; background: #D96161;">
                     <div class="modal-body text-center" style="font-size: 0.9rem;">
-                        근처에 이미 흔적을 남기셨습니다
+                        채취가 없습니다
                     </div>
                 </div>
             </div>
@@ -791,6 +817,41 @@
             </div>
         </div>
 
+        <div id="showMarkedModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2100; background: rgb(0, 0, 0, 0.4);">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col">
+                                <div class="row">
+                                    <div id="showMarkedImage" class="col border rounded-pill mx-3 px-0" style="aspect-ratio: 4/3;">
+                                        
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col">
+                                        <span class="material-symbols-outlined align-middle" style="font-size: 1.1rem;">
+                                            stylus_note
+                                        </span>
+                                        한줄글
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div id="showMarkedContent" class="col">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer pb-2 border-0 justify-content-center">
+                        <button type="button" class="btn btn-secondary py-1" data-bs-dismiss="modal">닫기</button>
+                        <button onclick="collectMarkedInfo()" class="btn py-1 text-white" style="background: #D96161;" hidden>수집하기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a277eb582a644847f86de6196a42745f"></script>
         <script>
 
@@ -844,7 +905,7 @@
             function markedScan() {
                 
                 var content = '<div id="markScanCircle"></div>';
-                var position =  new kakao.maps.LatLng(currentLat, currentLng);
+                var position = new kakao.maps.LatLng(currentLat, currentLng);
 
                 var customOverlay = new kakao.maps.CustomOverlay({
                     position: position,
@@ -858,11 +919,16 @@
                 }, 3000);
             }
 
-            function displayMarkedMine(position) {
-                var content = '<div class="myPosition markedMineFirstCircle">' + 
-                        '<div class="myPosition markedMineSecondCircle">' + 
-                        '<div class="myPosition markedMineThirdCircle">' + 
-                        '</div></div></div>';
+            function displayMarkedMine(position, e) {
+                const content = document.createElement('div');
+                content.setAttribute("class", "myPosition markedMineFirstCircle");
+                const div2 = document.createElement('div');
+                div2.setAttribute("class", "myPosition markedMineSecondCircle");
+                const div3 = document.createElement('div');
+                div3.setAttribute("class", "myPosition markedMineThirdCircle");
+
+                div2.appendChild(div3);
+                content.appendChild(div2);
 
                 var customOverlay = new kakao.maps.CustomOverlay({
                     position: position,
@@ -872,6 +938,11 @@
                 customOverlay.setMap(map);
 
                 markedMineMarkers.push(customOverlay);
+
+                content.addEventListener('click', () => {
+                    showMarkedModal(e);
+                })
+
             }
 
             function setMarkedMineMarkers(map) {
@@ -890,6 +961,8 @@
                 removeMarkedMineMarkers();
                 
                 setTimeout(() => {
+                    hideActionMenu();
+
                     var content = '<div id="markScanCircle"></div>';
                     var position =  new kakao.maps.LatLng(currentLat, currentLng);
 
@@ -906,33 +979,6 @@
                     }, 3000);
 
                 }, 700);
-            }
-
-            function displayMarkedMine(position) {
-                var content = '<div class="myPosition markedMineFirstCircle">' + 
-                        '<div class="myPosition markedMineSecondCircle">' + 
-                        '<div class="myPosition markedMineThirdCircle">' + 
-                        '</div></div></div>';
-
-                var customOverlay = new kakao.maps.CustomOverlay({
-                    position: position,
-                    content: content
-                });
-
-                customOverlay.setMap(map);
-
-                markedMineMarkers.push(customOverlay);
-            }
-
-            function setMarkedMineMarkers(map) {
-                for(var i = 0 ; i < markedMineMarkers.length ; i++) {
-                    markedMineMarkers[i].setMap(map);
-                }
-            }
-
-            function removeMarkedMineMarkers() {
-                setMarkedMineMarkers(null);
-                markedMineMarkers = [];
             }
 
         </script>

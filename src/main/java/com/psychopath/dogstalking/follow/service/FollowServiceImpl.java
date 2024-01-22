@@ -42,6 +42,11 @@ public class FollowServiceImpl {
         followSqlMapper.insetWriteMarkInfo(logDto);
     }
 
+    public LogDto getJustBeforeIMarked(int user_pk) {
+
+        return followSqlMapper.getJustBeforeIMarked(user_pk);
+    }
+
     public List<Map<String, Object>> getScanResult(int user_pk, double latitude, double longitude) {
 
         return followSqlMapper.getScanResult(user_pk, latitude, longitude);
