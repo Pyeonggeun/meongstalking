@@ -146,7 +146,6 @@ public class RestFollowController {
 
         restResponseDto.setData(followService.getScanResult(user_pk, latitude, longitude));
         restResponseDto.setResult("success");
-        System.out.println(followService.getScanResult(user_pk, latitude, longitude));
         return restResponseDto;
     }
 
