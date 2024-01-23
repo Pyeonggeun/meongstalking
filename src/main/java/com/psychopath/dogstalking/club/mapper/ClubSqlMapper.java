@@ -56,8 +56,12 @@ public interface ClubSqlMapper {
     public void updateApplyClub(ClubStatusLogDto clubStatusLogDto);
     public void updatenotApplyClub(ClubStatusLogDto clubStatusLogDto);
     public int selectClubUserId(int s);
+    public void withdrawalClubUser(ClubStatusLogDto clubStatusLogDto);
 
     //길드 수정
     public void updateClub(ClubDto clubDto);
+
+    //길드 멤버
+    public List<Map<String, Object>> selectMember(int club_pk);
 
 }

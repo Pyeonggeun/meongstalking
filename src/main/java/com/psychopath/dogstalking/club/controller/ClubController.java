@@ -55,7 +55,7 @@ public class ClubController {
         List<Map<String, Object>> freeBoardList = clubService.selectFreeBoardAll(pk);
         model.addAttribute("freeBoardList", freeBoardList);
 
-        System.out.println(freeBoardList);
+        // System.out.println(freeBoardList);
 
         Map<String, Object> clubTF = clubService.applyClubUserTF(userDto.getUser_pk());
         model.addAttribute("clubTF", clubTF);
@@ -177,7 +177,7 @@ public class ClubController {
 
     @RequestMapping("createUserProcess")
     public String createUserProcess(@RequestParam("club_pk") String clubPkString, HttpSession session, ClubDto clubDto,
-        ClubUserDto clubUserDto, ClubStatusLogDto clubStatusLogDto, Model model) {
+            ClubUserDto clubUserDto, ClubStatusLogDto clubStatusLogDto, Model model) {
         UserDto userDto = (UserDto) session.getAttribute("sessionUser");
 
         int clubPk = Integer.parseInt(clubPkString);
@@ -197,7 +197,8 @@ public class ClubController {
     }
 
     @RequestMapping("approve")
-    public String approve(@RequestParam("user_pk") int userPk, ClubUserDto clubUserDto, ClubStatusLogDto clubStatusLogDto) {
+    public String approve(@RequestParam("user_pk") int userPk, ClubUserDto clubUserDto,
+            ClubStatusLogDto clubStatusLogDto) {
 
         clubStatusLogDto.setClub_user_pk(userPk);
         clubService.updateApplyClub(clubStatusLogDto);
@@ -206,7 +207,8 @@ public class ClubController {
     }
 
     @RequestMapping("reject")
-    public String reject(@RequestParam("user_pk") int userPk,ClubUserDto clubUserDto, ClubStatusLogDto clubStatusLogDto) {
+    public String reject(@RequestParam("user_pk") int userPk, ClubUserDto clubUserDto,
+            ClubStatusLogDto clubStatusLogDto) {
 
         clubStatusLogDto.setClub_user_pk(userPk);
         clubService.updatenotApplyClub(clubStatusLogDto);
@@ -221,7 +223,7 @@ public class ClubController {
         model.addAttribute("clubTF", clubTF);
         return "club/clubChangeMainPage";
     }
-    
+
     @RequestMapping("updateClubProcess")
     public String updateClubProcess(ClubDto clubDto) {
         clubService.updateClub(clubDto);
@@ -229,8 +231,25 @@ public class ClubController {
     }
 
     @RequestMapping("clubMemberPage")
-    public String clubMemberPage() {
+    public String clubMemberPage(Model model, HttpSession session) {
+        UserDto userDto = (UserDto) session.getAttribute("sessionUser");
+        System.out.println("User PK: " + userDto.getUser_pk());
+        model.addAttribute("user_pk", userDto.getUser_pk());
+
+        int clubPk = clubService.selectClubPK(userDto.getUser_pk());
+        List<Map<String, Object>> memberlist = clubService.selectMember(clubPk);
+        model.addAttribute("memberlist", memberlist);
+
         return "club/clubMemberPage";
     }
-    
+
+    @RequestMapping("clubWithdrawalProcess")
+    public String clubWithdrawalProcess(@RequestParam("user_pk") int user_pk, HttpSession session,
+            ClubUserDto clubUserDto, ClubStatusLogDto clubStatusLogDto) {
+        clubStatusLogDto.setClub_user_pk(user_pk);
+        clubService.withdrawalClubUser(clubStatusLogDto);
+
+        return "redirect:./clubMemberPage";
+    }
+
 }
