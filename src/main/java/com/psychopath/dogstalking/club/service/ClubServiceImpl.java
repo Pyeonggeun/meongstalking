@@ -121,5 +121,12 @@ public class ClubServiceImpl {
 		clubSqlMapper.updateClub(clubDto);
 	}
 	
+	public List<Map<String, Object>> selectMember(int club_pk){
+		return clubSqlMapper.selectMember(club_pk);	
+	}
+
+	public void withdrawalClubUser(ClubStatusLogDto clubStatusLogDto) {
+		clubSqlMapper.withdrawalClubUser(clubStatusLogDto);
+	}
 	
 }
