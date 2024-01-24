@@ -13,7 +13,7 @@
         SELECT *
         FROM ms_club_freeboard
         JOIN ms_user ON ms_user.USER_PK = ms_club_freeboard.user_pk
-        where ms_club_freeboard.club_pk=1
+        where ms_club_freeboard.club_pk=#{club_pk}
     </select>
 
     <!-- 댓글 -->
@@ -34,18 +34,23 @@
     <select id="applyClubUserTF" resultType="map">
     <![CDATA[
         SELECT 
-        CASE WHEN COUNT(*) > 0 THEN 'T' ELSE 'F' END AS user_exists,
-        ms_club_user.*,
-        ms_user.*,
-        ms_club.*,
-        ms_club.name AS clubname,
-        ms_club.content AS clubcontent 
-        FROM 
-            ms_club_user
-            JOIN ms_user ON ms_user.user_pk = ms_club_user.user_pk
-            JOIN ms_club ON ms_club.club_pk = ms_club_user.club_pk 
-        WHERE 
-            ms_user.user_pk = #{user_pk}
+    COALESCE(CASE WHEN COUNT(*) > 0 THEN 'T' ELSE 'F' END, 'F') AS user_exists,
+    ms_club_user.*,
+    ms_user.*,
+    ms_club.*,
+    ms_club_user_statuslog.*,
+    ms_club.name AS clubname,
+    ms_club.content AS clubcontent
+    FROM 
+        ms_user
+    LEFT JOIN 
+        ms_club_user ON ms_user.user_pk = ms_club_user.user_pk
+    LEFT JOIN 
+        ms_club ON ms_club.club_pk = ms_club_user.club_pk 
+    left join 
+        ms_club_user_statuslog on ms_club_user_statuslog.club_user_pk = ms_club_user.user_pk  
+    WHERE 
+        ms_club_user.user_pk = #{user_pk} 
     ]]>
     </select>
 
@@ -57,11 +62,106 @@
 	</insert>
 
     <insert id="insertClubUser">
-		INSERT INTO ms_club_user(content)
-        VALUES ("길드 개설자")
+		INSERT INTO ms_club_user(user_pk,club_pk,content)
+        VALUES (#{user_pk},#{club_pk},"길드 개설자")
 	</insert>
 
+    <insert id="insertClubUsers">
+		INSERT INTO ms_club_user(user_pk,club_pk,content)
+        VALUES (#{user_pk},#{club_pk},#{content})
+	</insert>
+
+    <select id="checka" resultType="int">
+        SELECT COALESCE(MAX(club_user_pk), 0) FROM ms_club_user
+    </select>
+
+    <select id="checkb" resultType="int">
+        SELECT MAX(club_pk) FROM ms_club;
+    </select>
     
+    <select id="selectClubPK" resultType="int">
+        SELECT ms_club_user.club_pk FROM ms_club_user WHERE user_pk = #{user_pk};
+    </select>
+    
+    <select id="selectClubList" resultType="map">
+        SELECT * FROM ms_club ORDER BY RAND()
+    </select>
      
+    <select id="showclubpk" resultType="map">
+        SELECT 
+            1 AS clubpk_ck,
+            ms_club.*
+        FROM ms_club 
+        WHERE ms_club.club_pk = #{club_pk}
+    </select>
     
+
+    <!--회원 신청 상태-->
+    <insert id="insertUserStatusLog">
+        INSERT INTO ms_club_user_statuslog(club_user_pk)
+        VALUES (#{club_user_pk}); 
+    </insert>
+
+    <!--개설시 리더 자동 위임-->
+    <insert id="insertLeader">
+        INSERT INTO ms_club_user_ranklog(club_user_pk,clubuserranklogcategory_pk)
+        VALUES (#{club_user_pk},1); 
+    </insert>
+
+    <!--가입신청목록-->
+    <select id="selectApplyList" resultType="map">
+        SELECT 
+            ms_user.*,
+            ms_club_user.*,
+            ms_club_user_statuslog.*,
+            ms_club_user_statuslog.created_at AS applydate
+        FROM ms_club_user
+        LEFT JOIN ms_club_user_statuslog ON ms_club_user_statuslog.club_user_pk = ms_club_user.user_pk
+        left join ms_user on ms_user.user_pk =ms_club_user.user_pk 
+        WHERE ms_club_user.club_pk = #{club_pk} AND ms_club_user_statuslog.clubcategory_pk = 2
+    </select>
+
+    <!--가입 승인-->
+    <update id="updateApplyClub">
+        UPDATE ms_club_user_statuslog
+        SET clubcategory_pk = 1
+        WHERE club_user_pk = #{club_user_pk};
+    </update>
+
+
+    <update id="updatenotApplyClub">
+        UPDATE ms_club_user_statuslog
+        SET clubcategory_pk = 0
+        WHERE club_user_pk = #{club_user_pk};
+    </update>
+
+
+    <select id="selectClubUserId" resultType="int">
+        SELECT ms_club_user.club_user_pk  FROM ms_club_user WHERE user_pk = #{user_pk};
+    </select>
+
+    <!--길드 정보 수정-->
+    <update id="updateClub">
+        UPDATE ms_club
+        SET name = #{name}, content = #{content}
+        WHERE club_pk = #{club_pk}; 
+    </update>
+
+    <!--길드 멤버-->
+    <select id="selectMember" resultType="map">
+    SELECT *
+    FROM 
+        ms_club_user
+        JOIN ms_user ON ms_user.user_pk = ms_club_user.user_pk
+        JOIN ms_club ON ms_club.club_pk = ms_club_user.club_pk 
+        join ms_club_user_statuslog on ms_club_user_statuslog.club_user_pk = ms_user.user_pk
+        WHERE ms_club_user_statuslog.clubcategory_pk=1 and ms_club_user.club_pk=#{club_pk};
+    </select>
+
+    <!--탈퇴-->
+    <update id="withdrawalClubUser">
+        UPDATE ms_club_user_statuslog
+            SET clubcategory_pk = 3
+            WHERE club_user_pk = #{club_user_pk};
+    </update>
 </mapper>

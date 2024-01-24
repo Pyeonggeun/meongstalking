@@ -15,6 +15,7 @@ import com.psychopath.dogstalking.trade.dto.CarePriceDto;
 import com.psychopath.dogstalking.trade.dto.ChatMessageDto;
 import com.psychopath.dogstalking.trade.dto.ChatRoomDto;
 import com.psychopath.dogstalking.trade.dto.TradeArticleDto;
+import com.psychopath.dogstalking.trade.dto.WishListDto;
 import com.psychopath.dogstalking.trade.mapper.TradeSqlMapper;
 
 @Service
@@ -28,47 +29,76 @@ public class TradeServiceImpl {
         return tradeMapper.getDogListByUser(userPk);
     }
 
-    public int registerTradeArticleFirst(TradeArticleDto tradeArticleDto){
+    // 글 등록
+    public void registerCareArticle(TradeArticleDto tradeArticleDto, int carePrice, int[] careDogList){
+        int articlePk = tradeMapper.createArticlePk();
+        System.out.println(articlePk);
+        System.out.println("------------");
+        tradeArticleDto.setPk(articlePk);
+        System.out.println(tradeArticleDto.getContent());
+        System.out.println(tradeArticleDto.getLocation());
+        System.out.println(tradeArticleDto.getPk());
+        System.out.println(tradeArticleDto.getTitle());
+        System.out.println(tradeArticleDto.getEnd_care_date());
+        System.out.println(tradeArticleDto.getUser_pk());
         tradeMapper.insertTradeArticleDto(tradeArticleDto);
-        return tradeMapper.getRecentTradeArticlePk();
-    }
 
-    public void registerCareDog(CareDogDto careDogDto){
-        tradeMapper.insertCareDog(careDogDto);
-    }
-
-    public void registerArticleSecond(TradeArticleDto tradeArticleDto){
-        tradeMapper.updateTradeArticle(tradeArticleDto);
-    }
-
-    public void registerCarePrice(CarePriceDto carePriceDto){
+        CarePriceDto carePriceDto = new CarePriceDto();
+        carePriceDto.setPrice(carePrice);
+        carePriceDto.setArticle_pk(articlePk);
         tradeMapper.insertCarePrice(carePriceDto);
+        System.out.println(carePrice);
+        System.out.println(articlePk);
+        System.out.println("------------");
+
+
+
+        for(int dogPk : careDogList){
+            
+            CareDogDto careDogDto = new CareDogDto();
+            careDogDto.setArticle_pk(articlePk);
+            careDogDto.setDog_pk(dogPk);
+            tradeMapper.insertCareDog(careDogDto);
+            System.out.println(dogPk);
+            System.out.println(articlePk);
+            System.out.println("------------");
+        }
     }
 
     //글 리스트
-    public List<Map<String, Object>> getArticleList(){
+    public List<Map<String, Object>> getArticleList(int sessionUserPk){
 
         List<TradeArticleDto> articleList = tradeMapper.getArticleList();
         List<Map<String, Object>> list = new ArrayList<>();
 
         for(TradeArticleDto tradeArticleDto : articleList){
+            if(tradeArticleDto.getUser_pk() == sessionUserPk){
+                continue;
+            }else{
+                Map<String, Object> map = new HashMap<>();
 
-            Map<String, Object> map = new HashMap<>();
+                int userPk = tradeArticleDto.getUser_pk();
+                UserDto userDto = tradeMapper.getUserDto(userPk);
+    
+                int articlePk = tradeArticleDto.getPk();
+                int carePrice = tradeMapper.getCarePriceByArticlePk(articlePk);
+    
+                List<CareDogDto> careDogList = tradeMapper.getCareDogListByArticlePk(articlePk);
+                
+                WishListDto wishListDto = new WishListDto();
+                wishListDto.setUser_pk(sessionUserPk);
+                wishListDto.setArticle_pk(tradeArticleDto.getPk());
+                int countWishList = tradeMapper.getCountWishListByUserPkAndArticlePk(wishListDto);
 
-            int userPk = tradeArticleDto.getUser_pk();
-            UserDto userDto = tradeMapper.getUserDto(userPk);
+                map.put("userDto", userDto);
+                map.put("tradeArticleDto", tradeArticleDto);
+                map.put("carePrice", carePrice);
+                map.put("careDogList", careDogList);
+                map.put("countWishList", countWishList);
+    
+                list.add(map);
 
-            int articlePk = tradeArticleDto.getPk();
-            int carePrice = tradeMapper.getCarePriceByArticlePk(articlePk);
-
-            List<CareDogDto> careDogList = tradeMapper.getCareDogListByArticlePk(articlePk);
-
-            map.put("userDto", userDto);
-            map.put("tradeArticleDto", tradeArticleDto);
-            map.put("carePrice", carePrice);
-            map.put("careDogList", careDogList);
-
-            list.add(map);
+            }
         }
         return list;
 
@@ -157,19 +187,25 @@ public class TradeServiceImpl {
         for(ChatMessageDto chatMessageDto : list){
             chatMessageDto.getIsRead();
 
-            System.out.println("--------------------------------------");
-            System.out.println(chatMessageDto.getIsRead());
-            System.out.println(sessionUserPk);
-            System.out.println(chatMessageDto.getUser_pk());
-
             if(chatMessageDto.getIsRead().equals("N") && chatMessageDto.getUser_pk() != sessionUserPk){
                 tradeMapper.updateChatMessageIsRead(chatMessageDto.getPk());
-                System.out.println("성공");
             }
         }
 
 
         return tradeMapper.getChatMessageByChatRoomPk(chatRoomPk);
+    }
+
+    public void toggleWishList(WishListDto wishListDto){
+        
+        int count = tradeMapper.getCountWishListByUserPkAndArticlePk(wishListDto);
+
+        if(count == 0){
+            tradeMapper.insertWishList(wishListDto);
+        }else{
+            tradeMapper.deleteWishList(wishListDto);
+        }
+
     }
 
 

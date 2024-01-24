@@ -10,25 +10,24 @@
 
 	<insert id="insertTradeArticleDto">
         insert into 
-        ms_care_article(user_pk, title, content, start_care_date, end_care_date, read_count, location, isPickup, isDelete)
+        ms_care_article(pk, user_pk, title, content, start_care_date, end_care_date, read_count, location, isPickup, isDelete)
         values
         (
+            #{pk},
             #{user_pk},
-            '',
-            '',
+            #{title},
+            #{content},
             #{start_care_date},
             #{end_care_date},
             0,
-            '경상북도 영주시 대학로324 (107-702)',
+            #{location},
             #{isPickup},
             'N'
         )
     </insert>
 
-    <select id="getRecentTradeArticlePk" resultType="int">
-        select pk from ms_care_article
-        order by created_at desc
-        Limit 1    
+    <select id="createArticlePk" resultType="int">
+        select NVL(Max(pk)+1, 0) from ms_care_article   
     </select>
 
     <insert id="insertCareDog">
@@ -40,12 +39,6 @@
             #{article_pk}
         )
     </insert>
-
-    <update id="updateTradeArticle">
-        update ms_care_article
-        set title = #{title}, content = #{content}
-        where pk=#{pk}
-    </update>
 
     <insert id="insertCarePrice">
         insert into 
@@ -136,6 +129,29 @@
         Limit 1
     </select>
     
+    <!--찜-->
+    <insert id="insertWishList">
+        insert into 
+        ms_care_wishlist(user_pk, article_pk)
+        values
+        (
+            #{user_pk},
+            #{article_pk}
+        )
+    </insert>
+
+    <delete id="deleteWishList">
+        delete from ms_care_wishlist
+        where user_pk = #{user_pk}
+        and article_pk = #{article_pk}
+    </delete>
+
+    <select id="getCountWishListByUserPkAndArticlePk" resultType="int">
+        select count(*) from ms_care_wishlist
+        where user_pk = #{user_pk}
+        and article_pk = #{article_pk}
+    </select>
+
 
 
 </mapper>

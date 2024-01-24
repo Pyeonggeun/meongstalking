@@ -1,7 +1,6 @@
 package com.psychopath.dogstalking.follow.dto;
 
 import lombok.Data;
-import java.time.*;
 
 @Data
 public class UserMoreDto {

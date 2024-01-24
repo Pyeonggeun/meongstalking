@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>상품 리스트</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://kit.fontawesome.com/784384f602.js" crossorigin="anonymous"></script>
+    
+    <script>
+
+        function reloadCategory(){
+
+            const url = "./getCategory";
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                const categoryListBox = document.getElementById("categoryListBox");
+                categoryListBox.innerHTML = "";
+
+                for(e of response.data){
+                    const categoryText = document.querySelector("#template .category-text").cloneNode(true);
+                    categoryText.innerText = e.name;
+                    categoryText.setAttribute("data-value", e.pk);
+                    
+                    if (e === response.data[0]) {
+                        categoryText.classList.add("selected");
+                        reloadGoodsList(categoryText);
+                    }else {
+                        categoryText.classList.add("non-selected");
+                    }
+
+
+                    categoryListBox.appendChild(categoryText);
+                }
+
+
+            });
+
+        }
+
+
+        function reloadGoodsList(categoryText){
+
+            const categoryListBox = document.getElementById("categoryListBox");
+
+            categoryText.classList.add("selected");
+            categoryText.classList.remove("non-selected");
+
+            const otherTexts = categoryListBox.querySelectorAll(".category-text");
+            otherTexts.forEach(text => {
+                if (text !== categoryText) {
+                    text.classList.remove("selected");
+                    text.classList.add("non-selected");
+                }
+            });
+
+            const categoryPk = categoryText.getAttribute("data-value");
+
+            const url = "./getGoodsListByCategoryPk?categoryPk=" + categoryPk;
+            
+
+
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                
+                const goodsListBox = document.getElementById("goodsListBox");
+                goodsListBox.innerHTML = "";
+
+                for(e of response.data){
+                    
+                    const goodsWrapper = document.querySelector("#template .goodsWrapper").cloneNode(true);
+
+                    const goodsTitle = goodsWrapper.querySelector(".goods-title");
+                    goodsTitle.innerText = e.title;
+
+                    const goodsImage = goodsWrapper.querySelector(".goods-image");
+                    goodsImage.setAttribute("src", "/uploadFiles/"+ e.image_link +"");
+
+                    const time = goodsWrapper.querySelector(".time-text");
+                    time.setAttribute("data-value", e.expiry_date);
+
+                    goodsListBox.appendChild(goodsWrapper);
+                }
+                reloadRemainingTime();
+
+            });
+        }
+
+        function reloadRemainingTime() {
+            // 모든 time-text 엘리먼트 선택
+            const goodsListBox = document.getElementById("goodsListBox");
+            const timeTexts = goodsListBox.querySelectorAll(".time-text");
+
+            // 1초마다 실행되는 타이머 설정
+            setInterval(() => {
+                // 각 time-text 엘리먼트에 대해 처리
+                timeTexts.forEach(timeText => {
+                    // data-value에서 날짜 정보 가져오기
+                    const expiryDateArray = timeText.getAttribute("data-value").split(',');
+                    if(expiryDateArray){
+                        const expiryYear = expiryDateArray[0];
+                        const expiryMonth = expiryDateArray[1];
+                        const expiryDays = expiryDateArray[2];
+                        const expiryHour = expiryDateArray[3];
+                        const expiryMinutes = expiryDateArray[4];
+                        const expiry = expiryYear + '-' + expiryMonth + '-' + expiryDays + '- ' + expiryHour + ':' + expiryMinutes + ':00';
+
+                        const expiryDate = new Date(expiry);
+                        
+                        const now = new Date();
+
+                        const remainingTime = expiryDate - now;
+
+                        if (remainingTime > 24 * 60 * 60 * 1000) {
+                            // 24시간 이상 남은 경우
+                            const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+                            const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                            timeText.innerText = `${days}일 ${hours}시간 남음`;
+                        } else if (remainingTime > 60 * 60 * 1000) {
+                            // 24시간 이하, 1시간 이상 남은 경우
+                            const hours = Math.floor(remainingTime / (1000 * 60 * 60));
+                            const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+                            timeText.innerText = `${hours}시간 ${minutes}분 남음`;
+                        } else {
+                            // 1시간 이하 남은 경우
+                            const minutes = Math.floor(remainingTime / (1000 * 60));
+                            const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+                            timeText.innerText = `${minutes}분 ${seconds}초 남음`;
+                        }
+                    }
+
+
+                });
+            }, 1000); // 1초 간격으로 실행
+        }
+
+
+
+        function templete(){
+		
+            const url = "";
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                
+            });
+        }  
+
+
+        window.addEventListener("DOMContentLoaded", () => {
+            
+            reloadCategory();
+        });  
+
+    </script>
+
+
+
+
+
+
+    <style>
+        body{
+            background-color: #151515;
+        }
+        .searchbar-row{
+            height: 4em;
+            padding-top: 1em;
+        }
+
+        .search-box{
+            background-color: #212121;
+            height: 3em;
+            width: 90%;
+            border-radius: 0.5em;
+            border-width: 0;
+            position: absolute;
+            top: 50%;
+            left: 1em;
+            transform: translate(0, -50%);
+
+        }
+
+        .search-icon{
+            font-size: 1.2em;
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            transform: translate(0, -50%); 
+        }
+
+        .search-text{
+            font-size: 0.8em;
+            color: #777777;
+            position: absolute;
+            top: 50%;
+            left: 22%;
+            transform: translate(0, -50%);  
+        }
+
+        .more-icon-box{
+            height: 3em;
+            width: 3em;
+            border-radius: 0.5em;
+            background-color: #212121;
+            position: absolute;
+            top: 50%;
+            right: 1em;
+            transform: translate(0, -50%);
+        }
+
+        .more-icon{
+            font-size: 1.2em;
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);            
+        }
+
+        .category-text{
+            color: white;
+            font-size: 1.1em;
+            margin-right: 2em;
+
+        }
+
+        .selected{
+            border-bottom-style: solid; 
+            border-bottom-width: 1; 
+            border-bottom-color: white; 
+            padding-bottom: 0.2em;
+        }
+
+        .non-selected{
+            color: #777777;
+        }
+
+        .overflow-x-auto{
+            overflow-x: auto;
+            display: flex;
+            padding-left: 1em;
+        }
+
+        .overflow-x-auto::-webkit-scrollbar{
+            display: none;
+        }
+
+        .goods-box{
+            position: relative;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+
+
+        .goods-image{
+            border-radius: 1em;
+            border-style: solid;
+            border-color: black;
+            border-width: 0.3em;
+            width: 100%;
+        }
+
+        .time-box{
+            height: 2.3em;
+            width: 9em;
+            border-radius: 1em;
+            position: absolute;
+            top: 6%;
+            left: 6%;
+            background-color: rgba(21, 21, 21, 0.7);
+            
+        }
+
+        .time-text{
+            width: 100%;
+            font-size: 0.8em;
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .wishlist-icon-box{
+            height: 2.3em;
+            width: 2.3em;
+            border-radius: 100%;
+            position: absolute;
+            top: 6%;
+            right: 6%;
+            background-color: rgba(21, 21, 21, 0.7);
+        }
+
+        .wishlist-icon{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1em;
+        }
+
+        .info-box{
+            height: 5em;
+            width: 88%;
+            border-radius: 1em;
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translate(-50%, 0);
+            background-color: rgba(21, 21, 21, 0.5);
+
+        }
+
+        .info-box1{
+            position: absolute;
+            top: 5%;
+            left: 5%;
+            width: 95%;
+            height: 2.5em;
+        }
+
+        .goods-title{
+            position: absolute;
+            top: 50%;
+            left: 0%;
+            transform: translate(0, -50%);
+            color: white;
+            font-size: 0.9em;
+        }
+
+        .goods-price{
+            position: absolute;
+            top: 50%;
+            right: 5%;
+            transform: translate(0, -50%);
+            color: white;
+            font-size: 1em;
+        }
+
+        .profile-image{
+            width: 2em;
+            height: 2em;
+            border-radius: 100%;
+            border-color: #777777;
+            border-style: solid;
+            border-width: 0.1em;
+            position: absolute;
+            top: 50%;
+            left: 0%;
+            transform: translate(0, -50%);
+        }
+
+        .name{
+            font-size: 0.9em;
+            color: #E2E2E2;
+            position: absolute;
+            top: 50%;
+            left: 40%;
+            transform: translate(0, -50%);
+        }
+
+        .info-box2{
+            position: absolute;
+            bottom: 5%;
+            left: 5%;
+            width: 30%;
+            height: 2.5em;
+        }
+
+        .goodsWrapper{
+            padding-left: 1em; 
+            padding-right: 1em; 
+            padding-top: 1.5em;
+        }
+
+    </style>
+
+</head>
+
+
+
+
+
+<body>
+
+    <div class="container-fluid">
+        <div class="row searchbar-row">
+            <div class="col" style="position: relative;">
+                <input class="search-box" type="text">
+                <div class="search-icon"><i class="fa-solid fa-magnifying-glass" style="color: #777777;"></i></div>
+                <div class="search-text fw-bold">검색어를 입력해 주세요.</div>
+            </div>
+            <div class="col-2" style="position: relative;">
+                <div class="more-icon-box">
+                    <div class="more-icon"><i class="bi bi-three-dots"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="padding-top: 1em;">
+            <div class="col overflow-x-auto">
+                <div class="row" style="display: flex;">
+                    <div class="col overflow-x-auto">
+                        <div id="categoryListBox" style="display: flex;">
+                        
+                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div id="goodsListBox" class="col">
+
+
+
+            </div>
+        </div>
+        <div class="row" style="height: 3em;"></div>
+
+    </div>
+
+
+    <!--템플릿-->
+    <div id="template" class="d-none">
+
+        <!--카테고리-->
+        <div class="category-text fw-bold" onclick="reloadGoodsList(this)"></div>
+
+        <!--상품 리스트-->
+        <div class="row goodsWrapper">
+            <div class="col goods-box">
+                <img class="goods-image img-fluid">   
+                <div class="time-box text-center">
+                    <div class="time-text fw-bold"></div>
+                </div>
+                <div class="wishlist-icon-box">
+                    <div class="wishlist-icon"><i class="fa-solid fa-heart" style="color: #ffffff;"></i></div>
+                </div>
+                <div class="info-box">
+                    <div class="info-box1">
+                        <div class="goods-title fw-bold">그레이 하운드 패딩</div>
+                        <div class="goods-price fw-bold">145000원</div>
+                    </div>
+                    <div class="info-box2">
+                        <img class="profile-image" th:src="@{/public/image/trade/puppy1.jpg}">
+                        <div class="name fw-bold">천평식</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-body {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .btn-action {
+            width: 100%;
+        }
+
+        .profile-details {
+            text-align: left;
+            padding: 20px;
+        }
+
+        .profile-details p {
+            margin-bottom: 10px;
+        }
+
+        .profile-image {
+            max-width: 80px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+    </style>
+
+
+    <script>
+
+    </script>
+</head>
+
+<body>
+
+    <div class="container">
+        <th:block th:replace="~{club/clubTopNavi.html :: leaderTopNavi}"></th:block>
+        <div class="row-cols-1 row-cols-md-3 g-3">
+            <div th:each="qwer : ${applyList}">
+                <div class="card mt-3">
+                    <div class="card-body text-center">
+                        <div class="col-2">
+                            <div class="row mb-2">
+                                <img th:src="@{/public/image/dog_img.png}"
+                                    class="img-fluid rounded-circle profile-image" width="50">
+                            </div>
+
+                            <div class="row">
+                                <h6><span class="fw-bold" th:text="${qwer['name']}"></span></h6>
+                            </div>
+                        </div>
+                        <div class="col"></div>
+                        <div class="col-9 me-0 pe-0">
+                            <div class="row my-1 pb-0 text-left text-start me-0 pe-0">
+                                <div class="col-5 py-0 ms-1 fw-bold text-left">가입인사 : </div>
+                                <p class="col mb-1 text-left">
+                                    <span class="p-1" th:text="${qwer['content']}"></span>
+                                </p>
+                            </div>
+
+                            <div class="row my-1 pb-0 text-left text-start me-0 pe-0">
+                                <div class="col-5 py-0 ms-1 fw-bold text-left">가입일자 : </div>
+                                <p class="col mb-1 text-left">
+                                    <span th:text="${#dates.format(qwer['applydate'], 'yyyy-MM-dd')}"></span>
+                                </p>
+                            </div>
+
+
+                            <div class="row bg-light justify-content-end">
+                                <div class="col-6"></div>
+                                <div class="col">
+                                    <a th:href="'./approve?user_pk=' + ${qwer['user_pk']}" class="btn btn-secondary btn-sm">승인</a>
+                                    <a th:href="./reject?user_pk=' + ${qwer['user_pk']}" class="btn btn-secondary btn-sm">거절</a>   
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JavaScript 추가 -->
+    <script src="https://code.jquery.com/jquery-3.6.4.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

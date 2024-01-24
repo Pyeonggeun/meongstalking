@@ -1,0 +1,17 @@
+/* 내 가방 */
+#collectionButton {
+    position: absolute;
+    z-index: 2000;
+    width: 7rem;
+    height: 2.5rem;
+    top: 87%;
+    right: 0%;
+    border-radius: 12.5% 0% 0% 12.5% / 25% 0% 0% 25% ;
+    background: rgb(255, 255, 255, 0.8);
+    box-shadow: var(--reloadPosition-boxshadow);
+}
+
+#collectionButton:active {
+    box-shadow: 0 1px 0 rgb(0,0,0,0.3);
+    top: 87.2%;
+}

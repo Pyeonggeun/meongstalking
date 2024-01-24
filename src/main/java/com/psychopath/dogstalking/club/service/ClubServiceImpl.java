@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.psychopath.dogstalking.club.dto.ClubDto;
 import com.psychopath.dogstalking.club.dto.ClubFreeBoardDto;
+import com.psychopath.dogstalking.club.dto.ClubStatusLogDto;
 import com.psychopath.dogstalking.club.dto.ClubUserDto;
+import com.psychopath.dogstalking.club.dto.ClubUserRanklogDto;
 import com.psychopath.dogstalking.club.dto.CommentDto;
 import com.psychopath.dogstalking.club.mapper.ClubSqlMapper;
 
@@ -23,8 +25,8 @@ public class ClubServiceImpl {
 
 	}
 
-    public List<Map<String, Object>> selectFreeBoardAll() {
-		return clubSqlMapper.selectFreeBoardAll();
+    public List<Map<String, Object>> selectFreeBoardAll(int pk) {
+		return clubSqlMapper.selectFreeBoardAll(pk);
 	}
     
 	//게시판
@@ -64,6 +66,67 @@ public class ClubServiceImpl {
 
 	public void insertClubUser(ClubUserDto clubUserDto) {
 		clubSqlMapper.insertClubUser(clubUserDto);
+	}
+
+	public void insertClubUsers(ClubUserDto clubUserDto) {
+		clubSqlMapper.insertClubUsers(clubUserDto);
+	}
+
+	public int checka(){
+		return clubSqlMapper.checka();
+	}
+
+	public int checkb(){
+		return clubSqlMapper.checkb();
+	}
+
+	public int selectClubPK(int user_pk){
+		return clubSqlMapper.selectClubPK(user_pk);
+	}
+
+	//리스트
+	public List<Map<String, Object>> selectClubList(){
+		return clubSqlMapper.selectClubList();	
+	}
+
+	public Map<String, Object> showclubpk(int club_pk){
+		return clubSqlMapper.showclubpk(club_pk);	
+	}
+	
+	public void insertUserStatusLog(ClubStatusLogDto clubStatusLogDto){
+		clubSqlMapper.insertUserStatusLog(clubStatusLogDto);
+	}
+
+	public void insertLeader(ClubUserRanklogDto clubUserRanklogDto){
+		clubSqlMapper.insertLeader(clubUserRanklogDto);
+	}
+
+	public List<Map<String, Object>> selectApplyList(int club_pk){
+		return clubSqlMapper.selectApplyList(club_pk);	
+	}
+
+	public void updateApplyClub(ClubStatusLogDto clubStatusLogDto) {
+		clubSqlMapper.updateApplyClub(clubStatusLogDto);
+	}
+
+	public int selectClubUserId(int pk){
+		return clubSqlMapper.selectClubUserId(pk);
+	}
+
+	public void updatenotApplyClub(ClubStatusLogDto clubStatusLogDto) {
+		clubSqlMapper.updatenotApplyClub(clubStatusLogDto);
+	}
+
+	public void updateClub(ClubDto clubDto) {
+		clubSqlMapper.updateClub(clubDto);
+	}
+	
+	public List<Map<String, Object>> selectMember(int club_pk){
+		return clubSqlMapper.selectMember(club_pk);	
+	}
+
+	public void withdrawalClubUser(ClubStatusLogDto clubStatusLogDto) {
+		clubSqlMapper.withdrawalClubUser(clubStatusLogDto);
 	}
 	
 }
