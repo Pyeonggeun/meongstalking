@@ -31,4 +31,6 @@ public interface FollowSqlMapper {
     public void insertCollectionInfo(CollectionDto collectionDto);
     public List<Map<String, Object>> getCollectionPersonList(int user_pk);
 
+    public List<Map<String, Object>> getTrackLikeList(int user_pk);
+
 }
