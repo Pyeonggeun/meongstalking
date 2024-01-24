@@ -10,43 +10,33 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
         <script th:inline="javascript">
-            let user_pk = null;
-            function getUrlKey() {
+            let profile_info_pk = null;
+            function getProfile_info_pk() {
                 const urlParams = new URLSearchParams(location.search);
-                const key = urlParams.get("user_pk");
-                user_pk = key;
-            }
-            let profileInfoDto = null;
-            function getProfileInfoDto(){
-                const url = "./myProfileInfoDto?user_pk="+user_pk;
-                fetch(url)
-                .then(response => response.json())
-                .then((response) =>{
-                    profileInfoDto = response.data;
-                    const profile_info_pk = profileInfoDto.profile_info_pk;
-                    loadMyArticleFirstImgList(profile_info_pk); 
-                    loadStoryStorageList(profile_info_pk)   
-                });
-                
-            }
-           
+                let key = urlParams.get("profile_info_pk");
+                profile_info_pk = key;
 
-            function loadMyProfileInfo(){
-                const url = "./loadMyProfileInfo";
+                loadAnotherArticleFirstImgList(profile_info_pk); 
+               // loadAnotherStoryStorageList(profile_info_pk);
+                loadAnotherProfileInfo(profile_info_pk); 
+            }
+
+            function loadAnotherProfileInfo(profile_info_pk){
+                const url = "./loadAnotherProfileInfo";
 
                 fetch(url, {
                      method: "post",
                      headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
-                     body: "user_pk="+user_pk
+                     body: "profile_info_pk="+profile_info_pk
             	})
                 .then(response => response.json())
                 .then((response) =>{
 
                     const profilePhoto = document.querySelector("#profilePhoto");
-                    profilePhoto.src = response.data.profileInfoDto.profile_photo;                    
-                    console.log(response.data.profileInfoDto.profile_photo);
+                    profilePhoto.setAttribute("src", response.data.profileInfoDto.profile_photo);                    
+
                     const articleCount = document.querySelector("#articleCount");
                     articleCount.innerText = response.data.articleCount;
 
@@ -61,13 +51,10 @@
 
                     const status_message = document.querySelector("#status_message");
                     status_message.innerText = response.data.profileInfoDto.status_message;
-
-                    const updateProfilePageButton = document.querySelector("#updateProfilePageButton");
-                    updateProfilePageButton.setAttribute("onclick", "location.href='./updateProfilePage?user_pk="+response.data.profileInfoDto.user_pk+"'");
                 })
             }
 
-            function loadMyArticleFirstImgList(profile_info_pk){
+            function loadAnotherArticleFirstImgList(profile_info_pk){
                 const url = "./loadMyArticeleList";
 
                 fetch(url, {
@@ -80,20 +67,11 @@
                 .then(response => response.json())
                 .then((response) =>{
                     const articleListBox = document.querySelector("#articleListBox");
-                    
-                    if(response.data[0] == null){
-
-                        return;
-                    }
-                    
-                    articleListBox.innerHTML ="";
                     for(e of response.data){
                         const articleListWrapper = document.querySelector("#articleListTemplete .articleListWrapper").cloneNode(true);
                         const articleFirstImg = articleListWrapper.querySelector(".articleFirstImg");
                         articleFirstImg.src = e.artPhotoList[0].photo_path;
                         articleFirstImg.style.objectFit = "fill";
-                    
-                        articleFirstImg.setAttribute("onclick","location.href='./profileArticleListPage?profile_info_pk="+profile_info_pk+"&user_pk="+user_pk+"'");
                         
                         
                         const icon = articleListWrapper.querySelector(".icon");
@@ -105,7 +83,7 @@
                     }
                 });
             }
-            function loadStoryStorageList(profile_info_pk){
+            function loadAnotherStorageList(profile_info_pk){
                 const url = "./loadStoryStorageList";
 
                 fetch(url, {
@@ -162,32 +140,28 @@
                 });
             }
 
-            function downStoryStoreList(){
-                const stroyList = document.querySelector("#d-none-scroll")
-                stroyList.classList.add("d-none");
-                const storyButton = document.querySelector("#storyButton");
-                storyButton.classList.remove("fa-chevron-up")
-                storyButton.classList.add("fa-chevron-down")
-                storyButton.removeAttribute("onclick");
-                storyButton.setAttribute("onclick", "upStoryStoreList()");
+            function followingUser(user_pk){
 
-            }
-            function upStoryStoreList(){
-                const stroyList = document.querySelector("#d-none-scroll")
-                stroyList.classList.remove("d-none");
-                const storyButton = document.querySelector("#storyButton");
-                storyButton.classList.add("fa-chevron-up")
-                storyButton.classList.remove("fa-chevron-down")
-                storyButton.removeAttribute("onclick");
-                storyButton.setAttribute("onclick", "downStoryStoreList()");
-            }
+                const follow_user_pk = profile_info_pk;
 
-        
+                const url = "./followingAnotherUser";
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk+"&user_pk="+user_pk
+            	});
+                    loadAnotherProfileInfo(profile_info_pk);
+                    const followButton = document.querySelector("#followButton");
+                    followButton.innerText = "팔로잉";
+                    followButton.classList.remove("btn-primary");
+                    followButton.style.backgroundColor ="rgb(231, 229, 229);";
             
+            }
+
             window.addEventListener("DOMContentLoaded", () =>{
-                getUrlKey();
-                getProfileInfoDto();
-                loadMyProfileInfo();
+                getProfile_info_pk();
             });
         </script>
 
@@ -230,12 +204,14 @@
                 </div>
             </div>
             <div class="row mt-2">
-                <div  class="col fw-bold ms-3 fs-5" th:text="${session.sessionUser.userid} ">
-                
+                <div class="col-auto ms-2">
+                    <i class="fa-solid fa-chevron-left"></i>
                 </div>
-                <div class="col text-end fs-5 me-3">
-                    <i class="fa-regular fa-square-plus me-2"></i>
-                    <i class="fa-solid fa-bars"></i>
+                <div class="col text-center">
+                    eun_jin_log
+                </div>
+                <div class="col-auto text-end me-2">
+                    <i class="fa-solid fa-ellipsis"></i>
                 </div>
             </div>
             <div class="row">
@@ -247,7 +223,7 @@
                         <div class="col">
                             <div class="row mt-2">
                                 <div id="articleCount" class="col fs-4 text-center">
-                                    0
+                                    
                                 </div>
                             </div>
                             <div class="row">
@@ -259,7 +235,7 @@
                         <div class="col">
                             <div class="row mt-2">
                                 <div id="followCount" class="col fs-4 text-center">
-                                    398
+                                    
                                 </div>
                             </div>
                             <div class="row">
@@ -271,7 +247,7 @@
                         <div class="col">
                             <div class="row mt-2">
                                 <div id="followingCount" class="col fs-4 text-center">
-                                    329
+                                    
                                 </div>
                             </div>
                             <div class="row">
@@ -283,7 +259,7 @@
                     </div>
                     <div class="row mt-2">
                         <div id="nickName" class="col ms-3">
-                            춘이야박사
+                            
                         </div>
                     </div>
                     <div class="row" style="font-size: small;">
@@ -292,44 +268,39 @@
                         </div>
                     </div>
                     <div class="row mt-3">
-                        <div id="updateProfilePageButton" class="col ms-3 fw-bold text-center rounded border" style="background-color: rgb(231, 229, 229);">
-                            프로필 편집
+                        <div id="followButton" th:onclick="'followingUser(' + ${session.sessionUser.user_pk} + ')'" class="col ms-3 text-center rounded border text-white" style="background-color: rgb(65,147,239);"><!--rgb(57,117,2)-->
+                            팔로우
                         </div>
                         <div class="col mx-3 fw-bold text-center rounded border" style="background-color: rgb(231, 229, 229);">
-                            프로필 공유
+                            메세지
                         </div>
                         <div class="col-auto me-3 px-1 pt-1 text-center rounded border" style="background-color: rgb(231, 229, 229); font-size: small;">
                             <i class="fa-solid fa-user-plus px-0"></i>
                         </div>
                     </div>
-                    <div class="row mt-4">
-                        <div class="col fw-bold ms-3">
-                            스토리 하이라이트 
+                    <div class="row mt-3">
+                        <div class="col-3 mt-1 pe-0 ms-2">
+                            <img class="img-fluid rounded-circle float-start border border-white border-2" src="../../../../../../../../3img/dog1.jpeg" style="aspect-ratio: 1/1; height: 2em; position: relative; z-index: 1;">
+                            <img class="img-fluid rounded-circle float-start border border-white border-2" src="../../../../../../../../3img/dog1.jpeg" style="aspect-ratio: 1/1; height: 2em; position: absolute; left: 2.3em; z-index: -1">
+                            <img class="img-fluid rounded-circle float-start border border-white border-2" src="../../../../../../../../3img/dog1.jpeg" style="aspect-ratio: 1/1; height: 2em; position: absolute; left: 3.3em; z-index: -2">
                         </div>
-                        <div class="col text-end me-3" style="font-size: small;">
-                            <i id="storyButton" onclick="downStoryStoreList()" class="fa-solid fa-chevron-up text-center"></i>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col ms-3" style="font-size: small;">
-                            좋아하는 스토리를 프로필에 보관해보세요!!
+                        <div class="col ps-0" style="font-size: 0.9em;">
+                            <div class="row">
+                                <div class="col">
+                                    <span class="fw-bold">Jo_inchun</span>님, <span class="fw-bold">miu_is_cat</span>님 <span class="fw-bold">외</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <span class="fw-bold">26명</span>이 팔로우합니다.
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div id="d-none-scroll" class="row mt-3 overflow-x-auto">
                         <div class="col">
                             <div id="storyStorageListBox" class="row" style="width: 200%;">
-                                <div id="storageAddButton" th:onclick="|location.href='@{./addStoryStoragePage(user_pk=${session.sessionUser.user_pk})}'|" class="col-auto">
-                                    <div class="row">
-                                        <div class="col fs-5 text-center">
-                                            <i class="fa-solid fa-plus rounded-circle border border-black py-3 px-3" style="height: 15vw; aspect-ratio: 1/1;"></i>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col py-0 text-center" style="font-size: small;">
-                                            새로 만들기
-                                        </div>
-                                    </div>
-                                </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -347,11 +318,8 @@
                     </div>
                 </div>
             </div>  
-            <div id="articleListBox" class="row row-cols-3 ps-0 overflow-y-scroll" style="height: 20em;">
-                <div class="col"></div>
-                <div class="col mt-5 text-center">
-                    <img class="img-fluid" src="/public/image/mstar/noPhoto.png" alt="">
-                </div>
+            <div id="articleListBox" class="row row-cols-3 ps-0">
+                
             </div>
             <div class="row bg-white border-top sticky-bottom">
                 <div class="col px-4 py-2">
@@ -404,7 +372,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div th:onclick="|location.href='@{./mainListPage(user_pk=${session.sessionUser.user_pk})}'|" class="col text-center ps-0" style="font-size: 4vw;">
+                        <div class="col text-center ps-0" style="font-size: 4vw;">
                             <div class="row">
                                 <div class="col text-body-tertiary">
                                     <i class="fa-solid fa-comment-dots"></i>

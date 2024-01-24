@@ -92,8 +92,9 @@
                 formData.append("status_message", status_message);
                 
 
-                 xhr.send(formData);
+                xhr.send(formData);
 
+                //비동기식이라서 업데이트해도 바로 적용안된상태로 페이지가 로드됨.. 어떡하지...
                 location.href='./profilePage?user_pk='+user_pk;
             }
             window.addEventListener("DOMContentLoaded", () =>{

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+        <script th:inline="javascript">
+            let profile_info_pk = null;
+            let another_info_pk = null;
+            function getUrlKey() {
+                const urlParams = new URLSearchParams(location.search);
+                const key = urlParams.get("profile_info_pk");
+                profile_info_pk = key;
+                console.log(profile_info_pk)
+                const anotherkey = urlParams.get("another_info_pk");
+                another_info_pk = anotherkey;
+                console.log(another_info_pk)
+                const insertButtonStatus = document.querySelector("#insertButtonStatus");
+                const directChat = document.querySelector("#directChat");
+                const insertDirectButton = document.querySelector("#insertDirectButton");
+                directChat.addEventListener("input", function() {
+                    if(directChat.value.trim() === ""){
+                        insertButtonStatus.style.color = "rgb(190, 190, 245)";
+                        insertDirectButton.removeAttribute("onclick");
+                        insertDirectButton.setAttribute("disabled","disabled");
+                    }else{
+                        insertButtonStatus.style.color = "rgb(250, 250, 250)";
+                        insertDirectButton.setAttribute("onclick", "insertDirect()");
+                        insertDirectButton.removeAttribute("disabled")
+                    }
+
+                });
+                loadAnotherProfileInfo(another_info_pk);
+            }
+
+
+            function loadAnotherProfileInfo(another_info_pk){
+                const url = "./loadAnotherProfileInfo";
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+another_info_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+
+                    const topAnotherUserProfilePhoto= document.querySelector("#topAnotherUserProfilePhoto");
+                    topAnotherUserProfilePhoto.src = response.data.profileInfoDto.profile_photo;
+
+                    const topAnotherUserid= document.querySelector("#topAnotherUserid");
+                    topAnotherUserid.innerText = response.data.userDto.userid;
+
+                    const anotherUserPoriflePhoto = document.querySelector("#anotherUserPoriflePhoto");
+                    anotherUserPoriflePhoto.src = response.data.profileInfoDto.profile_photo;
+
+                    const anotherUserId = document.querySelector("#anotherUserId");
+                    anotherUserId.innerText = response.data.userDto.userid;
+
+                    const anotherUserFollowArricle = document.querySelector("#anotherUserFollowArricle");
+                    if(response.data.followCount != 0){
+                        anotherUserFollowArricle.innerText = "팔로워 "+response.data.followCount+"명 게시물 "+response.data.articleCount+"개";
+                    }    
+
+
+                });
+
+            }
+
+            function insertDirect(){
+
+                const directChat = document.querySelector("#directChat");
+                const chat = directChat.value;
+
+                const url = "./insertDirect";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "send_user_pk="+profile_info_pk+"&rcv_user_pk="+another_info_pk+"&chat="+chat
+            	});
+                chat.value="";
+               
+            }
+
+            function loadDirectList(){
+                
+            }
+            
+
+
+            window.addEventListener("DOMContentLoaded", () =>{
+                getUrlKey();
+            });
+
+        </script>
+        <style>
+
+            @font-face {
+                font-family: 'omyu_pretty';
+                src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
+                font-weight: normal;
+                font-style: normal;
+            }
+            
+
+            body {
+                font-family: 'omyu_pretty';
+                overflow: hidden;
+            }
+        </style>
+        
+    </head>
+
+    <body>
+        <div class="container-fluid">
+            <div class="row sticky-top bg-white border-bottom">   
+                <div class="col">
+                    <div class="row my-2">
+                        <div class="col-auto align-self-center">
+                            <i class="fa-solid fa-chevron-left ps-2"></i>
+                        </div>
+                        <div class="col-auto align-self-center">   
+                            <img id="topAnotherUserProfilePhoto" class="img-fluid rounded-circle align-self-center" alt="" style="aspect-ratio: 1/1; height: 2em;">
+                        </div>
+                        <div class="col">
+                            <div class="row">
+                                <div id="topAnotherUserid" class="col-auto align-self-center ps-0">
+                                    eun_jin-log
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div id="topAnotherUserNickName" class="col text-secondary ps-0" style="font-size: 0.7em;">
+                                    김쿼카
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-5" style="height: auto;">
+                <div class="col">
+                    <div class="row text-center" style="font-size: 0.8em;">
+                        <div class="col">
+                            <div class="row">
+                                <div  class="col">
+                                    <img id="anotherUserPoriflePhoto" class="rounded-circle" src="/public/image/commons/commonsDogImg1.png" alt="" style="aspect-ratio: 1/1; height: 5em;">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div id="anotherUserId" class="col">
+                                    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    Mstargram
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div id="anotherUserFollowArricle" class="col">
+                                
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    jo_seongmu 님 외 4명을 함께 팔로우합니다.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pe-0" style="height: 40em;">
+                        <div id="directListBox" class="col mt-3">
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row bg-white fixed-bottom">
+                <div class="col">
+                    <div class="row mb-3">
+                        <div class="col-auto ms-3">
+                            <div class="row">
+                                <div class="col">
+                                    <img class="img-fluid rounded-circle" src="/uploadFiles/2024/01/15/f885a6db-fca1-4ba7-ae6b-abab85028745_1705282946649.jpeg" alt="" style="aspect-ratio: 1/1; height: 2.7em;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row rounded-pill me-4" style="border: 0.1em solid rgb(215, 216, 220)">
+                                <div class="col">
+                                    <input id="directChat" class="form-control px-0" type="text" style="box-shadow: none; border: none;" placeholder="Jo_inchune(으)로 댓글 달기..">
+                                </div>
+                                <div id="insertDirectButton" class="col-auto py-0 text-center py-0 rounded-pill mx-2 my-1" style="background-color: rgb(81, 120, 235);">
+                                    <i id="insertButtonStatus" class="fa-solid fa-arrow-up pt-1" style="color: rgb(190, 190, 245);"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+        </div>
+
+        <div id="rcvChatTemplete"  class="d-none">
+            <div class="row mt-2">
+                <div class="col">
+                    <div class="row">
+                        <div class="col-auto ms-1 pe-0">
+                            <img class="img-fluid rounded-circle" src="/public/image/commons/commonsDogImg1.png" alt="" style="aspect-ratio: 1/1; height: 2em;">
+                        </div>
+                        <div class="col-auto text-start py-0 align-self-center  rounded-pill" style="background-color: rgb(219, 219, 219);">
+                            dhkffkfkfkffkfkf
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="sendChatTemplete" class="d-none">
+            <div class="row pe-0 mt-2">
+                <div class="col">
+                    <div class="row justify-content-end pe-0">
+                        <div class="col-auto text-white rounded-pill" style="background-color: rgb(36, 106, 246);">
+                            dhkffkfkfkffkfkf
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dateTemplete" class="d-none">
+            <div class="row dateWrapper mt-2">
+                <div class="col">
+                    <div class="row">
+                        <div class="col text-center text-secondary chatDate" style="font-size: 0.8em;">
+                            2023년 10월 19일
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    </body>
+
+</html>

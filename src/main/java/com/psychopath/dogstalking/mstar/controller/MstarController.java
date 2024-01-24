@@ -48,4 +48,24 @@ public class MstarController {
 
         return "mstar/uploadStoryPage";
     }
+    @RequestMapping("anotherProfilePage")
+    public String anotherProfilePage(int profile_info_pk){
+
+        return "mstar/anotherProfilePage";
+    }
+    @RequestMapping("profileArticleListPage")
+    public String profileArticleListPage(int profile_info_pk, int user_pk){
+
+        return "mstar/profileArticleListPage";
+    }
+    @RequestMapping("directListPage")
+    public String directListPage(int profile_info_pk){
+
+        return "mstar/directListPage";
+    }
+    @RequestMapping("directPage")
+    public String directPage(int profile_info_pk, int another_info_pk){
+
+        return "mstar/directPage";
+    }
 }

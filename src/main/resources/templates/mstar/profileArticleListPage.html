@@ -10,11 +10,17 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
         <script>
+             let profile_info_pk = null;
              let user_pk = null;
-            function getUrlKey() {
+            function getProfileInfoKey() {
                 const urlParams = new URLSearchParams(location.search);
-                const key = urlParams.get("user_pk");
-                user_pk = key;
+                const userKey = urlParams.get("user_pk");
+                user_pk = userKey;
+
+                const profileKey = urlParams.get("profile_info_pk");
+                profile_info_pk = profileKey;
+
+                loadProfileArticleList(profile_info_pk, user_pk);
             }
 
             let profileInfoDto = null;
@@ -27,240 +33,53 @@
                     const profile_info_pk = profileInfoDto.profile_info_pk;
                     const myCommentProfileImg = document.querySelector("#myCommentProfileImg");
                     myCommentProfileImg.src = profileInfoDto.profile_photo;
-                    const myStoryListProfileImg = document.querySelector("#myStoryListProfileImg");
-                    myStoryListProfileImg.src= profileInfoDto.profile_photo;
-                    const goDirectPage = document.querySelector("#goDirectPage");
-                    goDirectPage.setAttribute("onclick" , "location.href='./directListPage?profile_info_pk="+profile_info_pk+"'");
 
-                    loadArticleList(profile_info_pk);
-                    loadStoryProfileList(profile_info_pk)  
-                    
-                });
-            }
-            let storyProfileInPkList = [];
-            let currentUser = 0 ;
-            function loadStoryProfileList(profile_info_pk){
-                
-                const url = "./loadStoryList";
-                
-                fetch(url, {
-                     method: "post",
-                     headers: {
-                        "Content-Type": "application/x-www-form-urlencoded"
-                    },
-                      body: "profile_info_pk="+profile_info_pk
-            	})
-                .then(response => response.json())
-                .then((response) =>{
-                    const storyListBox = document.querySelector("#storyListBox");
-                    let setCount=0;
-                    for(e of response.data){
-                        const storyProfileListWrapper = document.querySelector("#storyProfileListTemplet .storyProfileListWrapper").cloneNode(true);
-                        
-                        const storyListProfileImg = storyProfileListWrapper.querySelector(".storyListProfileImg");
-                        storyListProfileImg.src = e.profileInfoDto.profile_photo;
-                        storyListProfileImg.setAttribute("onclick","showStoryModal("+e.profileInfoDto.profile_info_pk+",this)")
-                        storyListProfileImg.setAttribute("id",setCount);
-                        setCount += 1;
-
-                        const userId = storyProfileListWrapper.querySelector(".userId");
-                        userId.innerText = e.userDto.userid;
-
-                        storyListBox.appendChild(storyProfileListWrapper);
-                        storyProfileInPkList.push(e.profileInfoDto.profile_info_pk);
-                    }
-                });
-                
-            }
-            let storyList = [];
-            let currentPage = 0 ;
-            function getPeopleStoryList(profile_info_pk){
-                currentPage=0;
-                storyList=[];
-                const myProfile_info_pk = profileInfoDto.profile_info_pk;
-                const url = "./userStoryList";
-                
-                fetch(url, {
-                     method: "post",
-                     headers: {
-                        "Content-Type": "application/x-www-form-urlencoded"
-                    },
-                      body: "profile_info_pk="+profile_info_pk+"&myProfile_info_pk="+myProfile_info_pk
-            	})
-                .then(response => response.json())
-                .then((response) =>{
-                    const barBox = document.querySelector("#barBox");
-                    barBox.innerHTML = '';
-                    
-                    let startPageActive =0;
-                    for(e of response.data.storyList){
-                        const div = document.createElement("div");
-                        div.classList.add("bar");
-                        div.setAttribute("id","bar"+e.storyDto.story_pk);
-                        
-                        barBox.appendChild(div);
-                        // 조건을 읽은지 확인하고 3개중 2개읽었으면 3개다 액티브 상태로 마지막사진부터 보여줌
-                        if(e.viewStatus == 1){
-                            currentPage += 1;
-                            div.classList.add("active");
-                        }else if(e.viewStatus ==0 && startPageActive == 0){
-                            startPageActive +=1;
-                            div.classList.add("active");
-                        }
-                       
-                        storyList.push(e.storyDto.story_pk);
-                        console.log(e.storyDto.story_pk);
-                    }
-                    const storyUserid = document.querySelector("#storyUserid");
-                    storyUserid.innerText = response.data.userDto.userid;
-
-                    const storyProfileImg = document.querySelector("#storyProfileImg");
-                    storyProfileImg.src = response.data.profileInfoDto.profile_photo;
-
-                    //클릭시 바뀌어야함.
-                    
-                    loadStory(storyList[currentPage]);
-                    console.log(storyList[currentPage]);
                     
                     
                 });
-                
             }
-
-            function loadStory(story_pk){
-                const url = "./loadUserStory";
-                
-                fetch(url, {
-                     method: "post",
-                     headers: {
-                        "Content-Type": "application/x-www-form-urlencoded"
-                    },
-                      body: "story_pk="+story_pk
-            	})
-                .then(response => response.json())
-                .then((response) =>{
-                    console.log("tlf")
-                    console.log(story_pk)
-                    console.log(response.data.story_text)
-                    const story_created_at = document.querySelector("#story_created_at");
-                    story_created_at.innerText = response.data.created_at;
-
-                    const story_img = document.querySelector("#story_img");
-                    story_img.style.backgroundImage = "url("+response.data.story_photo+")";
-                    //텍스트 + color
-                    const story_text = document.querySelector("#story_textAndColor");
-                    story_text.innerText = response.data.story_text;
-                    story_text.style.color = response.data.text_color;
-                    story_text.style.backgroundColor = response.data.background_color;
-                    /// x y 위치정보
-                    const storyTextBox =  document.querySelector("#storyTextBox");
-                    storyTextBox.setAttribute("style", "top:"+response.data.y_coordinates+"%;left:"+response.data.x_coordinates+"%;");
-
-                   
-
-                });
-            }
-            function removeTouchImgEventListener() {
-                const story_img = document.querySelector("#story_img");
-                story_img.removeEventListener('touchstart', touchImg());
-            }
-
-
-            function touchImg(event) {
-                    console.log(event)
-        
-                    const touchX = event.touches[0].clientX; // 터치 이벤트의 X 좌표
-                    // 이미지의 가로 중앙 좌표
-                    const imageCenterX = story_img.getBoundingClientRect().left + story_img.offsetWidth / 2;
-
-                    if (touchX < imageCenterX) {
-                        if(currentPage == 0){
-                            if(currentUser == 0){
-                                closeStoryModal();
-                            }else{
-                                getPeopleStoryList(storyProfileInPkList[currentUser-1]);
-                                currentUser -=1;
-                            }
-                        }else{
-                            loadStory(storyList[currentPage-1]);
-                            currentPage -=1;
-                            const bar = document.querySelector("#bar"+storyList[currentPage+1]);
-                            bar.classList.remove("active");
-                        }
-                        
-                    } else {
-                        // 이미지의 오른쪽 절반을 터치했을 때의 처리
-                        if(storyList.length == currentPage+1){
-                            if(storyProfileInPkList.length == currentUser+1){
-                                closeStoryModal();
-                            }else{
-                                getPeopleStoryList(storyProfileInPkList[currentUser+1]);
-                                currentUser +=1;
-
-                            }
-                        }else{
-                            loadStory(storyList[currentPage+1]);
-                            currentPage +=1;
-                            const bar = document.querySelector("#bar"+storyList[currentPage]);
-                            bar.classList.add("active");
-                        }
-                        
-                    }
-                }
-
-
-            function showStoryModal(profile_info_pk, target){
-                currentUser = parseInt(target.getAttribute("id"));
-                
-                getPeopleStoryList(profile_info_pk);
-
-                const story_img = document.querySelector("#story_img");
-                
-                story_img.addEventListener('touchstart', touchImg);
-                
-                const storyModal = bootstrap.Modal.getOrCreateInstance("#storyModal");
-                storyModal.show();
-            }
-
-            function closeStoryModal(){
-                const storyModal = bootstrap.Modal.getOrCreateInstance("#storyModal");
-                storyModal.hide();
-                
-                const story_img = document.querySelector("#story_img");
-                story_img.removeEventListener("touchstart", touchImg);    
-            } 
             
-            function loadArticleList(profile_info_pk){
-                const url = "./loadArticeleList";
+
+
+            
+            function loadProfileArticleList(profile_info_pk, user_pk){
+                const url = "./loadProfileArticleList";
 
                 fetch(url, {
                      method: "post",
                      headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
-                      body: "profile_info_pk="+profile_info_pk
+                      body: "profile_info_pk="+profile_info_pk+"&user_pk="+user_pk
             	})
                 .then(response => response.json())
                 .then((response) =>{
-                    const articleListBox = document.querySelector("#articleListBox");
                     
-                    for(e of response.data){
+                    const articleListBox = document.querySelector("#articleListBox");
+                    const articleListWrapper = document.querySelector("#articleListTemplete .articleListWrapper");
+                    const articleUserId = articleListWrapper.querySelector(".articleUserId");
+                    articleUserId.innerText = response.data.userDto.userid;
 
-                        const articleListWrapper = document.querySelector("#articleListTemplete .articleListWrapper").cloneNode(true);
-                        
-                        
-                        const articleUserId = articleListWrapper.querySelector(".articleUserId");
-                        articleUserId.innerText = e.userDto.userid;
-                        
-                        const profile_photo = articleListWrapper.querySelector(".profile_photo");
-                        
+                    const useridSpan = document.createElement("span");
+                    useridSpan.classList.add("fw-bold","pe-2");
+                    useridSpan.innerText = response.data.userDto.userid;
 
-                        profile_photo.setAttribute("src", e.profileInfoDto.profile_photo);
-                        if(profile_info_pk != e.profileInfoDto.profile_info_pk){
-                            profile_photo.setAttribute("onclick", "location.href='./anotherProfilePage?profile_info_pk="+e.profileInfoDto.profile_info_pk+"'");
+                    if(response.data.followStatus == 0){
+
+                    }
+
+                    const profile_photo = articleListWrapper.querySelector(".profile_photo");
+                    profile_photo.setAttribute("src", response.data.profileInfoDto.profile_photo);
+                        if(profile_info_pk != response.data.profileInfoDto.profile_info_pk){
+                            profile_photo.setAttribute("onclick", "location.href='./anotherProfilePage?profile_info_pk="+response.data.profileInfoDto.profile_info_pk+"'");
                         }else{
                             profile_photo.setAttribute("onclick", "location.href='./profilePage?user_pk="+user_pk+"'");
                         }
+
+
+                    for(e of response.data.list){
+
+                        const articleListWrapper = document.querySelector("#articleListTemplete .articleListWrapper").cloneNode(true);
                         
                         const likeCountAndUserId = articleListWrapper.querySelector(".likeCountAndUserId");
                         if(e.likeList[0] != null){
@@ -338,14 +157,11 @@
                         console.log()
                         articleImgBox.appendChild(carouselWrapper);
 
-                        
                         var carousel = new bootstrap.Carousel(carouselWrapper);
                         carousel.prev();
 
                         const contentUserId = articleListWrapper.querySelector(".contentUserId");
-                        const useridSpan = document.createElement("span");
-                        useridSpan.classList.add("fw-bold","pe-2");
-                        useridSpan.innerText = e.userDto.userid;
+                        
                         const contentSpan = document.createElement("span");
                         contentSpan.innerText = e.articleDto.content;
                         
@@ -410,10 +226,9 @@
 
                 });
             }            
-            function insertArticleComment(article_pk){
+            function insertArticleComment(article_pk, target){
                 const comment = document.querySelector("#commentText").value;
                 const profile_info_pk = profileInfoDto.profile_info_pk;
-               
                
                 const url = "./insertMyComment";
 
@@ -429,7 +244,7 @@
                     commentText.value = "";
                     loadArticeleCommentList(article_pk);
 
-                    const writeMyCommentBox = articleListWrapperTarget.querySelector(".writeMyCommentBox");
+                    const writeMyCommentBox = document.querySelector("#writeMyCommentBox");
 
                     const writeMyCommentWrapper = document.querySelector("#writeMyCommentTemplete .writeMyCommentWrapper").cloneNode(true);
                     
@@ -442,8 +257,6 @@
                     likebutton.setAttribute("onclick", "insertLikeOutside("+response.data.comment_pk+", this)");
 
                     writeMyCommentBox.appendChild(writeMyCommentWrapper);
-
-                    articleListWrapperTarget = null;
                 });
             }
             function reloadCommentCount(article_pk, target){
@@ -484,9 +297,6 @@
                     articleCommentListBox.innerHTML = "";
                    for(e of response.data){
                         const commentListWrapper = document.querySelector("#commentListTemplete .commentListWrapper").cloneNode(true);
-
-                        const comment_pk_value = commentListWrapper.querySelector(".comment_pk_value");
-                        comment_pk_value.setAttribute("value", e.commentDto.comment_pk);
 
                         const commentProfilePhoto = commentListWrapper.querySelector(".commentProfilePhoto");
                         commentProfilePhoto.src = e.profileInfoDto.profile_photo;
@@ -675,9 +485,8 @@
 
             }
             
-            let articleListWrapperTarget = null;
+
             function openCommentWriteBox(article_pk, target) {
-                articleListWrapperTarget = target.closest(".articleListWrapper");
                 
                 const commentListBox = document.querySelector("#commentListBox");
                 commentListBox.classList.add("d-none");
@@ -742,8 +551,6 @@
 
                     for(e of response.data){
                         const tCommentListWrapper = document.querySelector("#tCommentListTemplete .tCommentListWrapper").cloneNode(true);
-
-                        
 
                         const profilePhoto = tCommentListWrapper.querySelector(".profilePhoto");
                         profilePhoto.src = e.profileInfoDto.profile_photo;
@@ -835,9 +642,9 @@
 
                 myTcommentBox.appendChild(myTcommentWrapper);
 
-                setTimeout(function () {
-                    loadTcommentList(comment_pk, target);
-                }, 400);
+                // setTimeout(function () {
+                //     loadTcommentList(comment_pk, target);
+                // }, 400);
                 
 
 
@@ -850,7 +657,7 @@
                 commentText.value="";
                 TcommentTarget= target;
                const insertCommentButton = document.querySelector("#insertCommentButton");
-               //insertCommentButton.setAttribute("onclick", "insertTcomment("+comment_pk+")");
+               insertCommentButton.setAttribute("onclick", "insertTcomment("+comment_pk+")");
                
 
                const tCommentStatusBox = document.querySelector("#tCommentStatusBox");
@@ -887,7 +694,7 @@
             }
             function closeTcommentList(comment_pk, target){
                 removeWriteTcomment();
-                
+                // target 설정 들어가야함..
                 const tCommentListBox = target.closest(".tCommentListBox");
                 tCommentListBox.innerHTML ="";
                 const commentListWrapper =  tCommentListBox.closest(".commentListWrapper");
@@ -897,8 +704,7 @@
                 
             }
 
-            function openCommentListBox(article_pk) {
-                console.log(TcommentTarget);
+            function openCommentListBox(article_pk, target) {
                 
                 loadArticeleCommentList(article_pk);
                 const articlePK = document.querySelector("#articlePK");
@@ -915,8 +721,6 @@
 
                 const commentText = document.querySelector("#commentText");
                 commentText.value="";
-                
-                
 
                 const insertButtonColor = document.querySelector("#insertButtonColor");
                 commentText.addEventListener("input", function() {
@@ -934,15 +738,9 @@
                     }else{
                         if(commentText.value.trim() === ""){
                             insertButtonColor.style.color = "rgb(190, 190, 245)";
-                            insertCommentButton.removeAttribute("onclick");
                             insertCommentButton.setAttribute("disabled","disabled");
                         }else{
-                            const commentListWrapper = TcommentTarget.closest(".commentListWrapper");
-                            const comment_pk = commentListWrapper.querySelector(".comment_pk_value").value;
-                            
-                        
                             insertButtonColor.style.color = "rgb(250, 250, 250)";
-                            insertCommentButton.setAttribute("onclick", "insertTcomment("+comment_pk+")");
                             insertCommentButton.removeAttribute("disabled")
                         }
 
@@ -952,20 +750,6 @@
                 });
 
             }
-
-            function aaa(){
-
-            }
-
-            console.log(aaa);
-
-
-
-
-
-
-
-
 
             ///////////////////새로운마음으로 시작해보자!!!
             function insertArticleLike(article_pk, target){
@@ -1046,11 +830,12 @@
 
 
             window.addEventListener("DOMContentLoaded", () =>{
-                getUrlKey();
+                getProfileInfoKey();
                 getProfileInfoDto();
             });
         </script>
         <style>
+
             @font-face {
                 font-family: 'omyu_pretty';
                 src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
@@ -1135,37 +920,33 @@
                     </div>
                 </div>
             </div>
-            <div class="row mt-1 fs-4">
-                <div class="col">
-                    Mstargram
+            <div class="row text-center border-bottom" style="font-size: 0.8em;">
+                <div class="col-2 align-self-center">
+                    <i class="fa-solid fa-arrow-left"></i>
                 </div>
-                <div class="col text-end">
-                    <i class="fa-regular fa-heart"></i>&nbsp;&nbsp;
-                    <i class="fa-regular fa-paper-plane"></i>
-                </div>
-            </div>
-            <div id="d-none-scroll" class="row mt-3 overflow-x-auto">
                 <div class="col">
-                    <div id="storyListBox" class="row">
-                        <div class="col-auto px-3">
-                            <div class="row">
-                                <div class="col-auto profileImg px-0 py-0">
-                                    <img id="myStoryListProfileImg" class="img-fluid rounded-circle border border-1" src="" alt="" style="aspect-ratio: 1/1; height: 4em;">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col px-0 text-center " style="font-size: 0.8em;">
-                                    내 스토리+
-                                </div>
-                            </div>
+                    <div class="row">
+                        <div id="articleListUserid" class="col text-secondary">
+                            Jo_inchun 님의
                         </div>
-                        <!--반복문 구간-->
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            게시글
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2 align-self-center pe-3">
+                    <div class="row">
+                        <div class="col text-center rounded" style="background-color: #ccced1;">
+                            팔로우
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div id ="articleListBox" class="col">
-                
+                    
                 </div>
             </div>
             <div class="row bg-white border-top sticky-bottom">
@@ -1190,7 +971,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div id="goDirectPage" class="col text-secondary">
+                                <div class="col text-secondary">
                                     먹거리
                                 </div>
                             </div>
@@ -1235,21 +1016,7 @@
                 </div>
             </div>
         </div>
-        <!-- 스토리 반복문 -->
-        <div id="storyProfileListTemplet" class="d-none">
-            <div class="col-auto px-3 storyProfileListWrapper">
-                <div class="row">
-                    <div class="col-auto profileImg px-0 py-0">
-                        <img class="img-fluid rounded-circle border border-1 storyListProfileImg" src="" alt="" style="aspect-ratio: 1/1; height: 4em;">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col px-0 text-center userId " style="font-size: 0.8em;">
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
+      
         <!--게시물 반복문-->
         <div id="articleListTemplete" class="d-none">
             <div class="row articleListWrapper">
@@ -1355,7 +1122,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col writeMyCommentBox">
+                        <div id="writeMyCommentBox" class="col">
                             
                         </div>
                     </div>
@@ -1411,7 +1178,7 @@
                         <div id="commentUser_id" class="col text-secondary " style="font-size: 0.9em;">
                             
                         </div>
-                        <div class="col-2 pe-4 text-end">
+                        <div class="col pe-4 text-end">
                             <i onclick="removeWriteTcomment()" class="fa-solid fa-xmark" style="font-size: 0.8em;"></i>
                         </div>
                     </div>
@@ -1463,7 +1230,6 @@
 
         <div id="commentListTemplete" class="d-none">
             <div class="row my-1 pb-3 commentListWrapper">
-                <input class="comment_pk_value" type="hidden">
                 <div class="col-auto ms-3">
                     <div class="row">
                         <div class="col-auto profileImg px-0 py-0 ">
@@ -1496,7 +1262,7 @@
                     <div class="row">
                         <div class="col">
                             <div class="row">
-                                <div class="col-auto ps-1 text-secondary writeTcomment" style="font-size: 0.9em;">
+                                <div class="col ps-1 text-secondary writeTcomment" style="font-size: 0.9em;">
                                     
                                 </div>
                             </div>
@@ -1620,63 +1386,6 @@
                 </button>
             </div>
         </div>
-
-        <div id="storyModal" class="modal" tabindex="-1">
-            <div class="modal-dialog modal-fullscreen">
-                <div class="modal-content " style="background-color: black; overflow: hidden;">
-                    <div class="modal-body" style="overflow: hidden;">
-                        <div id="story_img" class="row position-relative px-0 rounded" style="height: 35em; background-size: 100%; background-repeat: no-repeat; background-position: center; background-color: rgb(49, 49, 49); top: 1rem;">   
-                            <div class="col px-0">
-                                <div class="row">
-                                    <div class="col">
-                                        <div id="barBox" class="mt-1 "> 
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row text-light mt-2">
-                                    <div class="col-auto">
-                                        <img id="storyProfileImg" class="rounded-circle ms-2"  alt="" style="aspect-ratio: 1/1; height: 2em;">
-                                    </div>
-                                    <div id="storyUserid" class="col-auto align-self-center px-0">
-                                        
-                                    </div>
-                                    <div id="story_created_at" class="col-auto text-secondary align-self-center pt-1" style="font-size: 0.9em;">
-                                        
-                                    </div>
-                                    <div class="col text-end text-white fs-5">
-                                        <i class="fa-solid fa-ellipsis"></i>
-                                    </div>
-                                    <div class="col-auto pe-4 text-end text-white fs-4">
-                                        <i class="fa-solid fa-xmark"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="storyTextBox" class="col-auto px-0 position-absolute" style="cursor: pointer; top: 50%; left: 0%;">
-                                <div id="story_textAndColor" class="px-2">
-                                    
-                                </div>
-                            </div>
-                        </div>    
-                        <div class="row px-2 py-3 mt-3">
-                            <div class="col">
-                                <input class="form-control rounded-pill border-white py-1 text-white" type="text" placeholder="메세지를 입력해주세요." style="background-color: transparent;">
-                            </div>
-                            <div class="col-auto text-end me-1 text-white fs-4">
-                                <i class="fa-regular fa-heart"></i>&nbsp;&nbsp;
-                                <i class="fa-regular fa-paper-plane"></i>
-                            </div>
-                        </div>
-                    </div>    
-                </div>
-            </div>
-        </div>
-       
-        
-        
-        
-       
-        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     </body>
 

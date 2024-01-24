@@ -37,6 +37,10 @@
                         if (e.target.files.length === 0) {  
                             return   
                         }else{
+                            const existingPhotos = document.querySelectorAll(".photo-item");
+                            existingPhotos.forEach(photo => {
+                                photoListBox.appendChild(photo);
+                            });
                             const addButton = document.querySelector("#addButton");
                             addButton.remove();
                             const addButtonDiv = document.createElement("div");

@@ -97,24 +97,20 @@
                 const profile_info_pk = profile_info_Dto.profile_info_pk;
                 const story_text = document.querySelector("#story_textAndColor").innerText;
                 const text_color = document.querySelector("#story_textAndColor").style.color;
-                console.log(text_color);
-                console.log(imageFiles);
-                console.log(story_text);
-                console.log(x_coordinates);
-                console.log(y_coordinates);
-                console.log(profile_info_pk);
-
+                const background_color = document.querySelector("#story_textAndColor").style.backgroundColor;
+                console.log(background_color);
+                
                 formData.append("imageFiles", imageFiles);
                 formData.append("story_text", story_text);
                 formData.append("x_coordinates", x_coordinates);
                 formData.append("y_coordinates", y_coordinates);
                 formData.append("profile_info_pk", profile_info_pk);
                 formData.append("text_color", text_color);
-                
+                formData.append("background_color", background_color);
 
                 xhr.send(formData);
 
-               //location.href='./profilePage?user_pk='+user_pk;
+               location.href='./profilePage?user_pk='+user_pk;
             }
           
 
@@ -160,7 +156,7 @@
                 const storyTextBox = document.querySelector("#storyTextBox");
 
                 const story_textAndColor = document.querySelector("#story_textAndColor");
-                story_textAndColor.setAttribute("style", "color:"+color+";");
+                story_textAndColor.style.color = color;
                 story_textAndColor.innerText = "";
                 story_textAndColor.innerText = story_text.value;
 
@@ -233,7 +229,34 @@
                 });
 
             }
+            function backGroundColorWhite(){
+                const story_textAndColor = document.querySelector("#story_textAndColor");
+                story_textAndColor.style.backgroundColor = "white";
 
+                const backgroundColorButton = document.querySelector("#backgroundColorButton");
+                backgroundColorButton.setAttribute("onclick","backGroundColorBlack()")
+            }
+            function backGroundColorBlack(){
+                const story_textAndColor = document.querySelector("#story_textAndColor");
+                story_textAndColor.style.backgroundColor = "black";
+
+                const backgroundColorButton = document.querySelector("#backgroundColorButton");
+                backgroundColorButton.setAttribute("onclick","backGroundColorGray()")
+            }
+            function backGroundColorGray(){
+                const story_textAndColor = document.querySelector("#story_textAndColor");
+                story_textAndColor.style.backgroundColor = "grey";
+
+                const backgroundColorButton = document.querySelector("#backgroundColorButton");
+                backgroundColorButton.setAttribute("onclick","backGroundColorNone()")
+            }
+            function backGroundColorNone(){
+                const story_textAndColor = document.querySelector("#story_textAndColor");
+                story_textAndColor.style.backgroundColor = "";
+
+                const backgroundColorButton = document.querySelector("#backgroundColorButton");
+                backgroundColorButton.setAttribute("onclick","backGroundColorWhite()")
+            }
           
 
             function showColorPicker(){
@@ -272,64 +295,64 @@
     </head>
 
     <body>
-        <div class="container-fluid bg-white" style="width: 100%;">
+        <div class="container-fluid bg-black" style="width: 100%; height: 100vh;">
             <input id="fileUpload" name="imageFiles" class="d-none" type="file" accept="image/*">
-            <div id="story_img" class="row upload-img position-relative" style=" height: 160vw; background-size: 100%; background-repeat: no-repeat; background-position: center;">
+            <div id="story_img" class="row position-relative px-1 rounded" style="height: 35em; background-size: 100%; background-repeat: no-repeat; background-position: center; background-color: rgb(49, 49, 49); top: 1rem;">
                 <div id="storyControllBar" class="col px-0"> 
-                    <div class="row mt-2" style="width: 100%;">
-                        <div onclick=window.history.back(); class="col-auto ms-3 rounded-circle text-white" style="background-color: rgb(55, 54, 54); opacity: 0.7; aspect-ratio: 1/1; height: 10vw;">
-                            <i class="fa-solid fa-xmark pt-2 fs-4"></i>
+                    <div class="row" style="width: 100%;">
+                        <div onclick=window.history.back(); class="col-auto ms-3 rounded-circle text-white">
+                            <i class="fa-solid fa-xmark pt-2 fs-5"></i>
                         </div>
                         <div class="col-5"></div>
-                        <div onclick=window.history.back(); class="col-auto ms-2 rounded-circle text-white text-end" style="background-color: rgb(55, 54, 54); opacity: 0.7; aspect-ratio: 1/1; height: 10vw;">
-                            <i class="fa-solid fa-tag fs-4 pt-2"></i>
+                        <div id="backgroundColorButton" onclick="backGroundColorWhite()" class="col-auto ms-2 rounded-circle text-white text-end" >
+                            <i class="fa-solid fa-fill-drip pt-2 fs-5"></i>
                         </div>
-                        <div onclick=showTextBox(); class="col-auto ms-2 rounded-circle text-white text-end" style="background-color: rgb(55, 54, 54); opacity: 0.7; aspect-ratio: 1/1; height: 10vw;">
-                            <i class="fa-sharp fa-solid fa-a pt-2"></i>
+                        <div onclick=showTextBox(); class="col-auto ms-1 rounded-circle text-white text-end">
+                            <i class="fa-sharp fa-solid fa-a pt-2 fs-5"></i>
                         </div>
-                        <div onclick=window.history.back(); class="col-auto ms-2 rounded-circle text-white text-end" style="background-color: rgb(55, 54, 54); opacity: 0.7; aspect-ratio: 1/1; height: 10vw;">
-                            <i class="fa-solid fa-camera-rotate pt-2"></i>
+                        <div onclick=storyPhotoUpload(); class="col-auto ms-1 rounded-circle text-white text-end">
+                            <i class="fa-solid fa-camera-rotate pt-2 fs-5"></i>
                         </div>
                     </div>   
                 </div>
                 <div id="storyTextBox" onmousedown="moveTextBox()" class="col-auto position-absolute" style="cursor: pointer; top: 50%; left: 50%;">
-                    <div id="story_textAndColor">
+                    <div id="story_textAndColor" class="px-2">
                         
                     </div>
                 </div>
             </div>
-            <div class="row mt-3">
+            <div class="row mt-5">
                 <div class="col px-3">
-                    <div class="row rounded-pill" style="background-color: rgb(231, 225, 225);">
-                        <div class="col-auto">
-                            <img id="profilePhoto" class="rounded-circle img-fluid border border-2 border-white"  alt="" style="aspect-ratio: 1/1; height: 8vw;">
+                    <div class="row rounded-pill " style="background-color: rgb(112, 108, 108);">
+                        <div class="col-auto py-1">
+                            <img id="profilePhoto" class="rounded-circle img-fluid border border-2 border-white"  alt="" style="aspect-ratio: 1/1; height: 1.8em;">
                         </div>
-                        <div class="col align-self-center">
+                        <div class="col align-self-center text-white">
                             내 스토리
                         </div>
                     </div>
                 </div>
                 <div class="col pe-3">
-                    <div class="row  rounded-pill" style="background-color: rgb(231, 225, 225);">
-                        <div class="col-auto">
-                            <img class="rounded-circle img-fluid border border-2 border-white" src="../../3img/miu.jpeg" alt="" style="aspect-ratio: 1/1; height: 8vw;">
+                    <div class="row  rounded-pill" style="background-color: rgb(112, 108, 108);">
+                        <div class="col-auto py-1">
+                            <img id="profilePhoto" class="rounded-circle img-fluid border border-2 border-white"  alt="" style="aspect-ratio: 1/1; height: 1.8em;">
                         </div>
-                        <div class="col align-self-center">
+                        <div class="col align-self-center text-white">
                             공개범위
                         </div>
                     </div>
                 </div>
-                <div class="col-auto me-3">
-                    <div class="row rounded-circle" style="background-color: rgb(231, 225, 225); height: 8vw; aspect-ratio: 1/1;">
-                        <div onclick="insertStory()" class="col">
-                            <i class="fa-sharp fa-solid fa-arrow-right pt-1 "></i>
+                <div onclick="insertStory()" class="col-auto me-2 rounded-circle align-self-center py-1" style="background-color: rgb(225, 222, 222); height: 2em; aspect-ratio: 1/1;">
+                    <div class="row">
+                        <div  class="col ps-2">
+                            <i class="fa-sharp fa-solid fa-arrow-right fs-5"></i>
                         </div>
                     </div>
                 </div>
             </div>    
         </div>
         <div id="textButton" class="modal" tabindex="-1">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-fullscreen">
                 <div class="modal-content" style="background-color: transparent; border: transparent;">
                     <div id="textControllBar" class="row fs-4">
                         <div class="col-5"></div>
@@ -338,34 +361,41 @@
                         </div>
                         <div class="col-auto text-center">
                             <input id="colorPicker" onchange="colorPickerChange()" type="color" class="form-control form-control-color d-none" value="#fafafa">
-                            <img onclick="showColorPicker()" class="img-fluid rounded-circle border border-white border-2" src="../../3img/colorpicker.png" alt="" height="" style="height: 6.5vw;">
+                            <img onclick="showColorPicker()" class="img-fluid rounded-circle border border-white border-2" src="/public/image/mstar/colorpicker.png" alt="" height="" style="height: 2em;">
                         </div>
                         <div onclick="makeTextBox()" class="col text-white text-end">
                             완료
                         </div>
                     </div>
-                  <div class="modal-body" style="top: 30vw;">
-                    <div  id="textColor" class="col">
-                        <input id="story_text" class="form-control" type="text" style="border: transparent; background-color: transparent; height: 50vw;">
+                  <div class="modal-body">
+                    <div  id="textColor" class="col-auto mt-5">
+                        <input id="story_text" class="form-control" type="text" style="border: 1px solid rgb(20, 99, 247); background-color: transparent; box-sizing: border-box;">
                     </div>
                   </div>
               </div>
             </div>
         </div>
-        <div id="fileUploadModal" class="modal" tabindex="-1" style="top: 7em;">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header py-2">  
-                      
+        <div id="fileUploadModal" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-fullscreen" >
+                <div class="modal-content" style="background-color: transparent;">
+                    <div class="modal-body">
+                        <div class="row rounded bg-white mt-5" style="height: 8em;">
+                            <div class="col mt-2">
+                                <div class="row mt-4 text-center ">
+                                    <div class="col">
+                                        스토리 등록을 위해서는 이미지를 등록해 주셔야합니다.
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col text-end">
+                                        <button onclick="window.history.back()" type="button" class="btn btn-secondary py-0">돌아가기</button>
+                                        <button onclick="storyPhotoUpload()" type="button" class="btn btn-primary py-0">파일 찾기</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="modal-body py-0">
-                      스토리 등록을 위해서는 이미지를 등록해 주셔야합니다.
-                    </div>
-                    <div class="modal-footer py-1">
-                      <button onclick="window.history.back()" type="button" class="btn btn-secondary py-0">돌아가기</button>
-                      <button onclick="storyPhotoUpload()" type="button" class="btn btn-primary py-0">파일 찾기</button>
-                    </div>
-                  </div>
+                </div>
             </div>
         </div>
 

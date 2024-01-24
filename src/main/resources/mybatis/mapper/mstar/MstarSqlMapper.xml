@@ -30,6 +30,15 @@
         SELECT * from ms_mstar_profile_info
         where user_pk = #{user_pk}
     </select>
+    <select id="selectProfileInfoDtoByPIP" resultType="com.psychopath.dogstalking.mstar.dto.ProfileInfoDto">
+        SELECT * from ms_mstar_profile_info
+        where profile_info_pk = #{profile_info_pk}
+    </select>
+    <!--유저 기본정보-->
+    <select id="selectUserDto" resultType="com.psychopath.dogstalking.dto.UserDto">
+        SELECT * from ms_user
+        where user_pk = #{user_pk}
+    </select>
     <!--게시물 카운트 -->
     <select id="selectArticleCount" resultType="int">
         SELECT count(*) from ms_mstar_article
@@ -92,9 +101,244 @@
     </insert>
     <!--스토리 인서트-->
     <insert id="insertStoryDto">
-        INSERT into ms_mstar_story(profile_info_pk, story_photo, story_text, x_coordinates, y_coordinates, text_color)
-        values(#{profile_info_pk}, #{story_photo}, #{story_text}, #{x_coordinates}, #{y_coordinates}, #{text_color})
+        INSERT into ms_mstar_story(profile_info_pk, story_photo, story_text, x_coordinates, y_coordinates, text_color, background_color)
+        values(#{profile_info_pk}, #{story_photo}, #{story_text}, #{x_coordinates}, #{y_coordinates}, #{text_color}, #{background_color})
+    </insert>
+    <!-- 스토리가 있는 사람들 리스트 가지고 오기< 바꿔야한다~~> -->
+    <select id="selectStoryList" resultType="int">
+        SELECT DISTINCT(profile_info_pk) from ms_mstar_story
+        where profile_info_pk != #{profile_info_pk}
+    </select>
+    <!--유저의 스토리 < 이것도 바꿔야한다...-->
+    <select id="selectUserStoryList" resultType="com.psychopath.dogstalking.mstar.dto.StoryDto">
+        SELECT * from ms_mstar_story
+        where profile_info_pk  = #{profile_info_pk}
+    </select>
+    <!--스토리DTO-->
+    <select id="selectStoryDto" resultType="com.psychopath.dogstalking.mstar.dto.StoryDto">
+        SELECT * from ms_mstar_story
+        where story_pk = #{story_pk}
+    </select>
+
+    <!--게시글 리스트 출력 (조건없는 더미용)-->
+    <select id="selectArticleList" resultType="com.psychopath.dogstalking.mstar.dto.ArticleDto">
+        SELECT * from ms_mstar_article
+    </select>
+    <!--프로필 사진 클릭시 나오는 페이지-->
+    <select id="selectProfileArticleList" resultType="com.psychopath.dogstalking.mstar.dto.ArticleDto">
+        SELECT * from ms_mstar_article
+        where profile_info_pk = #{profile_info_pk}
+    </select>
+    <!--팔로우 인서트-->
+     <insert id="insertUserFollowing">
+        INSERT into ms_mstar_follow(follow_user_pk, following_user_pk)
+        values(#{follow_user_pk}, #{following_user_pk})
+    </insert>
+    <!--팔로우 체크-->
+    <select id="checkFollowStatus" resultType="int">
+        SELECT count(*) from ms_mstar_follow
+        where following_user_pk = #{following_user_pk}
+        and follow_user_pk = #{follow_user_pk}
+    </select>
+    <!-- 댓글 인서트-->
+    <insert id="insertArticleComment">
+        INSERT into ms_mstar_comment(article_pk, profile_info_pk, comment)
+        values(#{article_pk}, #{profile_info_pk}, #{comment})
+    </insert>
+    <!-- 대댓글 인서트-->
+    <insert id="insertArticleTcomment">
+        INSERT into ms_mstar_t_comment(comment_pk, profile_info_pk, t_comment)
+        values(#{comment_pk}, #{profile_info_pk}, #{t_comment})
+    </insert>
+    <!-- 댓글 카운트-->
+     <select id="selectArticleCommentCount" resultType="int">
+        SELECT count(*) from ms_mstar_comment
+        where article_pk = #{article_pk}
+    </select>
+    <!--대댓글카운트(토탈)-->
+     <select id="selectTotalTcommentCount" resultType="int">
+        SELECT count(*) from ms_mstar_t_comment
+        where comment_pk in (SELECT comment_pk from ms_mstar_comment
+        where article_pk = #{article_pk})
+    </select>
+
+    <!-- 댓글 리스트-->
+    <select id="selectArticleCommentList" resultType="com.psychopath.dogstalking.mstar.dto.CommentDto">
+        SELECT * from ms_mstar_comment
+        where article_pk = #{article_pk}
+        order by created_at DESC
+    </select>
+    <!-- 대댓글갯수-->
+    <select id="selectTcommentCount" resultType="int">
+        SELECT count(*) from ms_mstar_t_comment
+        WHERE comment_pk = #{comment_pk}
+        ORDER by created_at DESC
+    </select>
+    <!-- 대댓글 리스트 출력-->
+    <select id="selectTcommentList" resultType="com.psychopath.dogstalking.mstar.dto.TcommentDto">
+        SELECT * from ms_mstar_t_comment
+        WHERE comment_pk = #{comment_pk}
+        ORDER by created_at DESC
+    </select>
+    <!-- 댓글 좋아요 확인-->
+    <select id="selectCommentLike" resultType="int">
+        SELECT count(*) from ms_mstar_cmt_like
+        where comment_pk = #{comment_pk}
+    </select>
+    <!--댓글 좋아요 갯수-->
+    <select id="selectCommentLikeCount" resultType="int">
+        SELECT count(*) from ms_mstar_cmt_like
+        where comment_pk = #{comment_pk}
+    </select>
+    
+    <!--작성자가 좋아하는 댓글-->
+    <select id="selectWriterLikeComment" resultType="int">
+        SELECT count(*) from ms_mstar_cmt_like
+        where comment_pk = #{comment_pk}
+        and profile_info_pk = #{profile_info_pk}
+    </select>
+    <!--글 작성자 프로필인포pk가져오기 article-->
+    <select id="selectWriterProfilePk" resultType="int">
+        SELECT profile_info_pk from ms_mstar_article
+        where article_pk  = #{article_pk}
+    </select>
+    <!--글 작성자 프로필인포pk가져오기 comment-->
+    <select id="selectWriterProfilePkByCommnet" resultType="int">
+        SELECT profile_info_pk from ms_mstar_article
+        where article_pk = (SELECT article_pk from ms_mstar_comment
+        where comment_pk = #{comment_pk})
+    </select>
+    <!--댓글 좋아요-->
+    <insert id="insertCommentLike">
+        INSERT into ms_mstar_cmt_like(comment_pk, profile_info_pk)
+        values(#{comment_pk}, #{profile_info_pk})
+    </insert>
+    <!--댓글 좋아요 취소-->
+    <delete id="deleteCommentLike">
+        DELETE from ms_mstar_cmt_like
+        where comment_pk = #{comment_pk}
+        and profile_info_pk = #{profile_info_pk}
+    </delete>
+    <!-- 인서트 된 값 가져와서 바로 보여주기 (메인리스트))-->
+    <select id="selectInsertedMyComment" resultType="com.psychopath.dogstalking.mstar.dto.CommentDto">
+        SELECT * from ms_mstar_comment
+        where comment_pk = (SELECT max(comment_pk) from ms_mstar_comment
+        where profile_info_pk = #{profile_info_pk})
+    </select>
+    <!--게시글 좋아요-->
+    <insert id="insertArticleLike">
+        INSERT into ms_mstar_article_like(article_pk, profile_info_pk)
+        values(#{article_pk}, #{profile_info_pk})
+    </insert>
+    <!--게시글 좋아요 취소-->
+     <delete id="deleteArticleLike">
+        DELETE from ms_mstar_article_like
+        where article_pk = #{article_pk}
+        and profile_info_pk = #{profile_info_pk}
+    </delete>
+    <!--게시글 좋아요 갯수-->
+    <select id="selectArticleLikeCount" resultType="int">
+        SELECT count(*) from ms_mstar_article_like
+        where article_pk = #{article_pk}
+    </select>
+
+
+    <!--게시글 좋아하는 사람들 중에 나를 제외한 나랑 팔로우 한사람 3명까지-->
+    <select id="selectProfileInfoArticleLikeAndFollow" resultType="com.psychopath.dogstalking.mstar.dto.ProfileInfoDto">
+        SELECT * from ms_mstar_profile_info
+        where profile_info_pk in (
+                select profile_info_pk from ms_mstar_article_like
+                where profile_info_pk in (
+                    SELECT follow_user_pk from ms_mstar_follow
+                    where following_user_pk = #{profile_info_pk})
+                and article_pk = #{article_pk}
+                and profile_info_pk != #{profile_info_pk})
+        LIMIT 3
+    </select>
+    
+    <!--게시글 좋아요 확인-->
+    <select id="checkMyArticleLikeCount" resultType="int">
+        SELECT count(*) from ms_mstar_article_like
+        where article_pk = #{article_pk}
+        and profile_info_pk = #{profile_info_pk}
+    </select>
+
+    <!--대댓글 갯수 변경-->
+    <select id="selectTcommentCountBycommentPk" resultType="int">
+        SELECT count(*) from ms_mstar_t_comment
+        where comment_pk = #{comment_pk}
+    </select>
+    
+    <!--스토리 읽은지 확인-->
+    <select id="selectViewStoryStatus" resultType="int">
+        SELECT count(*) from ms_mstar_view_story
+        where story_pk = #{story_pk}
+        and profile_info_pk = #{myProfile_info_pk}
+    </select>
+
+    <!-- 다이렉트 리스트 가지고 오기-->
+    <select id="selectMyDirectList" resultType="int">
+        SELECT rcv_user_pk as prfile_info_pk
+        FROM ms_mstar_direct
+        WHERE send_user_pk = #{prfile_info_pk}
+        UNION 
+        SELECT send_user_pk as prfile_info_pk
+        FROM ms_mstar_direct
+        WHERE rcv_user_pk= #{prfile_info_pk}
+    </select>
+    <!-- 다이렉트 마지막 하나 -->
+     <select id="selectLastDirectDto" resultType="com.psychopath.dogstalking.mstar.dto.DirectDto">
+        SELECT * FROM ms_mstar_direct
+        where send_user_pk = #{another_info_pk} and rcv_user_pk = #{prfile_info_pk}
+        OR 
+        rcv_user_pk = #{another_info_pk} and send_user_pk = #{prfile_info_pk}
+        ORDER by created_at DESC
+        limit 1
+    </select>
+    <!--다이렉트 리스트 -->
+    <select id="selectDirectList" resultType="com.psychopath.dogstalking.mstar.dto.DirectDto">
+        SELECT * FROM ms_mstar_direct
+        where send_user_pk = #{another_info_pk} and rcv_user_pk = #{prfile_info_pk}
+        OR 
+        rcv_user_pk = #{another_info_pk} and send_user_pk = #{prfile_info_pk}
+        ORDER by created_at DESC
+    </select>
+    <!--검색-->
+    <select id="selectSearchUserList" resultType="com.psychopath.dogstalking.dto.UserDto">
+        SELECT * from ms_user
+        WHERE userid LIKE CONCAT(#{search_text},'%')
+        and user_pk in (SELECT user_pk from ms_mstar_profile_info
+        where profile_info_pk != #{profile_info_pk})
+        <!-- 밑에 한줄 없어도 되는데 지금은 오류뜸... 유저들중 프로필 인서트 안되는애들있어서..-->
+    </select>
+    <!--내가 팔로잉 하는 사람들 중 특정 사람을 팔로우하는 인원 수-->
+    <select id="selectMyFollowingUserFollowing" resultType="int">
+        SELECT count(*) from ms_mstar_follow
+        where follow_user_pk = #{another_info_pk}
+        and following_user_pk in (
+            SELECT follow_user_pk from ms_mstar_follow
+            where following_user_pk = #{profile_info_pk}
+            )
+    </select>
+    <insert id="insertDirectChat">
+        INSERT into ms_mstar_direct(send_user_pk, rcv_user_pk, chat)
+        values(#{send_user_pk}, #{rcv_user_pk}, #{chat})
     </insert>
     
 
+    
+    
+    
+    
+    
+  
+    
+    
+    
+
+
+        
+
+
+    
 </mapper>

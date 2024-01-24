@@ -58,10 +58,10 @@ public class UserController {
     @RequestMapping("mainPage")
 	public String mainPage(Model model, HttpSession session) {
 		UserDto userDto = (UserDto)session.getAttribute("sessionUser");
-
 		int user_pk = userDto.getUser_pk();
-		String path = userService.getProfilePhotoPath(user_pk).getProfile_photo();
 		
+		String path = userService.getProfilePhotoPath(user_pk).getProfile_photo();
+		System.out.println();
 		model.addAttribute("path", path);
 
 		return "commons/mainPage";
