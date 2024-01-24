@@ -13,19 +13,30 @@
         .member-card {
             margin-bottom: 15px;
         }
-
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
     <script>
         function confirmWithdrawal(user_pk) {
             var userConfirmed = confirm('정말 탈퇴하시겠습니까?');
-            
+
             if (userConfirmed) {
-                window.location.href = './clubWithdrawalProcess?user_pk=' + user_pk; 
+                window.location.href = './clubWithdrawalProcess?user_pk=' + user_pk;
             } else {
                 console.log('canceled');
             }
         }
+
+        function confirmLeadership() {
+            var selectedUserPk = $('input[name=leaderRadio]:checked').val();
+
+            // 선택한 값으로 프로세스 컨트롤러로 이동
+            window.location.href = './clubLeaderChangeProcess?user_pk=' + selectedUserPk;
+        }
     </script>
+
 </head>
 
 <body>
@@ -42,19 +53,31 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-2">
-                                        <img th:src="@{/public/image/dog_img.png}" class="img-fluid rounded-circle profile-image" style="max-width: 40px; max-height: 40px;">
+                                        <img th:src="@{/public/image/dog_img.png}"
+                                            class="img-fluid rounded-circle profile-image"
+                                            style="max-width: 40px; max-height: 40px;">
                                     </div>
                                     <div class="col-5 d-flex align-items-center ">
                                         <span class="fw-bold" th:text="${member.name}" style="margin: auto;"></span>
                                     </div>
-                                    <div th:text="${member.user_pk}"></div>
-                                    <div th:text="${user_pk}"></div>
-                                    <div th:if="${member.user_pk == user_pk}">
-                                        <div class="col-5 d-flex align-items-center">
-                                            <button class="btn btn-secondary btn-sm text-end"  th:onclick="confirmWithdrawal([[${member.user_pk}]]);">탈퇴</button>
+
+                                    <div th:if="${leaderRank == 3}" class="col-5 d-flex align-items-center">
+                                        <div th:if="${member.user_pk == user_pk}">
+                                            <button class="btn btn-secondary btn-sm text-end"
+                                                th:onclick="confirmWithdrawal([[${member.user_pk}]]);">탈퇴</button>
                                         </div>
                                     </div>
-                            
+
+                                    <div th:if="${leaderRank == 1}" class="col-5 d-flex align-items-center">
+                                        <div th:if="${member.user_pk == user_pk}">
+                                            <button class="btn btn-secondary btn-sm text-end" data-bs-toggle="modal"
+                                                data-bs-target="#leadershipModal" th:text="'리더위임'">리더위임</button>
+                                        </div>
+                                        <button class="btn btn-secondary btn-sm text-end"
+                                            th:unless="${member.user_pk == user_pk}"
+                                            th:onclick="confirmWithdrawal(${member.user_pk});"
+                                            th:text="'강퇴'">강퇴</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -63,10 +86,37 @@
             </div>
         </div>
     </div>
+    <!-- 리더위임 모달 -->
+    <div class="modal fade" id="leadershipModal" tabindex="-1" role="dialog" aria-labelledby="leadershipModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="leadershipModalLabel">리더 위임</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- 멤버 목록 표시 -->
+                    <ul>
+                        <li th:each="member : ${memberlist}">
+                            <label>
+                                <input th:if="${member.user_pk != user_pk}" type="radio" name="leaderRadio"
+                                    th:value="${member.user_pk}" th:checked="${member.user_pk == user_pk}" /> <span
+                                    th:text="${member.name}"></span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmLeadership()">확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
 </body>
 
 </html>

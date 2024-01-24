@@ -128,5 +128,16 @@ public class ClubServiceImpl {
 	public void withdrawalClubUser(ClubStatusLogDto clubStatusLogDto) {
 		clubSqlMapper.withdrawalClubUser(clubStatusLogDto);
 	}
+
+	public void insertClubUserRank(ClubUserRanklogDto clubUserRanklogDto){
+		clubSqlMapper.insertClubUserRank(clubUserRanklogDto);
+	}
+
+	public Integer selectLeaderLank(int club_user_pk){
+		return clubSqlMapper.selectLeaderLank(club_user_pk);
+	}
 	
+	public void updateLeader(ClubUserRanklogDto clubUserRanklogDto) {
+		clubSqlMapper.updateLeader(clubUserRanklogDto);
+	}
 }

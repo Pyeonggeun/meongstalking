@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 
 import com.psychopath.dogstalking.club.dto.ClubDto;
 import com.psychopath.dogstalking.club.dto.ClubFreeBoardDto;
-import com.psychopath.dogstalking.club.dto.ClubStatusCategoryDto;
 import com.psychopath.dogstalking.club.dto.ClubStatusLogDto;
 import com.psychopath.dogstalking.club.dto.ClubUserDto;
 import com.psychopath.dogstalking.club.dto.ClubUserRanklogDto;
@@ -32,6 +31,15 @@ public class ClubController {
         UserDto userDto = (UserDto) session.getAttribute("sessionUser");
         Map<String, Object> clubTF = clubService.applyClubUserTF(userDto.getUser_pk());
         model.addAttribute("clubTF", clubTF);
+
+        Integer memberLank = null;
+        memberLank =  clubService.selectLeaderLank(userDto.getUser_pk());
+        System.out.println("checkMember : " + memberLank);
+        if (memberLank == null || !(memberLank >= 1 && memberLank <= 3)) {
+            memberLank = 9;
+        }
+
+        model.addAttribute("checkMember", memberLank);
 
         List<Map<String, Object>> clublist = clubService.selectClubList();
         model.addAttribute("clublist", clublist);
@@ -198,10 +206,16 @@ public class ClubController {
 
     @RequestMapping("approve")
     public String approve(@RequestParam("user_pk") int userPk, ClubUserDto clubUserDto,
-            ClubStatusLogDto clubStatusLogDto) {
+            ClubStatusLogDto clubStatusLogDto, ClubUserRanklogDto clubUserRanklogDto, HttpSession session) {
+
+        UserDto userDto = (UserDto) session.getAttribute("sessionUser");
 
         clubStatusLogDto.setClub_user_pk(userPk);
         clubService.updateApplyClub(clubStatusLogDto);
+
+        clubUserRanklogDto.setClub_user_pk(userDto.getUser_pk());
+        clubUserRanklogDto.setClubuserranklogcategory_pk(3);
+        clubService.insertClubUserRank(clubUserRanklogDto);
 
         return "redirect:./clubSignupPage";
     }
@@ -233,8 +247,12 @@ public class ClubController {
     @RequestMapping("clubMemberPage")
     public String clubMemberPage(Model model, HttpSession session) {
         UserDto userDto = (UserDto) session.getAttribute("sessionUser");
-        System.out.println("User PK: " + userDto.getUser_pk());
+        // System.out.println("User PK: " + userDto.getUser_pk());
         model.addAttribute("user_pk", userDto.getUser_pk());
+
+        int leaderRank = clubService.selectLeaderLank(userDto.getUser_pk());
+        // System.out.println("leaderRank: " + leaderRank);
+        model.addAttribute("leaderRank", leaderRank);
 
         int clubPk = clubService.selectClubPK(userDto.getUser_pk());
         List<Map<String, Object>> memberlist = clubService.selectMember(clubPk);
@@ -252,4 +270,19 @@ public class ClubController {
         return "redirect:./clubMemberPage";
     }
 
+    @RequestMapping("clubLeaderChangeProcess")
+    public String clubLeaderChangeProcess(@RequestParam("user_pk") int user_pk, HttpSession session,
+            ClubUserRanklogDto clubUserRanklogDto) {
+        UserDto userDto = (UserDto) session.getAttribute("sessionUser");
+
+        clubUserRanklogDto.setClub_user_pk(user_pk);
+        clubUserRanklogDto.setClubuserranklogcategory_pk(1);
+        clubService.updateLeader(clubUserRanklogDto);
+
+        clubUserRanklogDto.setClub_user_pk(userDto.getUser_pk());
+        clubUserRanklogDto.setClubuserranklogcategory_pk(3);
+        clubService.updateLeader(clubUserRanklogDto);
+
+        return "redirect:./clubMemberPage";
+    }
 }
