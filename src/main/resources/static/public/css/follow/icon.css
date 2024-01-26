@@ -1,0 +1,86 @@
+/* icon */
+.my_location_icon {
+    font-variation-settings:
+    var(--icon-fill-fill);
+    position: absolute;
+    color: var(--reloadPosition-icon-color);
+    font-size: var(--reloadPosition-icon-size);
+    top: calc(50% - var(--reloadPosition-icon-size) / 2);
+    left: calc(50% - var(--reloadPosition-icon-size) / 2);
+    user-select: none;
+}
+
+.bi-backpack2-fill {
+    position: absolute;
+    font-size: 1.2rem;
+    top: calc(50% - 0.6rem);
+    left: 10%;
+    color: #6D6D6D;
+}
+
+.bi-gift-fill {
+    position: absolute;
+    font-size: 1.2rem;
+    top: calc(50% - 0.6rem);
+    left: calc(50% - 0.6rem);
+    color: #6D6D6D;
+}
+
+.military_tech_icon {
+    font-variation-settings:
+    var(--icon-fill-fill);
+    position: absolute;
+    font-size: 1.5rem;
+    top: calc(50% - 0.55rem);
+    right: 10%;
+    color: #6D6D6D;
+    user-select: none;
+}
+
+.pets_icon {
+    position: absolute;
+    font-size: 2rem;
+    top: calc(50% - 1rem);
+    left: calc(50% - 1rem);
+    background: linear-gradient(to bottom, #fff 0%, #CACACA 120%);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    user-select: none;
+}
+
+.close_icon {
+    position: absolute;
+    font-size: 1.5rem;
+    top: calc(50% - 0.75rem);
+    left: calc(50% - 0.75rem);
+    color: var(--action-main-color);
+    user-select: none;
+}
+
+.mark_icon {
+    position: absolute;
+    width: 1.8rem;
+    height: 1.8rem;
+    top: calc(50% - 0.9rem);
+    left: calc(50% - 0.9rem);
+    color: var(--action-main-color);
+}
+
+.scan_icon {
+    position: absolute;
+    width: 1.8rem;
+    height: 1.8rem;
+    top: calc(50% - 0.9rem);
+    left: calc(50% - 0.9rem);
+    color: var(--action-main-color);
+    border-radius: var(--border-circular);
+}
+
+.track_icon {
+    position: absolute;
+    width: 2rem;
+    height: 2rem;
+    top: calc(50% - 1rem);
+    left: calc(50% - 1rem);
+    color: var(--action-main-color);
+}

@@ -68,5 +68,4 @@ public class ClubRestController {
 		return restResponseDto;
 	}
 
-
 }

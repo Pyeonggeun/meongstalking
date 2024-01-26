@@ -54,11 +54,6 @@
                     message.innerText = e.message;
                     message.value = e.user_pk;
 
-                    // 읽음 여부 변경
-                    if(sessionUserPk != e.user_pk && e.isRead == 'N'){
-                        updateChatMessageIsRead(e.pk);
-                    }
-
                     const messagePosition = chatMessageWrapper.querySelector(".messagePosition");
 
                     if(sessionUserPk == e.user_pk){
@@ -207,16 +202,17 @@
 
         }
 
-        function updateChatMessageIsRead(chatMessagePk){
+
+        // function updateChatMessageIsRead(chatMessagePk){
 		
-            const url = "./chatMessageIsRead?chatMessagePk=" + chatMessagePk;
+        //     const url = "./chatMessageIsRead?chatMessagePk=" + chatMessagePk;
             
-            fetch(url)
-            .then(response => response.json())
-            .then(response => {
+        //     fetch(url)
+        //     .then(response => response.json())
+        //     .then(response => {
                 
-            });
-        }  
+        //     });
+        // }  
 
 
 
@@ -230,10 +226,12 @@
                 
             });
         }  
+        
+        setInterval(reloadChatMessage, 2000);
 
         window.addEventListener("DOMContentLoaded", () => {
+            
             reloadChatMessage();
-    
         });  
 
 

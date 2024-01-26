@@ -1,0 +1,30 @@
+/* 위치 */
+.myPosition {
+    position: absolute;
+    z-index: 2000;
+    top: calc(50% - var(--myPosition-radius));
+    left: calc(50% - var(--myPosition-radius));
+    border-radius: var(--border-circular);
+}
+
+#thirdCircle {
+    width: var(--myPosition-thirdCircle-diameter);
+    height: var(--myPosition-thirdCircle-diameter);
+    --myPosition-radius: var(--myPosition-thirdCircle-diameter) / 2;
+    background: var(--color-black);
+}
+
+#secondCircle {
+    width: var(--myPosition-secondCircle-diameter);
+    height: var(--myPosition-secondCircle-diameter);
+    --myPosition-radius: var(--myPosition-secondCircle-diameter) / 2;
+    background: var(--color-white);
+    box-shadow: var(--myposition-secondCircle-boxshadow);
+}
+
+#firstCircle {
+    width: var(--myPosition-firstCircle-diameter);
+    height: var(--myPosition-firstCircle-diameter);
+    --myPosition-radius: var(--myPosition-firstCircle-diameter) / 2;
+    background: var(--myposition-firstCircle-color);
+}

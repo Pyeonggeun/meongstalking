@@ -29,6 +29,7 @@
                 });
                 
             }
+           
 
             function loadMyProfileInfo(){
                 const url = "./loadMyProfileInfo";
@@ -44,8 +45,8 @@
                 .then((response) =>{
 
                     const profilePhoto = document.querySelector("#profilePhoto");
-                    profilePhoto.setAttribute("src", "/uploadFiles/"+response.data.profileInfoDto.profile_photo);                    
-
+                    profilePhoto.src = response.data.profileInfoDto.profile_photo;                    
+                    console.log(response.data.profileInfoDto.profile_photo);
                     const articleCount = document.querySelector("#articleCount");
                     articleCount.innerText = response.data.articleCount;
 
@@ -79,11 +80,20 @@
                 .then(response => response.json())
                 .then((response) =>{
                     const articleListBox = document.querySelector("#articleListBox");
+                    
+                    if(response.data[0] == null){
+
+                        return;
+                    }
+                    
+                    articleListBox.innerHTML ="";
                     for(e of response.data){
                         const articleListWrapper = document.querySelector("#articleListTemplete .articleListWrapper").cloneNode(true);
                         const articleFirstImg = articleListWrapper.querySelector(".articleFirstImg");
-                        articleFirstImg.src = "/uploadFiles/"+e.artPhotoList[0].photo_path;
+                        articleFirstImg.src = e.artPhotoList[0].photo_path;
                         articleFirstImg.style.objectFit = "fill";
+                    
+                        articleFirstImg.setAttribute("onclick","location.href='./profileArticleListPage?profile_info_pk="+profile_info_pk+"&user_pk="+user_pk+"'");
                         
                         
                         const icon = articleListWrapper.querySelector(".icon");
@@ -115,7 +125,7 @@
                             const storage_name = storyStorageListWrapper.querySelector(".storage_name");
                             storage_name.innerText = e.storage_name;
                             const storage_img = storyStorageListWrapper.querySelector(".storage_img");
-                            storage_img.src = "/uploadFiles/"+e.storage_img;
+                            storage_img.src = e.storage_img;
                             
                             storyStorageListBox.appendChild(storyStorageListWrapper);
 
@@ -178,8 +188,6 @@
                 getUrlKey();
                 getProfileInfoDto();
                 loadMyProfileInfo();
-                
-                
             });
         </script>
 
@@ -290,7 +298,7 @@
                         <div class="col mx-3 fw-bold text-center rounded border" style="background-color: rgb(231, 229, 229);">
                             프로필 공유
                         </div>
-                        <div class="col-2 me-3 px-0 text-center rounded border" style="background-color: rgb(231, 229, 229);">
+                        <div class="col-auto me-3 px-1 pt-1 text-center rounded border" style="background-color: rgb(231, 229, 229); font-size: small;">
                             <i class="fa-solid fa-user-plus px-0"></i>
                         </div>
                     </div>
@@ -317,7 +325,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col py-0" style="font-size: small;">
+                                        <div class="col py-0 text-center" style="font-size: small;">
                                             새로 만들기
                                         </div>
                                     </div>
@@ -339,8 +347,11 @@
                     </div>
                 </div>
             </div>  
-            <div id="articleListBox" class="row row-cols-3 ps-0">
-                
+            <div id="articleListBox" class="row row-cols-3 ps-0 overflow-y-scroll" style="height: 20em;">
+                <div class="col"></div>
+                <div class="col mt-5 text-center">
+                    <img class="img-fluid" src="/public/image/mstar/noPhoto.png" alt="">
+                </div>
             </div>
             <div class="row bg-white border-top sticky-bottom">
                 <div class="col px-4 py-2">
@@ -393,7 +404,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
+                        <div th:onclick="|location.href='@{./mainListPage(user_pk=${session.sessionUser.user_pk})}'|" class="col text-center ps-0" style="font-size: 4vw;">
                             <div class="row">
                                 <div class="col text-body-tertiary">
                                     <i class="fa-solid fa-comment-dots"></i>

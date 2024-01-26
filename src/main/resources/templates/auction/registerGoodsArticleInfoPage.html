@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>상품 정보 등록</title>
+        
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+        <script src="https://kit.fontawesome.com/784384f602.js" crossorigin="anonymous"></script>
+    
+    
+        <script>
+
+            function previewImage(){
+                const imageFiles = document.getElementById("imageFiles").files;
+
+                let formdata = new FormData();
+
+                // 이미지 파일을 FormData에 추가
+                for (let i = 0; i < imageFiles.length; i++) {
+                    formdata.append("imageFiles", imageFiles[i]);
+                }
+
+                const url = "./previewImage";
+
+                fetch(url, {
+                    method: "post",
+                    body: formdata // FormData 객체 전달
+                })
+                .then(response => response.json())
+                .then(response => {
+                    
+                    const imageListBox = document.getElementById("imageListBox");
+                    imageListBox.innerHTML="";
+
+                    for(e of response.data){
+                        const imageBox = document.querySelector("#template .image-box").cloneNode(true);
+
+                        imageBox.setAttribute("src", "/uploadFiles/"+ e.image_link +"");
+                        imageBox.setAttribute("data-value", e.image_link);
+
+                        imageListBox.appendChild(imageBox);
+
+                    }
+
+                    document.getElementById("imageFiles").value = "";
+
+                });
+            }
+
+
+            function imageBoxClickHandler() {
+                const imageInput = document.getElementById("imageFiles");
+                imageInput.click();
+            }
+
+            function registerGoodsInfo() {
+                const imageDataValues = [];
+
+                const imageElements = document.querySelectorAll(".image-box");
+
+                imageElements.forEach((imageElement, index) => {
+                    const imageDataValue = imageElement.getAttribute("data-value");
+
+                    imageDataValues.push(imageDataValue);
+                });
+
+                const contentElement = document.querySelector(".input-content");
+                const contentValue = contentElement.value;
+
+                const titleElement = document.querySelector(".input-title");
+                const titleValue = titleElement.value;
+
+                const url = "./registerGoodsInfo?title=" + titleValue + "&content=" + contentValue + "&images=" + imageDataValues;
+                
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+                   
+                    
+                    window.location.href = "./registerGoodsArticleSalesInfoPage";
+
+
+                });
+
+            }
+
+
+            function templete(){
+            
+                const url = "";
+                
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+                    
+                });
+            }  
+
+
+
+            window.addEventListener("DOMContentLoaded", () => {
+                const imageBox = document.querySelector(".imageadd-box");
+                imageBox.addEventListener("click", imageBoxClickHandler);
+            });  
+
+
+        </script>
+
+
+
+
+
+    
+        <style>
+            .container-fluid{
+                padding-left: 1em;
+                padding-right: 1em;
+                background-color: #f5f5f5;
+    
+            }
+            body{
+                background-color: #f5f5f5;
+            }
+    
+            .footer{
+                position: fixed;
+                bottom: 0;
+                padding-left: 0em;
+                padding-right: 0em;
+            }
+    
+            .footer-botton{
+                width: 100%; 
+                height: 3em; 
+                border-width: 0; 
+                color: white; 
+                background-color: #0090FD; 
+                font-size: 1em;
+            }
+    
+            .navbar-row{
+                height: 3em;
+                position: relative;
+            }
+    
+            .arrow-icon{
+                font-size: 1.2em;
+                color: #111111;
+                position: absolute;
+                top: 50%;
+                left: 1em;
+                transform: translate(0, -50%);
+            }
+    
+            .more-icon{
+                font-size: 1.2em;
+                color: #111111;
+                position: absolute;
+                top: 50%;
+                right: 1em;
+                transform: translate(0, -50%);            
+            }
+    
+            .navbar-title{
+                color: #111111;
+                position: absolute;
+                font-size: 1em;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);   
+            }
+
+            .overflow-x-auto{
+                overflow-x: auto;
+                display: flex;
+            }
+
+            .overflow-x-auto::-webkit-scrollbar{
+                display: none;
+            }
+
+    
+            .info-box-row{
+                background-color: white;
+                padding-top: 1.5em;
+                padding-bottom: 1.5em;
+                border-radius: 1em;
+                margin-left: 0;
+                margin-right: 0;
+                padding-left: 0.5em;
+                padding-right: 0.5em;
+            }
+    
+
+            /*---------------------------------------------------*/
+
+            .imageadd-box{
+                background-color: #E2E2E2;
+                height: 7em;
+                width: 7em;
+                border-radius: 1em;
+                margin-right: 0.8em;
+                position: relative;
+            }
+
+            .image-box{
+                background-color: black;
+                height: 7em;
+                width: 7em;
+                border-radius: 1em;
+                border-style: solid;
+                border-color: #777777;
+                border-width: 0.1em;
+                margin-right: 0.8em;
+                position: relative;
+                
+            }
+
+            .camera-icon{
+                font-size: 1.5em;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .plus-icon-box{
+                border-radius: 1em; 
+                background-color: white; 
+                width: 1.7em; 
+                height: 1.7em; 
+                position: absolute; 
+                top: 8%; 
+                left: 8%;
+            }
+    
+            .plus-icon{
+                font-size: 1em; 
+                position: absolute; 
+                top: 50%; 
+                left: 50%; 
+                transform: translate(-50%, -50%);
+            }
+
+            .input-title{
+                width: 100%;
+                height: 3em;
+                border-width: 0;
+                border-bottom-width: 0.15em;
+                border-bottom-color: #E2E2E2;
+                font-size: 0.9em;
+
+            }
+
+            .input-content{
+                width: 100%;
+                height: 10em;
+                border-width: 0;
+                border-bottom-width: 0.15em;
+                border-bottom-color: #E2E2E2;
+                font-size: 0.9em;
+            }
+
+             /*---------------------------------------------------*/
+
+
+    
+        </style>
+    
+    </head>
+    
+    
+    
+    
+    
+    
+    
+    <body>
+        <div class="container-fluid">
+            <div class="row navbar-row">
+                <div class="col">
+                    <div class="arrow-icon"><i class="bi bi-arrow-left"></i></div>
+                    <div class="navbar-title fw-bold">상품 정보 입력</div>
+                    <div class="more-icon"><i class="bi bi-three-dots"></i></div>
+                </div>
+            </div>
+    
+            <div class="row info-box-row">
+                <div class="col">
+                    <div class="row">
+                        <div class="col overflow-x-auto">
+                            <div class="row" style="display: flex;">
+                                <div class="col overflow-x-auto">
+                                    <div class="imageadd-box">
+                                        <div class="camera-icon"><i class="bi bi-camera" style="color: #777777;"></i></div>
+                                        <div class="plus-icon-box">
+                                            <div class="plus-icon"><i class="fa-solid fa-plus"></i></div>
+                                        </div>
+                                        <input id="imageFiles" class="d-none" accept="image/*" oninput="previewImage()" type="file" multiple>
+                                    </div>     
+                                    <div id="imageListBox" style="display: flex;">                  
+                                    
+
+                                    </div>                                                         
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+                    <div class="row" style="padding-top: 2em;">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col">
+                                    <input class="input-title" type="text" placeholder="제목을 입력해 주세요.">
+                                </div>
+                            </div>
+                            <div class="row"></div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="padding-top: 1.5em;">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col">
+                                    <textarea class="input-content" placeholder="내용을 입력해 주세요."></textarea>
+                                </div>
+                            </div>
+                            <div class="row"></div>
+                        </div>
+                    </div>  
+
+                </div>
+            </div>
+        </div>
+    
+    
+        <div class="container-fluid footer">
+            <div class="row">
+                <div class="col px-0">
+                    <button onclick="registerGoodsInfo()" class="fw-bold footer-botton">다음으로</button>
+                </div>
+            </div>
+        </div>
+
+
+
+        
+    <div id="template" class="d-none">
+
+        <img class="image-box"></img>
+    
+            
+    </div>
+    
+    
+    
+    
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    </body>
+
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+        <script th:inline="javascript">
+            let profile_info_pk = null;
+            function getUrlKey() {
+                const urlParams = new URLSearchParams(location.search);
+                const key = urlParams.get("profile_info_pk");
+                profile_info_pk = key;
+            }
+
+            function loadDirectUserList(profile_info_pk){
+                const url = "./loadDirectUserList";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    const directListBox = document.querySelector("#directListBox");
+                    if(response.data.length == 0 ){
+                        return;
+                    }else{
+                        directListBox.innerHTML = "";
+                    }
+
+                    for(e of response.data){
+                        const directListWrapper = document.querySelector("#directListTemplete .directListWrapper").cloneNode(true);
+                        
+                        const directProfile_photo = directListWrapper.querySelector(".directProfile_photo");
+                        directProfile_photo.src = e.anotherProfileInfoDto.profile_photo;
+
+                        const userIdAndNickName = directListWrapper.querySelector(".userIdAndNickName");
+                        userIdAndNickName.innerText = e.anotherProfileInfoDto.nick_name+ "("+e.anotherUserDto.userid+")";
+
+                        const lastDirectMessage = directListWrapper.querySelector(".lastDirectMessage");
+                        if(e.directDto.send_user_pk == profile_info_pk){
+                            lastDirectMessage.innerText = "전송됨."
+                        }else{
+                            lastDirectMessage.innerText = e.directDto.chat;
+                        }
+
+                        const lastDirectCreatedAt = directListWrapper.querySelector(".lastDirectCreatedAt");
+                        lastDirectCreatedAt.innerText = e.directDto.created_at;
+
+                    }
+                    
+
+                });
+
+            }
+
+            function showSearchModal(){
+                const searchModal = bootstrap.Modal.getOrCreateInstance("#searchModal");
+                searchModal.show();
+                selectSearchUserList("");
+
+                const resetButton = document.querySelector("#resetButton");
+
+                const searchInputBox = document.querySelector("#searchInputBox");
+                searchInputBox.focus();
+                searchInputBox.addEventListener("input", function() {
+                    // 입력된 글자의 유무에 따라 버튼 활성화/비활성화 처리
+                    if(searchInputBox.value.trim() === ""){
+                        resetButton.classList.add("d-none");
+                    }else{
+                        resetButton.classList.remove("d-none");
+                    }
+                    selectSearchUserList(searchInputBox.value);
+                });
+            }
+            function selectSearchUserList(text){
+
+                console.log(profile_info_pk);
+                console.log(text);
+
+                const url = "./searchUserInfo"
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk+"&search_text="+text
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    if(response.data.length == 0){
+                        return;
+                    }
+                    const searchListBox = document.querySelector("#searchListBox");
+                    searchListBox.innerHTML = "";
+                    for(e of response.data){
+                        const searchListWrapper = document.querySelector("#searchListTemplete .searchListWrapper").cloneNode(true);
+                        const another_info_pk = e.profileInfoDto.profile_info_pk;
+                        searchListWrapper.setAttribute("onclick", "location.href='./directPage?profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk+"'" )
+                        
+                        const searchProfile_photo = searchListWrapper.querySelector(".searchProfile_photo");
+                        searchProfile_photo.src = e.profileInfoDto.profile_photo;
+
+                        const search_nick_nameAndFollow = searchListWrapper.querySelector(".search_nick_nameAndFollow");
+                        if(e.followingFollowingCount != 0){
+                          if(e.followingFollowingCount-1 == 0){
+                            search_nick_nameAndFollow.innerHTML = e.profileInfoDto.nick_name+" &middot; 가져와야한다 값님이 팔로우합니다.";
+                          }else{
+                            search_nick_nameAndFollow.innerHTML = e.profileInfoDto.nick_name+" &middot; 님 외"+e.followingFollowingCount-1+"명이 팔로우합니다.";
+                          } 
+                        }else{
+                            search_nick_nameAndFollow.innerText = e.profileInfoDto.nick_name;
+                        }
+
+                        const search_userid = searchListWrapper.querySelector(".search_userid");
+                        search_userid.innerText = e.userDto.userid;
+                        
+                        searchListBox.appendChild(searchListWrapper);
+                    }
+                });
+
+            }
+         
+            window.addEventListener("DOMContentLoaded", () =>{
+                getUrlKey();
+            });
+
+        </script>
+        <style>
+
+            @font-face {
+                font-family: 'omyu_pretty';
+                src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
+                font-weight: normal;
+                font-style: normal;
+            }
+            
+
+            body {
+                font-family: 'omyu_pretty';
+                overflow: hidden;
+            }
+          
+            .form-control::placeholder {
+                color: rgb(127, 126, 126); /* placeholder 글자 색상을 원하는 색상으로 설정 */
+            }
+        </style>
+        
+    </head>
+
+    <body>
+        <div class="container-fluid bg-white" style="width: 100%;">
+            <div class="row border-bottom">
+                <div class="col px-4 py-2">
+                    <div class="row">
+                        <div class="col">
+                            <i class="fa-solid fa-bars"></i>
+                        </div>
+                        <div class="col text-center fw-bold">
+                            멍's토킹
+                        </div>
+                        <div class="col text-end">
+                            <i class="fa-regular fa-bell"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row fs-4">
+                <div class="col-auto">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </div>
+                <div class="col" th:text="${session.sessionUser.userid}">
+                    
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col mx-2 rounded" style="background-color: rgb(218, 217, 217);">
+                    <div onclick="showSearchModal()" class="row position-relative">
+                        <div class="col-auto pe-0 align-self-center">
+                            <i class="fa-solid fa-magnifying-glass text-secondary"></i>
+                        </div>
+                        <div class="col-10">
+                            <div class="row">
+                                <div class="col">
+                                    <input class="form-control ps-0 py-1" type="text" placeholder="검색" style="box-shadow: none; background-color: transparent; border: none;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col fw-bold fs-5">
+                    메세지
+                </div>
+            </div>
+            <!--리스트 구간-->
+            <div class="row mt-2" style="font-size: 0.9em;">
+                <div id="directListBox" class="col">
+                   <div class="row text-center mt-5">
+                        <div class="col mt-5">
+                            <img class="img-fluid" src="/public/image/mstar/nodirect.png" alt="">
+                        </div>
+                   </div>
+                   <div class="row text-center">
+                        <div class="col">
+                            활성화 된 메세지가 없습니다.
+                        </div>
+                   </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    
+                </div>
+            </div>
+        </div>
+
+        <!--채팅하는사람들 리스트-->
+        <div id="directListTemplete" class="d-none">
+            <div class="row directListWrapper">
+                <div class="col-auto pe-0 align-self-center">
+                    <div class="row">
+                        <div class="col-auto ">
+                            <img class="img-fluid rounded-circle directProfile_photo" alt="" style="height: 3em; aspect-ratio: 1/1;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <div class="col userIdAndNickName">
+                            김쿼카 (eun_jin_log)
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col lastDirectMessage">
+                            아따 마 시원~하네... 내가 마지막이면 전송됨.
+                        </div>
+                        <div class="col-auto lastDirectCreatedAt">
+                            6주전
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="searchModal" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content">
+                    <div class="modal-body" style="overflow: hidden;">
+                        <div class="row mt-2">
+                            <div class="col mx-2 rounded" style="background-color: rgb(218, 217, 217);">
+                                <div class="row position-relative">
+                                    <div class="col-auto pe-0 align-self-center">
+                                        <i class="fa-solid fa-magnifying-glass text-secondary"></i>
+                                    </div>
+                                    <div class="col-10">
+                                        <div class="row">
+                                            <div class="col">
+                                                <input id="searchInputBox" class="form-control ps-0 py-1" type="text" placeholder="검색" style="box-shadow: none; background-color: transparent; border: none;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="resetButton" class="col px-0 align-self-center d-none">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto fw-bold ps-0 align-self-center">
+                                취소
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="searchListBox" class="col">
+
+                            </div>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+        </div>
+        <div id="searchListTemplete" class="d-none">
+            <div class="row searchListWrapper mt-3">
+                <div class="col-auto pe-0 align-self-center">
+                    <div class="row">
+                        <div class="col-auto ">
+                            <img class="img-fluid rounded-circle searchProfile_photo" alt="" style="height: 3em; aspect-ratio: 1/1;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <div class="col search_userid">
+                            
+                        </div>
+                    </div>
+                    <div class="row text-secondary" style="font-size: 0.8em;">
+                        <div class="col search_nick_nameAndFollow">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    </body>
+
+</html>

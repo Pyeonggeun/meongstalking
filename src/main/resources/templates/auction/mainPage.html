@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>메인페이지</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://kit.fontawesome.com/784384f602.js" crossorigin="anonymous"></script>
+
+
+    <script>
+        function reloadCategory(){
+
+            const url = "./getCategory";
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                const categoryListBox = document.getElementById("categoryListBox");
+                categoryListBox.innerHTML = "";
+
+                for(e of response.data){
+                    const categoryWrapper = document.querySelector("#template .categoryWrapper").cloneNode(true);
+
+                    categoryWrapper.setAttribute("data-value", e.pk);
+
+                    categoryWrapper.addEventListener("click", function() {
+                    
+                        navigateToGoodsList();
+                    });
+
+
+
+                    const categoryName = categoryWrapper.querySelector(".category-box-name");
+                    categoryName.innerText = e.name;
+
+                    categoryListBox.appendChild(categoryWrapper);
+                }
+
+
+
+            });
+
+        }
+
+        function navigateToGoodsList() {
+            const goodsListUrl = `./goodsListPage`;
+            window.location.href = goodsListUrl;
+        }
+
+
+        function templete(){
+		
+            const url = "";
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                
+            });
+        }  
+
+        window.addEventListener("DOMContentLoaded", () => {
+            
+            reloadCategory();
+        });  
+
+
+    </script>
+
+
+
+    <style>
+        .container-fluid{
+            background-color: #f5f5f5;
+            padding-left: 1em;
+            padding-right: 1em;
+        }
+
+        .banner-title{
+            font-size: 2em;
+            color: #111111;
+        }
+
+        .banner-text{
+            font-size: 1em;
+            color: #636363;
+        }
+        
+        .category-row{
+            background-color: white;
+            margin-left: 0;
+            margin-right: 0;
+            padding-top: 1em;
+            padding-bottom: 1em;
+            border-radius: 1em;
+            z-index: 2;
+            position: relative;
+            padding-left: 0.6em;
+            padding-right: 0.6em;
+        }
+
+        .category-text1{
+            font-size: 1em;
+            color: #636363;
+        }
+
+        .category-text2{
+            font-size: 1.2em;
+            color: #111111;
+        }
+
+        .category-box{
+            background-color: #111111;
+            height: 10em;
+            width: 8em;
+            border-radius: 1em;
+            margin-right: 0.8em;
+            position: relative;
+        }
+
+        .arrow-icon-box{
+            border-radius: 1em; 
+            background-color: white; 
+            width: 2em; 
+            height: 2em; 
+            position: absolute; 
+            top: 8%; 
+            left: 8%;
+        }
+
+        .arrow-icon{
+            font-size: 1.3em; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%);
+        }
+
+        .category-box-name{
+            position: absolute; 
+            top: 52%; 
+            left: 8%; 
+            color: #DEF358; 
+            font-size: 1em; 
+            font-weight: 200;
+        }
+
+        .category-box-text1{
+            position: absolute; 
+            top: 68%; 
+            left: 8%; 
+            color: white; 
+            font-size: 0.8em; 
+            font-weight: 400;
+        }
+
+        .category-box-text2{
+            position: absolute; 
+            top: 80%; 
+            left: 8%; 
+            color: white; 
+            font-size: 0.8em; 
+            font-weight: 400;
+
+        }
+
+        .overflow-x-auto{
+            overflow-x: auto;
+            display: flex;
+        }
+
+        .overflow-x-auto::-webkit-scrollbar{
+            display: none;
+        }
+
+        .elsewhere{
+            font-size: 0.9em;
+            color: #636363;
+        }
+
+
+        .auction-row{
+            background-color: #111111;
+            width: 100%;
+            border-radius: 1em;
+            position: relative;
+            top: -3em;
+            z-index: 1;
+            margin-left: 0;
+            margin-right: 0;
+            padding-left: 0.6em;
+            padding-right: 0.6em;
+            padding-bottom: 1em;
+            
+        }
+
+        .auction-title{
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .auction-text{
+            color: white;
+            font-size: 1em;
+            font-weight: 200;
+            margin-right: 2.5em;
+
+        }
+        
+        
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <div class="container-fluid">
+
+        <div class="row" style="height: 2em;"></div>
+        <div class="row">
+            <div class="col">
+                <div class="banner-title fw-bold">Style your dog's joy</div>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 0.2em;">
+            <div class="col">
+                <div class="banner-text fw-bold">강아지와 함께하는 특별한 순간을</div>
+                <div class="banner-text fw-bold">지금 바로 소개합니다.</div>
+            </div>
+        </div>
+        <div class="row" style="height: 2em;"></div>
+        <div class="row category-row">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <div class="category-text1 fw-bold">다양한 상품</div>
+                    </div>
+                </div>
+                <div class="row pt-3">
+                    <div class="col">
+                        <div class="category-text2 fw-bold">인기 카테고리</div>
+                    </div>
+                </div>
+                <div class="row" style="padding-top: 0.8em;">
+                    <div class="col overflow-x-auto">
+                        <div class="row" style="display: flex;">
+                            <div class="col overflow-x-auto">
+
+                                <div id="categoryListBox" style="display: flex;">
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>                                  
+                </div>
+                <div class="row" style="padding-top: 2em; padding-bottom: 1em;">
+                    <div class="col elsewhere text-center">
+                        <div class="fw-bold">자세히 보기</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row auction-row">
+            <div class="col">
+                <div class="row" style="height: 3em;"></div>
+                <div class="row" style="padding-top: 2em; padding-bottom: 1em;">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col">
+                                <div class="auction-title fw-bold">실시간 경매</div>    
+                            </div>
+                        </div>
+                        <div class="row" style="padding-top: 0.5em;">
+                            <div class="col overflow-x-auto">
+                                <div class="row" style="display: flex;">
+                                    <div class="col overflow-x-auto">
+                                        <div class="auction-text" style="border-bottom-style: solid; border-bottom-width: 1; border-bottom-color: white; padding-bottom: 0.2em;">Shoes</div>
+                                        <div class="auction-text">Jacket</div>
+                                        <div class="auction-text">Watch</div>
+                                        <div class="auction-text">Bag</div>
+                                        <div class="auction-text">Muffler</div>
+                                        <div class="auction-text">cap</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="row" style="padding-top: 1.5em;">
+                                    <div class="col">
+                                        <div style="position: relative; border-radius: 1em; background-color: white; width: 100%; height: 5.5em;">
+                                            <div style="background-color: #f5f5f5; width: 4.5em; height: 4.5em; border-radius: 1em; position: absolute; top: 50%; left: 3%; transform: translate(0, -50%);"></div>
+                                            <div style="position: absolute; top: 50%; right: 6%; transform: translate(0, -50%); font-size: 1.3em;"><i class="fa-regular fa-heart"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" style="padding-top: 1.5em;">
+                                    <div class="col">
+                                        <div style="position: relative; border-radius: 1em; background-color: white; width: 100%; height: 5.5em;">
+                                            <div style="background-color: #f5f5f5; width: 4.5em; height: 4.5em; border-radius: 1em; position: absolute; top: 50%; left: 3%; transform: translate(0, -50%);"></div>
+                                            <div style="position: absolute; top: 50%; right: 6%; transform: translate(0, -50%); font-size: 1.3em;"><i class="fa-regular fa-heart"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" style="padding-top: 1.5em;">
+                                    <div class="col">
+                                        <div style="position: relative; border-radius: 1em; background-color: white; width: 100%; height: 5.5em;">
+                                            <div style="background-color: #f5f5f5; width: 4.5em; height: 4.5em; border-radius: 1em; position: absolute; top: 50%; left: 3%; transform: translate(0, -50%);"></div>
+                                            <div style="position: absolute; top: 50%; right: 6%; transform: translate(0, -50%); font-size: 1.3em;"><i class="fa-regular fa-heart"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="padding-top: 1em; padding-bottom: 1em;">
+                    <div class="col elsewhere text-center">
+                        <div class="fw-bold" style="color: white;">자세히 보기</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="height: 5em;"></div>
+
+
+    </div>
+
+
+    <!--템플릿-->
+    <div id="template" class="d-none">
+
+        <!--카테고리-->
+        <div class="category-box categoryWrapper">
+            <div class="arrow-icon-box">
+                <div class="arrow-icon"><i class="bi bi-caret-right-fill"></i></div>
+            </div>
+            <div class="category-box-name">Clothes</div>
+            <div class="category-box-text1">취향별 픽!</div>
+            <div class="category-box-text2">입기 좋은 츄리닝</div>
+        </div>
+        
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+
+</html>

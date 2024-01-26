@@ -18,7 +18,6 @@
             }
 
             let profile_info_Dto = null;
-            
             function loadMyProfileInfo(){
                 const url = "./loadMyProfileInfo";
 
@@ -36,10 +35,19 @@
 
                     const profilePhoto = document.querySelector("#profilePhoto");
                     profilePhoto.setAttribute("src", response.data.profileInfoDto.profile_photo);
-
-                    
                 })
             }
+
+            function loadPeopleStoryList(){
+                const url = "loadPeopleStoryList";
+
+                
+
+            }
+        
+            
+
+
             
 
 
@@ -63,6 +71,7 @@
                 font-weight: normal;
                 font-style: normal;
             }
+            
 
             body {
                 font-family: 'omyu_pretty';
@@ -74,60 +83,79 @@
             .spotLight{
                 filter: brightness(90%);
            }
+           .barBox{
+                display: flex;
+                height: 0.25em;
+           }
+            .bar {
+                width: 100%;
+                height: 0.15em; /* 바의 높이 설정 */
+                background-color: rgb(131, 128, 128); /* 바의 배경색 설정 */
+                margin-right: 0.1em;
+            }
             
+            .bar.active {
+                background-color: rgb(229, 223, 223);
+              
+            }
+
+            .bar:last-child {
+                margin-right: 0;
+            } 
+            .form-control::placeholder {
+                color: white; /* placeholder 글자 색상을 원하는 색상으로 설정 */
+                font-size: 0.9em
+            }
         </style>
         
     </head>
 
     <body>
-        <div class="container-fluid bg-white" style="width: 100%;">
+        <div class="container-fluid bg-black" style="width: 100%;">
             <input id="fileUpload" name="imageFiles" class="d-none" type="file" accept="image/*">
-            <div id="story_img" class="row mx-2 upload-img position-relative d-flex" style=" height: 160vw; background-size: 100%; background-repeat: no-repeat; background-position: center;">
-                <div id="storyControllBar" class="col mt-1 mx-1" style="height: 0.3em; background-color: gray;"> 
-                   
-                </div>
-                <div id="storyControllBar" class="mt-1 mx-1" style="height: 0.3em; background-color: gray;"> 
-                   
-                </div>
-                <div id="storyControllBar" class=" mt-1 mx-1" style="height: 0.3em; background-color: gray;"> 
-                   
-                </div>
-                <div id="storyControllBar" class="mt-1 mx-1" style="height: 0.3em; background-color: gray;"> 
-                
-                </div>
-                <div id="storyTextBox" onmousedown="moveTextBox()" class="col-auto position-absolute" style="cursor: pointer; top: 50%; left: 50%;">
-                    <div id="story_textAndColor">
-                        
+            <div id="story_img" class="row upload-img position-relative rounded" style=" height: 160vw; background-size: 100%; background-repeat: no-repeat; background-position: center; background-color: rgb(49, 49, 49); background-image: url(../../../../../../../../3img/miu.jpeg);  top: 1rem;">
+                <div class="col">
+                    <div class="row">
+                        <div class="col px-1">
+                            <div class="mt-1 barBox"> 
+                                <div class="bar active"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-1">
+                        <div class="col-auto px-1">
+                            <img id="profilePhoto" src="/public/img/" class="rounded-circle img-fluid border border-2 border-white"  alt="" style="aspect-ratio: 1/1; height: 2em;">
+                        </div>
+                        <div class="col-auto px-1 text-white position-relative">
+                            <div class="row">
+                                <div class="col">
+                                    Jo_inchun <span class=" text-secondary">&nbsp;&nbsp; 24분</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col position-absolute" style="font-size: small; top: 1.3em; font-weight: lighter;">
+                                    전체 게시물 보기 >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col pe-0 text-end text-white fs-5">
+                            <i class="fa-solid fa-ellipsis"></i>
+                        </div>
+                        <div class="col-2 ps-0 text-end text-white fs-4">
+                            <i class="fa-solid fa-xmark"></i>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="row mt-3">
-                <div class="col px-3">
-                    <div class="row rounded-pill" style="background-color: rgb(231, 225, 225);">
-                        <div class="col-auto">
-                            <img id="profilePhoto" class="rounded-circle img-fluid border border-2 border-white"  alt="" style="aspect-ratio: 1/1; height: 8vw;">
-                        </div>
-                        <div class="col align-self-center">
-                            내 스토리
-                        </div>
-                    </div>
+            <div class="row py-4">
+                <div class="col ">
+                    <input class="form-control rounded-pill border-white py-1 text-white" type="text" placeholder="메세지를 입력해주세요." style="background-color: transparent;">
                 </div>
-                <div class="col pe-3">
-                    <div class="row  rounded-pill" style="background-color: rgb(231, 225, 225);">
-                        <div class="col-auto">
-                            <img class="rounded-circle img-fluid border border-2 border-white" src="../../3img/miu.jpeg" alt="" style="aspect-ratio: 1/1; height: 8vw;">
-                        </div>
-                        <div class="col align-self-center">
-                            공개범위
-                        </div>
-                    </div>
-                </div>
-                <div class="col-auto me-3">
-                    <div class="row rounded-circle" style="background-color: rgb(231, 225, 225); height: 8vw; aspect-ratio: 1/1;">
-                        <div onclick="insertStory()" class="col">
-                            <i class="fa-sharp fa-solid fa-arrow-right pt-1 "></i>
-                        </div>
-                    </div>
+                <div class="col-auto text-end me-1 text-white fs-4">
+                    <i class="fa-regular fa-heart"></i>&nbsp;&nbsp;
+                    <i class="fa-regular fa-paper-plane"></i>
                 </div>
             </div>    
         </div>

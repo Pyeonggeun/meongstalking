@@ -1,15 +1,9 @@
 package com.psychopath.dogstalking.commons.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.psychopath.dogstalking.commons.service.UserServiceImpl;
 import com.psychopath.dogstalking.dto.UserDto;
@@ -58,10 +52,10 @@ public class UserController {
     @RequestMapping("mainPage")
 	public String mainPage(Model model, HttpSession session) {
 		UserDto userDto = (UserDto)session.getAttribute("sessionUser");
-
 		int user_pk = userDto.getUser_pk();
-		String path = userService.getProfilePhotoPath(user_pk).getProfile_photo();
 		
+		String path = userService.getProfilePhotoPath(user_pk).getProfile_photo();
+		System.out.println();
 		model.addAttribute("path", path);
 
 		return "commons/mainPage";

@@ -56,54 +56,146 @@
             font-size: 0.7em;
             display: inline-block;
         }
+
         @media (min-width: 576px) {
-        .modal.bottom-modal .modal-dialog {
-            position: fixed;
-            bottom: -10%; 
-            left: 50%;
-            transform: translateX(-50%) translateY(100%);
-            margin: 0;
-            transition: transform 0.3s ease-out;
+
+            .modal.bottom-modal .modal-dialog {
+                position: fixed;
+                bottom: -10%;
+                left: 50%;
+                transform: translateX(-50%) translateY(100%);
+                margin: 0;
+                transition: transform 0.3s ease-out;
+            }
         }
 
         .modal.show .modal-dialog {
-            transform: translateX(-50%) translateY(0%);
+            transform: translateX(10%) translateY(0%);
         }
+
+        .bottom-modal .modal {
+            position: fixed;
+            bottom: 0;
+            /* left: 50%; */
+            transform: none;
+        }
+
 
         .bold-text {
             font-weight: bold;
         }
 
-
-    }
-    </style>
-
-    <script>
-        function loadSignupModal(){
-            const modal = bootstrap.Modal.getOrCreateInstance("#loadSignupModal");
-            modal.show();
-            
+        .clickable {
+            cursor: pointer;
+            flex-grow: 1;
         }
 
+        .active {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .no-club {
+            display: none;
+        }
+
+        .card {
+            font-size: smaller;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        h3 {
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .card-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+    </style>
+    <script th:inline="javascript">
+        function goBack() {
+            window.history.back();
+        }
+
+        function aaa() {
+            // JavaScript logic for '인기 많은 동호회'
+            var aaaContent = document.getElementById('aaa');
+            var popularClubsContent = document.getElementById('popularClubsContent');
+
+            if (aaaContent && popularClubsContent) {
+                aaaContent.style.display = 'block';
+                popularClubsContent.style.display = 'none';
+            }
+        }
+
+        function popularClubsContent() {
+            // JavaScript logic for '전체 동호회'
+            var aaaContent = document.getElementById('aaa');
+            var popularClubsContent = document.getElementById('popularClubsContent');
+
+            if (aaaContent && popularClubsContent) {
+                aaaContent.style.display = 'none';
+                popularClubsContent.style.display = 'block';
+            }
+        }
+
+        // '전체 동호회'가 먼저 선택되도록 초기 실행
+        window.onload = function () {
+            popularClubsContent();
+        }
+    </script>
+
+
+    <script>
+        function loadSignupModal() {
+            const modal = bootstrap.Modal.getOrCreateInstance("#loadSignupModal");
+            modal.show();
+        }
     </script>
 </head>
 
 <body>
 
-     <!-- TemplateT -->
     <div class="container">
-        <div th:if="${clubTF['user_exists'] == 'T'}">   
-            <th:block th:replace="~{club/clubTopNavi.html :: topNavi}"></th:block>
-            <div class="row border-bottom border-2 border-gray">
-                <div class="col-md-4  px-0">
-                    <img th:src="@{../public/image/guild_mainImg.png}" class="img-fluid">
+        <div th:if="${checkMember == 1}">
+            <div class="row">
+                <div class="col-2 my-2 ms-1">
+                    <button class="btn" onclick="goBack()">
+                        <i class="bi bi-arrow-left"></i>
+                    </button>
+                </div>
+                <div th:text="${clubTF.clubname}" class="col d-flex align-items-center px-0">
+                </div>
+                <div class="col-1 d-flex align-items-center me-4">
+                    <span style="cursor: pointer;" onclick="location.href='./clubLeaderPage'"><i
+                            class="bi bi-gear"></i></span>
+                </div>
+            </div>
+            <div class="row scrollable-menu px-0">
+                <div class="col justify-content-between fw-bold">
+                    <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
+                    <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">게시판</span>
+                    <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">사진첩</span>
+                    <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubMemberPage'">멤버</span>
 
                 </div>
-
+            </div>
+            <div class="row border-bottom border-2 border-gray px-0">
+                <img th:src="@{../public/image/guild_mainImg.png}" class="img-fluid d-flex px-0">
             </div>
 
+
             <div class="row border-bottom border-5 border-gray">
-                <div class="col-md-8 my-3" >
+                <div class="col-md-8 my-3">
                     <p th:text="${clubTF.clubname}" class="bold-text"></p>
                     <p th:utext="${clubTF.clubcontent}"></p>
                 </div>
@@ -113,24 +205,69 @@
                 <p><strong>사진첩</strong></p>
                 우왕 사진들
             </div>
-            <div th:if="${clubTF['user_exists'] == 'F'}" class="fixed-bottom text-center">
-                <button class="btn btn-secondary col-12 signup-button" onclick="loadSignupModal()">가입하기</button>
+            <!-- or clubTF['clubstatuslog_pk'] != 2-->
+            <div th:text="${clubTF['user_exists']}"></div>
+            <div class="row p-3">
+                <div th:if="${clubTF['user_exists'] == 'F'}" class="fixed-bottom text-center">
+                    <button class="btn btn-secondary col-12 signup-button" onclick="loadSignupModal()">가입하기</button>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div th:if="${checkMember != 1} or ${clubTF['user_exists'] == 'F' }">
+            <th:block th:replace="~{club/clubTopNavi.html :: mainTopNavi}"></th:block>
+            <div class="row pt-3 scrollable-menu d-flex justify-content-around align-items-center fw-bold text-center">
+                <span class="col-6 clickable" onclick="aaa()">인기 많은 동호회</span>
+                <span class="col-6 clickable" onclick="popularClubsContent()">전 체 동호회</span>
+            </div>
+            <div id="popularClubsContent" class="row pt-2 fw-bold justify-content-center p-3">
+                <div th:each="qwer : ${clublist}" class="card mb-3" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-4">
+                            <img th:src="@{/public/image/dog_img.png}" class="col img-fluid">
+                        </div>
+                        <div class="col-8">
+                            <div class="card-body">
+                                <a th:href="@{./clubHomeProcess?club_pk={club_pk}(club_pk=${qwer['club_pk']})}"
+                                    class="card-title text-decoration-none" th:text="${qwer['name']}"
+                                    style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: inherit;"></a>
+                                <p class="card-text" th:text="${qwer['content']}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="ms-3 mb-0 text-center" style="display: flex; align-items: center;">원하는 동호회를 찾지 못했나요?</p>
+
+                <a th:href="@{./createClubPage}" class="col-10 btn btn-primary py-3 my-2"
+                    style="font-size: 0.8rem; border-radius: 12px; opacity: 0.8; display: flex; align-items: center; justify-content: space-between;">
+                    <span style="font-size: 0.6rem;">관심사에 맞는 동호회를<br>직접 운영해 보시는 건 어때요?</span>
+                    <button type="button" class="btn btn-light mx-2"
+                        style="border-radius: 12px; opacity: 0.9; font-size: 0.5rem; padding: 3px 10px; color: #007bff;">
+                        동호회 만들기
+                    </button>
+                </a>
+            </div>
+
+            <div id="aaa" class="row pt-2 fw-bold justify-content-center">
+                <p class="ms-3 mb-0 text-center" style="display: flex; align-items: center;">원하는 동호회를 찾지 못했나요?</p>
+
+                <a th:href="@{./createClubPage}" class="col-10 btn btn-primary py-3 my-2"
+                    style="font-size: 0.8rem; border-radius: 12px; opacity: 0.8; display: flex; align-items: center; justify-content: space-between;">
+                    <span style="font-size: 0.6rem;">관심사에 맞는 동호회를<br>직접 운영해 보시는 건 어때요?</span>
+                    <button type="button" class="btn btn-light mx-2"
+                        style="border-radius: 12px; opacity: 0.9; font-size: 0.5rem; padding: 3px 10px; color: #007bff;">
+                        동호회 만들기
+                    </button>
+                </a>
             </div>
         </div>
-        <div th:else>
-            <!-- 소속된 동호회가 없는 경우의 내용 -->
-            <p>소속된 동호회가 없습니다.</p>
-            
-            <!-- 길드 개설하기 버튼 -->
-            <a href="./createClubPage" class="btn btn-secondary p-3">
-                길드 개설하기
-            </a>
-            
-            <!-- 길드 추천받기 버튼 -->
-            <button onclick="getRecommendedGuilds()" class="btn btn-secondary p-3">길드 추천받기</button>
-        </div>
     </div>
-    <div id="loadSignupModal" class="modal fade bottom-modal" tabindex="-1" role="dialog" aria-labelledby="loadSignupModalLabel" aria-hidden="true">
+
+
+    <div id="loadSignupModal" class="modal fade bottom-modal" tabindex="-1" role="dialog"
+        aria-labelledby="loadSignupModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -140,9 +277,79 @@
                 <div class="modal-body">
                     <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
                 </div>
-                <div class="modal-footer d-flex">
-                    <button type="button" class="flex-fill btn border-gray border-end" style="background-color: white; color: blue; border: none;" data-bs-dismiss="modal">취소</button>
-                    <button type="button" class="flex-fill btn" style="background-color: white; color: blue; border: none;">제출</button>
+                <div class="modal-footer">
+                    <button type="button" class=" btn border-gray border-end"
+                        style="background-color: white; color: blue; border: none;" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class=" btn"
+                        style="background-color: white; color: blue; border: none;">제출</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--하단 바텀 나중에 바꿀것 인춘 오빠거 긁음 ㅎ-->
+    <div class="navbar fixed-bottom bg-white border-top">
+        <div class="container-fluid px-4 py-2">
+            <div class="row">
+                <div class="col text-center ps-0" style="font-size: 4vw;">
+                    <div class="row">
+                        <div class="col text-body-tertiary">
+                            <i class="fa-solid fa-house"></i>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-secondary">
+                            홈
+                        </div>
+                    </div>
+                </div>
+                <div class="col text-center ps-0" style="font-size: 4vw;">
+                    <div class="row">
+                        <div class="col text-body-tertiary">
+                            <i class="fa-solid fa-bolt"></i>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-secondary">
+                            먹거리
+                        </div>
+                    </div>
+                </div>
+                <div class="col text-center ps-0" style="font-size: 4vw;">
+                    <div class="row">
+                        <div class="col text-body-tertiary">
+                            <i class="fa-solid fa-hand-holding-medical"></i>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-secondary">
+                            멍냥닥터
+                        </div>
+                    </div>
+                </div>
+                <div class="col text-center ps-0" style="font-size: 4vw;">
+                    <div class="row">
+                        <div class="col">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            멍냥피드
+                        </div>
+                    </div>
+                </div>
+                <div class="col text-center ps-0" style="font-size: 4vw;">
+                    <div class="row">
+                        <div class="col text-body-tertiary">
+                            <i class="fa-solid fa-comment-dots"></i>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-secondary">
+                            커뮤니티
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

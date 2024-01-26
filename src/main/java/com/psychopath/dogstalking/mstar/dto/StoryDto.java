@@ -11,5 +11,6 @@ public class StoryDto {
     private double x_coordinates;
     private double y_coordinates;
     private String text_color;
+    private String background_color;
     private LocalDateTime created_at;
 }

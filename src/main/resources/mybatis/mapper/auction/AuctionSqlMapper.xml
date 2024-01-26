@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.psychopath.dogstalking.auction.mapper.AuctionSqlMapper">
+
+
+    <select id="getCategory" resultType="com.psychopath.dogstalking.auction.dto.AuctionCategoryDto">
+        select * from ms_auction_category
+    </select>
+
+
+    <insert id="insertGoodsDto">
+        insert into 
+        ms_auction_goods(category_pk, user_pk, starting_price, bin_price, commencement_date, expiry_date, image_link, title, content, read_count)
+        values
+        (
+            #{category_pk},
+            #{user_pk},
+            #{starting_price},
+            #{bin_price},
+            #{commencement_date},
+            #{expiry_date},
+            #{image_link},
+            #{title},
+            #{content},
+            0
+        )    
+    </insert>
+
+    <select id="createGoodsPk" resultType="int">
+        select NVL(Max(pk+1), 1) as pk from ms_auction_goods
+    </select>
+
+    <insert id="insertImageDto">
+        insert into 
+        ms_auction_image(goods_pk, image_link)
+        values
+        (
+            #{goods_pk},
+            #{image_link}
+        )
+    </insert>
+
+    <select id="getGoodsListByCategoryPk" resultType="com.psychopath.dogstalking.auction.dto.AuctionGoodsDto">
+        select * from ms_auction_goods
+        where category_pk = #{category_pk}
+        <![CDATA[
+        and commencement_date <= now()
+        and expiry_date >= now()
+        order by expiry_date - now() asc
+        ]]>
+    </select>
+
+
+
+
+</mapper>
