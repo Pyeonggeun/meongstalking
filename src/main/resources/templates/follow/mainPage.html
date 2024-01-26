@@ -27,9 +27,9 @@
                 position: relative;
                 overflow: hidden;
                 width: 100%;
-                height: 92.8vh;
+                height: 90vh;
             }
-
+            
         </style>
 
         <script>
@@ -141,6 +141,7 @@
                 .then(response => {
                     user_pk = response.data;
                     checkWriteMarkCount();
+                    getTrackingList();
                 });
 
             }
@@ -294,6 +295,10 @@
                         for(e of response.data) {
                             var position = new kakao.maps.LatLng(e.latitude, e.longitude)
                             displayMarkedMine(position, e);
+
+                            setTimeout(() => {
+                                console.log("0.5초");   
+                            }, 500)
                         }
 
                         setTimeout(() => {
@@ -337,6 +342,10 @@
 
                         const position = new kakao.maps.LatLng(e.latitude, e.longitude);
                         displayMarkedMine(position, e);
+
+                        setTimeout(() => {
+                            console.log("0.5초");   
+                        }, 500)
 
                     }
                     
@@ -469,6 +478,9 @@
 
             function tracking() {
                 
+                getMyLocation();
+                removeMarkedMineMarkers();
+
                 document.getElementById("actionMenuButton").hidden = true;
                 document.getElementById("collectionButton").hidden = true;
                 document.getElementById("reloadPositionButton").hidden = true;
@@ -489,12 +501,171 @@
                     for(e of actionCircleOut) {
                         e.hidden = true;
                     }
+                    reloadTrackLikeList();
                 }, 300);
 
             }
 
             function reloadTrackLikeList() {
+
+                const url = "./getTrackLikeList?user_pk=" + user_pk;
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+
+                    document.getElementById("trackLikeListHidden").hidden = false;
+
+                    const trackLikeListAnimation = document.getElementById("trackLikeListAnimation");
+                    trackLikeListAnimation.style.animation = 'showTrackLikeList 0.2s linear 1';
+
+                    const trackLikeListBox = document.getElementById("trackLikeListBox");
+                    trackLikeListBox.innerHTML = "";
+
+                    console.log(response.data);
+
+                    if(response.data.length == 0) {
+                        const noTrackLikeWrapper = document.querySelector("#templete .noTrackLikeWrapper").cloneNode(true);
+                        trackLikeListBox.appendChild(noTrackLikeWrapper);
+                        return;
+                    }
+
+                    for(e of response.data) {
+
+                        const trackLikeListWrapper = document.querySelector("#templete .trackLikeListWrapper").cloneNode(true);
+
+                        trackLikeListWrapper.onclick = () => {
+                            trackClosestMark(e);
+                        };
+                        
+                        trackLikeListWrapper.querySelector(".trackLikeListOpenRate").innerText = e.cnt + " / " + e.open_rating;
+                        trackLikeListWrapper.querySelector(".trackLikeListNumber").innerText = e.user_more_pk;
+
+                        switch(e.open_rating) {
+
+                            case 10 :
+                                trackLikeListWrapper.querySelector(".trackLikeListName").innerText = e.nick_name;
+                            case 9 :
+                                trackLikeListWrapper.querySelector(".trackLikeListImage").style.background = 
+                                    "url(/uploadFiles/" + e.profile_photo + ") no-repeat center";
+                                trackLikeListWrapper.querySelector(".trackLikeListImage").style.backgroundSize =
+                                    "cover";
+                            case 8 : 
+                                trackLikeListWrapper.querySelector(".trackLikeListPreference").innerText = e.preference;
+                            case 7, 6 : 
+                                trackLikeListWrapper.querySelector(".trackLikeListMbtiType").innerText = e.blood_type;
+                                trackLikeListWrapper.querySelector(".trackLikeListHobby").innerText = e.hobby;
+                            case 5 :
+                                trackLikeListWrapper.querySelector(".trackLikeListSmoking").innerText = e.smoking;
+                                trackLikeListWrapper.querySelector(".trackLikeListDrinking").innerText = e.drinking;
+                            case 4, 3 : 
+                                trackLikeListWrapper.querySelector(".trackLikeListHeight").innerText = e.height;
+                                trackLikeListWrapper.querySelector(".trackLikeListWeight").innerText = e.weight;
+                                trackLikeListWrapper.querySelector(".trackLikeListBloodType").innerText = e.blood_type;
+                            case 2: 
+                                if(e.gender == 'W') {
+                                    // wrapper 성별 자리 만들기
+                                }else {
+                                    // wrapper 성별 자리 만들기
+                                }
+                                
+                            case 1:
+                                // 활동 여부 (온도 형식), 인간 등급 추가
+
+                        }
+                        // 추적여부
+                        trackLikeListBox.appendChild(trackLikeListWrapper);
+                        
+                    }
+
+                });
+            }
+
+            function hideTrackLikeList() {
+
+                const trackLikeListAnimation = document.getElementById("trackLikeListAnimation");
+                trackLikeListAnimation.style.animation = 'hideTrackLikeList 0.3s linear 1';
+                trackLikeListAnimation.style.animationFillMode = 'both';
+
+                setTimeout(() => {
+                    document.getElementById("trackLikeListHidden").hidden = true;
+                }, 500)
+
+                document.getElementById("actionCloseButton").hidden = false;
+
+                const actionBackgroundCircle = document.getElementById("actionBackgroundCircle");
+                actionBackgroundCircle.hidden = false;
+                actionBackgroundCircle.style.animation = 'showBackgroundCircle 0.3s linear 1';
                 
+
+                const actionCircleOut = document.getElementsByClassName("actionCircleOut");
+
+                for(e of actionCircleOut) {
+                    e.hidden = false;
+                    e.style.animation = e.id + 'SpreadOut 0.4s linear 1';
+                    e.style.animationFillMode = 'both';
+                }
+
+            }
+
+            function trackClosestMark(e) {
+                
+                const trackLikeListAnimation = document.getElementById("trackLikeListAnimation");
+                trackLikeListAnimation.style.animation = 'hideTrackLikeList 0.3s linear 1';
+                trackLikeListAnimation.style.animationFillMode = 'both';
+
+                setTimeout(() => {
+                    document.getElementById("trackLikeListHidden").hidden = true;
+                }, 500)
+
+                getClosestMarkLatLng(e.user_pk);
+            }
+
+            function getClosestMarkLatLng(userPk) {
+
+                const url = "./getClosestMarkLatLng?user_pk=" + userPk + "&latitude=" + currentLat + "&longitude=" + currentLng;
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+
+                    saveTrackLikeLogInfo(response.data.log_pk, response.data.latitude, response.data.longitude);
+
+                });
+
+            }
+
+            function saveTrackLikeLogInfo(logPk, lat, lng) {
+
+                const url = "./insertTrackLikeLogInfo?user_pk=" + user_pk + "&log_pk=" + logPk +
+                    "&markLat=" + lat + "&markLng=" + lng;
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+
+                    // 애니메이션(response.data.latitude, response.data.longitude); >>> getTrackingList();
+
+                });
+
+            }
+
+            function getTrackingList() {
+
+                const url = "./getTrackingList?user_pk=" + user_pk;
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+
+                    if(response.data.length == 0) {
+                        return;
+                    }
+                    
+                    // 영역 생성하기
+
+                });
+
             }
 
             function showMoreInfoAlertModal() {
@@ -738,6 +909,32 @@
             .overflow-x-auto::-webkit-scrollbar {
                 display: none;
             }
+
+            @keyframes showTrackLikeList {
+                from {
+                    transform: translateY(15rem);
+                    opacity: 0;
+                    scale: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                    scale: 1;
+                }
+            }
+
+            @keyframes hideTrackLikeList {
+                from {
+                    transform: translateY(0);
+                    opacity: 1;
+                    scale: 1;
+                }
+                to {
+                    transform: translateY(15rem);
+                    opacity: 0;
+                    scale: 0;
+                }
+            }
         </style>
 
     </head>
@@ -796,7 +993,7 @@
                         </div>
                         <div id="trackLikeListHidden" class="row" hidden>
                             <div class="col">
-                                <div class="row bg-transparent overflow-x-auto" style="width: 95%; position: absolute; z-index: 2000; top: 55%; left: 5.5%;">
+                                <div id="trackLikeListAnimation" class="row bg-transparent overflow-x-auto" style="width: 95%; position: absolute; z-index: 2000; top: 55%; left: 5.5%;">
                                     <div class="col">
                                         <div id="trackLikeListBox" class="row d-flex" style="flex-wrap: nowrap;">
                                             
@@ -805,10 +1002,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div id="trackLikeListCloseButton" class="actionCircleCloseIn" style="z-index: 2000; top: 84.5%;">
-                                    <span class="material-symbols-outlined close_icon">
-                                        close
-                                    </span>
+                                <div onclick="hideTrackLikeList()" id="trackLikeListCloseButton" class="actionCircleCloseOut">
+                                    <div class="actionCircleCloseIn">
+                                        <span class="material-symbols-outlined close_icon">
+                                            close
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1237,7 +1436,76 @@
                 </div>
             </div>
 
+            <div class="noTrackLikeWrapper col-12 me-2 px-3 py-5 border bg-white border border-secondary-subtle rounded">
+                <div class="row align-items-center">
+                    <div class="col text-center">
+                        <div class="row">
+                            <div class="col">
+                                <span class="material-symbols-outlined text-body-tertiary" style="font-size: 1.5rem;">
+                                    cardiology
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col text-body-tertiary" style="font-size: 1.1rem;">
+                                꾸욱 누른 사람이 없습니다
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
+
+        <style>
+            .overlayBox {position: relative; width: 5rem; height: 12rem; animation: opacity 0.1s, vibration 0.1s 5;}
+            .circleProp {position: absolute; top: calc(50% - 0.15rem); left: calc(50% - 0.5rem); width: 1rem; height: 0.3rem; border-radius: 50%; background: black;}
+            .lineProp {position: absolute; z-index: 1; left: calc(50% - 0.05rem); top: calc(50% - 2rem); width: 0.1rem; height: 2rem; background: #BFBFBF;}
+            .squareProp {position: absolute; z-index: 2; left: calc(50% - 1rem); top: calc(50% - 2.3rem); width: 2rem; height: 0.7rem;}
+            .topSquareProp {position: absolute; left: 0.25rem; width: 1.5rem; height: 0.5rem; transform: skew(-45deg); background: black;}
+            .frontSquareProp {position: absolute; bottom: 0; width: 1.5rem; height: 0.2rem; background: #CCC;}
+            .sideSquareProp {position: absolute; right: 0.03rem; bottom: 0.25rem; width: 0.5rem; height: 0.2rem; background: #8f8f8f; transform: skewY(-45deg);}
+            .myMarkCircleBox {position: absolute; z-index: 3; width: 5rem; height: 5rem; top: calc(50% - 6.9rem); animation: trunning 1s;}
+            .myMarkCircle {position: absolute; border-radius: 50%;}
+            /* conic-gradient(transparent 20deg, darkcyan 20deg 70deg, transparent 70deg 200deg, darkcyan 200deg 250deg, transparent 250deg) */
+            .myMarkCircle.first {width: 5rem; height: 5rem; left: calc(50% - 2.5rem); top: calc(50% - 2.5rem); padding: 0.15rem; background:conic-gradient(transparent 20deg, tomato 20deg 60deg, transparent 60deg 200deg, tomato 200deg 240deg, transparent 240deg); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude;}
+            .myMarkCircle.second {width: 4.6rem; height: 4.6rem; border: 0.4rem solid tomato; left: calc(50% - 2.3rem); top: calc(50% - 2.3rem);}
+            .myMarkCircle.third {width: 4.4rem; height: 4.4rem; border: 0.15rem solid pink; left: calc(50% - 2.2rem); top: calc(50% - 2.2rem);}
+            .myMarkCircle.fourth {width: 3.5rem; height: 3.5rem; left: calc(50% - 1.75rem); top: calc(50% - 1.75rem); padding: 0.15rem; background:conic-gradient(transparent 110deg, tomato 110deg 150deg, transparent 150deg 260deg, tomato 260deg 350deg, transparent 350deg); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude;}
+            .myMarkCircle.fifth {width: 3rem; height: 3rem; left: calc(50% - 1.5rem); top: calc(50% - 1.5rem); background: white; border: 0.15rem solid tomato; font-size: 0.9rem;}
+
+            @keyframes opacity {
+                from {
+                    scale: 5;
+                    opacity: 0;
+                }
+                to {
+                    scale: 1;
+                    opacity: 1;
+                }
+            }
+
+            @keyframes vibration {
+                from {
+                    transform: rotate(1deg);
+                }
+                to {
+                    transform: rotate(-1deg);
+                }
+            }
+
+            @keyframes trunning {
+                from {
+                    scale: 0;
+                    transform: rotateY(0);
+                }
+                to {
+                    scale: 1;
+                    transform: rotateY(720deg);
+                }
+            }
+            
+        </style>
 
         <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a277eb582a644847f86de6196a42745f"></script>
         <script>
@@ -1248,10 +1516,12 @@
                 const mapContainer = document.getElementById("map");
                 mapOption = {
                     center: new kakao.maps.LatLng(staticLat, staticLng),
+                    // center: new kakao.maps.LatLng(33.450701, 126.570667),
                     level: 4
                 };
 
                 map = new kakao.maps.Map(mapContainer, mapOption);
+
             }
 
             function getMyLocation() {
@@ -1308,15 +1578,32 @@
             }
 
             function displayMarkedMine(position, e) {
-                const content = document.createElement('div');
-                content.setAttribute("class", "myPosition markedMineFirstCircle");
-                const div2 = document.createElement('div');
-                div2.setAttribute("class", "myPosition markedMineSecondCircle");
-                const div3 = document.createElement('div');
-                div3.setAttribute("class", "myPosition markedMineThirdCircle");
+                // const content = document.createElement('div');
+                // content.setAttribute("class", "myPosition markedMineFirstCircle");
+                // const div2 = document.createElement('div');
+                // div2.setAttribute("class", "myPosition markedMineSecondCircle");
+                // const div3 = document.createElement('div');
+                // div3.setAttribute("class", "myPosition markedMineThirdCircle");
 
-                div2.appendChild(div3);
-                content.appendChild(div2);
+                // div2.appendChild(div3);
+                // content.appendChild(div2);
+
+                var content = '<div class="overlayBox">' +
+                    '<div class="myMarkCircleBox">' +
+                            '<div class="myMarkCircle first"></div>' +
+                            '<div class="myMarkCircle second"></div>' + 
+                            '<div class="myMarkCircle third"></div>' +
+                            '<div class="myMarkCircle fourth"></div>' +
+                            '<div class="myMarkCircle fifth text-center text-secondary d-grid align-content-center">???</div>' +
+                        '</div>' +
+                        '<div class="squareProp">' +
+                            '<div class="topSquareProp"></div>' +
+                            '<div class="frontSquareProp"></div>' +
+                            '<div class="sideSquareProp"></div>' +
+                        '</div>' +
+                        '<div class="lineProp"></div>' +
+                        '<div class="circleProp"></div>' +
+                    '</div>';
 
                 var customOverlay = new kakao.maps.CustomOverlay({
                     position: position,
@@ -1329,7 +1616,7 @@
 
                 content.onclick = () => {
                     showMarkedModal(e);
-                }
+                };
 
                 // content.onclick = null;
                 
