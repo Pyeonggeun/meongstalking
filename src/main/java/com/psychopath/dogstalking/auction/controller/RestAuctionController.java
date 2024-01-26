@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.psychopath.dogstalking.auction.dto.AuctionGoodsDto;
 import com.psychopath.dogstalking.auction.dto.AuctionImageDto;
+import com.psychopath.dogstalking.auction.dto.BidDto;
+import com.psychopath.dogstalking.auction.dto.ChatDto;
 import com.psychopath.dogstalking.auction.service.AuctionServiceImpl;
 import com.psychopath.dogstalking.dto.RestResponseDto;
 import com.psychopath.dogstalking.dto.UserDto;
@@ -196,6 +198,64 @@ public class RestAuctionController {
 	}
 
 
+	@RequestMapping("getGoodsDetailInfo")
+    public RestResponseDto getGoodsDetailInfo(int goodsPk) {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(auctionService.getGoodsDetailInfo(goodsPk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+	}    
+
+
+	@RequestMapping("registerChatMessage")
+	public RestResponseDto registerChatMessage(ChatDto params, HttpSession session) {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+		UserDto userDto = (UserDto)session.getAttribute("sessionUser");
+		int sessionUserPk = userDto.getUser_pk();
+
+		params.setUser_pk(sessionUserPk);
+
+		auctionService.registerChatMessage(params);
+
+        restResponseDto.setData(null);
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+	}    
+
+	@RequestMapping("getChatList")
+    public RestResponseDto getChatList(int goodsPk) {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+		
+        restResponseDto.setData(auctionService.getChatList(goodsPk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+	}    
+
+	@RequestMapping("getBidList")
+	public RestResponseDto getBidList(int goodsPk) {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(auctionService.getBidList(goodsPk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+	}    
+
+	@RequestMapping("registerBid")
+    public RestResponseDto registerBid(BidDto prams) {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(auctionService.registerBid(prams));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+	}    
 
 
 

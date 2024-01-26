@@ -11,13 +11,16 @@
     
         <script>
             function registerGoods(){
+
+                const padZero = (num) => num.toString().padStart(2, '0');
+
                 const expiryDate = document.getElementById("expiry_date").value;
-                const expiryHour = document.getElementById("expiry_hour").value;
+                const expiryHour = padZero(document.getElementById("expiry_hour").value);
                 const expiryDateTime = `${expiryDate}T${expiryHour}:00:00`;
 
 
                 const commencementDate = document.getElementById("commencement_date").value;
-                const commencementHour = document.getElementById("commencement_hour").value;
+                const commencementHour = padZero(document.getElementById("commencement_hour").value);
                 const commencementDateTime = `${commencementDate}T${commencementHour}:00:00`;
 
                 const startingPrice = document.getElementById("starting_price").value;
