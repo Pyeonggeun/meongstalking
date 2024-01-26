@@ -20,12 +20,13 @@
             <div class="col" style="max-width: 1em;"><!--좌측공란--></div>
             <!--중앙 col 시작-->    
             <div class="col">
-                <div class="row border-bottom"><div class="col">일단 비움</div></div>
-                <div class="row border-bottom"><div class="col">일단 비움</div></div>
+                <div class="row py-2"><div class="col"><a href="./fundingUserMyPage"><i class="bi bi-arrow-left-square" style="color: black;"></i></a></div><div class="col text-end"><a href="./listPage" class="me-3"><i class="bi bi-shop" style="color: black;"></i></a><a href="../commons/mainPage"><i class="bi bi-house" style="color: black;"></i></a></div></div>
+                <div class="row py-3"><div class="col"></div></div>
+                
 
-                <div class="row border-bottom border-2 pb-1 mb-1 border-dark">
+                <div class="row border-bottom border-3 pb-1 mb-1 border-dark">
                     <div class="col-5 fw-bold pt-2 pb-1" style="font-size: 1.2em;">
-                        새소식<span style="color:goldenrod;"> 5</span>
+                        새소식<span style="color:goldenrod;"> </span>
                     </div>
                     <div class="col-4"></div>
                     <div class="col-3 text-end" style="font-size: 0.82em; padding-top: 0.8em;">
@@ -33,10 +34,17 @@
                     </div>
                 </div>
 
-                <div class="row border-bottom py-1" style="border-color: gray;">
-                    <div class="col">
-                        <div class="row pb-1"><div class="col">상품 개발 완료 지연 안내</div></div>
-                        <div class="row"><div class="col" style="font-size: 0.85em; color: gray;">2024.01.23</div></div>
+                <div class="row py-1" style="border-color: gray;">
+                    <div class="col px-0">
+                            <th:block th:each="news : ${newsList}">
+                                <div class="row border-bottom border-2 py-2 mb-2">
+                                    <div class="col">
+                                        <div class="row mb-2"><div class="col d-grid"><img class="img-fluid" th:src="@{'/uploadFiles/'+${news.news_image}}" alt="nothing" style="max-width: 100%; max-height:9em ;" ></div></div>
+                                        <div class="row"><div class="col" th:text="${news.content}"></div></div>
+                                        <div class="row"><div class="col" style="font-size: 0.85em; color: gray;" th:text="${news.created_at}"></div></div>
+                                    </div>
+                                </div>
+                            </th:block>
                     </div>
                 </div>
             </div>

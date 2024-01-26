@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 import com.psychopath.dogstalking.dto.UserDto;
 import com.psychopath.dogstalking.funding.dto.FundingCheeringDto;
 import com.psychopath.dogstalking.funding.dto.FundingNewsDto;
+import com.psychopath.dogstalking.funding.dto.FundingOrderDto;
 import com.psychopath.dogstalking.funding.dto.FundingProductDto;
+import com.psychopath.dogstalking.funding.dto.FundingReviewDto;
 import com.psychopath.dogstalking.funding.dto.FundingWishlistDto;
 import com.psychopath.dogstalking.funding.mapper.FundingSqlMapper;
 
@@ -35,55 +37,98 @@ public class FundingServiceImpl {
     public List<Map<String,Object>> fundingListCall(){
         List<Map<String,Object>> fundingList = new ArrayList<>();
         List<FundingProductDto> fundingProductDtoList = fundingSqlMapper.fundingListCall();
-        System.out.println(fundingProductDtoList);
 
         for(FundingProductDto eleproductDto : fundingProductDtoList){
             UserDto userinfo = fundingSqlMapper.selectUserInfo(eleproductDto.getUser_pk()); 
-
             //잔여일
             int f_day= fundingSqlMapper.countFinishDay(eleproductDto.getProduct_pk());
-            //총 매출
-            int t_sales = fundingSqlMapper.totalSales(eleproductDto.getProduct_pk());
-
-            
-            
+            //목표대비 매출액 퍼센트
+            int percent = fundingSqlMapper.countPercentByPk(eleproductDto.getProduct_pk());
 
             Map<String,Object> productMap = new HashMap<>();                           
             productMap.put("list",eleproductDto);
             productMap.put("user",userinfo);
             productMap.put("f_day",f_day);
-            productMap.put("t_sales",t_sales);
+            productMap.put("percent",percent);
+    
             fundingList.add(productMap);                   
         }
         return fundingList;
     }
 
+    //판매회원마이페이지에 들어갈 상품 리스트
+    public List<FundingProductDto> fundingListCallForPk(int user_pk){
+        return fundingSqlMapper.fundingListCallForPk(user_pk);
+    }
 
-    // //잔여일 가져오기 
-    // public LocalDate countFinishDay(int product_pk){
-    //     return fundingSqlMapper.countFinishDay(product_pk);
-    // }
-    
-    // //상품별 총 매출액 가져오기
-    // public int totalSales(int product_pk){
-    //     return fundingSqlMapper.totalSales(product_pk);
-    // }
+    //회원마이페이지에 들어갈 정보 구매 상품과 엮은 상품디티오
+    public List<Map<String,Object>> selectOrderListByPk(int user_pk){
+        List<Map<String,Object>> orderList = new ArrayList<>();
+        List<FundingOrderDto> orderDto = fundingSqlMapper.selectOrderList(user_pk);
+        for(FundingOrderDto eleOrder : orderDto){
+            FundingProductDto productInfo= fundingSqlMapper.selectProductInfo(eleOrder.getProduct_pk());
+        
+            Map<String,Object> map = new HashMap<>();
+            map.put("order", eleOrder);
+            map.put("product", productInfo);
+            orderList.add(map);
+        }
+        return orderList;
+    }
+
+
+    //회원마이페이지에 들어갈 정보 찜한 상품과 엮은 상품디티오
+    public List<Map<String,Object>> selectWishlistByPk(int user_pk){
+        List<Map<String,Object>> WishList = new ArrayList<>();
+        List<FundingWishlistDto> wishDto = fundingSqlMapper.selectWishList(user_pk);
+        for(FundingWishlistDto eleWish : wishDto){
+            FundingProductDto productInfo= fundingSqlMapper.selectProductInfo(eleWish.getProduct_pk());
+
+            Map<String,Object> map = new HashMap<>();
+            map.put("wish", eleWish);
+            map.put("product", productInfo);
+            WishList.add(map);
+        }
+        return WishList;
+    }
+
+    //회원마이페이지에 집어 넣을 잡다한 map
+    public Map<String,Object> selectForMyPage(int user_pk){
+
+        Map<String,Object> countMap = new HashMap<>();
+        countMap.put("countOrder", fundingSqlMapper.countOrder(user_pk));
+        countMap.put("countWish", fundingSqlMapper.countWish(user_pk));
+
+        return countMap;
+    }
 
     //개별상품 정보 가져오기 
     public Map<String,Object> selectProductInfo(int pk){
         //개별상품 정보 가져오기
         FundingProductDto fundingProductDto =fundingSqlMapper.selectProductInfo(pk);
         //상품 상세 페이지에서 보일 새소식 1개만 뽑아보내기
-        FundingNewsDto fundingNewsDto = fundingSqlMapper.selectNewsForDetail(pk);
+        String fundingNewsDto = fundingSqlMapper.selectNewsForDetail(pk);
+        //상품 상세 페이지에서 보일 새소식 리스트 뽑아보내기
+        List<FundingNewsDto> newsList = fundingSqlMapper.selectNewsById(pk);
+        //상품 상세 페이지에서 보일 새소식 리스트를 카운트 하기 
+        int c_news = fundingSqlMapper.countNewsByPk(pk);
         //상품 총 매출
         int t_sales = fundingSqlMapper.totalSales(pk);
         //목표금액 대비 퍼센트 도출
         int percent = fundingSqlMapper.countPercentByPk(pk);
+        //잔여일
+        int f_day= fundingSqlMapper.countFinishDay(pk);
+        
+        
         Map<String,Object> productInfo = new HashMap<>(); 
         productInfo.put("detail",fundingProductDto);
         productInfo.put("news",fundingNewsDto);
+        productInfo.put("newsList",newsList);
+        productInfo.put("c_news",c_news);
         productInfo.put("count", t_sales);
         productInfo.put("percent",percent);
+        productInfo.put("f_day",f_day);
+        productInfo.put("t_sales",t_sales);
         return productInfo;
     }
 
@@ -98,8 +143,24 @@ public class FundingServiceImpl {
     }
 
     //응원글 집어넣기
-    public void insertCheeringText(FundingCheeringDto paraCheeringDto){
-        fundingSqlMapper.insertCheeringText(paraCheeringDto);
+    public void insertCheering(FundingCheeringDto paraCheeringDto){
+        fundingSqlMapper.insertCheering(paraCheeringDto);
+    }
+    //응원글 뽑아오기
+    public List<Map<String,Object>> selectCheering(int product_pk){
+
+        List<Map<String,Object>> cheeringList = new ArrayList<>();
+        List<FundingCheeringDto> cheeringDtoList = fundingSqlMapper.selectCheering(product_pk);
+        for(FundingCheeringDto eleCheeringDto : cheeringDtoList){
+
+            UserDto userinfo = fundingSqlMapper.selectUserInfo(eleCheeringDto.getUser_pk());
+
+            Map<String,Object> map = new HashMap<>();
+            map.put("cheering",eleCheeringDto);
+            map.put("user", userinfo);
+            cheeringList.add(map);
+        }
+        return cheeringList;
     }
 
     //찜하기
@@ -109,12 +170,81 @@ public class FundingServiceImpl {
     public void deleteWish(FundingWishlistDto paraWishDto){
         fundingSqlMapper.deleteWish(paraWishDto);
     }
-    public int selectWistlistByPk(FundingWishlistDto paraWishDto){
-        fundingSqlMapper.selectWistlistByPk(paraWishDto);
-        return fundingSqlMapper.selectWistlistByPk(paraWishDto);
+
+    public int countForWish(FundingWishlistDto paraWishDto){
+        return fundingSqlMapper.countForWish(paraWishDto);
+    }
+
+    //결제정보 집어넣기
+    public void insertOrder(FundingOrderDto fundingOrderDto){
+        fundingSqlMapper.insertOrder(fundingOrderDto);
     }
     
+    //회원이 구매한 상품의 상세 활동 페이지에서 보일 정보
+    public Map<String,Object> selectOrderInfo(int order_pk){
+        FundingOrderDto orderDto = fundingSqlMapper.selectOrderByOrderPk(order_pk);
+        FundingProductDto productDto = fundingSqlMapper.selectProductInfo(orderDto.getProduct_pk());
+        UserDto userDto = fundingSqlMapper.selectUserInfo(orderDto.getUser_pk());
+
+        Map<String,Object> OrderMap = new HashMap<>();
+        OrderMap.put("order",orderDto);
+        OrderMap.put("product",productDto);
+        OrderMap.put("user",userDto);
+        
+        return OrderMap;
+    }
+
+    //리뷰넣기
+    public void insertReview(FundingReviewDto paraReviewDto){
+        fundingSqlMapper.insertReview(paraReviewDto);
+    }
+
+    //리뷰 엮어서 가져오기
+    public List<Map<String,Object>> selectReview(int product_pk){
+        List<Map<String,Object>> reviewList = new ArrayList<>();
+        List<FundingReviewDto> reviewDtoList = fundingSqlMapper.selectReview(product_pk);
+        for(FundingReviewDto eleFundingReview :reviewDtoList){
+            UserDto userinfo = fundingSqlMapper.selectUserInfo(eleFundingReview.getUser_pk());
+
+            Map<String,Object> map = new HashMap<>();
+            map.put("review", eleFundingReview);
+            map.put("user", userinfo);
+            reviewList.add(map);
+        }
+        
+        return reviewList;
+    }
+
+    //리뷰 체크 위해 카운트 해오기
+    public int selectOrderCount(int order_pk){
+        return fundingSqlMapper.selectOrderCount(order_pk);
+    }
 
 
+    //판매회원 위한 간략한 통계구하기
+    public Map<String,Object> selectStatistics(int user_pk){
+        
+        Map<String,Object> statsMap = new HashMap<>();
+        // 주문 찜 응원 리뷰 하루단위 
+        statsMap.put("order", fundingSqlMapper.selectOrderStatsDay(user_pk));
+        statsMap.put("review", fundingSqlMapper.selectReviewStatsDay(user_pk));
+        statsMap.put("cheering", fundingSqlMapper.selectCheeringStatsDay(user_pk));
+        statsMap.put("wishlist", fundingSqlMapper.selectWishlistStatsDay(user_pk));
+        statsMap.put("success",fundingSqlMapper.selectCountSuccessGoal(user_pk));
+        statsMap.put("fail",fundingSqlMapper.selectCountFailGoal(user_pk));
+        return statsMap;
+
+    }
+
+    //목표율 달성한 
+    public int selectCountSuccessGoal(int user_pk){
+        return fundingSqlMapper.selectCountSuccessGoal(user_pk);
+    }
+
+    //목표율 미달성한
+    public int selectCountFailGoal(int user_pk){
+        return fundingSqlMapper.selectCountFailGoal(user_pk);
+
+    }
 
 }

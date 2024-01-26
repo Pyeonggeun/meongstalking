@@ -13,8 +13,7 @@
         start_date,
         finish_date,
         price,
-        amount,
-        success_fail
+        amount
     ) values (
         #{user_pk},
         #{product_name},
@@ -24,13 +23,17 @@
         #{start_date},
         #{finish_date},
         #{price},
-        #{amount},
-        #{success_fail}
+        #{amount}
     )
 </insert>
 
 <select id="fundingListCall" resultType="com.psychopath.dogstalking.funding.dto.FundingProductDto">
     select * from ms_funding_product order by product_pk desc
+</select>
+
+<select id="fundingListCallForPk" resultType="com.psychopath.dogstalking.funding.dto.FundingProductDto">
+    select * from ms_funding_product
+    where user_pk = #{user_pk}
 </select>
 
 <select id="selectUserInfo" resultType="com.psychopath.dogstalking.dto.UserDto">
@@ -47,21 +50,32 @@
     insert into ms_funding_news(
         product_pk,
         content,
-    )valuse(
+        news_image
+    )values(
         #{product_pk},
-        #{content}
+        #{content},
+        #{news_image}
     )
 </insert>
 
-<insert id="insertCheeringText">
+<insert id="insertCheering">
     insert into ms_funding_cheering (
+        user_pk,
         product_pk,
-        content
+        content,
+        cheering_image
     )values(
+        #{user_pk},
         #{product_pk},
-        #{content}
+        #{content},
+        #{cheering_image}
     );
 </insert>
+
+<select id="selectCheering" resultType="com.psychopath.dogstalking.funding.dto.FundingCheeringDto">
+select * from ms_funding_cheering mfc 
+where product_pk = #{product_pk}
+</select>
 
 <select id="countFinishDay" resultType="int">
     select DATEDIFF(finish_date,now()) from ms_funding_product 
@@ -84,22 +98,32 @@
     )
 </insert>
 
+<select id="wishListByPk" resultType="com.psychopath.dogstalking.funding.dto.FundingWishlistDto">
+select * from ms_funding_review
+where user_pk = #{user_pk}
+</select>
+
 <delete id="deleteWish">
     DELETE FROM ms_funding_wishlist
     where product_pk= #{product_pk}
     AND user_pk= #{user_pk}
 </delete>
 
-<select id="selectWistlistByPk" resultType="int">
-    select count(*) from ms_funding_wishlist 
-    where product_pk =1
-    AND user_pk=4;
-</select>
 
-<select id="selectNewsForDetail" resultType="com.psychopath.dogstalking.funding.dto.FundingNewsDto">
+<select id="selectNewsForDetail" resultType="String">
     select COALESCE(content,'새소식이 아직 없습니다') from ms_funding_news 
     where product_pk = #{product_pk}
     LIMIT 1;
+</select>
+
+<select id="selectNewsById" resultType="com.psychopath.dogstalking.funding.dto.FundingNewsDto">
+    select * from ms_funding_news 
+    where product_pk = #{product_pk}
+</select>
+
+<select id="countNewsByPk" resultType="int">
+    select count(*) from ms_funding_news
+    where product_pk = #{product_pk}
 </select>
 
 <select id="countPercentByPk" resultType="int">
@@ -111,12 +135,162 @@ FROM ms_funding_product mfp
 WHERE mfp.product_pk = #{product_pk}
 </select>
 
+<insert id="insertOrder">
+    insert into ms_funding_order(
+        product_pk,
+        user_pk,
+        quantity,
+        order_date
+    ) values(
+        #{product_pk},
+        #{user_pk},
+        #{quantity},
+        now()
+    );
+</insert>
+
+<select id="totalPayment" resultType="int">
+    select IFNULL(price*
+    (select quantity from ms_funding_order mfo
+    where order_pk= #{order_pk}),0) 
+    from ms_funding_product mfp 
+    where product_pk = #{product_pk}
+</select>
+
+<update id="updateOrderDate">
+    UPDATE ms_funding_order
+    SET order_date = now()
+    WHERE order_pk = #{order_pk }    
+    and user_pk  = #{user_pk}
+</update>
+
+<select id="selectOrderList" resultType="com.psychopath.dogstalking.funding.dto.FundingOrderDto">
+    select * from ms_funding_order mfo 
+    where user_pk = #{user_pk}
+</select>
+
+<select id="selectWishList" resultType="com.psychopath.dogstalking.funding.dto.FundingWishlistDto">
+    select * from ms_funding_wishlist mfw 
+    where user_pk = #{user_pk}
+</select>
+
+<select id="countOrder" resultType="int">
+    select IFNULL(count(*),0) from ms_funding_order mfo 
+    where user_pk = #{user_pk}
+</select>
+
+<select id="countWish" resultType="int">
+    select IFNULL(count(*),0) from ms_funding_wishlist mfw 
+    where user_pk = #{user_pk}
+</select>
+
+<select id="countForWish" resultType="int">
+    select IFNULL(count(*),0) from ms_funding_wishlist mfw 
+    WHERE user_pk = #{user_pk}
+    AND product_pk = #{product_pk}
+</select>
 
 
 
+<select id="selectOrderByOrderPk" resultType="com.psychopath.dogstalking.funding.dto.FundingOrderDto">
+    select * from ms_funding_order mfo 
+    where order_pk = #{order_pk}
+</select>
 
+<insert id = "insertReview">
+    insert into ms_funding_review(
+        order_pk,
+        user_pk,
+        product_pk,
+        content,
+        review_image
+    ) values(
+        #{order_pk},
+        #{user_pk},
+        #{product_pk},
+        #{content},
+        #{review_image}
+    )
+</insert>
 
+<select id="selectReview" resultType="com.psychopath.dogstalking.funding.dto.FundingReviewDto">
+    select * from ms_funding_review mfr 
+    WHERE product_pk = #{product_pk}
+</select>
 
+<select id="selectOrderCount" resultType="int">
+    select count(*) from ms_funding_review
+    where order_pk = #{order_pk}
+</select>
+
+<select id="selectOrderStatsDay" resultType="int">
+    select count(*) 
+    from ms_funding_order mfo 
+    where product_pk in(
+        select product_pk  from ms_funding_product mfp 
+        where user_pk = #{user_pk})
+    and mfo.created_at &gt;= CURRENT_TIMESTAMP - INTERVAL 1 DAY;
+</select>
+
+<select id="selectCheeringStatsDay" resultType="int">
+    select count(*) from ms_funding_cheering mfc 
+    where product_pk in 
+    (select product_pk  from ms_funding_product mfp 
+    where user_pk = #{user_pk})
+    and mfc.created_at &gt;= CURRENT_TIMESTAMP - INTERVAL 7 DAY;
+</select>
+
+<select id="selectWishlistStatsDay" resultType="int">
+    select count(*) from ms_funding_wishlist mfw 
+    where product_pk in
+    (select product_pk  from ms_funding_product mfp 
+    where user_pk = #{user_pk})
+    and mfw.created_at &gt;= CURRENT_TIMESTAMP - INTERVAL 7 DAY;
+</select>
+
+<select id="selectReviewStatsDay" resultType="int">
+    select count(*) from ms_funding_wishlist mfw 
+    where product_pk in
+    (select product_pk  from ms_funding_product mfp 
+    where user_pk = #{user_pk})
+    and mfw.created_at &gt;= CURRENT_TIMESTAMP - INTERVAL 7 DAY;
+</select>
+
+<select id="selectCountSuccessGoal" resultType="int">
+select 
+		count(*) as count
+	from (
+		select 
+			mfp.product_pk,
+			mfp.amount -sum(mfo.quantity * mfp.price) as result
+		from ms_funding_product mfp 
+		inner join ms_funding_order mfo on mfp.product_pk = mfo.product_pk 
+		where mfp.product_pk IN (
+			select mfp.product_pk  from ms_funding_product mfp 
+			where user_pk = #{user_pk}
+		)
+		group by product_pk 
+		having result &lt; 0
+	) as t
+</select>
+
+<select id="selectCountFailGoal" resultType="int">
+select 
+		count(*) as count
+	from (
+		select 
+			mfp.product_pk,
+			mfp.amount -sum(mfo.quantity * mfp.price) as result
+		from ms_funding_product mfp 
+		inner join ms_funding_order mfo on mfp.product_pk = mfo.product_pk 
+		where mfp.product_pk IN (
+			select mfp.product_pk  from ms_funding_product mfp 
+			where user_pk = #{user_pk}
+		)
+		group by product_pk 
+		having result &gt;= 0
+	) as t;
+</select>
 
 
 </mapper>

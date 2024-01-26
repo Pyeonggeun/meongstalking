@@ -20,25 +20,29 @@
                     <div class="col">   
 
 
+                        <div class="row py-2"><div class="col"><a href="./listPage"><i class="bi bi-arrow-left-square" style="color: black;"></i></a></div><div class="col text-end"><a href="../commons/mainPage"><i class="bi bi-house" style="color: black;"></i></a></div></div>
+                        <div class="row"><div class="col" style="padding: 3em;"></div></div>
 
-                        <div class="row"><div class="col" style="padding: 4em;"></div></div>
-
-                        <div class="row">
-                            
-                            <div class="col" style="font-size:1em;">멍's토킹 회원님 ></div>
+                        <div class="row mb-3"> 
+                            <div class="col" style="font-size:0.8em;"><span th:text="${session.sessionUser.userid}" style="font-size: 1.1em;" class="fw-bold"></span> 회원님 ></div>
                             <div class="col" style="max-width:3em;"><i class="bi bi-x-lg"></i></div>
-                            
                         </div>
 
-                        <div class="row"><div class="col" style="padding: 1em;"></div></div>
+                        
 
                         <div class="row"><div class="col"></div></div>
 
-                        <div class="row me-0">
+                        <div class="row mb-2 me-0">
                             <div class="col px-0"><a class="btn px-0 py-3 mb-2 rounded bg-opacity-25 text-center fw-bold" href="./productRgstrPage" style="background-color: gainsboro; width:100%;"> 프로젝트 만들기 <span class="text-end"><i class="bi bi-arrow-right"></i></span></a></div>
                         </div>
+
+                        <div class="row mb-2 me-0">
+                            <div class="col px-0"><a class="btn px-0 py-3 mb-2 rounded bg-opacity-25 text-center fw-bold" href="./fundingSellerMyPage" style="background-color: gainsboro; width:100%; font-size: 0.9em;"> 판매 회원을 위한 마이페이지로 이동 <span class="text-end"><i class="bi bi-arrow-right"></i></span></a></div>
+                        </div>
                         
-            
+                        <div class="row"><div class="col" style="padding: 2em;"></div></div>
+
+
                         <div class="row me-0">
                             <div class="col mb-2 py-2 rounded bg-opacity-25 text-center" style="background-color: gainsboro; max-height:4em;  font-size: 0.8em;"> <span><i class="bi bi-robot"></i></span>프로젝트 진행 자격이 궁금하다면</div> 
                         </div>
