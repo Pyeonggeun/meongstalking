@@ -12,5 +12,12 @@ public class FollowController {
 
         return "follow/mainPage";
     }
+    
+    @RequestMapping("testPage")
+    public String testPage() {
+
+
+        return "follow/testPage";
+    }
 
 }

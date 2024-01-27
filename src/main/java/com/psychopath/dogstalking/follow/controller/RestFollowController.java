@@ -2,7 +2,12 @@ package com.psychopath.dogstalking.follow.controller;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.psychopath.dogstalking.dto.RestResponseDto;
 import com.psychopath.dogstalking.dto.UserDto;
 import com.psychopath.dogstalking.follow.dto.CollectionDto;
+import com.psychopath.dogstalking.follow.dto.LikeLogDto;
 import com.psychopath.dogstalking.follow.dto.LogDto;
 import com.psychopath.dogstalking.follow.dto.UserMoreDto;
 import com.psychopath.dogstalking.follow.service.FollowServiceImpl;
@@ -167,6 +173,67 @@ public class RestFollowController {
         RestResponseDto restResponseDto = new RestResponseDto();
 
         restResponseDto.setData(followService.getCollectionPersonList(user_pk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
+    @RequestMapping("getTrackLikeList")
+    public RestResponseDto getTrackLikeList(int user_pk) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+
+        restResponseDto.setData(followService.getTrackLikeList(user_pk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
+    @RequestMapping("getClosestMarkLatLng")
+    public RestResponseDto getClosestMarkLatLng(int user_pk, double latitude, double longitude) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(followService.getClosestMarkLatLng(user_pk, latitude, longitude));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
+    @RequestMapping("insertTrackLikeLogInfo")
+    public RestResponseDto insertTrackLikeLogInfo(LikeLogDto params, double markLat, double markLng) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+
+        double d2r = Math.PI / 180;
+        double r2d = 180 / Math.PI;
+        double earth_rad = 6378000;
+
+        double r = new Random().nextInt(1000) + new Random().nextDouble();
+        double rlat = (r / earth_rad) * r2d;
+        double rlng = rlat / Math.cos(markLat * d2r);
+
+        double theta = Math.PI * (new Random().nextInt(2) + new Random().nextDouble());
+        double y = markLng + (rlng * Math.cos(theta));
+        double x = markLat + (rlat * Math.sin(theta));
+
+        params.setLatitude(x);
+        params.setLongitude(y);
+        
+        followService.insertTrackLikeLogInfo(params);
+
+        restResponseDto.setData(params);
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
+    @RequestMapping("getTrackingList")
+    public RestResponseDto getTrackingList(int user_pk) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(followService.getTrackingList(user_pk));
         restResponseDto.setResult("success");
         
         return restResponseDto;

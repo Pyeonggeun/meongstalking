@@ -18,6 +18,12 @@
         insert into ms_follow_collection(user_pk, log_pk) values(#{user_pk}, #{log_pk});
     </insert>
 
+    <insert id="insertTrackLikeLogInfo">
+        insert into ms_follow_like_log(
+            user_pk, log_pk, latitude, longitude
+        ) values(#{user_pk}, #{log_pk}, #{latitude}, #{longitude});
+    </insert>
+
     <select id="isFirstTimeMark" resultType="int">
         SELECT COUNT(*) FROM ms_follow_user_more
         where user_pk = #{user_pk}
@@ -58,7 +64,7 @@
                     SELECT log_pk, user_pk, image_link, content, latitude, longitude, created_date, is_track, is_like
                     FROM (
                         SELECT mfl.*,
-                            ROW_NUMBER() OVER (PARTITION BY latitude, longitude ORDER BY RAND()) as row_num, (
+                            ROW_NUMBER() OVER (PARTITION BY get_distance(#{latitude}, #{longitude}, mfl.latitude, mfl.longitude) ORDER BY RAND()) as row_num, (
                                 CASE 
                                     when log_pk in (
                                         SELECT mfll.log_pk FROM ms_follow_like_log mfll
@@ -242,7 +248,7 @@
     <select id="getTrackLikeList" resultType="map">
         SELECT t6.* FROM (
             SELECT t1.like_pk, t3.*, IFNULL(t5.cnt, 0) as cnt, IFNULL(t5.open_rating, 1) as open_rating,
-                t1.is_track, mmpi.profile_photo, mmpi.nick_name FROM (
+                t1.is_track, mmpi.profile_photo, mmpi.nick_name, mu.gender FROM (
                 SELECT mfl.like_pk, mfl.user_writer_pk, (
                     CASE 
                         when mfl.user_writer_pk in (
@@ -253,6 +259,9 @@
                                 SELECT mfc.log_pk FROM ms_follow_collection mfc
                                 where user_pk = #{user_pk}
                             )
+                            <![CDATA[
+                                and date(now()) - date(mfl2.created_date) <= 7
+                            ]]>
                         )
                         then 'Y' else 'N'
                     END
@@ -323,11 +332,41 @@
             )t5
             on t1.user_writer_pk = t5.user_pk
             inner join ms_mstar_profile_info mmpi on t1.user_writer_pk = mmpi.user_pk
+            inner join ms_user mu on t1.user_writer_pk = mu.user_pk
         )t6
         order by t6.is_track desc,
             t6.cnt desc,
             field('star_rating', 'SSR', 'SR', 'S', 'fiveStar', 'fourStar', 'threeStar', 'twoStar', 'oneStar'),
             t6.nick_name
+    </select>
+
+    <select id="getClosestMarkLatLng" resultType="map">
+        SELECT t1.log_pk, t1.latitude, t1.longitude, MIN(t1.distance) FROM (
+            SELECT *, get_distance(#{latitude}, #{longitude}, latitude, longitude) as distance,
+                ROW_NUMBER() OVER (PARTITION BY get_distance(#{latitude}, #{longitude}, latitude, longitude) ORDER BY RAND()) as rnum
+            FROM ms_follow_log
+            where user_pk = #{user_pk}
+            <![CDATA[
+                and date(now()) - date(created_date) <= 7
+            ]]>
+        )t1
+        where t1.rnum = 1
+    </select>
+
+    <select id="getTrackingList" resultType="map">
+        SELECT mfll.*, mfum.user_more_pk,
+            (DATE_FORMAT((DATE_ADD(mfl.created_date, INTERVAL 7 day)), '%Y/%m/%d %H시 %i분')) as time_limit
+        FROM ms_follow_like_log mfll
+        inner join ms_follow_log mfl on mfll.log_pk = mfl.log_pk
+        inner join ms_follow_user_more mfum on mfl.user_pk = mfum.user_pk
+        where mfll.user_pk = #{user_pk}
+        and mfll.log_pk not in(
+            SELECT log_pk FROM ms_follow_collection
+            where user_pk = #{user_pk}
+        )
+        <![CDATA[
+            and date(now()) - date(mfl.created_date) <= 7
+        ]]>
     </select>
 
     <!-- <select id="" resultType=""></select> -->
