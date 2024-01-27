@@ -4,6 +4,26 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>펀딩 상품 새소식 등록페이지 </title>
+
+    <script>
+
+    function imageBoxClickHandler() {
+                    const imageInput = document.getElementById("newsImage");
+                    imageInput.click();
+                }
+
+
+    </script>
+
+    <style>
+        .box-dashed {
+            border-width: 0.15em;
+            border-style: dashed;
+            width: 100%;    
+            color: gray;    
+        }
+
+    </style>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -20,17 +40,17 @@
                 <!--메인 콜 시작-->
                 <div class="col">
                     
-                        <div class="row"><div class="col px-0 fw-bold" style="font-size: 1.3em;">새소식 입력</div></div>    
-                        <div class="row"><div class="col px-0" style="font-size: 0.9em; color:gray">상품 출시 출고를 기다리는 회원님들을 위한 새소식을 전달해 보세요</div></div>    
+                        <div class="row mt-5"><div class="col px-0 fw-bold" style="font-size: 1.5em;">새소식 입력</div></div>    
+                        <div class="row mt-1 mb-3"><div class="col px-0" style="font-size: 1em; color:gray">회원님들을 위한 새소식을 전달해 보세요</div></div>    
 
 
                     <form action="./insertNewsProcesss" method="post" enctype="multipart/form-data">
                     <input name="product_pk" type="hidden" th:value="${product_pk}">    
                         <div class="row">   
                             <div class="col">
-                                <div class="row py-1">
-                                    <div class="col rounded py-1 mb-1" style="background-color: pink;">
-                                        <div class="row"><div class="col fw-bold" style="font-size: 0.83em;"><span><i class="bi bi-exclamation-circle text-danger"></i></span> 주의사항</div></div>
+                                <div class="row">
+                                    <div class="col rounded pt-1 pb-3 mb-1" style="background-color: pink; ">
+                                        <div class="row py-2"><div class="col fw-bold" style="font-size: 0.85em;"><span><i class="bi bi-exclamation-circle text-danger"></i></span> 주의사항</div></div>
                                         <div class="row"><div class="col" style="font-size: 0.8em;">최근 메이커 또는 제3 자에 대한 허위사실 유포, 비방 목적의 글들로 인해 당사자간 법적분쟁이 매우 빈번하게 발생하고 있습니다. 타 회원들이나 상품에 대한 허위사실을 유포하거나 악의적 성향의 글을 작성하는 경우 명예훼손, 모욕 등으로 법적 책임을 부담하게 될 수 있다는 점을 유의 바랍니다 </div></div>
                                     </div>
                                 </div>
@@ -38,22 +58,32 @@
                                 <div class="row mb-2">
                                     <div class="col">
                                         <div class="row mb-2">
-                                            <div class="col" style="font-size: 1em;"> 같이 게시될 이미지를 선택해 주세요 <span style="font-size: 0.7em;"><i class="bi bi-question-circle"></i></span></div>
-                                            <input name="newsImage" type="file" accept="image/*" multiple>
+                                    
+                                            <div class="row mt-4 px-0"><div class="col"><span class="fw-bold" style="font-size: 1em;">+ 새소식 이미지 설정</div></div>
+                                            <div class="imagePlusBox pt-1 px-0" onclick=imageBoxClickHandler()>
+                                                <div class="box-dashed rounded py-3 text-center">
+                                                <div class="row"><div class="col"> <i class="bi bi-card-image" style="font-size: 2.5em; color: gray;"></i> </div></div> 
+                                                <div class="row"><div class="col"> <span style="font-size: 0.85em; color: gray;">같이 게시될 이미지를 선택해 주세요</span> </div></div> 
+                                                </div>
+                                                <input id="newsImage" name="newsImage" class="d-none" type="file" oninput="previewImage()"  accept="image/*" multiple>
+                                            </div>    
+
+                                            
                                         </div>
                                         <div class="row">
-                                            <div class="col rounded" style="background-color: gainsboro;">
-                                                <div class="row"><div class="col" style="font-size: 0.9em;"> 상세 이미지 등록 가이드</div></div>
-                                                <div class="row"><div class="col" style="font-size: 0.8em;">JPG, JPEG,PNG파일만 등록가능합니다</div></div>
-                                                <div class="row"><div class="col" style="font-size: 0.8em;">한장의 사진에 모든 정보가 담겨야 합니다. 미리 편집해서 등록해주시기 바랍니다.</div></div>
+                                            <div class="col pt-1 pb-2 mb-1 rounded" style="background-color: gainsboro;">
+                                                <div class="row py-2"><div class="col fw-bold" style="font-size: 0.85em;"> <i class="bi bi-question-circle"></i> 상세 이미지 등록 가이드</div></div>
+                                                <div class="row pb-1"><div class="col" style="font-size: 0.8em;">JPG, JPEG,PNG파일만 등록가능합니다</div></div>
+                                                <div class="row pb-1"><div class="col" style="font-size: 0.8em;">한장의 사진에 모든 정보가 담겨야 합니다. 미리 편집해서 등록해주시기 바랍니다.</div></div>
                                             </div>
                                         </div>    
                                     </div>
                                 </div>
 
-                                <div class="row pb-1 mb-2"><div class="col px-0"><textarea name="content" class="form-control" style="width:100%;"></textarea></div></div>
+                                <div class="row mt-4 px-0"><div class="col px-0"><span class="fw-bold" style="font-size: 1em;">+ 새소식 메세지 설정</div></div>
+                                <div class="row py-1 mb-3"><div class="col px-0"><textarea name="content" class="form-control" style="width:100%; height: 12.5em;" placeholder="알리고 싶은 내용을 작성해주세요"></textarea></div></div>
 
-                                <div class="row pb-1"><div class="col-3 px-0 text-center"><a th:href="@{./productControlPage(id=${product_pk})}" class="btn text-white fw-bold rounded" style="font-size: 0.87em; background-color: coral">뒤로가기</a></div><div class="col d-grid ms-3 px-0"><input class="form-control" type="submit" value="새소식 올리기"></div></div>
+                                <div class="row mb-5"><div class="col-4 px-0 text-center d-grid"><a th:href="@{./productControlPage(id=${product_pk})}" class="btn text-white fw-bold rounded py-3" style="font-size: 1em; background-color: lightcoral">뒤로가기</a></div><div class="col d-grid ms-3 px-0"><input class="form-control py-3" type="submit" value="새소식 올리기" style="font-size: 1em;"></div></div>
                             </div>    
                         </div>           
                     </form>
