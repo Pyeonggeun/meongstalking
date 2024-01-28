@@ -45,6 +45,14 @@ public class UserServiceImpl {
     public ProfileInfoDto getProfilePhotoPath(int user_pk){
         return mstarSqlMapper.selectProfileInfoDto(user_pk);
     }
+
+    public void saveKakaoUser(UserDto userDto) {
+        userSqlMapper.insertKakaoUser(userDto);
+    }
+
+    public UserDto getKakaoUser(String userPk) {
+        return userSqlMapper.selectKakaoUser(userPk);
+    }
     
 
 }

@@ -159,9 +159,19 @@
             <p><strong>사진첩</strong></p>
             우왕 사진들
         </div>
-        <div class="row">
-        <button class="btn btn-secondary col-12 " onclick="loadSignupModal()">가입하기</button>
+        
+        <div th:if="${ApplyStatus != 2}" class="row">
+            <div th:if="${ApplyStatus == 1} or ${ApplyStatus == 3}" class="row">
+            <!-- ApplyStatus가 1 또는 3일 때의 콘텐츠 -->
+            </div>
+            <div th:unless="${ApplyStatus == 1} or ${ApplyStatus == 3}">
+                <button class="btn btn-secondary col-12" onclick="loadSignupModal()">가입하기</button>
+            </div>      
         </div>
+        <div th:if="${ApplyStatus == 2}" class="row">
+            <button class="btn btn-secondary col-12">신청 대기중 입니다.</button>
+        </div>
+        
     </div>
 
 

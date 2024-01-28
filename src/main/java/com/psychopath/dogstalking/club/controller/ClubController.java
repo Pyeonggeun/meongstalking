@@ -34,20 +34,29 @@ public class ClubController {
 
         Integer memberLank = null;
         memberLank =  clubService.selectLeaderLank(userDto.getUser_pk());
-        System.out.println("checkMember : " + memberLank);
+        System.out.println("memberLank : " + memberLank);
         if (memberLank == null || !(memberLank >= 1 && memberLank <= 3)) {
             memberLank = 9;
         }
-
+        System.out.println("memberLank : " + memberLank);
         model.addAttribute("checkMember", memberLank);
+
+        Integer ApplyStatus = clubService.selectClubCategoryPk(userDto.getUser_pk());
+        if (ApplyStatus == null) {
+            ApplyStatus = 9;
+        }
+        model.addAttribute("ApplyStatus", ApplyStatus);
 
         List<Map<String, Object>> clublist = clubService.selectClubList();
         model.addAttribute("clublist", clublist);
 
-        // Map<String, Object> showclubpk = clubService.showclubpk(1);
-        // model.addAttribute("showclubpk", showclubpk);
-
-        return "club/clubHomePage";
+        if(memberLank==1 || memberLank==3){
+            return "redirect:./clubListPage";
+        }
+        else{
+            return "club/clubHomePage";
+        }
+        
     }
 
     @RequestMapping("freeBoardPage")
@@ -117,6 +126,8 @@ public class ClubController {
         int pk = (int) clubTF.get("club_pk");
         List<Map<String, Object>> applyList = clubService.selectApplyList(pk);
 
+        System.out.println("applyList: "+applyList);
+
         if (applyList != null && !applyList.isEmpty()) {
             model.addAttribute("applyList", applyList);
             return "club/clubSignupPage";
@@ -131,12 +142,32 @@ public class ClubController {
     }
 
     @RequestMapping("clubListPage")
-    public String clubListPage(Model model) {
+    public String clubListPage(HttpSession session, Model model) {
+        UserDto userDto = (UserDto) session.getAttribute("sessionUser");
         List<Map<String, Object>> clublist = clubService.selectClubList();
         model.addAttribute("clublist", clublist);
 
         Map<String, Object> showclubpk = clubService.showclubpk(1);
         model.addAttribute("showclubpk", showclubpk);
+
+        Integer memberLank = null;
+        memberLank =  clubService.selectLeaderLank(userDto.getUser_pk());
+       // System.out.println("memberLank : " + memberLank);
+        if (memberLank == null || !(memberLank >= 1 && memberLank <= 3)) {
+            memberLank = 9;
+        }
+      //  System.out.println("memberLank : " + memberLank);
+        model.addAttribute("checkMember", memberLank);
+
+
+        Integer ApplyStatus = clubService.selectClubCategoryPk(userDto.getUser_pk());
+        //System.out.println("ApplyStatus : " + ApplyStatus);
+        if (ApplyStatus == null) {
+            ApplyStatus = 9;
+        }
+        model.addAttribute("ApplyStatus", ApplyStatus);
+
+
 
         return "club/clubListPage";
     }
@@ -178,9 +209,30 @@ public class ClubController {
     @RequestMapping("clubHomeProcess")
     public String clubHomeProcess(@RequestParam("club_pk") int clubPk, Model model, HttpSession session) {
 
+        UserDto userDto = (UserDto) session.getAttribute("sessionUser");
         Map<String, Object> showclubpk = clubService.showclubpk(clubPk);
         model.addAttribute("showclubpk", showclubpk);
-        return "club/clubListPage";
+
+
+        Integer memberLank = null;
+        memberLank =  clubService.selectLeaderLank(userDto.getUser_pk());
+      //  System.out.println("memberLank : " + memberLank);
+        if (memberLank == null || !(memberLank >= 1 && memberLank <= 3)) {
+            memberLank = 9;
+        }
+    //    System.out.println("memberLank : " + memberLank);
+        model.addAttribute("checkMember", memberLank);
+
+
+        Integer ApplyStatus = clubService.selectClubCategoryPk(userDto.getUser_pk());
+        System.out.println("ApplyStatus : " + ApplyStatus);
+        if (ApplyStatus == null) {
+            ApplyStatus = 9;
+        }
+        model.addAttribute("ApplyStatus", ApplyStatus);
+
+
+        return "redirect:./clubListPage";
     }
 
     @RequestMapping("createUserProcess")

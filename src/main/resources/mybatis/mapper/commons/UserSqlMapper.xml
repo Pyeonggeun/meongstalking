@@ -18,6 +18,16 @@
 	<select id="selectUserPk" resultType="int">
 		SELECT max(user_pk) from ms_user
 	</select>
-	
+
+	<!--카카오 로그인 쿼리-->
+	<insert id="insertKakaoUser">
+		INSERT INTO users (user_pk, name, image)
+		VALUES (#{user_pk}, #{name}, #{image})
+		ON DUPLICATE KEY UPDATE name = VALUES(name), image = VALUES(image);
+	</insert>
+
+	<select id="selectKakaoUser" resultType="com.psychopath.dogstalking.dto.UserDto">
+		SELECT * FROM users WHERE user_pk = #{user_pk};
+	</select>
 
 </mapper>

@@ -26,42 +26,35 @@
             font-size: 12px;
         }
     </style>
-
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 <script>
-    function loginWithKakao() {
-        // Check if Kakao SDK is already initialized
-        if (!Kakao.isInitialized()) {
-            // Initialize Kakao SDK
-            Kakao.init('3483fd0375996622def250d0027dc68f');
-        }
+    window.Kakao.init('3483fd0375996622def250d0027dc68f');
 
-        // Log in with Kakao
-        Kakao.Auth.login({
+    function kakaoLogin() {
+        window.Kakao.Auth.login({
+            scope: 'profile_nickname, profile_image',
             success: function (authObj) {
-                alert(JSON.stringify(authObj));
-                // Log in success, make API request
-                Kakao.API.request({
-                    url: '/v2/user/me',
-                    success: function (res) {
-                        console.log(JSON.stringify(res));
-                        window.location.href = './setLoginScript';                    },
-                    fail: function (error) {
-                        alert(JSON.stringify(error));
-                    }
+                console.log(authObj);
+                const userInfo = {
+                    code: authObj.code,
+                };
+                fetch('/commons/kakaoProcess', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userInfo),
+                })
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                 });
-            },
-            fail: function (err) {
-                alert(JSON.stringify(err));
             }
         });
     }
-        /*  
-        function kakaoLogout() {
-            Kakao.Auth.logout(function (response) {
-                alert(response + 'logout');
-            });
-        } */      
-    
 </script>
 </head>
 
@@ -104,17 +97,9 @@
                         </div>
                     </div>
                 </form>
-                <div class="row mt-2 text-center" onclick="loginWithKakao()">
+                <div class="row mt-2 text-center" onclick="kakaoLogin()">
                     <img th:src="@{/public/image/kakao_login_medium_wide.png}" class="img-fluid" alt="Kakao Login">
                 </div>
-
-                <!--
-                    <div class="row mt-5 text-center">
-                    <span class="small-text" style="color: gray;">또는</span>
-                </div>
-                -->
-
-
 
             </div>
         </div>

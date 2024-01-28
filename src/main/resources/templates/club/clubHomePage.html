@@ -205,9 +205,14 @@
                 <p><strong>사진첩</strong></p>
                 우왕 사진들
             </div>
-            <!-- or clubTF['clubstatuslog_pk'] != 2-->
+            <!-- or clubTF['clubstatuslog_pk'] != 2
+            
+            ApplyStatus==2
+            -->
             <div th:text="${clubTF['user_exists']}"></div>
-            <div class="row p-3">
+
+
+            <div th:if="ApplyStatus!=2" class="row p-3">
                 <div th:if="${clubTF['user_exists'] == 'F'}" class="fixed-bottom text-center">
                     <button class="btn btn-secondary col-12 signup-button" onclick="loadSignupModal()">가입하기</button>
                 </div>
@@ -216,7 +221,7 @@
 
         </div>
 
-        <div th:if="${checkMember != 1} or ${clubTF['user_exists'] == 'F' }">
+        <div th:if="${checkMember != 1} or ${checkMember != 3}  or ${clubTF['user_exists'] == 'F' }">
             <th:block th:replace="~{club/clubTopNavi.html :: mainTopNavi}"></th:block>
             <div class="row pt-3 scrollable-menu d-flex justify-content-around align-items-center fw-bold text-center">
                 <span class="col-6 clickable" onclick="aaa()">인기 많은 동호회</span>

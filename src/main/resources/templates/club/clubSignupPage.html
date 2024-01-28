@@ -97,7 +97,7 @@
                                 <div class="col-6"></div>
                                 <div class="col">
                                     <a th:href="'./approve?user_pk=' + ${qwer['user_pk']}" class="btn btn-secondary btn-sm">승인</a>
-                                    <a th:href="./reject?user_pk=' + ${qwer['user_pk']}" class="btn btn-secondary btn-sm">거절</a>   
+                                    <a th:href="'./reject?user_pk=' + ${qwer.user_pk}" class="btn btn-secondary btn-sm">거절</a>
                                 </div>
                             </div>
                         </div>

@@ -52,6 +52,8 @@ public interface ClubSqlMapper {
     //회원 등급
     public void insertClubUserRank(ClubUserRanklogDto clubUserRanklogDto);
 
+    public void insertClubUserRankTwo(ClubUserRanklogDto clubUserRanklogDto);
+
     //신청 리스트
     public List<Map<String, Object>> selectApplyList(int club_pk);
 
@@ -71,5 +73,8 @@ public interface ClubSqlMapper {
 
     //관리자 바꿈
     public void updateLeader(ClubUserRanklogDto clubUserRanklogDto);
+
+    //회원 승인 미승인 상태
+    public int selectClubCategoryPk(int club_user_pk);
 
 }

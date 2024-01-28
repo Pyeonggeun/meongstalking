@@ -108,6 +108,12 @@
         VALUES (#{club_user_pk},1); 
     </insert>
 
+    <!--가입신청(미승인)
+    <insert id="insertClubUserRankTwo">
+        INSERT INTO ms_club_user_ranklog(club_user_pk,clubuserranklogcategory_pk)
+        VALUES (#{club_user_pk},2); 
+    </insert>-->
+
     <!--회원 등급 추가-->
     <insert id="insertClubUserRank">
         INSERT INTO ms_club_user_ranklog(club_user_pk,clubuserranklogcategory_pk)
@@ -186,5 +192,9 @@
         WHERE club_user_pk = #{club_user_pk};
     </update>
 
+    <!--승인 상태-->
+    <select id ="selectClubCategoryPk" resultType="Integer">
+        SELECT ms_club_user_statuslog.clubcategory_pk	FROM ms_club_user_statuslog WHERE ms_club_user_statuslog.club_user_pk=#{club_user_pk};
+    </select>
 
 </mapper>

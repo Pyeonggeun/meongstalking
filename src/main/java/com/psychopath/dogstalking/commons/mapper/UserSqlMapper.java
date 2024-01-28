@@ -10,5 +10,9 @@ public interface UserSqlMapper {
     public void insertUser(UserDto userDto);
     public UserDto selectByUserIdAndPassword(UserDto userDto);
 
-    public int selectUserPk();  
+    public int selectUserPk();
+    
+    public void insertKakaoUser(UserDto userDto);
+
+    public UserDto selectKakaoUser(String userPk);
 }
