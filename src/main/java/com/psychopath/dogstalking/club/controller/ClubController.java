@@ -1,10 +1,18 @@
 package com.psychopath.dogstalking.club.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.Date;
+import java.io.File;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.psychopath.dogstalking.club.dto.ClubArticleImageDto;
 import com.psychopath.dogstalking.club.dto.ClubDto;
 import com.psychopath.dogstalking.club.dto.ClubFreeBoardDto;
 import com.psychopath.dogstalking.club.dto.ClubStatusLogDto;
@@ -14,8 +22,10 @@ import com.psychopath.dogstalking.club.service.ClubServiceImpl;
 import com.psychopath.dogstalking.dto.UserDto;
 
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -156,7 +166,7 @@ public class ClubController {
         if (memberLank == null || !(memberLank >= 1 && memberLank <= 3)) {
             memberLank = 9;
         }
-      //  System.out.println("memberLank : " + memberLank);
+        System.out.println("memberLank : " + memberLank);
         model.addAttribute("checkMember", memberLank);
 
 
@@ -291,8 +301,50 @@ public class ClubController {
     }
 
     @RequestMapping("updateClubProcess")
-    public String updateClubProcess(ClubDto clubDto) {
-        clubService.updateClub(clubDto);
+    public String updateClubProcess(@ModelAttribute("clubDto") ClubDto clubDto,
+                                    @RequestParam("imgFile") MultipartFile imageFiles, ClubArticleImageDto clubArticleImageDto) {
+
+        clubDto.setImg("/path/to/uploaded/image.jpg");
+        if(imageFiles != null) {
+            
+            String rootPath = "C:/uploadFiles/";
+            
+            
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/");
+            String todayPath = sdf.format(new Date());
+            
+            File todayFolderForCreate = new File(rootPath + todayPath);
+            
+            if(!todayFolderForCreate.exists()) {
+                todayFolderForCreate.mkdirs();
+            }
+            
+            String originalFileName = imageFiles.getOriginalFilename();
+            
+           
+            String uuid = UUID.randomUUID().toString();
+            long currentTime = System.currentTimeMillis();
+            String fileName = uuid + "_"+ currentTime;
+            
+            
+            String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
+            
+            fileName += ext;
+            
+            try {
+                imageFiles.transferTo(new File(rootPath+todayPath+fileName));
+            }catch(Exception e) {
+                e.printStackTrace();
+            }
+
+            //String macName = "/uploadFiles/";
+
+         //   ClubArticleImageDto clubArticleImageDto = new ClubArticleImageDto();
+            clubArticleImageDto.setLocation(todayPath + fileName);
+            clubArticleImageDto.setOriginal_filename(originalFileName);
+            System.out.println("실행됨");
+        }
+        clubService.updateClub(clubDto, clubArticleImageDto);
         return "redirect:./clubHomePage";
     }
 

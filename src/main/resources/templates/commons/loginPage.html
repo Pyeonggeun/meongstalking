@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
  <!-- 카카오 SDK 스크립트 로드 -->
- <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
- <!-- 카카오 로그인 버튼 이벤트 처리 -->
  
 <head>
     <meta charset="utf-8">
@@ -27,6 +25,7 @@
         }
     </style>
 <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+
 <script>
     window.Kakao.init('3483fd0375996622def250d0027dc68f');
 
@@ -34,28 +33,50 @@
         window.Kakao.Auth.login({
             scope: 'profile_nickname, profile_image',
             success: function (authObj) {
-                console.log(authObj);
-                const userInfo = {
-                    code: authObj.code,
-                };
-                fetch('/commons/kakaoProcess', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
+                window.Kakao.API.request({
+                    url: '/v2/user/me',
+                    success: function(response) {
+                        // 성공적으로 사용자 정보를 가져왔을 때의 처리
+                        console.log(response);
+
+                        const userInfo = {
+                            code: authObj.code,
+                            kakaoUserId: response.id,
+                            nickname: response.properties.nickname,
+                            profileImage: response.properties.profile_image,
+                        };
+
+                        fetch('./kakaoProcess', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(userInfo),
+                        })
+                        .then(response => response.text())
+                        .then(data => {
+                            console.log(JSON.stringify(authObj, null, 2));
+
+                            console.log(data);
+                            window.location.href = './mainPage';
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
                     },
-                    body: JSON.stringify(userInfo),
-                })
-                .then(response => response.text())
-                .then(data => {
-                    console.log(data);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
+                    fail: function(error) {
+                        console.error('Failed to get user info from Kakao:', error);
+                    },
                 });
+            },
+            fail: function (err) {
+                console.error('Kakao login failed:', err);
             }
         });
     }
 </script>
+
+
 </head>
 
 <body>

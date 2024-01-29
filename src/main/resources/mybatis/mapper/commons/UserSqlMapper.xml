@@ -19,15 +19,26 @@
 		SELECT max(user_pk) from ms_user
 	</select>
 
-	<!--카카오 로그인 쿼리-->
-	<insert id="insertKakaoUser">
-		INSERT INTO users (user_pk, name, image)
-		VALUES (#{user_pk}, #{name}, #{image})
-		ON DUPLICATE KEY UPDATE name = VALUES(name), image = VALUES(image);
+
+	<!-- 카카오 로그인 쿼리 -->
+	<insert id="insertKakaoUser" parameterType="com.psychopath.dogstalking.dto.KakaoUserDto">
+		INSERT INTO ms_kakao_user (kakao_user_id, nickname, profile_image_url)
+		VALUES (#{kakaoUserId}, #{nickname}, #{profileImage})
 	</insert>
 
-	<select id="selectKakaoUser" resultType="com.psychopath.dogstalking.dto.UserDto">
-		SELECT * FROM users WHERE user_pk = #{user_pk};
+
+	<select id="selectKakaoUser" resultType="map">
+		SELECT * FROM ms_kakao_user WHERE kakao_user_id = #{kakaoUserId};
+	</select>
+
+	<insert id="insertKUser" parameterType="com.psychopath.dogstalking.commons.mapper.UserSqlMapper">
+		INSERT INTO ms_user(user_pk,name,birthdate,image)
+		 VALUES (#{user_pk},#{name},'2000-01-01',#{image})
+	</insert>
+
+	<select id="selectByKakaoUser" resultType="com.psychopath.dogstalking.dto.KakaoUserDto">
+		SELECT * FROM ms_kakao_user 
+		WHERE kakao_user_id = #{kakaoUserId} 
 	</select>
 
 </mapper>

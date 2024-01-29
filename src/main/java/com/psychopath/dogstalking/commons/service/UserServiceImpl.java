@@ -1,9 +1,12 @@
 package com.psychopath.dogstalking.commons.service;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.psychopath.dogstalking.commons.mapper.UserSqlMapper;
+import com.psychopath.dogstalking.dto.KakaoUserDto;
 import com.psychopath.dogstalking.dto.UserDto;
 import com.psychopath.dogstalking.mstar.dto.ProfileInfoDto;
 import com.psychopath.dogstalking.mstar.mapper.MstarSqlMapper;
@@ -46,13 +49,19 @@ public class UserServiceImpl {
         return mstarSqlMapper.selectProfileInfoDto(user_pk);
     }
 
-    public void saveKakaoUser(UserDto userDto) {
-        userSqlMapper.insertKakaoUser(userDto);
+    public void saveKakaoUser(KakaoUserDto kakaoUserDto) {
+        userSqlMapper.insertKakaoUser(kakaoUserDto);
     }
 
-    public UserDto getKakaoUser(String userPk) {
-        return userSqlMapper.selectKakaoUser(userPk);
+    public Map<String, Object> getKakaoUser(long kakao_user_id) {
+        return userSqlMapper.selectKakaoUser(kakao_user_id);
     }
-    
 
+    public void insertKUser(UserDto userDto){
+        userSqlMapper.insertKUser(userDto);
+    }
+
+    public void selectByKakaoUser(KakaoUserDto kakaoUserDto){
+        userSqlMapper.selectByKakaoUser(kakaoUserDto);
+    }
 }

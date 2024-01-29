@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.psychopath.dogstalking.club.dto.ClubArticleImageDto;
 import com.psychopath.dogstalking.club.dto.ClubDto;
 import com.psychopath.dogstalking.club.dto.ClubFreeBoardDto;
 import com.psychopath.dogstalking.club.dto.ClubStatusLogDto;
@@ -121,7 +122,8 @@ public class ClubServiceImpl {
 		clubSqlMapper.updatenotApplyClub(clubStatusLogDto);
 	}
 
-	public void updateClub(ClubDto clubDto) {
+	public void updateClub(ClubDto clubDto, ClubArticleImageDto clubArticleImageDto) {
+		clubDto.setImg(clubArticleImageDto.getLocation());
 		clubSqlMapper.updateClub(clubDto);
 	}
 	

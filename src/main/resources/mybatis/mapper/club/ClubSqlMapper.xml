@@ -155,7 +155,7 @@
     <!--길드 정보 수정-->
     <update id="updateClub">
         UPDATE ms_club
-        SET name = #{name}, content = #{content}
+        SET name = #{name}, content = #{content}, img = #{img}
         WHERE club_pk = #{club_pk}; 
     </update>
 
