@@ -24,7 +24,6 @@
             <div class="col-md-6">
                 <form action="./updateClubProcess" method="post" enctype="multipart/form-data">
                     <input type="hidden" id="club_pk" name="club_pk" th:value="${clubTF['club_pk']}">
-                    <input type="hidden" id="img" name="img" th:value="imglink">
 
                     <div class="mb-3">
                         길드 이름 :
@@ -38,7 +37,8 @@
 
                     <div class="mb-3">
                         대표 사진 :
-                        <input type="file" class="form-control" id="postImage" name="image">
+                            
+
                     </div>
 
                     <div class="d-flex">
