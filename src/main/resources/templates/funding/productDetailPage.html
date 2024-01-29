@@ -22,7 +22,8 @@
 
 
                 <div class="row"><div class="col d-grid"><img class="img-fluid px-0" th:src="@{'/uploadFiles/'+${product.detail.title_image}}" alt="등록된 이미지가 없습니다" style="width: 100%;"></div></div>
-                <div class="row pt-2 py-1 mb-2"><div class="col fw-bold" style="font-size: 1.15em;" th:text="${product.detail.product_name}"></div></div>
+                <div class="row my-1"><div class="col"><span style="font-size: 0.85em; color: gray;"> 카테고리 ></span> <span style="color: black;">#</span></div><div class="col text-end" style="font-size: 0.85;"><i class="bi bi-share"></i></div></div>
+                <div class="row mt-2 mb-2"><div class="col fw-bold" style="font-size: 1.15em;" th:text="${product.detail.product_name}"></div></div>
                 <div class="row py-1 mb-2"><div class="col" style="font-size: 0.9em;" th:text="${product.detail.simple_explain}"></div> </div>
                 <div class="row py-2 mb-1"><div class="col" style="font-size: 1.2em;" th:text="|${product.percent}%|"></div> <div class="col">남은 기간</div> </div>
                 <div class="row py-2 mb-1"><div class="col" style="font-size: 1.2em;" th:text="|총 결제액 ${product.t_sales}원|"></div></div>
