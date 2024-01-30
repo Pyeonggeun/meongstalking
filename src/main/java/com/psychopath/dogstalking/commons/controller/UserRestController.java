@@ -51,12 +51,9 @@ public class UserRestController {
                 kakaoUser = userService.getKakaoUser(kakaoUserId);
 
                 System.out.println("kakaoUser :" + kakaoUser);
-
-                int kakaopk = (int) (kakaoUserId / 1000000);
-                System.out.println("kakaoUserId : "+kakaopk);
                 
                 UserDto userDto = new UserDto();
-                userDto.setUser_pk(kakaopk);
+                userDto.setUserid(kakaoUserIdString);
                 userDto.setName((String) kakaoUser.get("nickname"));
                 userDto.setImage((String) kakaoUser.get("profile_image_url"));
                 userService.insertKUser(userDto);

@@ -32,8 +32,8 @@
 	</select>
 
 	<insert id="insertKUser" parameterType="com.psychopath.dogstalking.commons.mapper.UserSqlMapper">
-		INSERT INTO ms_user(user_pk,name,birthdate,image)
-		 VALUES (#{user_pk},#{name},'2000-01-01',#{image})
+		INSERT INTO ms_user(userid,userpw,name,birthdate,image)
+		 VALUES (#{userid},'kakao',#{name},'2000-01-01',#{image})
 	</insert>
 
 	<select id="selectByKakaoUser" resultType="com.psychopath.dogstalking.dto.KakaoUserDto">
