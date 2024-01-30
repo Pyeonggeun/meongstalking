@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.psychopath.dogstalking.dto.RestResponseDto;
 import com.psychopath.dogstalking.dto.UserDto;
 import com.psychopath.dogstalking.follow.dto.CollectionDto;
+import com.psychopath.dogstalking.follow.dto.LikeDto;
 import com.psychopath.dogstalking.follow.dto.LikeLogDto;
 import com.psychopath.dogstalking.follow.dto.LogDto;
 import com.psychopath.dogstalking.follow.dto.UserMoreDto;
@@ -234,6 +235,28 @@ public class RestFollowController {
         RestResponseDto restResponseDto = new RestResponseDto();
         
         restResponseDto.setData(followService.getTrackingList(user_pk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
+    @RequestMapping("isTracing")
+    public RestResponseDto isTracing(int user_pk, int log_pk) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(followService.isTracing(user_pk, log_pk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
+    @RequestMapping("toggleLike")
+    public RestResponseDto toggleLike(LikeDto params) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+
+        followService.toggleLike(params);
         restResponseDto.setResult("success");
         
         return restResponseDto;

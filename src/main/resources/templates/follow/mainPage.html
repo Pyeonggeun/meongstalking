@@ -23,11 +23,16 @@
 
         <style>
 
+            .container-fluid {
+                overflow: hidden;
+                width: 100vw;
+                height: 100vh;
+            }
+
             #map {
                 position: relative;
-                overflow: hidden;
                 width: 100%;
-                height: 90vh;
+                height: 100vh;
             }
             
         </style>
@@ -49,6 +54,8 @@
             const markingDate = 7;
 
             let markedMineMarkers = [];
+            let tracingMarkers = [];
+            let tracingInfoMarkers = [];
 
             function clickEffect(e) {
                 const d = document.createElement("div");
@@ -241,6 +248,7 @@
                 const url = "./saveWriteMarkInfo";
                 const option = {
                     method: "post",
+                    "Content-Type": "multipart/form-data",
                     body: formData
                 };
 
@@ -292,13 +300,16 @@
                         showWriteMarkModal();
                     }else {
 
+                        let delay = 0;
                         for(e of response.data) {
-                            var position = new kakao.maps.LatLng(e.latitude, e.longitude)
-                            displayMarkedMine(position, e);
+
+                            delay += 500;
 
                             setTimeout(() => {
+                                var position = new kakao.maps.LatLng(e.latitude, e.longitude)
+                                displayMarkedMine(position, e);
                                 console.log("0.5초");   
-                            }, 500)
+                            }, delay)
                         }
 
                         setTimeout(() => {
@@ -328,24 +339,26 @@
             function showScanResult() {
                 
                 const url = "./getScanResult?user_pk=" + user_pk + "&latitude=" + currentLat + "&longitude=" + currentLng;
-                console.log(url);
+
                 fetch(url)
                 .then(response => response.json())
                 .then(response => {
-                    console.log(response.data);
+
                     if(response.data.length == 0) {
                         showNoMakredAlertModal();
                         return;
                     }
                     
-                    for(e of response.data) {
+                    let delay = 0;                    
+                    for(let e of response.data) {
 
-                        const position = new kakao.maps.LatLng(e.latitude, e.longitude);
-                        displayMarkedMine(position, e);
+                        delay += 500;
 
                         setTimeout(() => {
-                            console.log("0.5초");   
-                        }, 500)
+                            const position = new kakao.maps.LatLng(e.latitude, e.longitude);
+                            displayMarkedMine(position, e);
+                            console.log("0.5초");
+                        }, delay);
 
                     }
                     
@@ -398,6 +411,17 @@
                             collectionPersonImage.innerText = "";
                             collectionPersonImage.style.background = "url(/uploadFiles/" + e.profile_photo + ") no-repeat center";
                             collectionPersonImage.style.backgroundSize = "cover";
+                        }
+
+                        const likeHeart = collectionPersonWrapper.querySelector(".likeHeart");
+                        likeHeart.setAttribute("id", e.user_pk);
+
+                        if(e.is_like == 'Y') {
+                            likeHeart.classList.remove("bi-heart");
+				            likeHeart.classList.add("bi-heart-fill");
+                        }else {
+                            likeHeart.classList.remove("bi-heart-fill");
+				            likeHeart.classList.add("bi-heart");
                         }
                         
                         const collectionPersonRateContent = collectionPersonWrapper.querySelector(".collectionPersonRateContent");
@@ -457,7 +481,7 @@
                             // collectionPersonProgress.innerText = e.collect_count + ' / ∞';
                         }
 
-                        collectionPersonWrapper.addEventListener("click", asdf);
+                        // collectionPersonWrapper.addEventListener("click", asdf);
                         collectionPersonBox.appendChild(collectionPersonWrapper);
 
                     }
@@ -467,11 +491,8 @@
             }
             
             function openMyBag() {
-                resetMyBagInput();
-                const modal = bootstrap.Modal.getOrCreateInstance("#myBagModal");
-                modal.show();
 
-                bootstrap.Tab.getOrCreateInstance("#pills-home-tab").show();
+                resetMyBagInput();
                 reloadCollectionPersonList();
 
             }
@@ -521,8 +542,6 @@
 
                     const trackLikeListBox = document.getElementById("trackLikeListBox");
                     trackLikeListBox.innerHTML = "";
-
-                    console.log(response.data);
 
                     if(response.data.length == 0) {
                         const noTrackLikeWrapper = document.querySelector("#templete .noTrackLikeWrapper").cloneNode(true);
@@ -609,14 +628,24 @@
             }
 
             function trackClosestMark(e) {
+
+                if(tracingMarkers.length >= 3) {
+                    showNoTraceCountAlertModal();
+                    return;
+                }
+
+                if(e.is_track == 'Y') {
+                    showAlreadyTracingAlertModal();
+                    return;
+                }
                 
                 const trackLikeListAnimation = document.getElementById("trackLikeListAnimation");
                 trackLikeListAnimation.style.animation = 'hideTrackLikeList 0.3s linear 1';
                 trackLikeListAnimation.style.animationFillMode = 'both';
-
+                
                 setTimeout(() => {
                     document.getElementById("trackLikeListHidden").hidden = true;
-                }, 500)
+                }, 300)
 
                 getClosestMarkLatLng(e.user_pk);
             }
@@ -628,6 +657,11 @@
                 fetch(url)
                 .then(response => response.json())
                 .then(response => {
+                    
+                    if(!response.data) {
+                        showNoMakredAlertModal();
+                        return;
+                    }
 
                     saveTrackLikeLogInfo(response.data.log_pk, response.data.latitude, response.data.longitude);
 
@@ -644,13 +678,15 @@
                 .then(response => response.json())
                 .then(response => {
 
-                    // 애니메이션(response.data.latitude, response.data.longitude); >>> getTrackingList();
+                    tracingAnimation(response.data.latitude, response.data.longitude);
 
                 });
 
             }
 
             function getTrackingList() {
+                
+                removeTracingMarkers();
 
                 const url = "./getTrackingList?user_pk=" + user_pk;
 
@@ -661,10 +697,26 @@
                     if(response.data.length == 0) {
                         return;
                     }
-                    
-                    // 영역 생성하기
+
+                    for(e of response.data) {
+
+                        displayTracingMarker(e);
+
+                    }
 
                 });
+
+            }
+
+            function toggleLike(target) {
+                
+                const url = "./toggleLike?user_collector_pk=" + user_pk + "&user_writer_pk=" + target.id;
+
+                fetch(url)
+                .then(response => response.data)
+                .then(response => {
+                    openMyBag();
+                })
 
             }
 
@@ -738,8 +790,7 @@
             function showMarkedModal(e) {
                 const modal = bootstrap.Modal.getOrCreateInstance("#showMarkedModal");
                 resetShowMarkedInput();
-                console.log(e);
-                console.log(document.getElementById("showMarkedHideContent"));
+               
                 if(user_pk == e.user_pk) {
                     document.getElementById("showMarkedImage").style.background = 
                         "url(/uploadFiles/" + e.image_link + ") no-repeat center";
@@ -755,8 +806,6 @@
                     // document.getElementById("collectButton").addEventListener("click", qwer);
 
                     document.getElementById("collectButton").onclick = () => {
-                        console.log("1111111111111111111111111");
-                        console.log(e);
                         collectMarkedInfo(e);
                     }
 
@@ -790,6 +839,34 @@
             
             function showNoMakredAlertModal() {
                 const modal = bootstrap.Modal.getOrCreateInstance("#noMakredAlertModal");
+                modal.show();
+
+                setTimeout(() => {
+                    modal.hide();
+                }, 1500);
+            }
+            
+            function showMyBagModal() {
+                
+                const modal = bootstrap.Modal.getOrCreateInstance("#myBagModal");
+                modal.show();
+                
+                bootstrap.Tab.getOrCreateInstance("#pills-home-tab").show();
+
+                openMyBag();
+            }
+
+            function showNoTraceCountAlertModal() {
+                const modal = bootstrap.Modal.getOrCreateInstance("#noTraceCountAlertModal");
+                modal.show();
+
+                setTimeout(() => {
+                    modal.hide();
+                }, 1500);
+            }
+
+            function showAlreadyTracingAlertModal() {
+                const modal = bootstrap.Modal.getOrCreateInstance("#alreadyTracingAlertModal");
                 modal.show();
 
                 setTimeout(() => {
@@ -952,7 +1029,7 @@
                             </span>
                         </div>
                         <!-- my bag -->
-                        <div onclick="openMyBag()" id="collectionButton">
+                        <div onclick="showMyBagModal()" id="collectionButton">
                             <i class="bi bi-backpack2-fill"></i>
                             <i class="bi bi-gift-fill"></i>
                             <span class="material-symbols-outlined military_tech_icon">
@@ -1082,6 +1159,26 @@
                 <div class="modal-content mx-auto text-white" style="width: 50%; background: #D96161;">
                     <div class="modal-body text-center" style="font-size: 0.9rem;">
                         채취가 없습니다
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="noTraceCountAlertModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2200; background: rgb(0, 0, 0, 0.4);">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content mx-auto text-white" style="width: 50%; background: #D96161;">
+                    <div class="modal-body text-center" style="font-size: 0.9rem;">
+                        추행 횟수를 모두 사용하셨습니다
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="alreadyTracingAlertModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2200; background: rgb(0, 0, 0, 0.4);">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content mx-auto text-white" style="width: 50%; background: #D96161;">
+                    <div class="modal-body text-center" style="font-size: 0.9rem;">
+                        이미 추행하고 있는 사람입니다
                     </div>
                 </div>
             </div>
@@ -1306,17 +1403,21 @@
                                 <div class="tab-content" id="pills-tabContent">
                                     <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
                                         <div class="row">
-                                            <div class="col text-center">
-                                                <span class="material-symbols-outlined" style="font-size: 5rem; color: #BFBFBF;">
-                                                    engineering
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col text-center">
-                                                <span class="material-symbols-outlined" style="font-size: 1.1rem; color: #BFBFBF;">
-                                                    서비스 준비 중
-                                                </span>
+                                            <div class="col">
+                                                <div class="row">
+                                                    <div class="col text-center">
+                                                        <span class="material-symbols-outlined" style="font-size: 5rem; color: #BFBFBF;">
+                                                            engineering
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col text-center">
+                                                        <span class="material-symbols-outlined" style="font-size: 1.1rem; color: #BFBFBF;">
+                                                            서비스 준비 중
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1333,17 +1434,21 @@
                                     </div>
                                     <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab" tabindex="0">
                                         <div class="row">
-                                            <div class="col text-center">
-                                                <span class="material-symbols-outlined" style="font-size: 5rem; color: #BFBFBF;">
-                                                    engineering
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col text-center">
-                                                <span class="material-symbols-outlined" style="font-size: 1.1rem; color: #BFBFBF;">
-                                                    서비스 준비 중
-                                                </span>
+                                            <div class="col">
+                                                <div class="row">
+                                                    <div class="col text-center">
+                                                        <span class="material-symbols-outlined" style="font-size: 5rem; color: #BFBFBF;">
+                                                            engineering
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col text-center">
+                                                        <span class="material-symbols-outlined" style="font-size: 1.1rem; color: #BFBFBF;">
+                                                            서비스 준비 중
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1379,10 +1484,13 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col px-2">
+                    <div class="col px-2 mt-1">
                         <div class="progress" role="progressbar" style="height: 0.5rem;">
                             <div class="collectionPersonProgress progress-bar text-bg-warning" style="width: 75%; font-size: 0.6rem;"></div>
                         </div>
+                    </div>
+                    <div class="col-auto px-0 d-grid align-text-top">
+                        <i onclick="toggleLike(this)" class="likeHeart bi bi-heart" style="font-size: 0.7rem; color: #D96161;"></i>
                     </div>
                 </div>
             </div>
@@ -1436,8 +1544,8 @@
                 </div>
             </div>
 
-            <div class="noTrackLikeWrapper col-12 me-2 px-3 py-5 border bg-white border border-secondary-subtle rounded">
-                <div class="row align-items-center">
+            <div class="noTrackLikeWrapper col-12 me-2 px-3 py-5 border bg-white border border-secondary-subtle rounded" style="background: url(https://svgsilh.com/svg/2051093-b6a4a4.svg) no-repeat center; background-size: contain;">
+                <div class="row">
                     <div class="col text-center">
                         <div class="row">
                             <div class="col">
@@ -1458,7 +1566,7 @@
         </div>
 
         <style>
-            .overlayBox {position: relative; width: 5rem; height: 12rem; animation: opacity 0.1s, vibration 0.1s 5;}
+            .overlayBox {position: relative; width: 5rem; height: 14rem; animation: opacity 0.1s, vibration 0.1s 5;}
             .circleProp {position: absolute; top: calc(50% - 0.15rem); left: calc(50% - 0.5rem); width: 1rem; height: 0.3rem; border-radius: 50%; background: black;}
             .lineProp {position: absolute; z-index: 1; left: calc(50% - 0.05rem); top: calc(50% - 2rem); width: 0.1rem; height: 2rem; background: #BFBFBF;}
             .squareProp {position: absolute; z-index: 2; left: calc(50% - 1rem); top: calc(50% - 2.3rem); width: 2rem; height: 0.7rem;}
@@ -1468,11 +1576,11 @@
             .myMarkCircleBox {position: absolute; z-index: 3; width: 5rem; height: 5rem; top: calc(50% - 6.9rem); animation: trunning 1s;}
             .myMarkCircle {position: absolute; border-radius: 50%;}
             /* conic-gradient(transparent 20deg, darkcyan 20deg 70deg, transparent 70deg 200deg, darkcyan 200deg 250deg, transparent 250deg) */
-            .myMarkCircle.first {width: 5rem; height: 5rem; left: calc(50% - 2.5rem); top: calc(50% - 2.5rem); padding: 0.15rem; background:conic-gradient(transparent 20deg, tomato 20deg 60deg, transparent 60deg 200deg, tomato 200deg 240deg, transparent 240deg); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude;}
+            .myMarkCircle.first {width: 5rem; height: 5rem; left: calc(50% - 2.5rem); top: calc(50% - 2.5rem); padding: 0.15rem; background:conic-gradient(transparent 20deg, tomato 20deg 60deg, transparent 60deg 200deg, tomato 200deg 240deg, transparent 240deg); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude; box-shadow: 0.5px 0.5px 0 0.5px rgb(81, 81, 81);}
             .myMarkCircle.second {width: 4.6rem; height: 4.6rem; border: 0.4rem solid tomato; left: calc(50% - 2.3rem); top: calc(50% - 2.3rem);}
-            .myMarkCircle.third {width: 4.4rem; height: 4.4rem; border: 0.15rem solid pink; left: calc(50% - 2.2rem); top: calc(50% - 2.2rem);}
-            .myMarkCircle.fourth {width: 3.5rem; height: 3.5rem; left: calc(50% - 1.75rem); top: calc(50% - 1.75rem); padding: 0.15rem; background:conic-gradient(transparent 110deg, tomato 110deg 150deg, transparent 150deg 260deg, tomato 260deg 350deg, transparent 350deg); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude;}
-            .myMarkCircle.fifth {width: 3rem; height: 3rem; left: calc(50% - 1.5rem); top: calc(50% - 1.5rem); background: white; border: 0.15rem solid tomato; font-size: 0.9rem;}
+            .myMarkCircle.third {width: 4.4rem; height: 4.4rem; border: 0.15rem solid pink; left: calc(50% - 2.2rem); top: calc(50% - 2.2rem); box-shadow: 0.5px 0.5px 0 0.5px rgb(81, 81, 81);}
+            .myMarkCircle.fourth {width: 3.5rem; height: 3.5rem; left: calc(50% - 1.75rem); top: calc(50% - 1.75rem); padding: 0.15rem; background:conic-gradient(transparent 110deg, tomato 110deg 150deg, transparent 150deg 260deg, tomato 260deg 350deg, transparent 350deg); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude; box-shadow: 0.5px 0.5px 0 0.5px rgb(81, 81, 81);}
+            .myMarkCircle.fifth {width: 3rem; height: 3rem; left: calc(50% - 1.5rem); top: calc(50% - 1.5rem); background: white; border: 0.15rem solid tomato; font-size: 0.9rem; box-shadow: 0.5px 0.5px 0 0.5px rgb(81, 81, 81);}
 
             @keyframes opacity {
                 from {
@@ -1504,7 +1612,17 @@
                     transform: rotateY(720deg);
                 }
             }
-            
+
+            .walkingPawCircle {position: relative; width: 2rem; height: 2rem; border: 1px solid transparent; border-radius: 50%;}
+            .walkingPawIcon {position: absolute; color: rgb(0, 0, 0);}
+            .walkingPawIcon.first {top: calc(50% - 3rem); left: calc(50% - 1.5rem); transform: rotate(-5deg); opacity: 0; animation: showSomthing 1s, hideSomthing 0.5s 1s; animation-fill-mode: forwards;}
+            .walkingPawIcon.second {top: calc(50% - 4rem); right: calc(50% - 1.5rem); transform: rotate(5deg); opacity: 0; animation: showSomthing 1s 0.3s, hideSomthing 0.5s 1.3s linear 1; animation-fill-mode: forwards;}
+            .walkingPawIcon.third {top: calc(50% - 5rem); left: calc(50% - 1.5rem); transform: rotate(-5deg); opacity: 0; animation: showSomthing 1s 0.6s, hideSomthing 0.5s 1.6s linear 1; animation-fill-mode: forwards;}
+            .walkingPawIcon.fourth {top: calc(50% - 6rem); right: calc(50% - 1.5rem); transform: rotate(5deg); opacity: 0; animation: showSomthing 1s 0.9s, hideSomthing 0.5s 1.9s linear 1; animation-fill-mode: forwards;}
+            .walkingPawIcon.fifth {top: calc(50% - 7rem); left: calc(50% - 1.5rem); transform: rotate(-5deg); opacity: 0; animation: showSomthing 1s 1.2s, hideSomthing 0.5s 2.2s linear 1; animation-fill-mode: forwards;}
+            .walkingPawIcon.sixth {top: calc(50% - 8rem); right: calc(50% - 1.5rem); transform: rotate(5deg); opacity: 0; animation: showSomthing 1s 1.5s, hideSomthing 0.5s 2.5s linear 1; animation-fill-mode: forwards;}
+            .walkingPawIcon.seventh {top: calc(50% - 9rem); left: calc(50% - 1.5rem);transform: rotate(-5deg); opacity: 0; animation: showSomthing 1s 1.8s, hideSomthing 0.5s 2.8s linear 1;animation-fill-mode: forwards;}
+
         </style>
 
         <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a277eb582a644847f86de6196a42745f"></script>
@@ -1588,22 +1706,65 @@
                 // div2.appendChild(div3);
                 // content.appendChild(div2);
 
-                var content = '<div class="overlayBox">' +
-                    '<div class="myMarkCircleBox">' +
-                            '<div class="myMarkCircle first"></div>' +
-                            '<div class="myMarkCircle second"></div>' + 
-                            '<div class="myMarkCircle third"></div>' +
-                            '<div class="myMarkCircle fourth"></div>' +
-                            '<div class="myMarkCircle fifth text-center text-secondary d-grid align-content-center">???</div>' +
-                        '</div>' +
-                        '<div class="squareProp">' +
-                            '<div class="topSquareProp"></div>' +
-                            '<div class="frontSquareProp"></div>' +
-                            '<div class="sideSquareProp"></div>' +
-                        '</div>' +
-                        '<div class="lineProp"></div>' +
-                        '<div class="circleProp"></div>' +
-                    '</div>';
+                var content = document.createElement('div');
+                content.setAttribute("class", "overlayBox");
+                var div1 = document.createElement('div');
+                div1.setAttribute("class", "myMarkCircleBox");
+                var div2 = document.createElement('div');
+                div2.setAttribute("class", "myMarkCircle first");
+                var div3 = document.createElement('div');
+                div3.setAttribute("class", "myMarkCircle second");
+                var div4 = document.createElement('div');
+                div4.setAttribute("class", "myMarkCircle third");
+                var div5 = document.createElement('div');
+                div5.setAttribute("class", "myMarkCircle fourth");
+                var div6 = document.createElement('div');
+                div6.setAttribute("class", "myMarkCircle fifth text-center text-secondary d-grid align-content-center");
+                div6.innerText = "???";
+                var div7 = document.createElement('div');
+                div7.setAttribute("class", "squareProp");
+                var div8 = document.createElement('div');
+                div8.setAttribute("class", "topSquareProp");
+                var div9 = document.createElement('div');
+                div9.setAttribute("class", "frontSquareProp");
+                var div10 = document.createElement('div');
+                div10.setAttribute("class", "sideSquareProp");
+                var div11 = document.createElement('div');
+                div11.setAttribute("class", "lineProp");
+                var div12 = document.createElement('div');
+                div12.setAttribute("class", "circleProp");
+
+                div1.appendChild(div2);
+                div1.appendChild(div3);
+                div1.appendChild(div4);
+                div1.appendChild(div5);
+                div1.appendChild(div6);
+
+                div7.appendChild(div8);
+                div7.appendChild(div9);
+                div7.appendChild(div10);
+
+                content.appendChild(div1);
+                content.appendChild(div7);
+                content.appendChild(div11);
+                content.appendChild(div12);
+
+                // var content = '<div class="overlayBox">' +
+                //     '<div class="myMarkCircleBox">' +
+                //             '<div class="myMarkCircle first"></div>' +
+                //             '<div class="myMarkCircle second"></div>' + 
+                //             '<div class="myMarkCircle third"></div>' +
+                //             '<div class="myMarkCircle fourth"></div>' +
+                //             '<div class="myMarkCircle fifth text-center text-secondary d-grid align-content-center">???</div>' +
+                //         '</div>' +
+                //         '<div class="squareProp">' +
+                //             '<div class="topSquareProp"></div>' +
+                //             '<div class="frontSquareProp"></div>' +
+                //             '<div class="sideSquareProp"></div>' +
+                //         '</div>' +
+                //         '<div class="lineProp"></div>' +
+                //         '<div class="circleProp"></div>' +
+                //     '</div>';
 
                 var customOverlay = new kakao.maps.CustomOverlay({
                     position: position,
@@ -1614,7 +1775,7 @@
 
                 markedMineMarkers.push(customOverlay);
 
-                content.onclick = () => {
+                div1.onclick = () => {
                     showMarkedModal(e);
                 };
 
@@ -1660,6 +1821,156 @@
                     }, 3000);
 
                 }, 700);
+            }
+
+            function tracingAnimation(lat, lng) {
+                var currentPosition = new kakao.maps.LatLng(currentLat, currentLng);
+                var position = new kakao.maps.LatLng(lat, lng);
+                map.panTo(position);
+
+                var content = '<div id="markScanCircle"></div>';
+
+                var customOverlay = new kakao.maps.CustomOverlay({
+                    position: position,
+                    content: content
+                });
+
+                customOverlay.setMap(map);
+
+                setTimeout(() => {
+                    customOverlay.setMap(null);
+                    map.panTo(currentPosition);
+                    
+                    const actionMenuButton = document.getElementById("actionMenuButton");
+                    actionMenuButton.style.animation = 'showSomthing 0.3s linear 1';
+                    actionMenuButton.style.animationFillMode = 'both';
+                    actionMenuButton.hidden = false;
+
+                    const reloadPositionButton = document.getElementById("reloadPositionButton");
+                    reloadPositionButton.style.animation = 'showSomthing 0.3s linear 1';
+                    reloadPositionButton.style.animationFillMode = 'both';
+
+                    const collectionButton = document.getElementById("collectionButton");
+                    collectionButton.style.animation = 'showSomthing 0.3s linear 1';
+                    collectionButton.style.animationFillMode = 'both';
+
+                    reloadPositionButton.hidden = false;
+                    collectionButton.hidden = false;
+
+                    setTimeout(() => {
+                        walkingPawMarker(currentPosition, position);
+                    }, 1000);
+
+                }, 3000);
+
+            }
+
+            function walkingPawMarker(currentPosition, position) {
+
+                const proj = map.getProjection();
+                var center = proj.containerPointFromCoords(currentPosition);
+                var pos = proj.containerPointFromCoords(position);
+
+                var angle = getAngle(center, pos);
+
+                var content = document.createElement('div');
+                content.setAttribute("class", "walkingPawCircle");
+                content.style.transform = "rotate(" + angle + "deg)";
+
+                var div1 = document.createElement('div');
+                div1.setAttribute("class", "material-symbols-outlined walkingPawIcon first");
+                div1.innerText = "pets";
+                var div2 = document.createElement('div');
+                div2.setAttribute("class", "material-symbols-outlined walkingPawIcon second");
+                div2.innerText = "pets";
+                var div3 = document.createElement('div');
+                div3.setAttribute("class", "material-symbols-outlined walkingPawIcon third");
+                div3.innerText = "pets";
+                var div4 = document.createElement('div');
+                div4.setAttribute("class", "material-symbols-outlined walkingPawIcon fourth");
+                div4.innerText = "pets";
+                var div5 = document.createElement('div');
+                div5.setAttribute("class", "material-symbols-outlined walkingPawIcon fifth");
+                div5.innerText = "pets";
+                var div6 = document.createElement('div');
+                div6.setAttribute("class", "material-symbols-outlined walkingPawIcon sixth");
+                div6.innerText = "pets";
+                var div7 = document.createElement('div');
+                div7.setAttribute("class", "material-symbols-outlined walkingPawIcon seventh");
+                div7.innerText = "pets";
+
+                content.appendChild(div1);
+                content.appendChild(div2);
+                content.appendChild(div3);
+                content.appendChild(div4);
+                content.appendChild(div5);
+                content.appendChild(div6);
+                content.appendChild(div7);
+
+                var customOverlay = new kakao.maps.CustomOverlay({
+                    position: currentPosition,
+                    content: content
+                });
+
+                customOverlay.setMap(map);
+
+                setTimeout(() => {
+                    customOverlay.setMap(null);
+                    getTrackingList();
+                }, 3000);
+
+            }
+
+            function getAngle(center, target) {
+                var dx = target.x - center.x;
+                var dy = center.y - target.y;
+                var deg = Math.atan2( dy , dx ) * 180 / Math.PI; 
+
+                return ((-deg + 360) % 360 | 0) + 90;
+            }
+
+            function displayTracingMarker(e) {
+
+                var center = new kakao.maps.LatLng(e.latitude, e.longitude);
+
+                var circle = new kakao.maps.Circle({
+                    center : center,
+                    radius : 1000,
+                    strokeWeight : 5,
+                    strokeColor : "#39DE2A",
+                    strokeOpacity : 1,
+                    strokeStyle : "dashed",
+                    fillColor : "#A2FF99",
+                    fillOpacity : 0.7
+                });
+
+                circle.setMap(map);
+                tracingMarkers.push(circle);
+
+                var iwContent = '<div style="padding:3px; font-size: 0.8rem;">' + e.time_limit + '까지</div>';
+
+                var infowindow = new kakao.maps.InfoWindow({
+                    map: map,
+                    position : center,
+                    content : iwContent,
+                    disableAutoPan : true
+                });
+
+                tracingInfoMarkers.push(infowindow);
+
+            }
+
+            function setTracingMarkers(map) {
+                for(var i = 0 ; i < tracingMarkers.length ; i++) {
+                    tracingMarkers[i].setMap(map);
+                    tracingInfoMarkers[i].close();
+                }
+            }
+
+            function removeTracingMarkers() {
+                setTracingMarkers(null);
+                tracingMarkers = [];
+                tracingInfoMarkers = [];
             }
 
         </script>

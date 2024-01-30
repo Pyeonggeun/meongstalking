@@ -24,6 +24,10 @@
         ) values(#{user_pk}, #{log_pk}, #{latitude}, #{longitude});
     </insert>
 
+    <insert id="insertLike">
+        insert into ms_follow_like(user_collector_pk, user_writer_pk) values(#{user_collector_pk}, #{user_writer_pk})
+    </insert>
+
     <select id="isFirstTimeMark" resultType="int">
         SELECT COUNT(*) FROM ms_follow_user_more
         where user_pk = #{user_pk}
@@ -183,7 +187,16 @@
     </select>
 
     <select id="getCollectionPersonList" resultType="map">
-        SELECT t1.*, t3.star_rating, mmpi.profile_photo FROM (
+        SELECT t1.*, t3.star_rating, mmpi.profile_photo, (
+            CASE 
+                when t1.user_pk in (
+                    SELECT mfl.user_writer_pk FROM ms_follow_like mfl
+                    where mfl.user_collector_pk = #{user_pk}
+                )
+                then 'Y' else 'N'
+            END
+        ) as is_like
+        FROM (
             SELECT mfl.user_pk, count(*) as collect_count, (
                 CASE 
                     <![CDATA[
@@ -368,6 +381,24 @@
             and date(now()) - date(mfl.created_date) <= 7
         ]]>
     </select>
+
+    <select id="isTracing" resultType="int">
+        SELECT COUNT(*) FROM ms_follow_like_log
+        where user_pk = #{user_pk}
+        and log_pk = #{log_pk}
+    </select>
+
+    <select id="isLike" resultType="int">
+        SELECT COUNT(*) FROM ms_follow_like
+        where user_collector_pk = #{user_collector_pk}
+        and user_writer_pk = #{user_writer_pk}
+    </select>
+
+    <delete id="deleteLike">
+        DELETE FROM ms_follow_like
+        where user_collector_pk = #{user_collector_pk}
+        and user_writer_pk = #{user_writer_pk}
+    </delete>
 
     <!-- <select id="" resultType=""></select> -->
 
