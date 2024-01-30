@@ -5,11 +5,12 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
-public class FundingCheeringDto {
-    private int cheering_pk;
+public class FundingReviewDto {
+    private int review_pk;
+    private int order_pk;
     private int user_pk;
     private int product_pk;
     private String content;
-    private String cheering_image;
+    private String review_image;
     private LocalDateTime created_at;
 }

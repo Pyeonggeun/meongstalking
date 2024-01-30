@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>펀딩 상품 결제 페이지</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+    <!--컨테이너 로우 콜 세팅 여기까지-->
+                
+                    <!--이제 여기서 상품 가격을 가져옴 그리고 세션에 넣어놨던 수량과 곱해서 결제 예상액을 산출해서 보여줘야 한다 -->
+                    
+            
+                    <div class="row py-2"><div class="col"></div><div class="col text-end"><a href="./listPage" class="me-3"><i class="bi bi-shop" style="color: black;"></i></a><a href="../commons/mainPage"><i class="bi bi-house" style="color: black;"></i></a></div></div>
+                <div clas="row"><div class="col py-4"></div></div>
+                
+                <div clas="row">
+                        <div class="col text-center">
+                            <span style="font-size: 3em; color: gainsboro;"><i class="bi bi-check-circle-fill"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-dash-lg"></i></span><span style="font-size: 3em;"><i class="bi bi-check-circle"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-dash-lg"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-circle"></i></span>
+                        </div>
+                </div>
+                <div class="row mb-3"><div class="col text-center" style="font-size: 0.7em;">결제 정보 확인이 진행중입니다.</div></div>
+
+                <form action="./productPaymentProcess" method="post">
+
+                <div class="row py-2"><div class="col" th:text="${product.detail.product_name}" style="font-size: 0.85em"></div></div>
+                <div class="row mb-2"><div class="col text-end">수량 : <span th:text="${session.purchaseMap.quantity}"></span> 개 <span th:text="${session.purchaseMap.quantity * product.detail.price}"></span>원</div></div>
+                
+                <div clas="row py-2 my-2">
+                    <div class="col py-2" style="background-color: gainsboro;">
+                        <div class="row mb-1"><div class="col-4" style="font-size: 0.8em;"> 쿠폰 사용</div><div class="col text-end" style="font-size: 0.8em;">사용가능한 쿠폰이 없습니다.</div></div>
+                        <div class="row"><div class="col-4" style="font-size: 0.8em;"> 포인트 사용</div><div class="col text-end" style="font-size: 0.8em;">모두사용(보유 포인트0P) <input type="text"></div></div>
+                    </div>
+                </div>
+
+                <div clas="row">
+                    <div class="col py-2 my-2">
+                        <div class="row py-2"><div class="col fw-bold" style="font-size:1.05em">결제 금액</div></div>
+                        <div class="row"><div class="col ps-4" style="font-size:0.9em; color:gray;">펀딩상품 금액</div> <div class="col pe-4 text-end" style="font-size:1em;">0원</div></div>
+                        <div class="row"><div class="col ps-4" style="font-size:0.9em; color:gray;">쿠폰 할인 금액</div> <div class="col pe-4 text-end" style="font-size:1em;">0원</div></div>
+                        <div class="row"><div class="col ps-4" style="font-size:0.9em; color:gray;">포인트 할인 금액</div> <div class="col pe-4 text-end" style="font-size:1em;">0원</div></div>
+                        <div class="row"><div class="col ps-4" style="font-size:0.9em; color:gray;">배송비</div> <div class="col pe-4 text-end" style="font-size:1em;">0원</div></div>
+                        <div class="row py-2 mb-2"><div class="col ps-4 fw-bold" style="font-size:1.05em;">총 결제 금액</div> <div class="col pe-4 fw-bold text-end" style="font-size:1.15em;"><span th:text="${session.purchaseMap.quantity * product.detail.price}"></span>원</div></div>
+                    </div>
+                </div>
+                
+
+
+                <div class="row py-2 mb-2"><div class="col">배송받는 회원정보 확인 배송지, 요청사항 >  추후에 </div></div>
+                <div class="row"><div class="col"></div></div>
+
+                <div class="row my-2">
+                    <div class="col">
+                        <div class="row"><div class="col fw-bold" style="font-size: 1.1em;">지금 결제</div></div>
+                        <div class="row py-2"><div class="col-1"></div><div class="col border-bottom"><i class="bi bi-paypal"></i></div><div class="col border-bottom"></div><div class="col-1"></div></div>
+                        <div class="row py-2"><div class="col-1"></div><div class="col border-bottom border-4" style="font-size: 0.85em;">신용 / 체크카드</div><div class="col py-1 border-bottom border-4" style="font-size: 0.85em;"> 무이자 할부 안내 > </div><div class="col-1"></div></div>
+                    </div>
+                </div>
+                
+
+
+                <div class="row text-center"><div class="col-3 px-0 mx-1 fw-bold text-center"><a th:href="@{./productPurchasePage(id=${product.detail.product_pk})}" class="btn text-white fw-bold rounded" style="font-size: 1em; background-color: lightcoral;">뒤로가기</a></div><div class="col d-grid"><input type="submit" value="결제하기" class="border border-2 border-black rounded" style="background-color: white;"></div></div>
+            </form>
+                
+                
+            <div class="row"><div class="col py-4"></div></div>
+    <!--컨테이너 로우 콜 끝-->
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+
+</html>

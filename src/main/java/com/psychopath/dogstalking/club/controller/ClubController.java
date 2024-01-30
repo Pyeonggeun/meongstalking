@@ -1,13 +1,20 @@
 package com.psychopath.dogstalking.club.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.Date;
+import java.io.File;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.psychopath.dogstalking.club.dto.ClubArticleImageDto;
 import com.psychopath.dogstalking.club.dto.ClubDto;
 import com.psychopath.dogstalking.club.dto.ClubFreeBoardDto;
-import com.psychopath.dogstalking.club.dto.ClubStatusCategoryDto;
 import com.psychopath.dogstalking.club.dto.ClubStatusLogDto;
 import com.psychopath.dogstalking.club.dto.ClubUserDto;
 import com.psychopath.dogstalking.club.dto.ClubUserRanklogDto;
@@ -15,8 +22,10 @@ import com.psychopath.dogstalking.club.service.ClubServiceImpl;
 import com.psychopath.dogstalking.dto.UserDto;
 
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -33,13 +42,31 @@ public class ClubController {
         Map<String, Object> clubTF = clubService.applyClubUserTF(userDto.getUser_pk());
         model.addAttribute("clubTF", clubTF);
 
+        Integer memberLank = null;
+        memberLank =  clubService.selectLeaderLank(userDto.getUser_pk());
+        System.out.println("memberLank : " + memberLank);
+        if (memberLank == null || !(memberLank >= 1 && memberLank <= 3)) {
+            memberLank = 9;
+        }
+        System.out.println("memberLank : " + memberLank);
+        model.addAttribute("checkMember", memberLank);
+
+        Integer ApplyStatus = clubService.selectClubCategoryPk(userDto.getUser_pk());
+        if (ApplyStatus == null) {
+            ApplyStatus = 9;
+        }
+        model.addAttribute("ApplyStatus", ApplyStatus);
+
         List<Map<String, Object>> clublist = clubService.selectClubList();
         model.addAttribute("clublist", clublist);
 
-        // Map<String, Object> showclubpk = clubService.showclubpk(1);
-        // model.addAttribute("showclubpk", showclubpk);
-
-        return "club/clubHomePage";
+        if(memberLank==1 || memberLank==3){
+            return "redirect:./clubListPage";
+        }
+        else{
+            return "club/clubHomePage";
+        }
+        
     }
 
     @RequestMapping("freeBoardPage")
@@ -109,6 +136,8 @@ public class ClubController {
         int pk = (int) clubTF.get("club_pk");
         List<Map<String, Object>> applyList = clubService.selectApplyList(pk);
 
+        System.out.println("applyList: "+applyList);
+
         if (applyList != null && !applyList.isEmpty()) {
             model.addAttribute("applyList", applyList);
             return "club/clubSignupPage";
@@ -123,12 +152,32 @@ public class ClubController {
     }
 
     @RequestMapping("clubListPage")
-    public String clubListPage(Model model) {
+    public String clubListPage(HttpSession session, Model model) {
+        UserDto userDto = (UserDto) session.getAttribute("sessionUser");
         List<Map<String, Object>> clublist = clubService.selectClubList();
         model.addAttribute("clublist", clublist);
 
         Map<String, Object> showclubpk = clubService.showclubpk(1);
         model.addAttribute("showclubpk", showclubpk);
+
+        Integer memberLank = null;
+        memberLank =  clubService.selectLeaderLank(userDto.getUser_pk());
+       // System.out.println("memberLank : " + memberLank);
+        if (memberLank == null || !(memberLank >= 1 && memberLank <= 3)) {
+            memberLank = 9;
+        }
+        System.out.println("memberLank : " + memberLank);
+        model.addAttribute("checkMember", memberLank);
+
+
+        Integer ApplyStatus = clubService.selectClubCategoryPk(userDto.getUser_pk());
+        //System.out.println("ApplyStatus : " + ApplyStatus);
+        if (ApplyStatus == null) {
+            ApplyStatus = 9;
+        }
+        model.addAttribute("ApplyStatus", ApplyStatus);
+
+
 
         return "club/clubListPage";
     }
@@ -170,9 +219,30 @@ public class ClubController {
     @RequestMapping("clubHomeProcess")
     public String clubHomeProcess(@RequestParam("club_pk") int clubPk, Model model, HttpSession session) {
 
+        UserDto userDto = (UserDto) session.getAttribute("sessionUser");
         Map<String, Object> showclubpk = clubService.showclubpk(clubPk);
         model.addAttribute("showclubpk", showclubpk);
-        return "club/clubListPage";
+
+
+        Integer memberLank = null;
+        memberLank =  clubService.selectLeaderLank(userDto.getUser_pk());
+      //  System.out.println("memberLank : " + memberLank);
+        if (memberLank == null || !(memberLank >= 1 && memberLank <= 3)) {
+            memberLank = 9;
+        }
+    //    System.out.println("memberLank : " + memberLank);
+        model.addAttribute("checkMember", memberLank);
+
+
+        Integer ApplyStatus = clubService.selectClubCategoryPk(userDto.getUser_pk());
+        System.out.println("ApplyStatus : " + ApplyStatus);
+        if (ApplyStatus == null) {
+            ApplyStatus = 9;
+        }
+        model.addAttribute("ApplyStatus", ApplyStatus);
+
+
+        return "redirect:./clubListPage";
     }
 
     @RequestMapping("createUserProcess")
@@ -198,10 +268,16 @@ public class ClubController {
 
     @RequestMapping("approve")
     public String approve(@RequestParam("user_pk") int userPk, ClubUserDto clubUserDto,
-            ClubStatusLogDto clubStatusLogDto) {
+            ClubStatusLogDto clubStatusLogDto, ClubUserRanklogDto clubUserRanklogDto, HttpSession session) {
+
+        UserDto userDto = (UserDto) session.getAttribute("sessionUser");
 
         clubStatusLogDto.setClub_user_pk(userPk);
         clubService.updateApplyClub(clubStatusLogDto);
+
+        clubUserRanklogDto.setClub_user_pk(userDto.getUser_pk());
+        clubUserRanklogDto.setClubuserranklogcategory_pk(3);
+        clubService.insertClubUserRank(clubUserRanklogDto);
 
         return "redirect:./clubSignupPage";
     }
@@ -225,16 +301,62 @@ public class ClubController {
     }
 
     @RequestMapping("updateClubProcess")
-    public String updateClubProcess(ClubDto clubDto) {
-        clubService.updateClub(clubDto);
+    public String updateClubProcess(@ModelAttribute("clubDto") ClubDto clubDto,
+                                    @RequestParam("imgFile") MultipartFile imageFiles, ClubArticleImageDto clubArticleImageDto) {
+
+        clubDto.setImg("/path/to/uploaded/image.jpg");
+        if(imageFiles != null) {
+            
+            String rootPath = "C:/uploadFiles/";
+            
+            
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/");
+            String todayPath = sdf.format(new Date());
+            
+            File todayFolderForCreate = new File(rootPath + todayPath);
+            
+            if(!todayFolderForCreate.exists()) {
+                todayFolderForCreate.mkdirs();
+            }
+            
+            String originalFileName = imageFiles.getOriginalFilename();
+            
+           
+            String uuid = UUID.randomUUID().toString();
+            long currentTime = System.currentTimeMillis();
+            String fileName = uuid + "_"+ currentTime;
+            
+            
+            String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
+            
+            fileName += ext;
+            
+            try {
+                imageFiles.transferTo(new File(rootPath+todayPath+fileName));
+            }catch(Exception e) {
+                e.printStackTrace();
+            }
+
+            //String macName = "/uploadFiles/";
+
+         //   ClubArticleImageDto clubArticleImageDto = new ClubArticleImageDto();
+            clubArticleImageDto.setLocation(todayPath + fileName);
+            clubArticleImageDto.setOriginal_filename(originalFileName);
+            System.out.println("실행됨");
+        }
+        clubService.updateClub(clubDto, clubArticleImageDto);
         return "redirect:./clubHomePage";
     }
 
     @RequestMapping("clubMemberPage")
     public String clubMemberPage(Model model, HttpSession session) {
         UserDto userDto = (UserDto) session.getAttribute("sessionUser");
-        System.out.println("User PK: " + userDto.getUser_pk());
+        // System.out.println("User PK: " + userDto.getUser_pk());
         model.addAttribute("user_pk", userDto.getUser_pk());
+
+        int leaderRank = clubService.selectLeaderLank(userDto.getUser_pk());
+        // System.out.println("leaderRank: " + leaderRank);
+        model.addAttribute("leaderRank", leaderRank);
 
         int clubPk = clubService.selectClubPK(userDto.getUser_pk());
         List<Map<String, Object>> memberlist = clubService.selectMember(clubPk);
@@ -252,4 +374,19 @@ public class ClubController {
         return "redirect:./clubMemberPage";
     }
 
+    @RequestMapping("clubLeaderChangeProcess")
+    public String clubLeaderChangeProcess(@RequestParam("user_pk") int user_pk, HttpSession session,
+            ClubUserRanklogDto clubUserRanklogDto) {
+        UserDto userDto = (UserDto) session.getAttribute("sessionUser");
+
+        clubUserRanklogDto.setClub_user_pk(user_pk);
+        clubUserRanklogDto.setClubuserranklogcategory_pk(1);
+        clubService.updateLeader(clubUserRanklogDto);
+
+        clubUserRanklogDto.setClub_user_pk(userDto.getUser_pk());
+        clubUserRanklogDto.setClubuserranklogcategory_pk(3);
+        clubService.updateLeader(clubUserRanklogDto);
+
+        return "redirect:./clubMemberPage";
+    }
 }

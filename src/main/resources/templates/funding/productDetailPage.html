@@ -10,71 +10,73 @@
 </head>
 
 <body>
-    <div class="container">
+    <!--새롭게 하는-->
+
+    <div class="container img-fluid">
         <div class="row">
-            <div class="col px-0">
-    <!--컨테이너 로우 콜 세팅 여기까지-->
-            <div class="row px-0">
+            <div class="col">
 
-                <div class="col" style="max-width: 1em;"><!--좌측공란--></div>
+                <div class="row py-3 my-2 mx-0 px-0"><div class="col py-0 fw-bold" style="font-size: 1.15em;">meongstalking</div><div class="col-1 fw-bold"><a href="../commons/mainPage"><i class="bi bi-house"></i></a></div><div class="col-1 fw-bold"><a href="./listPage"><i class="bi bi-arrow-left-square" style="color: black;"></i></a></div></div>
+
+                <div class="row"><div class="col">카테고리 들어갈 공간</div></div>
 
 
-                <!--메인 콜 시작-->
-                <div class="col px-0">
-                    <div class="row my-1"><div class="col">일단 비우기</div></div>
-                    <div class="row px-0 mb-2">
-                        <div class="col px-0">스토리</div>
-                        <div class="col px-0">가격</div>
-                        <div class="col px-0" th:href="@{./newsReadPage(id = ${product.detail.product_pk})}">새소식</div>
-                        <div class="col px-0">응원</div>
-                        <div class="col px-0">서포터</div>
-                        <div class="col px-0">환불정책</div>
-                        <div class="col px-0">리워드정보</div>
+                <div class="row"><div class="col d-grid"><img class="img-fluid px-0" th:src="@{'/uploadFiles/'+${product.detail.title_image}}" alt="등록된 이미지가 없습니다" style="width: 100%;"></div></div>
+                <div class="row my-1"><div class="col"><span style="font-size: 0.85em; color: gray;"> 카테고리 ></span> <span style="color: black;">#</span></div><div class="col text-end" style="font-size: 0.85;"><i class="bi bi-share"></i></div></div>
+                <div class="row mt-2 mb-2"><div class="col fw-bold" style="font-size: 1.15em;" th:text="${product.detail.product_name}"></div></div>
+                <div class="row py-1 mb-2"><div class="col" style="font-size: 0.9em;" th:text="${product.detail.simple_explain}"></div> </div>
+                <div class="row py-2 mb-1"><div class="col" style="font-size: 1.2em;" th:text="|${product.percent}%|"></div> <div class="col">남은 기간</div> </div>
+                <div class="row py-2 mb-1"><div class="col" style="font-size: 1.2em;" th:text="|총 결제액 ${product.t_sales}원|"></div></div>
+                <div class="row"><div class="col"><img th:src="@{'/uploadFiles/'+${product.detail.explain_image}}" alt="등록된 이미지가 없습니다" style="width: 100%;"></div></div>
+                
+                <div class="row py-2 mb-2">
+                    <div class="col">
+                        <div class="row"><div class="col" style="font-size: 0.75em;">업데이트 된 최근 새소식</div></div>
+                        <div class="row"><div class="col py-2 mx-2 border border-2 rounded" th:text="${product.news}"></div></div>
                     </div>
-
-
-
-
-                    <div class="row"><div class="col mb-2"><img th:src="@{'/uploadFiles/'+${product.detail.title_image}}" alt="등록된 이미지가 없습니다"></div></div>
-                    <div class="row"><div class="col fw-bold mb-2" sytle ="font-size=1.05em;" th:text="${product.detail.product_name}"></div></div>
-                    <div class="row"><div class="col mb-2" style="font-size: 0.85em; color:gray" th:text="${product.detail.simple_explain}"></div></div>
-                    <div class="row"><div class="col fw-bold mb-2" style="font-size: 1.1em;" th:text="${product.count}"></div></div>
-                    <div class="row"><div class="col fw-bold mb-2" style="font-size: 1.2em;" th:text="${product.percent}"> <span style="font-size:1.15em">%</span> </div></div>
-                    <div class="row"><div class="col mb-2 d-grid"><a href="./productPurchasePage" class="btn border rounede fw-bold" style="font-size:1.2em; background-color: gold;">구매하기</a></div></div>
-                    <div class="row"><div class="col mb-2">나중에 프로필 정보 집어넣기</div></div>
-                    <div class="row"><div class="col">
-                        <div class="row py-0 my-0"><div class="col">새소식</div></div>
-                        <div class="row"><div class="col border-2 rounded" th:text="${product.news.content}"></div></div>
-                    </div></div>
-                    
-                    <div class="row">
-                        <div class="col">
-                            <div class="row">
-                                <div class="col">
-                                    같이 보면 좋은 프로젝트(추후)
-                                    <div class="row"><div class="col"><img th:src="@{./uploadFiles/'+${product.detail.explain_image}'}"></div></div>                
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-5 mx-1 border">
-                                    
-                                </div>
-                                <div class="col-5 mx-1 border">
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row"><div class="col"></div></div>
-
-
-                <!--메인 콜 끝-->    
                 </div>
-               
-                <div class="col" style="max-width: 1em;"><!--좌측공란--></div>
 
-            </div>
-    <!--컨테이너 로우 콜 끝-->
+                <div class="row py-2 mb-1"><div class="col"> 상품 금액 : <span th:text="${product.detail.price}">원</span></div></div>
+                <div class="row mb-4"><div class="col"th:text="|${product.count}회 구매|"></div> <div class="col"><a th:href="@{./productPurchasePage(id = ${product.detail.product_pk})}" class="btn border rounede fw-bold" style="font-size:1.2em;">구매하기</a></div> </div>
+                
+                <div class="row my-3">
+                    <div class="col">
+                        <div class="row my-1 mb-2"><div class="col-4 fw-bold border border border-start-0 border-end-0" style="font-size: 0.85em;">리뷰목록</div></div>
+                        
+                            <div class="row mb-2 py-1">
+                                <th:block th:each="review : ${review}"> 
+                                    <div class="col mx-2">
+                                        <div class="row"><div class="col-6 fw-bold" style="font-size: 0.75em;" th:text="${review.user.userid}"></div><div class="col-6" style="font-size: 0.75em; color:gray;" th:text="${review.review.created_at}"></div></div>
+                                        <div class="row py-2 border rounded"><div class="col-6"><img class="img-fluid px-0" th:src="@{'/uploadFiles/'+${review.review.review_image}}" alt="등록된 이미지가 없습니다" style="width: 95%;"></div><div class="col-6" th:text="${review.review.content}"></div></div>
+                                    </div>
+                                </th:block>
+                            </div>   
+                    </div>
+                </div>
+                <div class="row"><div class="col"></div></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             </div>
         </div>
     </div>

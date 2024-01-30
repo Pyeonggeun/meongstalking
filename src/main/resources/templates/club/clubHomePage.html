@@ -56,54 +56,51 @@
             font-size: 0.7em;
             display: inline-block;
         }
+
         @media (min-width: 576px) {
 
-        .modal.bottom-modal .modal-dialog {
-            position: fixed;
-            bottom: -10%; 
-            left: 50%;
-            transform: translateX(-50%) translateY(100%);
-            margin: 0;
-            transition: transform 0.3s ease-out;
+            .modal.bottom-modal .modal-dialog {
+                position: fixed;
+                bottom: -10%;
+                left: 50%;
+                transform: translateX(-50%) translateY(100%);
+                margin: 0;
+                transition: transform 0.3s ease-out;
+            }
         }
-         }
 
         .modal.show .modal-dialog {
-            transform: translateX(-50%) translateY(0%);
+            transform: translateX(10%) translateY(0%);
         }
+
+        .bottom-modal .modal {
+            position: fixed;
+            bottom: 0;
+            /* left: 50%; */
+            transform: none;
+        }
+
 
         .bold-text {
             font-weight: bold;
         }
+
         .clickable {
-        cursor: pointer;
-        flex-grow: 1;
+            cursor: pointer;
+            flex-grow: 1;
         }
 
         .active {
-            /* 선택된 상태의 스타일 지정 */
             background-color: #007bff;
             color: #fff;
         }
+
         .no-club {
-            display: none; /* Hide the div initially */
+            display: none;
         }
+
         .card {
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            transition: transform 0.2s ease-in-out;
-        }
-
-        /* .card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        } */
-
-        .card img {
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            max-height: 200px;
-            object-fit: cover;
+            font-size: smaller;
         }
 
         .card-body {
@@ -126,47 +123,50 @@
     </style>
     <script th:inline="javascript">
         function goBack() {
-        window.history.back();
+            window.history.back();
         }
 
         function aaa() {
             // JavaScript logic for '인기 많은 동호회'
             var aaaContent = document.getElementById('aaa');
             var popularClubsContent = document.getElementById('popularClubsContent');
-    
+
             if (aaaContent && popularClubsContent) {
                 aaaContent.style.display = 'block';
                 popularClubsContent.style.display = 'none';
             }
         }
-    
+
         function popularClubsContent() {
             // JavaScript logic for '전체 동호회'
             var aaaContent = document.getElementById('aaa');
             var popularClubsContent = document.getElementById('popularClubsContent');
-    
+
             if (aaaContent && popularClubsContent) {
                 aaaContent.style.display = 'none';
                 popularClubsContent.style.display = 'block';
             }
         }
+
+        // '전체 동호회'가 먼저 선택되도록 초기 실행
+        window.onload = function () {
+            popularClubsContent();
+        }
     </script>
-    
+
 
     <script>
-        function loadSignupModal(){
+        function loadSignupModal() {
             const modal = bootstrap.Modal.getOrCreateInstance("#loadSignupModal");
             modal.show();
-            
         }
-
     </script>
 </head>
 
 <body>
 
-     <div class="container">
-        <div th:if="${clubTF['user_exists'] == 'T'}">  
+    <div class="container">
+        <div th:if="${checkMember == 1}">
             <div class="row">
                 <div class="col-2 my-2 ms-1">
                     <button class="btn" onclick="goBack()">
@@ -176,7 +176,8 @@
                 <div th:text="${clubTF.clubname}" class="col d-flex align-items-center px-0">
                 </div>
                 <div class="col-1 d-flex align-items-center me-4">
-                    <span style="cursor: pointer;" onclick="location.href='./clubLeaderPage'"><i class="bi bi-gear"></i></span>
+                    <span style="cursor: pointer;" onclick="location.href='./clubLeaderPage'"><i
+                            class="bi bi-gear"></i></span>
                 </div>
             </div>
             <div class="row scrollable-menu px-0">
@@ -185,16 +186,16 @@
                     <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">게시판</span>
                     <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">사진첩</span>
                     <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubMemberPage'">멤버</span>
-            
+
                 </div>
             </div>
             <div class="row border-bottom border-2 border-gray px-0">
                 <img th:src="@{../public/image/guild_mainImg.png}" class="img-fluid d-flex px-0">
             </div>
-            
+
 
             <div class="row border-bottom border-5 border-gray">
-                <div class="col-md-8 my-3" >
+                <div class="col-md-8 my-3">
                     <p th:text="${clubTF.clubname}" class="bold-text"></p>
                     <p th:utext="${clubTF.clubcontent}"></p>
                 </div>
@@ -204,57 +205,74 @@
                 <p><strong>사진첩</strong></p>
                 우왕 사진들
             </div>
-            <div th:if="${clubTF['user_exists'] == 'F'}" class="fixed-bottom text-center">
-                <button class="btn btn-secondary col-12 signup-button" onclick="loadSignupModal()">가입하기</button>
+            <!-- or clubTF['clubstatuslog_pk'] != 2
+            
+            ApplyStatus==2
+            -->
+            <div th:text="${clubTF['user_exists']}"></div>
+
+
+            <div th:if="ApplyStatus!=2" class="row p-3">
+                <div th:if="${clubTF['user_exists'] == 'F'}" class="fixed-bottom text-center">
+                    <button class="btn btn-secondary col-12 signup-button" onclick="loadSignupModal()">가입하기</button>
+                </div>
             </div>
+
+
         </div>
 
-        <div th:if="${clubTF['user_exists'] == 'F' }">  
+        <div th:if="${checkMember != 1} or ${checkMember != 3}  or ${clubTF['user_exists'] == 'F' }">
             <th:block th:replace="~{club/clubTopNavi.html :: mainTopNavi}"></th:block>
             <div class="row pt-3 scrollable-menu d-flex justify-content-around align-items-center fw-bold text-center">
                 <span class="col-6 clickable" onclick="aaa()">인기 많은 동호회</span>
-                <span class="col-6 clickable" onclick="popularClubsContent()">전체 동호회</span>
+                <span class="col-6 clickable" onclick="popularClubsContent()">전 체 동호회</span>
             </div>
-            <div id="popularClubsContent" class="row pt-2 fw-bold justify-content-center">
+            <div id="popularClubsContent" class="row pt-2 fw-bold justify-content-center p-3">
                 <div th:each="qwer : ${clublist}" class="card mb-3" style="max-width: 540px;">
                     <div class="row g-0">
                         <div class="col-4">
-                            <img th:src="@{/public/image/dog_img.png}" class="col card-img-top img-fluid" alt="Club Image" style="object-fit: cover;">
+                            <img th:src="@{/public/image/dog_img.png}" class="col img-fluid">
                         </div>
                         <div class="col-8">
                             <div class="card-body">
-                                <a th:href="@{./clubHomeProcess?club_pk={club_pk}(club_pk=${qwer['club_pk']})}" class="card-title text-decoration-none" th:text="${qwer['name']}" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: inherit;"></a>
+                                <a th:href="@{./clubHomeProcess?club_pk={club_pk}(club_pk=${qwer['club_pk']})}"
+                                    class="card-title text-decoration-none" th:text="${qwer['name']}"
+                                    style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: inherit;"></a>
                                 <p class="card-text" th:text="${qwer['content']}"></p>
                             </div>
-                        </div>            
+                        </div>
                     </div>
                 </div>
                 <p class="ms-3 mb-0 text-center" style="display: flex; align-items: center;">원하는 동호회를 찾지 못했나요?</p>
-            
-                <a th:href="@{./createClubPage}" class="text-center col-10 btn btn-primary px-3 py-3 mx-3 my-2 text-center" style="font-size: 0.8rem; border-radius: 12px; opacity: 0.8; display: flex; align-items: center; justify-content: space-between; text-decoration: none;">
-                    <span style="font-size: 0.8rem;">관심사에 맞는 동호회를<br>직접 운영해 보시는 건 어때요?</span>
-                    <button type="button" class="btn btn-light mx-2" style="border-radius: 12px; opacity: 0.9; font-size: 0.5rem; padding: 3px 10px; color: #007bff;">
+
+                <a th:href="@{./createClubPage}" class="col-10 btn btn-primary py-3 my-2"
+                    style="font-size: 0.8rem; border-radius: 12px; opacity: 0.8; display: flex; align-items: center; justify-content: space-between;">
+                    <span style="font-size: 0.6rem;">관심사에 맞는 동호회를<br>직접 운영해 보시는 건 어때요?</span>
+                    <button type="button" class="btn btn-light mx-2"
+                        style="border-radius: 12px; opacity: 0.9; font-size: 0.5rem; padding: 3px 10px; color: #007bff;">
                         동호회 만들기
                     </button>
                 </a>
             </div>
 
             <div id="aaa" class="row pt-2 fw-bold justify-content-center">
-               <!--
                 <p class="ms-3 mb-0 text-center" style="display: flex; align-items: center;">원하는 동호회를 찾지 못했나요?</p>
-            
-                <a href="./createClubPage" class="text-center col-10 btn btn-primary px-3 py-3 mx-3 my-2 text-center" style="font-size: 0.8rem; border-radius: 12px; opacity: 0.8; display: flex; align-items: center; justify-content: space-between; text-decoration: none;">
-                    <span style="font-size: 0.8rem;">관심사에 맞는 동호회를<br>직접 운영해 보시는 건 어때요?</span>
-                    <button type="button" class="btn btn-light mx-2" style="border-radius: 12px; opacity: 0.9; font-size: 0.5rem; padding: 3px 10px; color: #007bff;">
+
+                <a th:href="@{./createClubPage}" class="col-10 btn btn-primary py-3 my-2"
+                    style="font-size: 0.8rem; border-radius: 12px; opacity: 0.8; display: flex; align-items: center; justify-content: space-between;">
+                    <span style="font-size: 0.6rem;">관심사에 맞는 동호회를<br>직접 운영해 보시는 건 어때요?</span>
+                    <button type="button" class="btn btn-light mx-2"
+                        style="border-radius: 12px; opacity: 0.9; font-size: 0.5rem; padding: 3px 10px; color: #007bff;">
                         동호회 만들기
                     </button>
-                </a>-->
+                </a>
             </div>
         </div>
     </div>
- 
- 
-    <div id="loadSignupModal" class="modal fade bottom-modal" tabindex="-1" role="dialog" aria-labelledby="loadSignupModalLabel" aria-hidden="true">
+
+
+    <div id="loadSignupModal" class="modal fade bottom-modal" tabindex="-1" role="dialog"
+        aria-labelledby="loadSignupModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -264,9 +282,11 @@
                 <div class="modal-body">
                     <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
                 </div>
-                <div class="modal-footer d-flex">
-                    <button type="button" class="flex-fill btn border-gray border-end" style="background-color: white; color: blue; border: none;" data-bs-dismiss="modal">취소</button>
-                    <button type="button" class="flex-fill btn" style="background-color: white; color: blue; border: none;">제출</button>
+                <div class="modal-footer">
+                    <button type="button" class=" btn border-gray border-end"
+                        style="background-color: white; color: blue; border: none;" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class=" btn"
+                        style="background-color: white; color: blue; border: none;">제출</button>
                 </div>
             </div>
         </div>

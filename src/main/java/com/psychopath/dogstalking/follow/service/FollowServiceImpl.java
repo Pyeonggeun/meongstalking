@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.psychopath.dogstalking.follow.dto.CollectionDto;
+import com.psychopath.dogstalking.follow.dto.LikeLogDto;
 import com.psychopath.dogstalking.follow.dto.LogDto;
 import com.psychopath.dogstalking.follow.dto.UserMoreDto;
 import com.psychopath.dogstalking.follow.mapper.FollowSqlMapper;
@@ -61,6 +62,26 @@ public class FollowServiceImpl {
     public List<Map<String, Object>> getCollectionPersonList(int user_pk) {
 
         return followSqlMapper.getCollectionPersonList(user_pk);
+    }
+
+    public List<Map<String, Object>> getTrackLikeList(int user_pk) {
+
+        return followSqlMapper.getTrackLikeList(user_pk);
+    }
+
+    public List<Map<String, Object>> getClosestMarkLatLng(int user_pk, double latitude, double longitude) {
+
+        return followSqlMapper.getClosestMarkLatLng(user_pk, latitude, longitude);
+    }
+
+    public void insertTrackLikeLogInfo(LikeLogDto likeLogDto) {
+
+        followSqlMapper.insertTrackLikeLogInfo(likeLogDto);
+    }
+
+    public List<Map<String, Object>> getTrackingList(int user_pk) {
+
+        return followSqlMapper.getTrackingList(user_pk);
     }
 
 }

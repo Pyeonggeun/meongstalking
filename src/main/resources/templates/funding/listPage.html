@@ -11,69 +11,82 @@
 
 <body>
     
+    <!--새로 시작-->
+    <div class="container img-fluid px-0">
+        <div class="row mx-0">
+            <div class="col mx-0">
 
-    <div class="container">
-        <div class="row border-bottom"><div class="col">일단 비움</div></div>
-    
-        <div class="row border-bottom"><div class="col"><a href="./fundingSellerMyPage">마이페이지(판매자용) 임시 링크</a></div></div>
-    
-        <div class="row border-bottom"><div class="col"><a href="./prepareRgstrPage">상품 등록 임시 링크</a></div></div>
-    
-        <div class="row mx-1">
 
-            <div class="col">
-                <div class="row my-2">
-                    <div class="col-4 fw-bold text-start p-0" style="font-size:1em;">전체 </div>
-                    <div class="col"> </div>
-                    <div class="col-4 text-end p-0" style="font-size: 0.5;"> 최신순</div>
+                <div class ="row"><div class="col pt-2 py-0 text-center fw-bold" style="font-size: 1.25em;">meongstalking funding</div></div>
+                <div class="row pt-3">
+                    <div class="col-9"><input type="text" class="form-control" placeholder="다양한 상품을 찾아보세요"></div>
+                    <div class="col-2 px-0 fw-bold text-end">
+                        <div class="row px-0 text-center">
+                            <div class="col-6 px-0"><a href="./fundingUserMyPage" class="me-2"><div class="row px-0"><div class="col px-0"><i class="bi bi-file-person icon-link-hover px-0" style="font-size: 1.25em; color:black"></i></div></div><div class="row px-0"><span class="px-0 text-black" style="font-size: 0.55em;">메인홈</span></div></a></div>
+                            <div class="col-6 px-0"><a href="./prepareRgstrPage" class="me-2"><div class="row px-0"><div class="col px-0"><i class="bi bi-plus-square icon-link-hover px-0" style="font-size: 1.25em; color:black"></i></div></div><div class="row px-0"><span class="px-0 text-black" style="font-size: 0.55em;">펀딩등록</span></div></a></div>
+                        </div>
+                    </div>
+                   
+                </div>
+                
+                <div class="row py-2 mb-2">   
+                    <div class="col mx-1 border border-2 rounded" style="max-width:6em; height: 5em;"></div>
+                    <div class="col mx-1 border border-2 rounded" style="max-width:6em; height: 5em;"></div>
+                    <div class="col mx-1 border border-2 rounded" style="max-width:6em; height: 5em;"></div>
+                    <div class="col mx-1 border border-2 rounded" style="max-width:6em; height: 5em;"></div>
                 </div>
 
-                <th:block th:each="list : ${list}">                
-                    <div class="row pb-3 d-grid"><a class="btn px-0 mx-0 py-0 my-0" th:href="@{./productDetailPage(id = ${list.list.product_pk})}">
-                        <div class="col-3">
-                            <img class="img-fluid" th:src="@{'/uploadFiles/'+${list.list.title_image}}" alt="nothing" style="max-width: 10em; max-height:2en;">
-                        </div>
-                        <div class="col-5">
-                            <div class="row">
-                                <div class="col  px-0 fw-bold text-truncate" style="font-size:0.9em; max-width: 9.8em; max-height:1.9em;"><td th:text=${list.list.product_name}></td></div>
-                            </div>
-                            <div class="row">
-                                <div class="col px-0 text-secondary" th:text=${list.list.simple_explain} style="font-size:0.6em; font-color: 0.65;"></div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col-9 mx-0 px-0 fw-bold" style="font-size:1em; color: gold;">총구매 100건</div>
-                                <div class="col mx-0 px-0">
-                                    <div class="row" th:if="${wish == 0}"><i class="bi bi-heart" style="color:red" th:href="@{./insertWishlistProcess(id+${list.list.product_pk})}"></i></div>
-                                    <div class="row" th:unless="${wish != 0}"><i class="bi bi-heart-fill" style="color:red" th:href="@{./deleteWishlistProcess(id+${list.list.product_pk})}"></i></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-5 border rounded text-center ms-1 me-1 p-0" style="font-size:0.65em; background-color:gainsboro;"><td th:text=${list.t_sales}></td></div>
-                                <div class="col-5 border rounded text-center ms-1 me-1 p-0" style="font-size:0.65em; background-color:gainsboro;"><td th:text=${list.f_day}></td></div>
-                            </div>
-                        </div>
-                    </a></div>
-                </th:block>
 
-                
-            </div> 
-        
+                <div class="row px-0">
+                    <div class="col px-0">
+
+                        <th:block th:each="list : ${list}">
+                                    <div class="row mx-0 mb-3">
+                                            <div class="col mx-0">
+                                                <div class="row">
+                                                    <a class="btn px-0 mx-0 py-0 my-0" th:href="@{./productDetailPage(id = ${list.list.product_pk})}"> 
+                                                        <div class="col">
+                                                            <div class="row px-0"><div class="col pe-0 text-start" th:text="${list.user.userid}" style="font-size: 0.86em;"></div><div class="col text-end"><i class="bi bi-three-dots-vertical"></i></div></div>
+                                                            <div class="row px-0"><div class="col d-grid px-0"> <img class="img-fluid" th:src="@{'/uploadFiles/'+${list.list.title_image}}" alt="nothing" style="max-width: 100%;"></div></div>
+                                                            <div class="row px-0" style="background-color:darkolivegreen"><div class="col ps-1 text-start fw-bold" style="font-size: 0.82em;" th:text="|펀딩종료일까지 ${list.f_day}일|">   </div><div class="col-1 px-0 fw-bold"> > </div></div>
+                                                        </div>
+                                                    </a>        
+                                                </div>
+                                                
+                                                    <div class="row"> 
+                                                            <div class="col-1 px-0 text-center"> <a th:href="@{./insertWishlistProcess(id=${list.list.product_pk})}"><i class="bi bi-heart" style="color: black;"></i></a></div>   
+                                                            <div class="col-1 px-0 text-center"> <a th:href="@{./deleteWishlistProcess(id=${list.list.product_pk})}"><i class="bi bi-heart-fill" style="color:black;"></i></a></div>
+                                                        
+                                                            <div class="col ps-1 text-start"><i class="bi bi-clipboard-data fw-bold" style="font-size: 1.05em;"></i> <span style="font-size: 0.8em;">펀딩률 </span><span th:text="|${list.percent}%|"></span></div>
+                                                    </div>
+                                                <div class="row"><div class="col mt-1 text-start fw-bold" th:text=${list.list.product_name} style="font-size: 0.87em;"></div></div>
+                                                <div class="row"><div class="col text-start" th:text=${list.list.simple_explain} style="font-size: 0.85em;"></div></div>
+                                            </div> 
+                                    </div>        
+                        </th:block>
+                    </div>    
+                </div>        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             </div>
-            
-
         </div>
-    
-        <div class="row"><div class="col"></div></div>
-    
+    </div>
     
     
-    
-    
-    
-    
-    
-    </div>    
 
 
 

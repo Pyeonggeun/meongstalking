@@ -9,5 +9,6 @@ public class ClubDto {
     private int club_pk;
     private String name;
     private String content;
+    private String img;
     private LocalDateTime created_at;
 }

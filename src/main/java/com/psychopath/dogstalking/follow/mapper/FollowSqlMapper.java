@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.psychopath.dogstalking.follow.dto.CollectionDto;
+import com.psychopath.dogstalking.follow.dto.LikeLogDto;
 import com.psychopath.dogstalking.follow.dto.LogDto;
 import com.psychopath.dogstalking.follow.dto.UserMoreDto;
 
@@ -30,5 +31,12 @@ public interface FollowSqlMapper {
 
     public void insertCollectionInfo(CollectionDto collectionDto);
     public List<Map<String, Object>> getCollectionPersonList(int user_pk);
+
+    public List<Map<String, Object>> getTrackLikeList(int user_pk);
+    public List<Map<String, Object>> getClosestMarkLatLng(@RequestParam("user_pk") int user_pk,
+        @RequestParam("latitude") double latitude, @RequestParam("longitude") double longitude);
+
+    public void insertTrackLikeLogInfo(LikeLogDto likeLogDto);
+    public List<Map<String, Object>> getTrackingList(int user_pk);
 
 }

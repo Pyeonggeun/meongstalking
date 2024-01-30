@@ -98,14 +98,26 @@
 
     <!--회원 신청 상태-->
     <insert id="insertUserStatusLog">
-        INSERT INTO ms_club_user_statuslog(club_user_pk)
-        VALUES (#{club_user_pk}); 
+        INSERT INTO ms_club_user_statuslog(club_user_pk,clubcategory_pk)
+        VALUES (#{club_user_pk},#{clubcategory_pk}); 
     </insert>
 
     <!--개설시 리더 자동 위임-->
     <insert id="insertLeader">
         INSERT INTO ms_club_user_ranklog(club_user_pk,clubuserranklogcategory_pk)
         VALUES (#{club_user_pk},1); 
+    </insert>
+
+    <!--가입신청(미승인)
+    <insert id="insertClubUserRankTwo">
+        INSERT INTO ms_club_user_ranklog(club_user_pk,clubuserranklogcategory_pk)
+        VALUES (#{club_user_pk},2); 
+    </insert>-->
+
+    <!--회원 등급 추가-->
+    <insert id="insertClubUserRank">
+        INSERT INTO ms_club_user_ranklog(club_user_pk,clubuserranklogcategory_pk)
+        VALUES (#{club_user_pk},3); 
     </insert>
 
     <!--가입신청목록-->
@@ -143,7 +155,7 @@
     <!--길드 정보 수정-->
     <update id="updateClub">
         UPDATE ms_club
-        SET name = #{name}, content = #{content}
+        SET name = #{name}, content = #{content}, img = #{img}
         WHERE club_pk = #{club_pk}; 
     </update>
 
@@ -155,6 +167,7 @@
         JOIN ms_user ON ms_user.user_pk = ms_club_user.user_pk
         JOIN ms_club ON ms_club.club_pk = ms_club_user.club_pk 
         join ms_club_user_statuslog on ms_club_user_statuslog.club_user_pk = ms_user.user_pk
+        join ms_club_user_ranklog on ms_club_user_ranklog.club_user_pk = ms_user.user_pk
         WHERE ms_club_user_statuslog.clubcategory_pk=1 and ms_club_user.club_pk=#{club_pk};
     </select>
 
@@ -164,4 +177,24 @@
             SET clubcategory_pk = 3
             WHERE club_user_pk = #{club_user_pk};
     </update>
+
+
+    <!--관리자 뽑아내기-->
+    <select id="selectLeaderLank" resultType="Integer">
+        SELECT ms_club_user_ranklog.clubuserranklogcategory_pk	FROM ms_club_user_ranklog WHERE ms_club_user_ranklog.club_user_pk=#{club_user_pk};
+    </select>
+
+
+    <!--관리자 바꾸기-->
+    <update id="updateLeader">
+        UPDATE ms_club_user_ranklog
+        SET clubuserranklogcategory_pk = #{clubuserranklogcategory_pk}
+        WHERE club_user_pk = #{club_user_pk};
+    </update>
+
+    <!--승인 상태-->
+    <select id ="selectClubCategoryPk" resultType="Integer">
+        SELECT ms_club_user_statuslog.clubcategory_pk	FROM ms_club_user_statuslog WHERE ms_club_user_statuslog.club_user_pk=#{club_user_pk};
+    </select>
+
 </mapper>

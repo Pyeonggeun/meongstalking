@@ -9,6 +9,7 @@ public class FundingNewsDto {
     private int news_pk;
     private int product_pk;
     private String content;
+    private String news_image;
     private LocalDateTime created_at;
 
 }

@@ -4,6 +4,26 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>펀딩상품 응원페이지</title>
+
+    <script>
+
+        function imageBoxClickHandler() {
+                        const imageInput = document.getElementById("newsImage");
+                        imageInput.click();
+                    }
+    
+    
+        </script>
+    
+        <style>
+            .box-dashed {
+                border-width: 0.15em;
+                border-style: dashed;
+                width: 99%;    
+                color: gray;    
+            }
+    
+        </style>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -12,63 +32,79 @@
 
     <div class="row"><div class="col"></div></div>
 <body>
-    <div class="container">'
+
+<!--새로 짜는 응원글 페이지 -->
+    <div class="container img-fluid">
         <div class="row">
             <div class="col">
-    <!--컨테이너 로우 콜 세팅 여기까지-->
-            <div class="row">
-                <div class="col" style="max-width: 1em;"><!--좌측공란--></div>
+                
 
-                <!--메인 콜 시작-->
-                <div class="col">
+                <div class="row" >
+                    <div class="col">
+                        <div class="row py-2"><div class="col"><a href="./fundingUserMyPage"><i class="bi bi-arrow-left-square" style="color: black;"></i></a></div><div class="col text-end"><a href="./listPage" class="me-3"><i class="bi bi-shop" style="color: black;"></i></a><a href="../commons/mainPage"><i class="bi bi-house" style="color: black;"></i></a></div></div>
+                        <div class="row"><div class="col fw-bold" style="font-size: 1em;">응원 글 남기기</div></div>
 
-                    <div class="row border-bottom"><div class="col">일단 비움</div></div>
-                    <div class="row border-bottom"><div class="col">일단 비움</div></div>
-                    <div class="row border-bottom mb-2"><div class="col">일단 비움</div></div>
+                        <div class="row mx-1 my-2">
+                            <div class="col rounded pt-1 pb-3 mb-1" style="background-color: pink; ">
+                                <div class="row py-2"><div class="col fw-bold" style="font-size: 0.85em;"><span><i class="bi bi-exclamation-circle text-danger"></i></span> 주의사항</div></div>
+                                <div class="row"><div class="col" style="font-size: 0.8em;">최근 메이커 또는 제3 자에 대한 허위사실 유포, 비방 목적의 글들로 인해 당사자간 법적분쟁이 매우 빈번하게 발생하고 있습니다. 타 회원들이나 상품에 대한 허위사실을 유포하거나 악의적 성향의 글을 작성하는 경우 명예훼손, 모욕 등으로 법적 책임을 부담하게 될 수 있다는 점을 유의 바랍니다 </div></div>
+                            </div>
+                        </div>
 
 
+                    <form action="./insertCheering" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="product_pk" th:value="${product_pk}">
+                        
+                            <div class="row text-center"><div class="col"><textarea name="content" class="form-control" style="width: 100%; height: 5em;" placeholder="최소 10자 이상 작성 부탁드립니다"></textarea></div></div>
+                          
+                            <div class="row mt-4 px-0"><div class="col"><span class="fw-bold" style="font-size: 1em;">+ 새소식 이미지 설정</div></div>
+                            <div class="imagePlusBox pt-1 px-0" onclick=imageBoxClickHandler()>
+                                <div class="box-dashed rounded px-1 py-3 text-center">
+                                    <div class="row"><div class="col"> <i class="bi bi-card-image" style="font-size: 2.5em; color: gray;"></i> </div></div> 
+                                    <div class="row"><div class="col"> <span style="font-size: 0.85em; color: gray;">같이 게시될 이미지를 선택해 주세요</span> </div></div> 
+                                </div>
+                                <input id="newsImage" name="newsImage" class="d-none" type="file" oninput="previewImage()"  accept="image/*" multiple>
+                            
+                                <div class="row my-3"><div class="col d-grid"><input type="submit" value="응원글 등록하기" class="rounded border-black py-1" style="background-color: white;"></div></div>         
+                    </form>
+
+                    </div>
+                </div>
 
 
-                    <!-- 타이틀-->
-                    <div class="row my-1"><div class="col" style="font-size:1.45em;">응원 <span class style="font-size:1em; color:goldenrod ;">0</span></div></div>
-                    <!--foreach 도는 응원글-->
+                <div class="row"><div class="col fw-bold" style="font-size: 1.1em;">응원글 <span>0</span></div></div>
+
+                <th:block th:each="cheering : ${cheering}">
                     <div class="row mb-2">
-                        <div class="col px-0">
-                            <div class="row mb-1">
-                                <div class="col px-0 text-center" style="font-size:1.3em;">
-                                    <i class="bi bi-person-circle" style="font-size:1.45em;"></i>
-                                </div>
-                                <div class="col">
-                                    <div class="row" style="font-size:1em;">회원이름</div>
-                                    <div class="row" style="font-size:0.75em; color: gray;">5시간 전</div>
-                                </div>
-                                <div class="col"></div>
-                                <div class="col py-0 text-end" >
-                                    <i class="bi bi-three-dots-vertical" style="font-size:1.2em;"></i>
-                                </div>
+                        <div class="col">
+
+                            <div class="row">
+                                <div class="col"><span th:text="${cheering.user.userid}" style="font-size: 0.9em;"></span><br><span th:text="${cheering.cheering.created_at}" style="font-size: 0.8em; color: gray;"></span></div>
+                                <div class="col"><i class="bi bi-three-dots-vertical"></i></div>
                             </div>
 
-                            <div class="row mx-1 mb-2"><div class="col py-2 border rounded " style="border-color: gray;">와! 너무 기대됩니다</div></div>
-                            <div class="row mx-1 mb-2"><div class="col"><i class="bi bi-chat-left-dots"></i> <span style="font-size: 0.9em;">0</span></div></div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
+                            <div class="row"><div class="col"><img class="img-fluid" th:src="@{'/uploadFiles/'+${cheering.cheering.cheering_image}}"></div></div>
+                            <div class="row"><div class="col" th:text="${cheering.cheering.content}"></div></div>
                             
                         </div>
                     </div>
+                </th:block>
 
 
 
 
 
 
-                <!--메인 콜 끝-->    
-                </div>
-                <div class="col" style="max-width: 1em;"><!--우측공란--></div>    
-            </div>
-    <!--컨테이너 로우 콜 끝-->
+
+
+
+
+
+
+
+
+
+
             </div>
         </div>
     </div>
