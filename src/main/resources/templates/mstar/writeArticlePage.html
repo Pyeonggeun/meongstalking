@@ -65,7 +65,7 @@
                                 
                                 const img = document.createElement("img");
                                 img.classList.add("img-fluid", "h-auto");
-                                img.setAttribute("style", "width: 20vw");
+                                img.setAttribute("style", "width: 30vw");
                                 div.appendChild(img);
                                 photoListBox.appendChild(div);
                                 photoListBox.appendChild(addButtonDiv);
@@ -159,7 +159,7 @@
             </div>
             <div id="d-none-scroll" class="row border-bottom border-top py-2 overflow-x-auto">
                 <div class="col">
-                    <div id="photoListBox" class="row" style="height: 30vw; cursor: pointer; width: 160vw;">
+                    <div id="photoListBox" class="row" style="height: 50vw; cursor: pointer; width: 160vw;">
                         <input id="photeUpload" name="imageFiles" class="d-none" type="file" accept="image/*" multiple="multiple">
                         <div id="addButton" onclick="articlePhotoUpload()" class="col-auto fs-3 ms-2 fw-bold py-4 align-self-center rounded text-center" style="border: 1px dashed rgb(0, 0, 0); cursor: pointer; width: 20vw;">
                             <i class="bi bi-plus-lg"></i>
@@ -167,7 +167,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col">
                     동영상 등록
                 </div>
@@ -183,7 +183,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div class="row">
                 <div class="col">
                     <textarea  class="form-control" name="" id="content" rows="3" placeholder="작성할 내용을 입력하세요."></textarea>

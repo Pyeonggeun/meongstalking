@@ -21,6 +21,8 @@
                 profile_info_pk = profileKey;
 
                 loadProfileArticleList(profile_info_pk, user_pk);
+
+                
             }
 
             let profileInfoDto = null;
@@ -34,8 +36,7 @@
                     const myCommentProfileImg = document.querySelector("#myCommentProfileImg");
                     myCommentProfileImg.src = profileInfoDto.profile_photo;
 
-                    
-                    
+
                 });
             }
             
@@ -54,7 +55,15 @@
             	})
                 .then(response => response.json())
                 .then((response) =>{
-                    
+
+                    const backProfilePage = document.querySelector("#backProfilePage");
+                    if(profileInfoDto.profile_info_pk != profile_info_pk){
+                        backProfilePage.setAttribute("onclick", "location.href='./anotherProfilePage?profile_info_pk="+profileInfoDto.profile_info_pk+"&another_info_pk="+profile_info_pk+"'");
+                    }else{
+                        backProfilePage.setAttribute("onclick", "location.href='./profilePage?user_pk="+user_pk+"'");
+                        console.log(backProfilePage)
+                    }
+
                     const articleListBox = document.querySelector("#articleListBox");
                     const articleListWrapper = document.querySelector("#articleListTemplete .articleListWrapper");
                     const articleUserId = articleListWrapper.querySelector(".articleUserId");
@@ -64,22 +73,49 @@
                     useridSpan.classList.add("fw-bold","pe-2");
                     useridSpan.innerText = response.data.userDto.userid;
 
-                    if(response.data.followStatus == 0){
-
-                    }
-
+                    
                     const profile_photo = articleListWrapper.querySelector(".profile_photo");
                     profile_photo.setAttribute("src", response.data.profileInfoDto.profile_photo);
-                        if(profile_info_pk != response.data.profileInfoDto.profile_info_pk){
-                            profile_photo.setAttribute("onclick", "location.href='./anotherProfilePage?profile_info_pk="+response.data.profileInfoDto.profile_info_pk+"'");
-                        }else{
-                            profile_photo.setAttribute("onclick", "location.href='./profilePage?user_pk="+user_pk+"'");
-                        }
 
+                    const goProfilePage =articleListWrapper.querySelector(".goProfilePage");
+                    if(profileInfoDto.profile_info_pk != response.data.profileInfoDto.profile_info_pk){
+                        goProfilePage.setAttribute("onclick", "location.href='./anotherProfilePage?profile_info_pk="+profileInfoDto.profile_info_pk+"&another_info_pk="+response.data.profileInfoDto.profile_info_pk+"'");
+                    }else{
+                        goProfilePage.setAttribute("onclick", "location.href='./profilePage?user_pk="+user_pk+"'");
+                    }
+
+                    const directButton = articleListWrapper.querySelector(".directButton");
+                    if(profileInfoDto.profile_info_pk != response.data.profileInfoDto.profile_info_pk){
+                        directButton.setAttribute("onclick", "location.href='./directPage?profile_info_pk="+profileInfoDto.profile_info_pk+"&another_info_pk="+response.data.profileInfoDto.profile_info_pk+"'");
+                    }else{
+                        directButton.classList.add("d-none");
+                        
+                    }  
+                    const articleUserFollowStatus  = document.querySelector("#articleUserFollowStatus");
+                    if(response.data.followStatus == 0 && profileInfoDto.profile_info_pk != response.data.profileInfoDto.profile_info_pk){
+                        articleUserFollowStatus.innerText = "팔로우"
+                        articleUserFollowStatus.setAttribute("onclick", "followingUser("+response.data.profileInfoDto.profile_info_pk+","+profileInfoDto.profile_info_pk+")");
+                    }else{
+                        articleUserFollowStatus.classList.add("d-none");
+                    }
 
                     for(e of response.data.list){
-
                         const articleListWrapper = document.querySelector("#articleListTemplete .articleListWrapper").cloneNode(true);
+
+                        const articleScrapButton = articleListWrapper.querySelector(".articleScrapButton");
+                        const scrapIcon = articleListWrapper.querySelector(".scrapIcon");
+                        
+                        if(e.scrapStatus == 0){
+                            articleScrapButton.setAttribute("onclick", "insertArticleScrap("+e.articleDto.article_pk+" , this)");
+                            scrapIcon.classList.add("fa-regular");
+
+                        }else{
+                            articleScrapButton.setAttribute("onclick", "deleteArticleScrap("+e.articleDto.article_pk+", this)");
+                            scrapIcon.classList.add("fa-solid","text-primary");
+                        }
+                        const commnetListButton = articleListWrapper.querySelector(".commnetListButton");
+                        commnetListButton.setAttribute("onclick", "openCommentListBox("+e.articleDto.article_pk+", this)");
+                        
                         
                         const likeCountAndUserId = articleListWrapper.querySelector(".likeCountAndUserId");
                         if(e.likeList[0] != null){
@@ -519,6 +555,45 @@
                 });
                 
             }
+            function insertArticleScrap(article_pk, target){
+                const url = "./articleScrap";
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "profile_info_pk="+profileInfoDto.profile_info_pk+"&article_pk="+article_pk
+            	});
+                
+                const articleListWrapper = target.closest(".articleListWrapper");
+                
+                const articleScrapButton = articleListWrapper.querySelector(".articleScrapButton");
+                articleScrapButton.setAttribute("onclick", "deleteArticleScrap("+e.articleDto.article_pk+" , this)");
+
+                const scrapIcon = articleListWrapper.querySelector(".scrapIcon");
+                scrapIcon.classList.remove("fa-regular");
+                scrapIcon.classList.add("fa-solid","text-primary");
+                        
+            }
+            
+            function deleteArticleScrap(article_pk, target){
+                const url = "./removeArticleScrap";
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "profile_info_pk="+profileInfoDto.profile_info_pk+"&article_pk="+article_pk
+            	});
+                const articleListWrapper = target.closest(".articleListWrapper");
+                
+                const articleScrapButton = articleListWrapper.querySelector(".articleScrapButton");
+                articleScrapButton.setAttribute("onclick", "insertArticleScrap("+e.articleDto.article_pk+" , this)");
+
+                const scrapIcon = articleListWrapper.querySelector(".scrapIcon");
+                scrapIcon.classList.remove("fa-solid","text-primary");
+                scrapIcon.classList.add("fa-regular");
+            }
            
 
             function loadTcommentList(comment_pk, target){
@@ -750,6 +825,21 @@
                 });
 
             }
+            function followingUser(another_info_pk , profile_info_pk){
+
+                const url = "./followingAnotherUser";
+                fetch(url, {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: "follow_user_pk="+another_info_pk+"&following_user_pk="+profile_info_pk
+                }).then(() => {
+                    const articleUserFollowStatus = document.querySelector("#articleUserFollowStatus");
+                    articleUserFollowStatus.classList.add("d-none");
+                });
+             }
+            
 
             ///////////////////새로운마음으로 시작해보자!!!
             function insertArticleLike(article_pk, target){
@@ -915,13 +1005,13 @@
                             멍's토킹
                         </div>
                         <div class="col text-end">
-                            <i class="fa-regular fa-bell"></i>
+                            <i  class="fa-regular fa-bell"></i>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row text-center border-bottom" style="font-size: 0.8em;">
-                <div class="col-2 align-self-center">
+                <div id="backProfilePage" class="col-2 align-self-center">
                     <i class="fa-solid fa-arrow-left"></i>
                 </div>
                 <div class="col">
@@ -938,8 +1028,8 @@
                 </div>
                 <div class="col-2 align-self-center pe-3">
                     <div class="row">
-                        <div class="col text-center rounded" style="background-color: #ccced1;">
-                            팔로우
+                        <div id="articleUserFollowStatus"  class="col text-center rounded" style="background-color: #ccced1;">
+                            
                         </div>
                     </div>
                 </div>
@@ -1023,7 +1113,7 @@
                 <div class="col">
                     <div class="row">
                         <div class="col py-3">
-                            <div class="row" style="position: relative;">
+                            <div class="row goProfilePage" style="position: relative;">
                                 <div class="col-2">
                                     <img class="profile_photo img-fluid rounded-circle float-start" style="aspect-ratio: 1/1;">
                                 </div>
@@ -1057,14 +1147,14 @@
                                 <div class="col-auto ">
                                     <img class="img-fluid pt-0 mb-1 articleLike" alt="" style="height: 1em;">
                                 </div>
-                                <div class="col-1 px-0 text-start">
+                                <div class="col-1 px-0 text-start commnetListButton">
                                     <i class="fa-regular fa-comment-dots"></i>
                                 </div>
-                                <div class="col ps-0 text-start">
+                                <div class="col ps-0 text-start directButton">
                                     <i class="fa-regular fa-paper-plane"></i>
                                 </div>
-                                <div class="col-7 text-end">
-                                    <i class="fa-regular fa-bookmark"></i>
+                                <div class="col text-end articleScrapButton">
+                                    <i class="fa-regular fa-bookmark scrapIcon"></i>
                                 </div>
                             </div>
                         </div>

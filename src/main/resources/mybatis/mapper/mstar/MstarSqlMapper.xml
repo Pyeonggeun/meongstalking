@@ -23,7 +23,44 @@
         SET nick_name = #{nick_name}
         where profile_info_pk = #{profile_info_pk}
     </update>
-
+    <!--유저 차단-->
+    <insert id="insertBlockDto">
+    INSERT into ms_mstar_block(user_pk, block_user_pk)
+    values(
+        #{user_pk}, #{block_user_pk}
+    )
+    </insert>
+    <!--차단 해제-->
+    <delete id="deleteUserBlock">
+        DELETE from ms_mstar_block
+        where user_pk = #{user_pk}
+        and block_user_pk= #{block_user_pk}
+    </delete>
+    <!--차단 여부 확인-->
+    <select id="selectBlockStatus" resultType="int">
+        SELECT count(*) from ms_mstar_block
+        where user_pk = #{user_pk}
+        and block_user_pk = #{block_user_pk}
+    </select>
+    <!--유저 즐겨찾기-->
+    <insert id="insertBookMarkDto">
+    INSERT into ms_mstar_bookmark(bkm_user_pk, rcv_user_pk)
+    values(
+        #{bkm_user_pk}, #{rcv_user_pk}
+    )
+    </insert>
+    <!--즐겨찾기 해제-->
+    <delete id="deleteUserBookMark">
+        DELETE from ms_mstar_bookmark
+        where bkm_user_pk = #{bkm_user_pk}
+        and rcv_user_pk= #{rcv_user_pk}
+    </delete>
+    <!--즐겨찾기 여부 확인-->
+    <select id="selectBookMarkStatus" resultType="int">
+        SELECT count(*) from ms_mstar_bookmark
+        where bkm_user_pk = #{bkm_user_pk}
+        and rcv_user_pk = #{rcv_user_pk}
+    </select>
 
     <!--유저 프로필 DTO -->
     <select id="selectProfileInfoDto" resultType="com.psychopath.dogstalking.mstar.dto.ProfileInfoDto">
@@ -39,6 +76,12 @@
         SELECT * from ms_user
         where user_pk = #{user_pk}
     </select>
+    <select id="selectUserDtoByPIP" resultType="com.psychopath.dogstalking.dto.UserDto">
+        SELECT * FROM ms_user
+        where user_pk = (SELECT user_pk from ms_mstar_profile_info
+        where profile_info_pk = #{profile_info_pk})
+    </select>
+    
     <!--게시물 카운트 -->
     <select id="selectArticleCount" resultType="int">
         SELECT count(*) from ms_mstar_article
@@ -78,7 +121,30 @@
         INSERT into ms_mstar_art_photo(article_pk, photo_path)
         values(#{article_pk} , #{photo_path})
     </insert>
-
+    <!--게시물 스크랩-->
+    <insert id="insertArticleScrap">
+        INSERT into ms_mstar_article_scrap(article_pk, profile_info_pk)
+        values(#{article_pk}, #{profile_info_pk})
+    </insert>
+    <!--게시물 스크랩 취소-->
+    <delete id="deleteArticleScrap">
+        DELETE from ms_mstar_article_scrap
+        where article_pk = #{article_pk}
+        and profile_info_pk= #{profile_info_pk}
+    </delete>
+    <!--게시물 스크랩 여부-->
+    <select id="selectScrapStatus" resultType="int">
+        SELECT count(*) from ms_mstar_article_scrap
+        where profile_info_pk = #{profile_info_pk}
+        and article_pk = #{article_pk}
+    </select>
+    <!--스크랩한 게시물 리스트-->
+    <select id="selectMyScrapArticleDtoList" resultType="com.psychopath.dogstalking.mstar.dto.ArticleDto">
+        SELECT * from ms_mstar_article
+        where article_pk in (SELECT article_pk from ms_mstar_article_scrap
+        where profile_info_pk = #{profile_info_pk})
+    </select>
+    
     <!--프로필 페이지 내 게시물 리스트 셀렉트-->
     <select id="selectMyArticleDtoList" resultType="com.psychopath.dogstalking.mstar.dto.ArticleDto">
         SELECT * from ms_mstar_article
@@ -99,6 +165,26 @@
         INSERT into ms_mstar_storage(profile_info_pk, storage_name, storage_img)
         values(#{profile_info_pk} , #{storage_name}, #{storage_img})
     </insert>
+    <!--하이라이트 pk값 추출-->
+    <select id="selectStoragePk" resultType="int">
+        SELECT MAX(storage_pk) from ms_mstar_storage
+    </select>
+    <!--하이라이트에 스토리 저장-->
+    <insert id="insertSaveStory">
+        INSERT into ms_mstar_save_story(story_pk, storage_pk)
+        values(#{story_pk}, #{storage_pk})
+    </insert>
+    <!--하이라이트 스토리 리스트-->
+    <select id="selectStorageStoryList" resultType="com.psychopath.dogstalking.mstar.dto.StoryDto">
+        SELECT * from ms_mstar_story
+        where story_pk in (SELECT story_pk from ms_mstar_save_story
+        where storage_pk = #{storage_pk})
+    </select>
+    <!--스토리지 정보-->
+    <select id="selectStorageDto" resultType="com.psychopath.dogstalking.mstar.dto.StorageDto">
+        SELECT * from ms_mstar_storage
+        where storage_pk = #{storage_pk}
+    </select>
     <!--스토리 인서트-->
     <insert id="insertStoryDto">
         INSERT into ms_mstar_story(profile_info_pk, story_photo, story_text, x_coordinates, y_coordinates, text_color, background_color)
@@ -114,12 +200,39 @@
         SELECT * from ms_mstar_story
         where profile_info_pk  = #{profile_info_pk}
     </select>
+    <!--활성화 된 내 스토리(위랑 똑같음 근데 내꺼용)-->
+    <select id="selectMyStoryList" resultType="com.psychopath.dogstalking.mstar.dto.StoryDto">
+        SELECT * from ms_mstar_story
+        where profile_info_pk  = #{profile_info_pk}
+    </select>
     <!--스토리DTO-->
     <select id="selectStoryDto" resultType="com.psychopath.dogstalking.mstar.dto.StoryDto">
         SELECT * from ms_mstar_story
         where story_pk = #{story_pk}
     </select>
-
+    <!--스토리 읽은사람(작성자)-->
+    <select id="selectStoryViewCount" resultType="int">
+        SELECT count(*) from ms_mstar_view_story
+        where story_pk = #{story_pk}
+    </select>
+    <!--뷰 스토리 인서트-->
+    <insert id="insertViewStoryDto">
+        INSERT INTO ms_mstar_view_story(story_pk, profile_info_pk)
+        values(#{story_pk}, #{profile_info_pk})
+    </insert>
+    <!-- 뷰 스토리 체크-->
+    <select id="checkStoryViewStatus" resultType="int">
+        select count(*) from ms_mstar_view_story
+        where story_pk = #{story_pk}
+        and profile_info_pk = #{profile_info_pk}
+    </select>
+    
+    <!-- 스토리 읽은 사람들 리스트-->
+    <select id="selectStoryViewProfileInfo" resultType="com.psychopath.dogstalking.mstar.dto.ProfileInfoDto">
+        SELECT * from ms_mstar_profile_info
+        WHERE  profile_info_pk in (SELECT profile_info_pk  from ms_mstar_view_story
+        where story_pk = #{story_pk})
+    </select>
     <!--게시글 리스트 출력 (조건없는 더미용)-->
     <select id="selectArticleList" resultType="com.psychopath.dogstalking.mstar.dto.ArticleDto">
         SELECT * from ms_mstar_article
@@ -134,11 +247,78 @@
         INSERT into ms_mstar_follow(follow_user_pk, following_user_pk)
         values(#{follow_user_pk}, #{following_user_pk})
     </insert>
+    <!--언팔로우-->
+    <delete id="deleteUserFollowing">
+        DELETE from ms_mstar_follow
+        where follow_user_pk = #{follow_user_pk}
+        and following_user_pk= #{following_user_pk}
+    </delete>
+    
     <!--팔로우 체크-->
     <select id="checkFollowStatus" resultType="int">
         SELECT count(*) from ms_mstar_follow
         where following_user_pk = #{following_user_pk}
         and follow_user_pk = #{follow_user_pk}
+    </select>
+     <select id="checkFollowingStatus" resultType="int">
+        SELECT count(*) from ms_mstar_follow
+        where following_user_pk = #{following_user_pk}
+        and follow_user_pk = #{follow_user_pk}
+    </select>
+    
+    <!--나를 제외한 팔로잉 프로필 리스트-->
+    <select id="selectFollowingUserList" resultType="com.psychopath.dogstalking.dto.UserDto">
+        SELECT  * from ms_user
+        where user_pk in (
+                SELECT user_pk from ms_mstar_profile_info
+                WHERE profile_info_pk in (
+                    SELECT following_user_pk  from ms_mstar_follow
+                    where follow_user_pk = #{follow_user_pk}
+                    and following_user_pk != #{following_user_pk}))
+        and userid like CONCAT(#{searchText} ,"%")
+    </select>
+    <!--내가 팔로잉 프로필 리스트-->
+    <select id="selectMyFollowingList" resultType="com.psychopath.dogstalking.dto.UserDto">
+        SELECT  * from ms_user
+        where user_pk in (
+                SELECT user_pk from ms_mstar_profile_info
+                WHERE profile_info_pk in (
+                    SELECT follow_user_pk  from ms_mstar_follow
+                    where following_user_pk = #{profile_info_pk}))
+        and userid like CONCAT(#{searchText} ,"%")
+    </select>
+    <!--나를 팔로우 프로필 리스트-->
+     <select id="selectMyFollowList" resultType="com.psychopath.dogstalking.dto.UserDto">
+        SELECT  * from ms_user
+        where user_pk in (
+            SELECT user_pk from ms_mstar_profile_info
+            WHERE profile_info_pk in (
+                SELECT following_user_pk  from ms_mstar_follow
+                where follow_user_pk = #{profile_info_pk}))
+        and userid like CONCAT(#{searchText} ,"%")
+    </select>
+    <!--나를 제외한 팔로우 프로필 리스트-->
+    <select id="selectFollowUserList" resultType="com.psychopath.dogstalking.dto.UserDto">
+        SELECT  * from ms_user
+        where user_pk in (
+            SELECT user_pk from ms_mstar_profile_info
+            WHERE profile_info_pk in (
+                SELECT follow_user_pk  from ms_mstar_follow
+                where following_user_pk = #{following_user_pk}
+                and follow_user_pk != #{follow_user_pk}))
+        and userid like CONCAT(#{searchText} ,"%")
+    </select>
+    <!--함께 팔로잉 프로필 리스트-->
+    <select id="selectFollowFollowingUserList" resultType="com.psychopath.dogstalking.dto.UserDto">
+        SELECT * from ms_user
+        WHERE user_pk  in (SELECT user_pk from ms_mstar_profile_info
+        where profile_info_pk in (SELECT following_user_pk from ms_mstar_follow
+                where follow_user_pk = #{another_info_pk}
+                and following_user_pk in (
+                    SELECT follow_user_pk from ms_mstar_follow
+                    where following_user_pk = #{profile_info_pk}
+                    )))
+        and userid like CONCAT(#{searchText} ,"%")
     </select>
     <!-- 댓글 인서트-->
     <insert id="insertArticleComment">
@@ -278,52 +458,86 @@
 
     <!-- 다이렉트 리스트 가지고 오기-->
     <select id="selectMyDirectList" resultType="int">
-        SELECT rcv_user_pk as prfile_info_pk
+        SELECT rcv_user_pk as profile_info_pk
         FROM ms_mstar_direct
-        WHERE send_user_pk = #{prfile_info_pk}
+        WHERE send_user_pk = #{profile_info_pk}
         UNION 
-        SELECT send_user_pk as prfile_info_pk
+        SELECT send_user_pk as profile_info_pk
         FROM ms_mstar_direct
-        WHERE rcv_user_pk= #{prfile_info_pk}
+        WHERE rcv_user_pk= #{profile_info_pk}
     </select>
     <!-- 다이렉트 마지막 하나 -->
      <select id="selectLastDirectDto" resultType="com.psychopath.dogstalking.mstar.dto.DirectDto">
         SELECT * FROM ms_mstar_direct
-        where send_user_pk = #{another_info_pk} and rcv_user_pk = #{prfile_info_pk}
+        where send_user_pk = #{another_info_pk} and rcv_user_pk = #{profile_info_pk}
         OR 
-        rcv_user_pk = #{another_info_pk} and send_user_pk = #{prfile_info_pk}
+        rcv_user_pk = #{another_info_pk} and send_user_pk = #{profile_info_pk}
         ORDER by created_at DESC
         limit 1
     </select>
+    <!--다이렉트 읽은 상태 업데이트-->
+    <update id="updateReadStatus">
+        UPDATE ms_mstar_direct
+        SET read_status = 'Y'
+        where rcv_user_pk = #{profile_info_pk}
+        and send_user_pk = #{another_info_pk}
+    </update>
     <!--다이렉트 리스트 -->
-    <select id="selectDirectList" resultType="com.psychopath.dogstalking.mstar.dto.DirectDto">
+    <select id="selectDirectChatList" resultType="com.psychopath.dogstalking.mstar.dto.DirectDto">
         SELECT * FROM ms_mstar_direct
-        where send_user_pk = #{another_info_pk} and rcv_user_pk = #{prfile_info_pk}
+        where send_user_pk = #{another_info_pk} and rcv_user_pk = #{profile_info_pk}
         OR 
-        rcv_user_pk = #{another_info_pk} and send_user_pk = #{prfile_info_pk}
-        ORDER by created_at DESC
+        rcv_user_pk = #{another_info_pk} and send_user_pk = #{profile_info_pk}
+        ORDER by created_at ASC
     </select>
+    <!--로드한거 이외의 새로운채팅 로드-->
+    <select id="selectNewChatList" resultType="com.psychopath.dogstalking.mstar.dto.DirectDto">
+        SELECT * FROM ms_mstar_direct
+        <![CDATA[
+		    where (direct_pk > #{direct_pk})
+         ]]>    
+        and ((send_user_pk = #{another_info_pk} and rcv_user_pk = #{profile_info_pk})
+        OR 
+        (rcv_user_pk = #{another_info_pk} and send_user_pk = #{profile_info_pk}))
+        ORDER by created_at ASC
+    </select>
+    <select id="selectChangeDirectStatus" resultType="int">
+        SELECT count(read_status) from ms_mstar_direct
+        where send_user_pk = #{profile_info_pk}
+        and rcv_user_pk = #{another_info_pk}
+        <![CDATA[
+        and direct_pk <= #{direct_pk}
+        ]]>  
+        and read_status = 'N'
+    </select>
+    
     <!--검색-->
     <select id="selectSearchUserList" resultType="com.psychopath.dogstalking.dto.UserDto">
         SELECT * from ms_user
         WHERE userid LIKE CONCAT(#{search_text},'%')
         and user_pk in (SELECT user_pk from ms_mstar_profile_info
         where profile_info_pk != #{profile_info_pk})
-        <!-- 밑에 한줄 없어도 되는데 지금은 오류뜸... 유저들중 프로필 인서트 안되는애들있어서..-->
     </select>
     <!--내가 팔로잉 하는 사람들 중 특정 사람을 팔로우하는 인원 수-->
     <select id="selectMyFollowingUserFollowing" resultType="int">
-        SELECT count(*) from ms_mstar_follow
+        SELECT following_user_pk from ms_mstar_follow
         where follow_user_pk = #{another_info_pk}
         and following_user_pk in (
             SELECT follow_user_pk from ms_mstar_follow
             where following_user_pk = #{profile_info_pk}
             )
     </select>
+    <!--채팅 작성-->
     <insert id="insertDirectChat">
         INSERT into ms_mstar_direct(send_user_pk, rcv_user_pk, chat)
         values(#{send_user_pk}, #{rcv_user_pk}, #{chat})
     </insert>
+    <!--내스토리 전체목록(시간제한없음)-->
+    <select id="selectMyAllStoryList" resultType="com.psychopath.dogstalking.mstar.dto.StoryDto">
+        SELECT * from ms_mstar_story
+        where profile_info_pk  = #{profile_info_pk}
+    </select>
+    
     
 
     

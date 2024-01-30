@@ -56,7 +56,12 @@ public class MstarController {
     @RequestMapping("profileArticleListPage")
     public String profileArticleListPage(int profile_info_pk, int user_pk){
 
-        return "mstar/profileArticleListPage";
+        return "mstar/profileArticleListPage"; 
+    }
+    @RequestMapping("userScrapArticleListPage")
+    public String userScrapArticleListPage(int profile_info_pk, int user_pk){
+
+        return "mstar/userScrapArticleListPage";
     }
     @RequestMapping("directListPage")
     public String directListPage(int profile_info_pk){

@@ -11,28 +11,97 @@
 
         <script th:inline="javascript">
             let profile_info_pk = null;
+            let another_info_pk = null;
             function getProfile_info_pk() {
                 const urlParams = new URLSearchParams(location.search);
                 let key = urlParams.get("profile_info_pk");
                 profile_info_pk = key;
+                let anotherKey = urlParams.get("another_info_pk");
+                another_info_pk = anotherKey;
+                loadMyProfileInfoForFollow();
+                loadAnotherStorageList(another_info_pk);
+                loadAnotherProfileInfo(profile_info_pk, another_info_pk); 
+                
 
-                loadAnotherArticleFirstImgList(profile_info_pk); 
-               // loadAnotherStoryStorageList(profile_info_pk);
-                loadAnotherProfileInfo(profile_info_pk); 
+                const scrapArticleListButton = document.querySelector("#scrapArticleListButton");
+                scrapArticleListButton.setAttribute("onclick" , "loadMyScrapArticleList("+another_info_pk+")");
+
+                const userArticleListButton = document.querySelector("#userArticleListButton");
+                userArticleListButton.setAttribute("onclick" , "loadAnotherArticleFirstImgList("+another_info_pk+")");
+                
+                // const tagArticleListButton = document.querySelector("#tagArticleListButton");
+                // tagArticleListButton.setAttribute("onclick" , "loadMyScrapArticleList("+another_info_pk+")");
+
+                const goDirectPage = document.querySelector("#goDirectPage");
+                goDirectPage.setAttribute("onclick", "location.href='./directPage?profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk+"'")
             }
+            
+            let user_pk = null;
+            function loadMyProfileInfoForFollow(requestStatus){
+                const url = "./loadMyProfileInfoForFollow";
 
-            function loadAnotherProfileInfo(profile_info_pk){
+                fetch(url, {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: "profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk
+                })
+                .then(response => response.json())
+                .then((response) =>{
+                    user_pk = response.data.userDto.user_pk;
+                    loadAnotherArticleFirstImgList(another_info_pk, user_pk);
+                    const myInfoBox = document.querySelector("#myInfoBox");
+
+                    const goMainListPage = document.querySelector("#goMainListPage");
+                    goMainListPage.setAttribute("onclick", "location.href='./mainListPage?user_pk="+response.data.userDto.user_pk+"'")
+
+                    const myProfilePhoto = document.querySelector("#myProfilePhoto");
+                    myProfilePhoto.src = response.data.profileInfoDto.profile_photo;
+
+                    const myNickName= document.querySelector("#myNickName");
+                    myNickName.innerText = response.data.profileInfoDto.nick_name;
+
+                    const myUserId= document.querySelector("#myUserId");
+                    myUserId.innerText = response.data.userDto.userid;
+                    
+                    
+                    
+                    if(requestStatus ==0){
+                        if(response.data.followStatus == 1){
+                            myInfoBox.classList.remove("d-none");
+                        }else{
+                            myInfoBox.classList.add("d-none");
+                        }   
+                    }else if(requestStatus== 1){
+                        if(response.data.followingStatus == 1){
+                            myInfoBox.classList.remove("d-none")
+                        }else{
+                            myInfoBox.classList.add("d-none")
+                        }
+                    }else if(requestStatus ==3){
+                        myInfoBox.classList.add("d-none")
+                    }
+
+                });
+            }
+            
+            function loadAnotherProfileInfo(profile_info_pk, another_info_pk){
+                
                 const url = "./loadAnotherProfileInfo";
 
                 fetch(url, {
-                     method: "post",
+                     method: "post",    
                      headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
-                     body: "profile_info_pk="+profile_info_pk
+                     body: "profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk
             	})
                 .then(response => response.json())
                 .then((response) =>{
+                    
+                    const profileUserid = document.querySelector("#profileUserid");
+                    profileUserid.innerText = response.data.userDto.userid;
 
                     const profilePhoto = document.querySelector("#profilePhoto");
                     profilePhoto.setAttribute("src", response.data.profileInfoDto.profile_photo);                    
@@ -42,19 +111,201 @@
 
                     const followCount = document.querySelector("#followCount");
                     followCount.innerText = response.data.followCount;
+                    followCount.setAttribute("onclick","showFollowListModal()");
+                    
                     
                     const followingCount = document.querySelector("#followingCount");
                     followingCount.innerText = response.data.followingCount;
-
+                    followingCount.setAttribute("onclick","showFollowingListModal()");
+                    
                     const nickName = document.querySelector("#nickName");
                     nickName.innerText = response.data.profileInfoDto.nick_name;
 
                     const status_message = document.querySelector("#status_message");
                     status_message.innerText = response.data.profileInfoDto.status_message;
+                    
+                    
+                    
+                    const blockUserid = document.querySelector("#blockUserid");
+                    blockUserid.innerText = response.data.userDto.userid+" 님을";
+                    
+                    const blockProfilePhoto = document.querySelector("#blockProfilePhoto");
+                    blockProfilePhoto.src = response.data.profileInfoDto.profile_photo;
+                    
+                    const menuBlock = document.querySelector("#menuBlock");
+                    const menuFollow = document.querySelector("#menuFollow");
+
+                    const followButton = document.querySelector("#followButton");
+                    const bookMarkButton = document.querySelector("#bookMarkButton");
+                    if(response.data.blockStatus == 0){
+                        menuBlock.innerText = "차단";
+                        menuBlock.setAttribute("onclick","showBlockBox()");
+                        menuFollow.setAttribute("data-bs-dismiss","offcanvas");
+                        
+                        menuFollow.classList.remove("text-secondary");
+                        if(response.data.followStatus == 1){
+                            bookMarkButton.classList.remove("d-none");
+                            
+                            followButton.setAttribute("onclick", "unFollowingUser()");
+                            
+                            followButton.setAttribute("style","background-color: rgb(231, 229, 229);");
+                            followButton.innerText = "팔로잉 ";
+                            followButton.classList.remove("text-white");
+                            const i = document.createElement("i")
+                            
+                            i.setAttribute("class","fa-solid fa-chevron-down");
+                            followButton.appendChild(i);
+
+                            menuFollow.innerText = "팔로잉 취소"
+                            menuFollow.setAttribute("onclick" ,"unFollowingUser()");
+                            if(response.data.bookmarkStatus == 1){ 
+                                followButton.classList.add("text-success");
+                            }else{
+                                followButton.classList.remove("text-success");
+                            }
+
+                        }else{
+                            bookMarkButton.classList.add("d-none");
+
+                            followButton.setAttribute("onclick", "followingUser()");
+                            followButton.innerText = "팔로우 ";
+                            followButton.setAttribute("style","background-color: rgb(65,147,239);");
+                            followButton.classList.add("text-white");
+                            menuFollow.innerText = "팔로우"
+                            menuFollow.setAttribute("onclick" ,"followingUser()");
+                        }
+
+                    }else{
+                        menuBlock.innerText = "차단 해제";
+                        menuBlock.setAttribute("onclick", "unBlockUser()");
+
+                        followButton.innerText = "차단 해제";
+                        followButton.setAttribute("style","background-color: rgb(65,147,239);");
+                        followButton.setAttribute("onclick", "unBlockUser()");
+                        followButton.classList.add("text-white");
+
+                        menuFollow.innerText = "팔로잉(차단됨)"
+                        
+                        menuFollow.removeAttribute("data-bs-dismiss");
+                        menuFollow.classList.add("text-secondary");
+                        menuFollow.setAttribute("onclick" ,"unFollowingUser()");
+                    }
+
+                    
+                    const bookMarkIcon = document.querySelector("#bookMarkIcon");
+                    const bookMarkText = document.querySelector("#bookMarkText");
+                    const bookMarkImg = document.querySelector("#bookMarkImg");
+                    if(response.data.bookmarkStatus == 1){
+
+                        bookMarkButton.setAttribute("onclick","deleteBookMark()");
+                        bookMarkIcon.classList.remove("d-none");
+                        bookMarkText.innerText = "즐겨찾는 친구";
+                        bookMarkText.classList.add("text-success");
+                        bookMarkImg.src = "/public/image/mstar/bookMark.png";
+                    }else{
+
+                        bookMarkButton.setAttribute("onclick","insertBookMark()");
+                        bookMarkIcon.classList.add("d-none");
+                        bookMarkText.innerText = "즐겨찾기";
+                        bookMarkText.classList.remove("text-success");
+                        bookMarkImg.src = "";
+                    }
+
+
+
+                    const profileUser_id= document.querySelector("#profileUser_id");
+                    profileUser_id.innerText = response.data.userDto.userid;
+
+                    const followingFollow= document.querySelector("#followingFollow");
+                    followingFollow.innerText = response.data.followingFollowingCount+"함께 팔로우 하는사람";
+
+                    const follow= document.querySelector("#follow");
+                    follow.innerText = response.data.followCount +" 팔로워";
+
+                    const following= document.querySelector("#following");
+                    following.innerText = response.data.followingCount +" 팔로잉";
+                    
+                    if(response.data.followingFollowingCount != 0){
+                        const followFollowingBox = document.querySelector("#followFollowingBox");
+                        followFollowingBox.classList.remove("d-none");
+                        let setCount = 1;
+                        for(i of response.data.followingFollowList){
+                            const followProfileImg = document.querySelector("#followProfileImg"+setCount);
+                            followProfileImg.src = i.followingFollowProfile.profile_photo;
+                            setCount +=1
+                        }
+                        const imgBox = document.querySelector("#imgBox");
+                        if(setCount-1 == 1){
+                            imgBox.classList.remove("col-3");
+                            imgBox.classList.add("col-auto");
+                        }else{
+                            
+                            imgBox.classList.remove("col-3");
+                            imgBox.classList.add("col-2");
+                            
+                        }
+
+                        const followFollowingName = document.querySelector("#followFollowingName");
+                        followFollowingName.innerText = response.data.followingFollowList[0].followingFollowUser.userid+"님 외";
+                    
+
+                        const followFollowingCount = document.querySelector("#followFollowingCount");
+                        followFollowingCount.innerText = response.data.followingFollowingCount+"명이 팔로우합니다."
+                    }
                 })
             }
+            function insertBookMark(){
+                const url = "./insertBookMark";
 
-            function loadAnotherArticleFirstImgList(profile_info_pk){
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk
+            	}).then(() => {
+                    const bookMarkButton = document.querySelector("#bookMarkButton");
+                    bookMarkButton.setAttribute("onclick","deleteBookMark()");
+
+                    const bookMarkText = document.querySelector("#bookMarkText");
+                    bookMarkText.innerText = "즐겨찾는 친구";
+                    bookMarkText.classList.add("text-success");
+
+                    const bookMarkImg = document.querySelector("#bookMarkImg");
+                    bookMarkImg.src = "/public/image/mstar/bookMark.png";
+
+                    loadAnotherProfileInfo(profile_info_pk, another_info_pk);
+                });
+                
+            }
+
+            function deleteBookMark(){
+                const url = "./deleteBookMark";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk
+            	})
+                .then(() =>{
+                    const bookMarkButton = document.querySelector("#bookMarkButton");
+                    bookMarkButton.setAttribute("onclick","insertBookMark()");
+
+                    const bookMarkText = document.querySelector("#bookMarkText");
+                    bookMarkText.innerText = "즐겨찾기";
+                    bookMarkText.classList.remove("text-success");
+
+                    const bookMarkImg = document.querySelector("#bookMarkImg");
+                    bookMarkImg.src = "";
+
+                    loadAnotherProfileInfo(profile_info_pk, another_info_pk);    
+                });
+                
+            }
+        
+            function loadAnotherArticleFirstImgList(another_info_pk, user_pk){
                 const url = "./loadMyArticeleList";
 
                 fetch(url, {
@@ -62,28 +313,119 @@
                      headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
-                     body: "profile_info_pk="+profile_info_pk
+                     body: "profile_info_pk="+another_info_pk
             	})
                 .then(response => response.json())
                 .then((response) =>{
                     const articleListBox = document.querySelector("#articleListBox");
-                    for(e of response.data){
-                        const articleListWrapper = document.querySelector("#articleListTemplete .articleListWrapper").cloneNode(true);
-                        const articleFirstImg = articleListWrapper.querySelector(".articleFirstImg");
-                        articleFirstImg.src = e.artPhotoList[0].photo_path;
-                        articleFirstImg.style.objectFit = "fill";
-                        
-                        
-                        const icon = articleListWrapper.querySelector(".icon");
-                        if(e.artPhotoList.length >= 2){
-                            icon.classList.add("fa-copy" ,"fa-solid")
-                        }
-                        articleListBox.appendChild(articleListWrapper);
+                    articleListBox.innerHTML ="";
 
+                    const scrapArticleListButton = document.querySelector("#scrapArticleListButton");
+                    scrapArticleListButton.classList.remove("border-bottom" , "border-black");
+                    scrapArticleListButton.classList.add("text-secondary");
+
+                    const userArticleListButton = document.querySelector("#userArticleListButton");
+                    userArticleListButton.classList.add("border-bottom" , "border-black");
+                    userArticleListButton.classList.remove("text-secondary");
+
+                    const tagArticleListButton = document.querySelector("#tagArticleListButton");
+                    tagArticleListButton.classList.remove("border-bottom" , "border-black");
+                    tagArticleListButton.classList.add("text-secondary");
+                    if(response.data.length != 0){
+                        for(e of response.data){
+                            articleListBox.classList.add("row-cols-3")
+                            const articleListWrapper = document.querySelector("#articleListTemplete .articleListWrapper").cloneNode(true);
+                            const articleFirstImg = articleListWrapper.querySelector(".articleFirstImg");
+                            articleFirstImg.src = e.artPhotoList[0].photo_path;
+                            articleFirstImg.style.objectFit = "fill";
+                            articleFirstImg.setAttribute("onclick","location.href='profileArticleListPage?profile_info_pk="+another_info_pk+"&user_pk="+user_pk+"'");
+                            
+                            
+                            const icon = articleListWrapper.querySelector(".icon");
+                            if(e.artPhotoList.length >= 2){
+                                icon.classList.add("fa-copy" ,"fa-solid")
+                            }
+                            articleListBox.appendChild(articleListWrapper);
+
+                        }
+                   
+                    }else{
+                        const div = document.createElement("div");
+                        div.classList.add("col","mt-5","text-center");
+                        const img = document.createElement("img");
+                        img.classList.add("img-fluid");
+                        img.src = "/public/image/mstar/noPhoto.png";
+                        img.style.height = "10em";
+                        div.appendChild(img);
+                        articleListBox.appendChild(div);
+                        articleListBox.classList.remove("row-cols-3");
                     }
+
+                    
                 });
             }
-            function loadAnotherStorageList(profile_info_pk){
+
+            function loadMyScrapArticleList(another_info_pk){
+                const url = "./loadMyScrapArticleList";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+another_info_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    const articleListBox = document.querySelector("#articleListBox");
+                    articleListBox.innerHTML ="";
+
+                    const scrapArticleListButton = document.querySelector("#scrapArticleListButton");
+                    scrapArticleListButton.classList.add("border-bottom" , "border-black");
+                    scrapArticleListButton.classList.remove("text-secondary");
+
+                    const userArticleListButton = document.querySelector("#userArticleListButton");
+                    userArticleListButton.classList.remove("border-bottom" , "border-black");
+                    userArticleListButton.classList.add("text-secondary");
+                    
+                    const tagArticleListButton = document.querySelector("#tagArticleListButton");
+                    tagArticleListButton.classList.remove("border-bottom" , "border-black");
+                    tagArticleListButton.classList.add("text-secondary");
+
+                    if(response.data.length != 0){
+                        articleListBox.classList.add("row-cols-3")
+                        for(e of response.data){
+                            const articleListWrapper = document.querySelector("#articleListTemplete .articleListWrapper").cloneNode(true);
+                            const articleFirstImg = articleListWrapper.querySelector(".articleFirstImg");
+                            articleFirstImg.src = e.artPhotoList[0].photo_path;
+                            articleFirstImg.style.objectFit = "fill";
+                            articleFirstImg.setAttribute("onclick","location.href='userScrapArticleListPage?profile_info_pk="+another_info_pk+"&user_pk="+user_pk+"'");
+                            
+                            
+                            const icon = articleListWrapper.querySelector(".icon");
+                            if(e.artPhotoList.length >= 2){
+                                icon.classList.add("fa-copy" ,"fa-solid")
+                            }
+                            articleListBox.appendChild(articleListWrapper);
+
+                        }
+
+                    }else{
+                        const div = document.createElement("div");
+                        div.classList.add("col","mt-5","text-center");
+                        const img = document.createElement("img");
+                        img.classList.add("img-fluid");
+                        img.src = "/public/image/mstar/noPhoto.png";
+                        img.style.height = "10em";
+                        div.appendChild(img);
+                        articleListBox.appendChild(div);
+                        articleListBox.classList.remove("row-cols-3");
+                    }
+
+                });
+            }
+
+            function loadAnotherStorageList(another_info_pk){
                 const url = "./loadStoryStorageList";
 
                 fetch(url, {
@@ -91,7 +433,7 @@
                      headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
-                     body: "profile_info_pk="+profile_info_pk
+                     body: "profile_info_pk="+another_info_pk
             	})
                 .then(response => response.json())
                 .then((response) =>{
@@ -104,45 +446,164 @@
                             storage_name.innerText = e.storage_name;
                             const storage_img = storyStorageListWrapper.querySelector(".storage_img");
                             storage_img.src = e.storage_img;
+                            storage_img.setAttribute("onclick", "showStoryModal("+e.storage_pk+")")
                             
                             storyStorageListBox.appendChild(storyStorageListWrapper);
 
                         }
-                        const storageAddButton = document.querySelector("#storageAddButton");
-                        storageAddButton.remove();
-                        const addButton = document.createElement("div");
-                        addButton.classList.add("col-auto");
-                        addButton.setAttribute("onclick", "location.href='./addStoryStoragePage?user_pk="+user_pk+"'");
-                        addButton.setAttribute("id", "storageAddButton");
-                        const row1 = document.createElement("div");
-                        row1.classList.add("row");
-                        const col1 = document.createElement("div");
-                        col1.classList.add("col","fs-5", "text-center");
-                        const i = document.createElement("i");
-                        i.classList.add("fa-solid","fa-plus" ,"rounded-circle","border","border-black","py-3","px-3");
-                        i.setAttribute("style","height: 15vw; aspect-ratio: 1/1;")
-                        col1.appendChild(i);
-                        row1.appendChild(col1);
-
-                        const row2 = document.createElement("div");
-                        row2.classList.add("row");
-                        const col2 = document.createElement("div");
-                        col2.classList.add("col","py-0", "text-center");
-                        col2.setAttribute("style","font-size: small;")
-
-                        row2.appendChild(col2);
-
-                        addButton.appendChild(row1);
-                        addButton.appendChild(row2);
-
-                        storyStorageListBox.appendChild(addButton);
                     }
                 });
             }
+            function loadStoryStorageInfo(storage_pk){
+                const url = "./loadStoryStorageInfo";
 
-            function followingUser(user_pk){
+                fetch(url, {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: "storage_pk="+storage_pk
+                })
+                .then(response => response.json())
+                .then((response) =>{
+                    const storageName = document.querySelector("#storageName");
+                    storageName.innerText = response.data.storage_name;
 
-                const follow_user_pk = profile_info_pk;
+                    const storyStorageImg = document.querySelector("#storyStorageImg");
+                    storyStorageImg.src = response.data.storage_img;
+                });
+            }
+
+            let storyList = [];
+            let currentPage = 0 ;
+            function loadStorageStoryList(storage_pk){
+                currentPage=0;
+                storyList=[];
+                const url = "./loadStorageStoryList";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "storage_pk="+storage_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    const barBox = document.querySelector("#barBox");
+                    barBox.innerHTML = '';
+                    
+                    let startPageActive =0;
+                    for(e of response.data){
+                        const div = document.createElement("div");
+                        div.classList.add("bar");
+                        div.setAttribute("id","bar"+e.storyDto.story_pk);
+                        if(startPageActive == 0){
+                            div.classList.add("active");
+                        }
+                        startPageActive += 1;
+                        barBox.appendChild(div);                        
+                       
+                        storyList.push(e.storyDto.story_pk);
+                    }
+
+                    //클릭시 바뀌어야함.
+                    
+                    loadStory(storyList[currentPage]);
+                    
+                });
+            }
+            function loadStory(story_pk){
+                const url = "./loadUserStory";
+                
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "story_pk="+story_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    
+                    const story_created_at = document.querySelector("#story_created_at");
+                    const d = response.data.created_at;
+                    story_created_at.innerText = d[0]+"."+d[1]+"."+d[2]+".";
+
+                    const story_img = document.querySelector("#story_img");
+                    story_img.style.backgroundImage = "url("+response.data.story_photo+")";
+                    //텍스트 + color
+                    const story_text = document.querySelector("#story_textAndColor");
+                    story_text.innerText = response.data.story_text;
+                    story_text.style.color = response.data.text_color;
+                    story_text.style.backgroundColor = response.data.background_color;
+                    /// x y 위치정보
+                    const storyTextBox =  document.querySelector("#storyTextBox");
+                    storyTextBox.setAttribute("style", "top:"+response.data.y_coordinates+"%;left:"+response.data.x_coordinates+"%;");
+
+                   
+
+                });
+            }
+            function removeTouchImgEventListener() {
+                const story_img = document.querySelector("#story_img");
+                story_img.removeEventListener('touchstart', touchImg());
+            }
+
+
+            function touchImg(event) {
+                
+                const touchX = event.touches[0].clientX; // 터치 이벤트의 X 좌표
+                // 이미지의 가로 중앙 좌표
+                const imageCenterX = story_img.getBoundingClientRect().left + story_img.offsetWidth / 2;
+
+                if (touchX < imageCenterX) {
+                    if(currentPage == 0){
+                            closeStoryModal();
+                    }else{
+                        loadStory(storyList[currentPage-1]);
+                        currentPage -=1;
+                        const bar = document.querySelector("#bar"+storyList[currentPage+1]);
+                        bar.classList.remove("active");
+                    }
+                    
+                } else {
+                    // 이미지의 오른쪽 절반을 터치했을 때의 처리
+                    if(storyList.length == currentPage+1){                            
+                            closeStoryModal();
+                    }else{
+                        loadStory(storyList[currentPage+1]);
+                        currentPage +=1;
+                        const bar = document.querySelector("#bar"+storyList[currentPage]);
+                        bar.classList.add("active");
+                    }
+                    
+                }
+            }
+
+
+            function showStoryModal(storage_pk){
+                loadStoryStorageInfo(storage_pk);
+                loadStorageStoryList(storage_pk);
+                
+                const story_img = document.querySelector("#story_img");
+                
+                story_img.addEventListener('touchstart', touchImg);
+                
+                const storyModal = bootstrap.Modal.getOrCreateInstance("#storyModal");
+                storyModal.show();
+            }
+
+            function closeStoryModal(){
+                const storyModal = bootstrap.Modal.getOrCreateInstance("#storyModal");
+                storyModal.hide();
+                
+                const story_img = document.querySelector("#story_img");
+                story_img.removeEventListener("touchstart", touchImg);    
+            } 
+
+
+            function followingUser(){
 
                 const url = "./followingAnotherUser";
                 fetch(url, {
@@ -150,15 +611,376 @@
                      headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
-                     body: "profile_info_pk="+profile_info_pk+"&user_pk="+user_pk
-            	});
-                    loadAnotherProfileInfo(profile_info_pk);
-                    const followButton = document.querySelector("#followButton");
-                    followButton.innerText = "팔로잉";
-                    followButton.classList.remove("btn-primary");
-                    followButton.style.backgroundColor ="rgb(231, 229, 229);";
-            
+                     body: "follow_user_pk="+another_info_pk+"&following_user_pk="+profile_info_pk
+                    }).then(() => {
+                         loadAnotherProfileInfo(profile_info_pk,another_info_pk);
+                    });
             }
+            function unFollowingUser(){
+                
+                const url = "./unFollowingAnotherUser";
+                fetch(url, {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: "follow_user_pk="+another_info_pk+"&following_user_pk="+profile_info_pk
+                }).then(() => {
+                    loadAnotherProfileInfo(profile_info_pk,another_info_pk);
+                });
+            }
+            function listFollowingUser(follow_user_pk,target){
+
+                const url = "./followingAnotherUser";
+                fetch(url, {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: "follow_user_pk="+follow_user_pk+"&following_user_pk="+profile_info_pk
+                    }).then(() => {
+                        target.setAttribute("onclick", "listUnFollowingUser("+follow_user_pk+", this)");
+                        target.setAttribute("style","background-color: rgb(231, 229, 229);");
+                        target.innerText = "팔로잉 ";
+                        target.classList.remove("text-white");
+                        
+                            
+                    });
+            }
+            function listUnFollowingUser(follow_user_pk, target){
+                
+                const url = "./unFollowingAnotherUser";
+                fetch(url, {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: "follow_user_pk="+follow_user_pk+"&following_user_pk="+profile_info_pk
+                }).then(() => { 
+                    target.setAttribute("onclick", "listFollowingUser("+follow_user_pk+", this)");
+                    target.innerText = "팔로우 ";
+                    target.setAttribute("style","background-color: rgb(65,147,239);");
+                    target.classList.add("text-white");
+                });
+            }
+
+            let followSwitch = null;
+            function showFollowingListModal(){
+                const followListModal = bootstrap.Modal.getOrCreateInstance("#followListModal");
+                followListModal.show();
+                followSwitch=1;
+                loadUserFollowList("")
+                console.log(followSwitch)
+                const searchInputBox = document.querySelector("#searchInputBox");
+                searchInputBox.addEventListener("input", function() {
+                    
+                    if(searchInputBox.value.trim() === ""){
+                        resetButton.classList.add("d-none");
+                    }else{
+                        resetButton.classList.remove("d-none");
+                    }
+                    if(followSwitch == 1){
+                        loadUserFollowList(searchInputBox.value);
+                    }else{
+                        loadUserFollowingList(searchInputBox.value);
+                    }
+                    
+                });
+                
+            }
+            function showCheckBlockUser(){
+                const checkBlockUser = bootstrap.Modal.getOrCreateInstance("#checkBlockUser");
+                checkBlockUser.show();
+                
+            }
+            function showMenuBox(){
+                const menuBox = new bootstrap.Offcanvas(document.getElementById('menuBox'));
+                menuBox.show();
+                
+            }
+            function showBlockBox(){
+                const blockBox = new bootstrap.Offcanvas(document.getElementById('blockBox'));
+                blockBox.show();
+                
+            }
+
+            function blockUser(){
+                const url = "./blockAnotherUser";
+                fetch(url, {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: "profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk
+                }).then(() => {
+                    loadAnotherProfileInfo(profile_info_pk, another_info_pk);
+                });
+
+            }
+            function unBlockUser(){
+                const url = "./unBlockAnotherUser";
+                fetch(url, {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: "profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk
+                }).then(() => {
+                    loadAnotherProfileInfo(profile_info_pk, another_info_pk);
+                });
+
+            }
+
+            function showFollowListModal(){
+                const followListModal = bootstrap.Modal.getOrCreateInstance("#followListModal");
+                followListModal.show();
+                loadUserFollowingList("")
+                
+                followSwitch = 0;
+
+                const searchInputBox = document.querySelector("#searchInputBox");
+                searchInputBox.addEventListener("input", function() {
+                    if(searchInputBox.value.trim() === ""){
+                        resetButton.classList.add("d-none");
+                    }else{
+                        resetButton.classList.remove("d-none");
+                    }
+                    if(followSwitch == 1){
+                        loadUserFollowList(searchInputBox.value);
+                    }else if (followSwitch == 0){
+                        loadUserFollowingList(searchInputBox.value);
+                    }else if(followSwitch == 3){
+                        loadFollowFollowingList(searchInputBox.value);
+                    }
+                    
+                });
+                
+            }
+            function closeFollowListModal(){
+                const followListModal = bootstrap.Modal.getOrCreateInstance("#followListModal");
+                followListModal.hide();
+            }
+
+            
+            function loadUserFollowingList(searchText){
+                
+                loadMyProfileInfoForFollow(0);
+                if(followSwitch != 0){
+                    const searchInputBox = document.querySelector("#searchInputBox");
+                    searchInputBox.value ="";
+                }
+                followSwitch = 0;
+                const url = "./loadUserFollowingList";
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk+"&searchText="+searchText
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    
+                    const follow = document.querySelector("#follow");
+                    follow.classList.remove("border-bottom","text-secondary");
+                    follow.classList.add("fw-bold");
+                    follow.setAttribute("style", "border-bottom: 0.1em solid gray;");
+
+                    const following = document.querySelector("#following");
+                    following.classList.add("border-bottom","text-secondary");
+                    following.classList.remove("fw-bold");
+                    following.removeAttribute("style");
+
+                    const followingFollow = document.querySelector("#followingFollow");
+                    followingFollow.classList.add("border-bottom","text-secondary");
+                    followingFollow.classList.remove("fw-bold");
+                    followingFollow.removeAttribute("style");
+
+
+                    if(response.data.length == 0){
+                        return;
+                    }
+                    const searchListBox = document.querySelector("#searchListBox");
+                    searchListBox.innerHTML = "";
+                    for(e of response.data){
+                        const searchListWrapper = document.querySelector("#searchListTemplete .searchListWrapper").cloneNode(true);
+                        const another_info_pk = e.followProfileInfoDto.profile_info_pk;
+                        
+                        const searchProfile_photo = searchListWrapper.querySelector(".searchProfile_photo");
+                        searchProfile_photo.src = e.followProfileInfoDto.profile_photo;
+
+                        const search_nick_name = searchListWrapper.querySelector(".search_nick_name");
+                        search_nick_name.innerText = e.followProfileInfoDto.nick_name;
+                        
+                        
+        
+                        const search_userid = searchListWrapper.querySelector(".search_userid");
+                        search_userid.innerText = e.followUserDto.userid;
+                        
+                        const listFollowButton = searchListWrapper.querySelector(".listFollowButton");
+                        if(e.followStatus == 1){
+                            listFollowButton.setAttribute("onclick", "listUnFollowingUser("+e.followProfileInfoDto.profile_info_pk+", this)");
+                            
+                            listFollowButton.setAttribute("style","background-color: rgb(231, 229, 229);");
+                            listFollowButton.innerText = "팔로잉 ";
+                            listFollowButton.classList.remove("text-white");
+                          
+                        }else{
+                            listFollowButton.setAttribute("onclick", "listFollowingUser("+e.followProfileInfoDto.profile_info_pk+", this)");
+                            listFollowButton.innerText = "팔로우 ";
+                            listFollowButton.setAttribute("style","background-color: rgb(65,147,239);");
+                            listFollowButton.classList.add("text-white");
+                        }
+
+                        searchListBox.appendChild(searchListWrapper);
+                    }
+
+                });
+
+            }
+
+            function loadUserFollowList(searchText){
+                loadMyProfileInfoForFollow(1);
+                if(followSwitch != 1){
+                    const searchInputBox = document.querySelector("#searchInputBox");
+                    searchInputBox.value ="";
+                }
+                followSwitch=1;
+                const url = "./loadUserFollowList";
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk+"&searchText="+searchText
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+
+                    const follow = document.querySelector("#follow");
+                    follow.classList.add("border-bottom","text-secondary");
+                    follow.classList.remove("fw-bold");
+                    follow.removeAttribute("style");
+
+                    const following = document.querySelector("#following");
+                    following.classList.remove("border-bottom", "text-secondary");
+                    following.classList.add("fw-bold");
+                    following.setAttribute("style", "border-bottom: 0.1em solid gray;");
+
+                    const followingFollow = document.querySelector("#followingFollow");
+                    followingFollow.classList.add("border-bottom","text-secondary");
+                    followingFollow.classList.remove("fw-bold");
+                    followingFollow.removeAttribute("style");
+
+                    if(response.data.length == 0){
+                        return;
+                    }
+                    const searchListBox = document.querySelector("#searchListBox");
+                    searchListBox.innerHTML = "";
+                    for(e of response.data){
+                        const searchListWrapper = document.querySelector("#searchListTemplete .searchListWrapper").cloneNode(true);
+                        const another_info_pk = e.followProfileInfoDto.profile_info_pk;
+                        
+                        const searchProfile_photo = searchListWrapper.querySelector(".searchProfile_photo");
+                        searchProfile_photo.src = e.followProfileInfoDto.profile_photo;
+
+                        const search_nick_name = searchListWrapper.querySelector(".search_nick_name");
+                        search_nick_name.innerText = e.followProfileInfoDto.nick_name;
+                        
+                        
+        
+                        const search_userid = searchListWrapper.querySelector(".search_userid");
+                        search_userid.innerText = e.followUserDto.userid;
+                        
+                        const listFollowButton = searchListWrapper.querySelector(".listFollowButton");
+                        if(e.followStatus == 1){
+                            listFollowButton.setAttribute("onclick", "listUnFollowingUser("+e.followProfileInfoDto.profile_info_pk+", this)");
+                            
+                            listFollowButton.setAttribute("style","background-color: rgb(231, 229, 229);");
+                            listFollowButton.innerText = "팔로잉 ";
+                            listFollowButton.classList.remove("text-white");
+                          
+                        }else{
+                            listFollowButton.setAttribute("onclick", "listFollowingUser("+e.followProfileInfoDto.profile_info_pk+", this)");
+                            listFollowButton.innerText = "팔로우 ";
+                            listFollowButton.setAttribute("style","background-color: rgb(65,147,239);");
+                            listFollowButton.classList.add("text-white");
+                        }
+
+                        searchListBox.appendChild(searchListWrapper);
+                    }
+
+                });
+
+            }
+            
+            function loadFollowFollowingList(searchText){
+                loadMyProfileInfoForFollow(3);
+                if(followSwitch != 3){
+                    const searchInputBox = document.querySelector("#searchInputBox");
+                    searchInputBox.value ="";
+                }
+                followSwitch = 3;
+                const url = "./loadFollowFollowingList";
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk+"&searchText="+searchText
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+
+
+                    const follow = document.querySelector("#follow");
+                    follow.classList.add("border-bottom","text-secondary");
+                    follow.classList.remove("fw-bold");
+                    follow.removeAttribute("style");
+
+                    const following = document.querySelector("#following");
+                    following.classList.add("border-bottom","text-secondary");
+                    following.classList.remove("fw-bold");
+                    following.removeAttribute("style");
+
+                    const followingFollow = document.querySelector("#followingFollow");
+                    followingFollow.classList.remove("border-bottom", "text-secondary");
+                    followingFollow.classList.add("fw-bold");
+                    followingFollow.setAttribute("style", "border-bottom: 0.1em solid gray;");
+                    
+
+                    const searchListBox = document.querySelector("#searchListBox");
+                    searchListBox.innerHTML = "";
+                    if(response.data.length == 0){
+                        return;
+                    }
+                    for(e of response.data){
+                        const searchListWrapper = document.querySelector("#searchListTemplete .searchListWrapper").cloneNode(true);
+                        const another_info_pk = e.followProfileInfoDto.profile_info_pk;
+                        
+                        const searchProfile_photo = searchListWrapper.querySelector(".searchProfile_photo");
+                        searchProfile_photo.src = e.followProfileInfoDto.profile_photo;
+
+                        const search_nick_name = searchListWrapper.querySelector(".search_nick_name");
+                        search_nick_name.innerText = e.followProfileInfoDto.nick_name;
+                        
+                        
+        
+                        const search_userid = searchListWrapper.querySelector(".search_userid");
+                        search_userid.innerText = e.followUserDto.userid;
+                        
+                        searchListBox.appendChild(searchListWrapper);
+                    }
+
+                });
+
+            }
+
+
+
+
+
+
 
             window.addEventListener("DOMContentLoaded", () =>{
                 getProfile_info_pk();
@@ -180,6 +1002,32 @@
             }
             #d-none-scroll::-webkit-scrollbar {
                 display: none;
+            }
+            .form-control::placeholder {
+                color: white; /* placeholder 글자 색상을 원하는 색상으로 설정 */
+                font-size: 0.9em
+            }
+            #barBox{
+                display: flex;
+                height: 0.25em;
+           }
+            .bar {
+                width: 92%;
+                height: 0.15em; /* 바의 높이 설정 */
+                background-color: rgb(89, 86, 86); /* 바의 배경색 설정 */
+                margin-right: 0.2em;
+            }
+            
+            .bar.active {
+                background-color: rgb(229, 223, 223);
+              
+            }
+
+            .bar:last-child {
+                margin-right: 1em;
+            } 
+            .bar:first-child {
+                margin-left: 1em;
             }
         </style>
         
@@ -204,13 +1052,20 @@
                 </div>
             </div>
             <div class="row mt-2">
-                <div class="col-auto ms-2">
-                    <i class="fa-solid fa-chevron-left"></i>
+                <div class="col-2 ms-2">
+                    <i id="goMainListPage" class="fa-solid fa-chevron-left"></i>
                 </div>
-                <div class="col text-center">
-                    eun_jin_log
+                <div class="col">
+                    <div class="row justify-content-center">
+                        <div id="profileUserid"  class="col-auto px-0 text-center">
+                    
+                        </div>
+                        <div id="bookMarkIcon" class="col-auto px-0 d-none ">
+                            <img class="img-fluid" src="/public/image/mstar/bookMark.png" alt="" style="height: 1em;">
+                        </div>
+                    </div>
                 </div>
-                <div class="col-auto text-end me-2">
+                <div onclick="showMenuBox()" class="col-2 ps-0 text-end">
                     <i class="fa-solid fa-ellipsis"></i>
                 </div>
             </div>
@@ -232,7 +1087,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col">
+                        <div onclick="showFollowListModal()" class="col">
                             <div class="row mt-2">
                                 <div id="followCount" class="col fs-4 text-center">
                                     
@@ -244,7 +1099,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col">
+                        <div onclick="showFollowingListModal()" class="col">
                             <div class="row mt-2">
                                 <div id="followingCount" class="col fs-4 text-center">
                                     
@@ -267,34 +1122,34 @@
 
                         </div>
                     </div>
-                    <div class="row mt-3">
-                        <div id="followButton" th:onclick="'followingUser(' + ${session.sessionUser.user_pk} + ')'" class="col ms-3 text-center rounded border text-white" style="background-color: rgb(65,147,239);"><!--rgb(57,117,2)-->
-                            팔로우
+                    <div id="followFollowingBox" class="row mt-3 d-none">
+                        <div id="imgBox" class="col-3 mt-1 me-1 ms-2">
+                            <img id="followProfileImg1" class="img-fluid rounded-circle float-start border border-white border-2" style="aspect-ratio: 1/1; height: 2em; position: relative; z-index: 1;">
+                            <img id="followProfileImg2" class="img-fluid rounded-circle float-start border border-white border-2" style="aspect-ratio: 1/1; height: 2em; position: absolute; left: 2.3em; z-index: -1">
+                            <img id="followProfileImg3" class="img-fluid rounded-circle float-start border border-white border-2" style="aspect-ratio: 1/1; height: 2em; position: absolute; left: 3.3em; z-index: -2">
                         </div>
-                        <div class="col mx-3 fw-bold text-center rounded border" style="background-color: rgb(231, 229, 229);">
+                        <div class="col ps-0" style="font-size: 0.9em;">
+                            <div class="row">
+                                <div id="followFollowingName" class="col">
+                                    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div id="followFollowingCount" class="col">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div id="followButton"  class="col ms-3 text-center rounded border">
+                            
+                        </div>
+                        <div id="goDirectPage" class="col mx-3 fw-bold text-center rounded border" style="background-color: rgb(231, 229, 229);">
                             메세지
                         </div>
                         <div class="col-auto me-3 px-1 pt-1 text-center rounded border" style="background-color: rgb(231, 229, 229); font-size: small;">
                             <i class="fa-solid fa-user-plus px-0"></i>
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-3 mt-1 pe-0 ms-2">
-                            <img class="img-fluid rounded-circle float-start border border-white border-2" src="../../../../../../../../3img/dog1.jpeg" style="aspect-ratio: 1/1; height: 2em; position: relative; z-index: 1;">
-                            <img class="img-fluid rounded-circle float-start border border-white border-2" src="../../../../../../../../3img/dog1.jpeg" style="aspect-ratio: 1/1; height: 2em; position: absolute; left: 2.3em; z-index: -1">
-                            <img class="img-fluid rounded-circle float-start border border-white border-2" src="../../../../../../../../3img/dog1.jpeg" style="aspect-ratio: 1/1; height: 2em; position: absolute; left: 3.3em; z-index: -2">
-                        </div>
-                        <div class="col ps-0" style="font-size: 0.9em;">
-                            <div class="row">
-                                <div class="col">
-                                    <span class="fw-bold">Jo_inchun</span>님, <span class="fw-bold">miu_is_cat</span>님 <span class="fw-bold">외</span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <span class="fw-bold">26명</span>이 팔로우합니다.
-                                </div>
-                            </div>
                         </div>
                     </div>
                     <div id="d-none-scroll" class="row mt-3 overflow-x-auto">
@@ -308,17 +1163,20 @@
             </div>
             <div class="row mt-4 text-center">
                 <div class="col">
-                    <div class="row fs-3">
-                        <div class="col border-bottom border-black border-2">
-                            <i class="fa-solid fa-table-cells"></i>
+                    <div class="row fs-5">
+                        <div id="userArticleListButton" class="col border-bottom border-black border-1">
+                            <i  class="fa-solid fa-table-cells"></i>
                         </div>
-                        <div class="col">
-                            <i class="fa-solid fa-user-tag text-secondary"></i>
+                        <div id="tagArticleListButton" class="col text-secondary">
+                            <i  class="fa-solid fa-user-tag "></i>
+                        </div>
+                        <div id="scrapArticleListButton" class="col text-secondary">
+                            <i  class="fa-solid fa-bookmark"></i>
                         </div>
                     </div>
                 </div>
             </div>  
-            <div id="articleListBox" class="row row-cols-3 ps-0">
+            <div id="articleListBox" class="row row-cols-3 ps-0 overflow-y-auto" style="height: 20em;">
                 
             </div>
             <div class="row bg-white border-top sticky-bottom">
@@ -390,23 +1248,263 @@
         </div>
 
         <div id="articleListTemplete" class="d-none">
-            <div class="col-4 px-0 positiond-relative articleListWrapper">
+            <div class="col-4 px-0 positiond-relative articleListWrapper border border-white">
                 <img class="img-fluid articleFirstImg"  alt="" style="aspect-ratio: 1/1;">
                 <i class="position-absolute top-0 end-0 text-white pe-2 pt-2 icon" style="font-size: small;"></i>
             </div>
         </div>
         
         <div id="storyStorageListTemplete" class="d-none">
-            <div class="col-auto ms-3 storyStorageListWrapper">
+            <div class="col-auto me-1 storyStorageListWrapper">
                 <div class="row">
-                    <div class="col">
-                        <img class="img-fluid rounded-circle border border-black storage_img"  src="" alt="" style="aspect-ratio: 1/1; height: 15vw;">
+                    <div class="col-auto rounded-circle storageImg px-0 py-0">
+                        <img class="img-fluid rounded-circle border border-white border-2 storage_img"  src="" alt="" style="aspect-ratio: 1/1; height: 4em;">
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col py-0 storage_name" style="font-size: small;">
-                        미우는 고양이
+                    <div class="col pt-2 storage_name text-center" style="font-size: small;">
+                        
                     </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div id="followListModal" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content">
+                    <div class="modal-body" style="overflow: hidden;">
+                        <div class="row">
+                            <div onclick="closeFollowListModal()" class="col-2">
+                                <i class="fa-solid fa-chevron-left ps-2"></i>
+                            </div>
+                            <div id="profileUser_id" class="col text-center">
+                                
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                        <div class="row  mt-3" style="font-size: 0.8em;">
+                            <div onclick="loadFollowFollowingList('')" id="followingFollow" class="col px-0 text-center pb-2 border-bottom text-secondary">
+                               
+                            </div>
+                            <div onclick="loadUserFollowingList('')" id="follow" class="col px-0 text-center pb-2 border-bottom">
+                               
+                            </div>
+                            <div onclick="loadUserFollowList('')" id="following" class="col px-0 text-center pb-2 border-bottom text-secondary">
+                               
+                            </div>
+                        </div>                      
+                        <div class="row mt-2">
+                            <div class="col mx-2 rounded" style="background-color: rgb(218, 217, 217);">
+                                <div class="row position-relative">
+                                    <div class="col-auto pe-0 align-self-center">
+                                        <i class="fa-solid fa-magnifying-glass text-secondary"></i>
+                                    </div>
+                                    <div class="col-10">
+                                        <div class="row">
+                                            <div class="col">
+                                                <input id="searchInputBox" class="form-control ps-0 py-1" type="text" placeholder="검색" style="box-shadow: none; background-color: transparent; border: none;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="resetButton" class="col px-0 align-self-center d-none">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="myInfoBox" class="row mt-3">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col-auto pe-0">
+                                        <img id="myProfilePhoto" class="img-fluid rounded-circle searchProfile_photo" alt="" style="height: 3em; aspect-ratio: 1/1;">
+                                    </div>
+                                    <div class="col align-self-center">
+                                        <div class="row">
+                                            <div id="myUserId" class="col">
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="row text-secondary" style="font-size: 0.8em;">
+                                            <div id="myNickName" class="col">
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="searchListBox" class="col">
+
+                            </div>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+        </div>
+
+        <div id="searchListTemplete" class="d-none">
+            <div class="row searchListWrapper mt-3">
+                <div class="col-auto pe-0 align-self-center">
+                    <div class="row">
+                        <div class="col-auto">
+                            <img class="img-fluid rounded-circle searchProfile_photo" alt="" style="height: 3em; aspect-ratio: 1/1;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col align-self-center">
+                    <div class="row">
+                        <div class="col search_userid">
+                            
+                        </div>
+                    </div>
+                    <div class="row text-secondary" style="font-size: 0.8em;">
+                        <div class="col search_nick_name">
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2 align-self-center text-center" style="font-size: 0.8em;">
+                    <div class="row">
+                        <div  class="col listFollowButton rounded px-1">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="offcanvas offcanvas-bottom rounded-top" tabindex="-1" id="blockBox" aria-labelledby="offcanvasBottomLabel" style="height: auto; border: none;"> 
+            <div class="row mt-2">
+                <div class="col-5"></div>
+                <div class="col" style="background-color: gray; height: 0.2em;"></div>
+                <div class="col-5"></div>
+            </div>
+            <div class="row mt-3">
+                <div class="col">
+                    <div class="row">
+                        <div class="col text-center">
+                            <img id="blockProfilePhoto" class="img-fluid rounded-circle" src="" alt="" style="aspect-ratio: 1/1; height: 7em;">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="blockUserid" class="col text-center fs-5">
+                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-center fs-5">
+                            차단하시겠어요?
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <img class="img-fluid" src="/public/image/mstar/block.jpeg" alt="">
+                        </div>
+                    </div>
+                    <div class="row mx-2 mb-1">
+                        <div onclick="blockUser()" data-bs-dismiss="offcanvas" class="col py-1 text-center bg-primary text-white rounded">
+                            차단
+                        </div>
+                    </div>
+                    <div class="row mx-2 mb-2">
+                        <div class="col py-1 text-center rounded" data-bs-dismiss="offcanvas" style="background-color: rgb(224, 222, 222);">
+                            취소
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="offcanvas offcanvas-bottom" tabindex="-1" id="menuBox" aria-labelledby="offcanvasBottomLabel" style="height: auto; background-color: transparent; border: none;"> 
+            <div class="row rounded text-center bg-white mx-3">
+                <div class="col">
+                    <div  class="row border-bottom">
+                        <div id="menuBlock" data-bs-dismiss="offcanvas" onclick="showBlockBox()" class="col py-2 text-danger">
+                            차단
+                        </div>
+                    </div>
+                    <div class="row border-bottom text-danger">
+                        <div data-bs-dismiss="offcanvas" class="col py-2">
+                            신고
+                        </div>
+                    </div>
+                    <div class="row border-bottom justify-content-center ">
+                        <div onclick="insertBookMark()" data-bs-dismiss="offcanvas" id="bookMarkButton" class="col-auto">
+                            <div class="row">
+                                <div id="bookMarkText" class="col-auto py-2 px-1">
+                                    
+                                </div>
+                                <div class="col-auto px-0 text-start align-self-center">
+                                    <img id="bookMarkImg" src="" alt="" style="height: 1em;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="menuFollow" class="col py-2">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row rounded text-center bg-white mx-3 mt-2 mb-3">
+                <div data-bs-dismiss="offcanvas" onclick="justHideMenuBox()" class="col py-2">
+                    취소
+                </div>
+            </div>
+        </div>
+
+        <div id="storyModal" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content " style="background-color: black; overflow: hidden;">
+                    <div class="modal-body" style="overflow: hidden;">
+                        <div id="story_img" class="row position-relative px-0 rounded" style="height: 35em; background-size: 100%; background-repeat: no-repeat; background-position: center; background-color: rgb(49, 49, 49); top: 1rem;">   
+                            <div class="col px-0">
+                                <div class="row">
+                                    <div class="col">
+                                        <div id="barBox" class="mt-1 "> 
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row text-light mt-2">
+                                    <div class="col-auto">
+                                        <img id="storyStorageImg" class="rounded-circle ms-2"  alt="" style="aspect-ratio: 1/1; height: 2em;">
+                                    </div>
+                                    <div id="storageName" class="col-auto align-self-center px-0">
+                                        
+                                    </div>
+                                    <div id="story_created_at" class="col-auto text-secondary align-self-center pt-1" style="font-size: 0.9em;">
+                                        
+                                    </div>
+                                    <div class="col text-end text-white fs-5">
+                                        <i class="fa-solid fa-ellipsis"></i>
+                                    </div>
+                                    <div class="col-auto pe-4 text-end text-white fs-4">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="storyTextBox" class="col-auto px-0 position-absolute" style="cursor: pointer; top: 50%; left: 0%;">
+                                <div id="story_textAndColor" class="px-2">
+                                    
+                                </div>
+                            </div>
+                        </div>    
+                        <div class="row px-2 py-3 mt-3">
+                            <div class="col">
+                                <input class="form-control rounded-pill border-white py-1 text-white" type="text" placeholder="메세지를 입력해주세요." style="background-color: transparent;">
+                            </div>
+                            <div class="col-auto text-end me-1 text-white fs-4">
+                                <i class="fa-regular fa-heart"></i>&nbsp;&nbsp;
+                                <i class="fa-regular fa-paper-plane"></i>
+                            </div>
+                        </div>
+                    </div>    
                 </div>
             </div>
         </div>
