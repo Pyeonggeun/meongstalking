@@ -158,15 +158,15 @@
             <div class="col justify-content-between fw-bold">
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">게시판</span>
-                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">사진첩</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./photoAlbumPage'">사진첩</span>
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubMemberPage'">멤버</span>
             </div>
         </div>
 
         <div class="row border-bottom border-2 border-gray">
             <div class="col-md-4  px-0">
-                <img th:src="${showclubpk.img}" class="img-fluid">
-
+                <img class="img-fluid" th:src="@{'/uploadFiles/'+${showclubpk.img}}"
+                        alt="등록된 이미지가 없습니다">
             </div>
         </div>
 

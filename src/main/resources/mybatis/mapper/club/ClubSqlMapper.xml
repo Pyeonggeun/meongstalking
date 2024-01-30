@@ -4,8 +4,8 @@
 <mapper namespace="com.psychopath.dogstalking.club.mapper.ClubSqlMapper">
 
     <insert id="insertFreeBoard">
-        INSERT INTO ms_club_freeboard(club_pk,user_pk,title,content)
-        VALUES (#{club_pk},#{user_pk},#{title},#{content})
+        INSERT INTO ms_club_freeboard(club_pk,user_pk,title,content,img)
+        VALUES (#{club_pk},#{user_pk},#{title},#{content},#{img})
     </insert>
 
 

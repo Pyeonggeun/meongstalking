@@ -24,7 +24,8 @@
             <div class="col-md-6">
                 <form action="./updateClubProcess" method="post" enctype="multipart/form-data">
                     <input type="hidden" id="club_pk" name="club_pk" th:value="${clubTF['club_pk']}">
-
+                    
+                    <div th:th:text="${clubTF['club_pk']}"></div>
                     <div class="mb-3">
                         길드 이름 :
                         <input type="text" class="form-control" id="name" name="name" th:value="${clubTF['clubname']}">
@@ -37,8 +38,8 @@
 
                     <div class="mb-3">
                         대표 사진 :
-                            
-
+                        <input type="file" class="form-control" id="img" name="img_file"  accept="image/*" multiple>
+                        
                     </div>
 
                     <div class="d-flex">
@@ -46,7 +47,6 @@
                         <button class="btn btn-secondary ms-2" type="button" onclick="goBack()">취소</button>
                     </div>
                 </form>
-                <!-- End Form for Editing Post -->
             </div>
         </div>
     </div>
