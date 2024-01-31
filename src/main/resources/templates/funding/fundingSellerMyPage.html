@@ -51,7 +51,7 @@
                             <div class="row px-0 mb-1 mx-1"><div class="col fw-bold" style="font-size: 1em;"><span><i class="bi bi-bar-chart-line-fill"></i></span> 프로젝트 관련 데이터</div></div>
 
                             <div class="row py-1 mx-1"><div class="col" style="font-size: 0.7em;"><i class="bi bi-calculator"></i>7일간의 데이터</div></div>
-                            <div class="row border rounded mx-1 mb-4">
+                            <div class="row border rounded mx-1 mb-4 py-1">
                                 <div class="col">
                                         <div class="row py-1"><div class="col" style="font-size: 0.85em;">주문</div><div class="col fw-bold text-center" th:text="${stast.order}" style="font-size: 0.85em; color: coral;"></div>
                                         <div class="col" style="font-size: 0.85em;">찜</div><div class="col fw-bold text-center" th:text="${stast.wishlist}" style="font-size: 0.85em; color: coral;"></div></div>
@@ -61,10 +61,10 @@
                             </div>
 
                             <div class="row py-1 mx-1"><div class="col" style="font-size: 0.7em;"><i class="bi bi-trophy"></i>진행중인 프로젝트의 목표 펀딩률</div></div>
-                            <div class="row border rounded mx-1 mb-4">
+                            <div class="row border rounded py-2 mx-1 mb-4">
                                 <div class="col">
-                                        <div class="row py-1"><div class="col pt-1" style="font-size: 0.8em;">달성 프로젝트</div><div class="col text-center fw-bold" th:text="${stast.success}" style="font-size: 1em; color:coral;"></div></div>
-                                        <div class="row py-1"><div class="col pt-1" style="font-size: 0.8em;">미달성 프로젝트</div><div class="col text-center fw-bold" th:text="${stast.fail}" style="font-size: 1em; color:coral;"></div></div>
+                                        <div class="row"><div class="col ms-1 pt-1" style="font-size: 0.8em;">달성 프로젝트</div><div class="col text-center fw-bold" th:text="${stast.success}" style="font-size: 1em; color:coral;"></div></div>
+                                        <div class="row pt-1"><div class="col ms-1 pt-1" style="font-size: 0.8em;">미달성 프로젝트</div><div class="col text-center fw-bold" th:text="${stast.fail}" style="font-size: 1em; color:coral;"></div></div>
                                 </div>        
                             </div>
 

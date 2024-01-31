@@ -21,7 +21,7 @@
 
             const inputTitle = document.getElementById("inputTitle");
             const inputTitleRegex = /^.{5,}$/;
-            if(!insertTitleRegex.test(insertTitle.value)){
+            if(!inputTitleRegex.test(inputTitle.value)){
                 alert("펀딩 제목은 다섯 글자 이상 작성해 주세요.");
                 inputTitle.focus();
                 return;
@@ -29,7 +29,7 @@
 
             const inputExplain = document.getElementById("inputExplain");
             const inputExplainRegex = /^.{40,}$/;
-            if(!inputExplain(inputExplain.value)){
+            if(!inputExplainRegex.test(inputExplain.value)){
                 alert("간단한 설명은 40자 이상 작성해 주셔야합니다.");
                 inputExplain.focus();
                 return;
@@ -50,45 +50,46 @@
             }
 
             const inputStart = document.getElementById("inputStart");
-            const inputStartRegex = /^.{10,}$/;
-            if(!inputStartRegex.value.length < 10){
-                alert("응원글 본문은 10자 이상 작성해 주셔야 등록이 됩니다.");
-                inputStart.focus();
-                return;
-            }
-
             const inputFinish = document.getElementById("inputFinish");
-            const inputFinishRegex = /^.{10,}$/;
-            if(!inputFinishRegex.value.length < 10){
-                alert("응원글 본문은 10자 이상 작성해 주셔야 등록이 됩니다.");
-                inputFinish.focus();
+
+            if (inputStart.value === "" || inputFinish.value === "") {
+                alert("시작일과 종료일은 모두 입력해야 합니다.");
+                return;
+            }
+            const startDate = new Date(inputStart.value);
+            const finishDate = new Date(inputFinish.value);
+            if (startDate > finishDate) {
+                alert("종료일이 시작일보다 먼저 일수는 없습니다.");
                 return;
             }
 
+        
             const inputPrice = document.getElementById("inputPrice");
             if (inputPrice.value === "") {
-                alert("금액을 입력해 주세요.");
-                inputAmount.focus();
+                alert("가격을 설정해 주세요.");
+                inputPrice.focus();
                 return;
                 }
-            if (inputPrice < 9999) {
+            const price = Number(inputPrice.value);    
+            if (price < 10000) {
                 alert("금액은 10000원 이상이어야 합니다.");
                 return;
                 }
 
             const inputAmount = document.getElementById("inputAmount");
             if (inputAmount.value === "") {
-                alert("금액을 입력해 주세요.");
+                alert("목표금액을 입력해 주세요.");
                 inputAmount.focus();
                 return;
                 }
-            if(inputAmount<499999 ||inputAmount > 50000000){
+            const amount = Number(inputAmount.value);    
+            if(amount < 500000 || amount > 50000001){
                 alert("목표 금액은 50만원 이상, 5000만원 이하로만 설정할 수 있습니다");
                 inputAmount.focus();
                 return;
             }
 
-            insertCheering.submit();
+            rgstrProduct.submit();
         }
 
 

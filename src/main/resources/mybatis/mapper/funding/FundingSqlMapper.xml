@@ -280,21 +280,26 @@ select
 </select>
 
 <select id="selectCountFailGoal" resultType="int">
-select 
-		count(*) as count
-	from (
-		select 
-			mfp.product_pk,
-			mfp.amount -sum(mfo.quantity * mfp.price) as result
-		from ms_funding_product mfp 
-		inner join ms_funding_order mfo on mfp.product_pk = mfo.product_pk 
-		where mfp.product_pk IN (
-			select mfp.product_pk  from ms_funding_product mfp 
-			where user_pk = #{user_pk}
-		)
-		group by product_pk 
-		having result &gt;= 0
-	) as t;
+    select 
+            count(*) as count
+        from (
+            select 
+                mfp.product_pk,
+                mfp.amount -sum(mfo.quantity * mfp.price) as result
+            from ms_funding_product mfp 
+            inner join ms_funding_order mfo on mfp.product_pk = mfo.product_pk 
+            where mfp.product_pk IN (
+                select mfp.product_pk  from ms_funding_product mfp 
+                where user_pk = #{user_pk}
+            )
+            group by product_pk 
+            having result &gt;= 0
+        ) as t;
+</select>
+
+<select id="countCheeringByPk" resultType="int">
+    select count(*) from ms_funding_cheering
+    where product_pk = #{product_pk}
 </select>
 
 

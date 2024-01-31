@@ -127,7 +127,7 @@ public class FundingController {
             }
 
             productDto.setExplain_image(todayPath + fileName);
-            }        
+        }        
     
         //세션 정보 뽑아 넣기 
         UserDto sessionUser  = (UserDto)session.getAttribute("sessionUser");
@@ -150,9 +150,8 @@ public class FundingController {
     @RequestMapping("insertNewsProcesss")
     public String insertNewsProcess(@RequestParam("product_pk") int product_Pk, @RequestParam(name = "newsImage", required = false) MultipartFile newsImage ,FundingNewsDto paraFundingNewsDto){
         
-        if(newsImage == null || newsImage.isEmpty()){ 
+        if(!(newsImage == null || newsImage.isEmpty())){ 
 
-        }else{
             String rootPath = "C:/uploadFiles/";
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd/");
@@ -190,6 +189,7 @@ public class FundingController {
     @RequestMapping("newsReadPage")
     public String newsReadPage(Model model,@RequestParam("id") int product_pk){
         model.addAttribute("newsList", fundingService.selectNewsById(product_pk));
+        model.addAttribute("c_news", fundingService.countNewsByPk(product_pk));
         return "funding/newsReadPage";
     }
 
@@ -198,6 +198,7 @@ public class FundingController {
         System.out.println("cheering page product_pk : "+product_pk);
         model.addAttribute("cheering", fundingService.selectCheering(product_pk));
         model.addAttribute("product_pk", product_pk);
+        model.addAttribute("countByPk", fundingService.countCheeringByPk(product_pk));
 
         return"funding/cheeringPage";
     }
@@ -238,7 +239,7 @@ public class FundingController {
             }
 
             paraCheeringDto.setCheering_image(todayPath + fileName);
-            }
+        }
         
         UserDto userInfo = (UserDto)session.getAttribute("sessionUser");
         paraCheeringDto.setUser_pk(userInfo.getUser_pk());

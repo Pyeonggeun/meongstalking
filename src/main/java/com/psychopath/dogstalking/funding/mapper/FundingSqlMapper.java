@@ -97,4 +97,7 @@ public interface FundingSqlMapper {
     public int selectCountSuccessGoal(int user_pk);
     public int selectCountFailGoal(int user_pk);
 
+    //응원 페이지에서 보일 물건별 응원수 카운트
+    public int countCheeringByPk(int product_pk);
+
 }

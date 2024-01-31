@@ -249,4 +249,13 @@ public class FundingServiceImpl {
 
     }
 
+    //응원 페이지에서 보일 물건별 응원수 카운트
+    public int countCheeringByPk(int product_pk){
+        return fundingSqlMapper.countCheeringByPk(product_pk);
+    }
+    //물건별 새소식 페이지에서 보일 새소식 카운트
+    public int countNewsByPk(int product_pk){
+        return fundingSqlMapper.countNewsByPk(product_pk);
+    }
+
 }
