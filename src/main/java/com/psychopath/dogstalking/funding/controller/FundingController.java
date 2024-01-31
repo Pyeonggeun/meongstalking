@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,7 @@ import com.psychopath.dogstalking.funding.dto.FundingOrderDto;
 import com.psychopath.dogstalking.funding.dto.FundingProductDto;
 import com.psychopath.dogstalking.funding.dto.FundingReviewDto;
 import com.psychopath.dogstalking.funding.dto.FundingWishlistDto;
+
 import com.psychopath.dogstalking.funding.service.FundingServiceImpl;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -148,7 +150,7 @@ public class FundingController {
     @RequestMapping("insertNewsProcesss")
     public String insertNewsProcess(@RequestParam("product_pk") int product_Pk, @RequestParam(name = "newsImage", required = false) MultipartFile newsImage ,FundingNewsDto paraFundingNewsDto){
         
-        if(newsImage == null||newsImage.isEmpty()){ 
+        if(newsImage == null || newsImage.isEmpty()){ 
 
         }else{
             String rootPath = "C:/uploadFiles/";
@@ -201,7 +203,7 @@ public class FundingController {
     }
 
     @RequestMapping("insertCheering")
-    public String insertCheering(HttpSession session, @RequestParam("cheeringImage") MultipartFile cheeringImage , @RequestParam("product_pk") String product_pk,FundingCheeringDto paraCheeringDto){
+    public String insertCheering(HttpSession session, @RequestParam(value="cheeringImage", required = false) MultipartFile cheeringImage, @RequestParam("product_pk") String product_pk,FundingCheeringDto paraCheeringDto){
 
         int product_pkInt = Integer.parseInt(product_pk);
 

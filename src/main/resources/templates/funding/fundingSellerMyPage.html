@@ -13,8 +13,13 @@
     .overflow-x-auto{
         overflow-x: auto;
         display: flex;
-
     }
+
+    
+    a {
+        text-decoration-line: none;
+    }
+
 </style>
 
 <body>
@@ -30,13 +35,13 @@
                         </div>
                     </div>
 
-                    <div class="row py-1 my-2">
-                        <div class="col-3 px-0 text-center" style="font-size:1.3em;">
-                            <i class="bi bi-person-circle" style="font-size:1.45em;"></i>
+                    <div class="row py-1 mb-2 mx-1">
+                        <div class="col-2 px-1 text-center" style="font-size:1.3em;">
+                            <i class="bi bi-person-circle" style="font-size:1.5em;"></i>
                         </div>
-                        <div class="col px-0">
+                        <div class="col">
                             <div class="row">
-                                <div class="col px-0" th:text="${session.sessionUser.userid}"> <span style="font-size: 0.75em; color:gray">님</span></div>
+                                <div class="col px-0 pt-1" style="font-size: 0.85em;"><span  class="fw-bold" th:utext="${session.sessionUser.userid}" style="font-size: 1.25em;"></span> 님 안녕하세요</div>
                             </div>
                         </div>
                     </div>
@@ -46,7 +51,7 @@
                             <div class="row px-0 mb-1 mx-1"><div class="col fw-bold" style="font-size: 1em;"><span><i class="bi bi-bar-chart-line-fill"></i></span> 프로젝트 관련 데이터</div></div>
 
                             <div class="row py-1 mx-1"><div class="col" style="font-size: 0.7em;"><i class="bi bi-calculator"></i>7일간의 데이터</div></div>
-                            <div class="row border rounded mx-1 mb-1">
+                            <div class="row border rounded mx-1 mb-4">
                                 <div class="col">
                                         <div class="row py-1"><div class="col" style="font-size: 0.85em;">주문</div><div class="col fw-bold text-center" th:text="${stast.order}" style="font-size: 0.85em; color: coral;"></div>
                                         <div class="col" style="font-size: 0.85em;">찜</div><div class="col fw-bold text-center" th:text="${stast.wishlist}" style="font-size: 0.85em; color: coral;"></div></div>
@@ -56,7 +61,7 @@
                             </div>
 
                             <div class="row py-1 mx-1"><div class="col" style="font-size: 0.7em;"><i class="bi bi-trophy"></i>진행중인 프로젝트의 목표 펀딩률</div></div>
-                            <div class="row border rounded mx-1">
+                            <div class="row border rounded mx-1 mb-4">
                                 <div class="col">
                                         <div class="row py-1"><div class="col pt-1" style="font-size: 0.8em;">달성 프로젝트</div><div class="col text-center fw-bold" th:text="${stast.success}" style="font-size: 1em; color:coral;"></div></div>
                                         <div class="row py-1"><div class="col pt-1" style="font-size: 0.8em;">미달성 프로젝트</div><div class="col text-center fw-bold" th:text="${stast.fail}" style="font-size: 1em; color:coral;"></div></div>
@@ -67,26 +72,28 @@
                     </div>
 
 
-                    <div class="row mt-3"><div class="col fw-bold" style="font-size: 1em;">내가 등록한 펀딩상품</div></div>
-                    <div class="row mb-3">
-                        <div class="col py-2 px-2 overflow-x-auto" style="white-space: nowrap;">
-                            <th:block th:each="listForPk : ${listForPk}">
-                                <a th:href="@{./productControlPage(id = ${listForPk.product_pk})}">
-                                    <div class="row" style="display: flex;">
-                                        <div class="col mx-1">
-                                            <div class="row"><div class="col d-grid"><img th:src="@{'/uploadFiles/'+${listForPk.title_image}}" alt="이미지 등록 필요" style="height: 10em; width: 16em;"></div></div>
-                                            <div class="row" style="width: 15em;"><div class="col" style="overflow-x: hidden; color: black;" th:text="${listForPk.product_name}"></div></div>
+                    <div class="row my-2"><div class="col fw-bold" style="font-size: 1em;">내가 등록한 펀딩상품</div></div>
+                    <div class="row mb-4">
+                        <div class="col">
+                            <div class="container overflow-x-auto" style="white-space: nowrap;">
+                                <th:block th:each="listForPk : ${listForPk}">
+                                    <a th:href="@{./productControlPage(id = ${listForPk.product_pk})}">
+                                        <div class="row py-3" style="display: flex;">
+                                            <div class="col mx-1">
+                                                <div class="row"><div class="col d-grid"><img th:src="@{'/uploadFiles/'+${listForPk.title_image}}" alt="이미지 등록 필요" style="height: 10em; width: 16em;"></div></div>
+                                                <div class="row" style="width: 15em;"><div class="col" style="overflow-x: hidden; color: black;" th:text="${listForPk.product_name}"></div></div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </a>  
-                            </th:block>
-                        </div>
-                    </div>
+                                    </a>  
+                                </th:block>
+                            </div>
+                        </div>    
+                    </div>        
 
 
 
 
-                    <div class="row mt-1 mb-3"><div class="col d-grid"><a href="./prepareRgstrPage" class="btn py-2 border rounded text-center fw-bold" style="width:100%;">상품 등록 하러 가기</a></div></div>
+                    <div class="row mt-1 mb-3"><div class="col d-grid"><a href="./productRgstrPage" class="btn py-2 border rounded text-center fw-bold" style="width:100%;">상품 등록 하러 가기</a></div></div>
 
                     <div class="row mb-2 border-bottom">
                         <div class="col">

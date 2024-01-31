@@ -190,6 +190,11 @@ WHERE mfp.product_pk = #{product_pk}
     AND product_pk = #{product_pk}
 </select>
 
+<select id="countPurchase" resultType="int">
+    select count(*) from ms_funding_order mfo 
+    where product_pk = #{product_pk}
+</select>
+
 
 
 <select id="selectOrderByOrderPk" resultType="com.psychopath.dogstalking.funding.dto.FundingOrderDto">
