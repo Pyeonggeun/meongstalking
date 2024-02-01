@@ -12,6 +12,19 @@
                     imageInput.click();
                 }
 
+    function formSubmit(){
+        const insertNews = document.getElementById("insertNews");
+
+        const inputNews = document.getElementById("inputNews");
+        const inputNewsRegex = /^.{10,}$/;
+        if(!inputNewsRegex.test(inputNews.value)){
+            alert("응원글 본문은 10자 이상 작성해 주셔야 등록이 됩니다.");
+            inputNews.focus();
+            return;
+        }
+        insertNews.submit();
+    }
+
 
     </script>
 
@@ -44,7 +57,7 @@
                         <div class="row mt-1 mb-3"><div class="col px-0" style="font-size: 1em; color:gray">회원님들을 위한 새소식을 전달해 보세요</div></div>    
 
 
-                    <form action="./insertNewsProcesss" method="post" enctype="multipart/form-data">
+                    <form action="./insertNewsProcesss" id="insertNews" method="post" enctype="multipart/form-data">
                     <input name="product_pk" type="hidden" th:value="${product_pk}">    
                         <div class="row">   
                             <div class="col">
@@ -81,9 +94,9 @@
                                 </div>
 
                                 <div class="row mt-4 px-0"><div class="col px-0"><span class="fw-bold" style="font-size: 1em;">+ 새소식 메세지 설정</div></div>
-                                <div class="row py-1 mb-3"><div class="col px-0"><textarea name="content" class="form-control" style="width:100%; height: 12.5em;" placeholder="알리고 싶은 내용을 작성해주세요"></textarea></div></div>
+                                <div class="row py-1 mb-3"><div class="col px-0"><textarea name="content" id="inputNews" class="form-control" style="width:100%; height: 12.5em;" placeholder="알리고 싶은 내용을 작성해주세요"></textarea></div></div>
 
-                                <div class="row mb-5"><div class="col-4 px-0 text-center d-grid"><a th:href="@{./productControlPage(id=${product_pk})}" class="btn text-white fw-bold rounded py-3" style="font-size: 1em; background-color: lightcoral">뒤로가기</a></div><div class="col d-grid ms-3 px-0"><input class="form-control py-3" type="submit" value="새소식 올리기" style="font-size: 1em;"></div></div>
+                                <div class="row mb-5"><div class="col-4 px-0 text-center d-grid"><a th:href="@{./productControlPage(id=${product_pk})}" class="btn text-white fw-bold rounded py-3" style="font-size: 1em; background-color: lightcoral">뒤로가기</a></div><div class="col d-grid ms-3 px-0"><input class="form-control py-3" type="button" onclick="formSubmit()" value="새소식 올리기" style="font-size: 1em;"></div></div>
                             </div>    
                         </div>           
                     </form>
