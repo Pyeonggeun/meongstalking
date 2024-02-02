@@ -14,7 +14,7 @@
         values(#{user_pk}, #{image_link}, #{content}, #{latitude}, #{longitude})
     </insert>
 
-    <insert id="insertCollectionInfo">
+    <!-- <insert id="insertCollectionInfo">
         insert into ms_follow_collection(user_pk, log_pk) values(#{user_pk}, #{log_pk});
     </insert>
 
@@ -358,10 +358,14 @@
             SELECT *, get_distance(#{latitude}, #{longitude}, latitude, longitude) as distance,
                 ROW_NUMBER() OVER (PARTITION BY get_distance(#{latitude}, #{longitude}, latitude, longitude) ORDER BY RAND()) as rnum
             FROM ms_follow_log
-            where user_pk = #{user_pk}
+            where user_pk = #{user_writer_pk}
             <![CDATA[
                 and date(now()) - date(created_date) <= 7
             ]]>
+            and log_pk not in(
+                SELECT log_pk FROM ms_follow_collection
+                where user_pk = #{user_pk}
+            )
         )t1
         where t1.rnum = 1
     </select>
@@ -398,7 +402,7 @@
         DELETE FROM ms_follow_like
         where user_collector_pk = #{user_collector_pk}
         and user_writer_pk = #{user_writer_pk}
-    </delete>
+    </delete> -->
 
     <!-- <select id="" resultType=""></select> -->
 
