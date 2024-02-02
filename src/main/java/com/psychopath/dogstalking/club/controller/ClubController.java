@@ -51,6 +51,7 @@ public class ClubController {
         model.addAttribute("checkMember", memberLank);
 
         Integer ApplyStatus = clubService.selectClubCategoryPk(userDto.getUser_pk());
+        
         if (ApplyStatus == null) {
             ApplyStatus = 9;
         }
@@ -201,7 +202,7 @@ public class ClubController {
         model.addAttribute("checkMember", memberLank);
 
         Integer ApplyStatus = clubService.selectClubCategoryPk(userDto.getUser_pk());
-        // System.out.println("ApplyStatus : " + ApplyStatus);
+        System.out.println("ApplyStatus : " + ApplyStatus);
         if (ApplyStatus == null) {
             ApplyStatus = 9;
         }
