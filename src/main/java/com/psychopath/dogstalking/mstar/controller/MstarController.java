@@ -73,4 +73,12 @@ public class MstarController {
 
         return "mstar/directPage";
     }
+
+
+    @RequestMapping("modalTextPage")
+    public String modalTextPage(){
+
+        return "mstar/modalTextPage";
+    }
+
 }
