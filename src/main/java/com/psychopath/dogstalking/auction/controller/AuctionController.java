@@ -1,6 +1,7 @@
 package com.psychopath.dogstalking.auction.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.psychopath.dogstalking.auction.dto.AuctionGoodsDto;
@@ -45,6 +46,26 @@ public class AuctionController {
         return "/auction/goodsListPage";
     }
 
+    @RequestMapping("goodsDetailPage")
+    public String goodsDetailPage(Model model, int goodsPk){
+        model.addAttribute("goodsPk", goodsPk);
+
+        return "/auction/goodsDetailPage";
+    }
+
+    @RequestMapping("registerLogPage")
+    public String registerLogPage(){
+
+        return "/auction/registerLogPage";
+    }
+
+
+
+    @RequestMapping("test")
+    public String test(){
+
+        return "/auction/test";
+    }
 
 
 }

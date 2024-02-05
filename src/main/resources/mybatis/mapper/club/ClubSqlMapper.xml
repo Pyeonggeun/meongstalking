@@ -4,8 +4,8 @@
 <mapper namespace="com.psychopath.dogstalking.club.mapper.ClubSqlMapper">
 
     <insert id="insertFreeBoard">
-        INSERT INTO ms_club_freeboard(club_pk,user_pk,title,content)
-        VALUES (#{club_pk},#{user_pk},#{title},#{content})
+        INSERT INTO ms_club_freeboard(club_pk,user_pk,title,content,img)
+        VALUES (#{club_pk},#{user_pk},#{title},#{content},#{img})
     </insert>
 
 
@@ -178,10 +178,19 @@
             WHERE club_user_pk = #{club_user_pk};
     </update>
 
+    <update id="withdrawalClubUserLank">
+        UPDATE ms_club_user_ranklog
+            SET clubuserranklogcategory_pk = 0
+            WHERE ms_club_user_ranklog.club_user_pk=#{club_user_pk};
+    </update>
 
     <!--관리자 뽑아내기-->
     <select id="selectLeaderLank" resultType="Integer">
-        SELECT ms_club_user_ranklog.clubuserranklogcategory_pk	FROM ms_club_user_ranklog WHERE ms_club_user_ranklog.club_user_pk=#{club_user_pk};
+    SELECT clubuserranklogcategory_pk
+        FROM ms_club_user_ranklog
+        WHERE club_user_pk = #{club_user_pk}
+        ORDER BY created_at DESC
+        LIMIT 1;
     </select>
 
 

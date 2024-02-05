@@ -75,6 +75,6 @@ public interface ClubSqlMapper {
     public void updateLeader(ClubUserRanklogDto clubUserRanklogDto);
 
     //회원 승인 미승인 상태
-    public int selectClubCategoryPk(int club_user_pk);
+    public Integer selectClubCategoryPk(int club_user_pk);
 
 }

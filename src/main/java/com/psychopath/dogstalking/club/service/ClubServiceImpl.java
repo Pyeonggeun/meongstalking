@@ -122,8 +122,7 @@ public class ClubServiceImpl {
 		clubSqlMapper.updatenotApplyClub(clubStatusLogDto);
 	}
 
-	public void updateClub(ClubDto clubDto, ClubArticleImageDto clubArticleImageDto) {
-		clubDto.setImg(clubArticleImageDto.getLocation());
+	public void updateClub(ClubDto clubDto) {
 		clubSqlMapper.updateClub(clubDto);
 	}
 	

@@ -52,6 +52,74 @@
     </select>
 
 
+    <select id="getUserInfoByPk" resultType="com.psychopath.dogstalking.dto.UserDto">
+        select * from ms_user
+        where user_pk = #{userPk}
+    </select>
 
+
+    <select id="getGoodsDto" resultType="com.psychopath.dogstalking.auction.dto.AuctionGoodsDto">
+        select * from ms_auction_goods
+        where pk = #{goodsPk}
+    </select>
+
+    <select id="getCategoryDto" resultType="com.psychopath.dogstalking.auction.dto.AuctionCategoryDto">
+        select * from ms_auction_category
+        where pk = #{categoryPk}
+    </select>
+
+    <insert id="insertChatDto">
+        insert into 
+        ms_auction_chat(goods_pk, user_pk, message)
+        values
+        (
+            #{goods_pk},
+            #{user_pk},
+            #{message}
+        )
+    </insert>
+
+    <select id="getChatList" resultType="com.psychopath.dogstalking.auction.dto.ChatDto">
+        select * from ms_auction_chat
+        where goods_pk = #{goodsPk}
+        order by created_at asc
+    </select>
+
+    <select id="getBidListByGoodsPk" resultType="com.psychopath.dogstalking.auction.dto.BidDto">
+        select * from ms_auction_bid
+        where goods_pk = #{goodsPk}
+        order by created_at desc
+    </select>
+
+    <select id="getHighestBidPrice" resultType="int">
+        select NVL(MAX(bid_price), 0) from ms_auction_bid
+        where goods_pk=#{goodsPk}
+    </select>
+
+    <insert id="insertBidDto">
+        insert into 
+        ms_auction_bid(goods_pk, user_pk, bid_price)
+        values
+        (
+            #{goods_pk},
+            #{user_pk},
+            #{bid_price}
+        )      
+    </insert>
+
+    <update id="updateGoodsExpiryDatePlusMinutes">
+        update ms_auction_goods
+        set expiry_date = #{expiry_date}
+        where pk = #{pk}
+    </update>
+
+    <select id="getAppendChatList" resultType="com.psychopath.dogstalking.auction.dto.ChatDto">
+        select * from ms_auction_chat
+        where goods_pk = #{goods_pk}
+        <![CDATA[
+        and pk > #{pk}
+        order by created_at asc
+        ]]>
+    </select>
 
 </mapper>

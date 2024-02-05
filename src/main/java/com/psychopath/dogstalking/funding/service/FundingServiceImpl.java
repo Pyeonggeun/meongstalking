@@ -118,8 +118,9 @@ public class FundingServiceImpl {
         int percent = fundingSqlMapper.countPercentByPk(pk);
         //잔여일
         int f_day= fundingSqlMapper.countFinishDay(pk);
-        
-        
+        //상품 구매 총 횟수
+        int c_purchase = fundingSqlMapper.countPurchase(pk);
+
         Map<String,Object> productInfo = new HashMap<>(); 
         productInfo.put("detail",fundingProductDto);
         productInfo.put("news",fundingNewsDto);
@@ -129,6 +130,7 @@ public class FundingServiceImpl {
         productInfo.put("percent",percent);
         productInfo.put("f_day",f_day);
         productInfo.put("t_sales",t_sales);
+        productInfo.put("c_purchase",c_purchase);
         return productInfo;
     }
 
@@ -245,6 +247,15 @@ public class FundingServiceImpl {
     public int selectCountFailGoal(int user_pk){
         return fundingSqlMapper.selectCountFailGoal(user_pk);
 
+    }
+
+    //응원 페이지에서 보일 물건별 응원수 카운트
+    public int countCheeringByPk(int product_pk){
+        return fundingSqlMapper.countCheeringByPk(product_pk);
+    }
+    //물건별 새소식 페이지에서 보일 새소식 카운트
+    public int countNewsByPk(int product_pk){
+        return fundingSqlMapper.countNewsByPk(product_pk);
     }
 
 }

@@ -1,0 +1,1369 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>상품 상세 페이지</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://kit.fontawesome.com/784384f602.js" crossorigin="anonymous"></script>
+
+    <script>
+
+        function reloadGoodsInfo(){
+
+            const goodsPk = document.getElementById("goodsPk").value;
+
+            const url = "./getGoodsDetailInfo?goodsPk=" + goodsPk;
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                
+                const e = response.data;
+
+                const goodsTitle = document.getElementById("goods-title");
+                goodsTitle.innerText = e.auctionGoodsDto.title;
+                goodsTitle.value = e.auctionGoodsDto.title;
+
+                const goodsContent = document.getElementById("goods-content");
+                goodsContent.innerText = e.auctionGoodsDto.content;
+
+                const categoryName = document.getElementById("category-name");
+                categoryName.innerText = e.auctionCategoryDto.name;
+
+                const startingPrice = document.getElementById("starting-price");
+                startingPrice.innerText = "KRW " + e.auctionGoodsDto.starting_price;
+                startingPrice.value = e.auctionGoodsDto.starting_price;
+                const startingPriceValue = e.auctionGoodsDto.starting_price;
+
+                const modalStartingPrice = document.getElementById("modal-starting-price");
+                modalStartingPrice.innerText = "KRW " + e.auctionGoodsDto.starting_price;
+
+                const askPrice = document.getElementById("ask-price");
+
+                if (startingPriceValue >= 0 && startingPriceValue < 10000) {
+                    askPrice.value = 1000;
+                    askPrice.innerText = "KRW " + askPrice.value;
+                } else if (startingPriceValue >= 10000 && startingPriceValue < 50000) {
+                    askPrice.value = 3000;
+                    askPrice.innerText = "KRW " + askPrice.value;
+                } else if (startingPriceValue >= 50000 && startingPriceValue < 100000) {
+                    askPrice.value = 5000;
+                    askPrice.innerText = "KRW " + askPrice.value;
+                } else if (startingPriceValue >= 100000 && startingPriceValue < 500000) {
+                    askPrice.value = 30000;
+                    askPrice.innerText = "KRW " + askPrice.value;
+                } else if (startingPriceValue >= 500000 && startingPriceValue < 1000000) {
+                    askPrice.value = 50000;
+                    askPrice.innerText = "KRW " + askPrice.value;
+                } else if (startingPriceValue >= 1000000 && startingPriceValue < 5000000) {
+                    askPrice.value = 300000;
+                    askPrice.innerText = "KRW " + askPrice.value;
+                } else if (startingPriceValue >= 5000000 && startingPriceValue < 10000000) {
+                    askPrice.value = 500000;
+                    askPrice.innerText = "KRW " + askPrice.value;
+                } else {
+                    askPrice.value = 1000000; 
+                    askPrice.innerText = "KRW " + askPrice.value;
+                }
+                
+            });
+        }
+
+        let isBidEnd = false;
+
+
+        function fetchRemainingTime(){
+
+            const goodsPk = document.getElementById("goodsPk").value;
+
+	
+            const url = "./getGoodsInfo?goodsPk=" + goodsPk;
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                const e = response.data;
+
+                if (e.isBidEnd) {
+                    isBidEnd = true;
+                    clearInterval(intervalId);
+                    clearInterval(chatListIntervalId);
+                    clearInterval(bidListIntervalId);
+                    clearInterval(remainingTimeIntervalId);
+                    finishAuction();
+                    reloadBidList();
+                }else{
+                    remainingTimeInSeconds = e.remainingTime[0] * 86400 + e.remainingTime[1] * 3600 + e.remainingTime[2] * 60 + e.remainingTime[3];
+
+                    reloadRemainingTime(); // 시간을 초기화한 후 화면에 표시
+                    clearInterval(intervalId); // 기존의 setInterval을 중지
+                    intervalId = setInterval(reloadRemainingTime, 1000); // 1초마다 시간 업데이트
+                }
+
+            });
+        }
+
+        let remainingTimeInSeconds = 0; // 초 단위로 남은 시간을 저장할 변수
+        let intervalId;
+
+        function reloadRemainingTime(){
+
+            const remainingTimeText = document.getElementById("remainingTime");
+            const modalRemainingTimeText = document.getElementById("modal-remainingTime");
+
+            remainingTimeInSeconds--;
+
+            if(remainingTimeInSeconds <= 0){
+                fetchRemainingTime();
+                return;
+            }
+
+            let days = Math.floor(remainingTimeInSeconds / 86400);
+            let hours = Math.floor((remainingTimeInSeconds % 86400) / 3600);
+            let minutes = Math.floor((remainingTimeInSeconds % 3600) / 60);
+            let seconds = remainingTimeInSeconds % 60;
+
+            hours = hours.toString().padStart(2, '0');
+            minutes = minutes.toString().padStart(2, '0');
+            seconds = seconds.toString().padStart(2, '0');
+
+            if(days == 0){
+                remainingTimeText.innerText = `${hours}:${minutes}:${seconds}`;
+                modalRemainingTimeText.innerText = `${hours}:${minutes}:${seconds}`;
+            }else{
+                remainingTimeText.innerText = `${days}일 ${hours}:${minutes}:${seconds}`;
+                modalRemainingTimeText.innerText = `${days}일 ${hours}:${minutes}:${seconds}`;
+            }
+
+        }
+
+        function writeChatMessage(){
+            const goodsPk = document.getElementById("goodsPk").value;
+            const message = document.getElementById("send-massage").value;
+
+
+            const url = "./registerChatMessage?goods_pk=" + goodsPk + "&message=" + message;
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                
+                document.getElementById("send-massage").value = "";
+                isWriteLoad = true;
+                appendChatList();
+
+
+            });
+
+
+        }
+
+        let isWriteLoad = false;
+        let isInitialLoad = true;
+
+        let lastChatPk = 0;
+        let lastUserPk = null;
+
+        function reloadChatList(){
+            
+            const goodsPk = document.getElementById("goodsPk").value;
+            const sessionUserPk = document.getElementById("sessionUserPk").value;
+
+            const url = "./getChatList?goodsPk=" + goodsPk;
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                
+                const chatMessageListBox = document.getElementById("chatMessageListBox");
+                chatMessageListBox.innerHTML = "";
+
+
+                for(e of response.data){
+
+                    const chatMessageWrapper = document.querySelector("#template .chatMessageWrapper").cloneNode(true);
+                
+                    const message = chatMessageWrapper.querySelector(".chatMessage");
+                    message.innerText = e.chatDto.message;
+                    
+                    const userName = chatMessageWrapper.querySelector(".user-name");
+                    const profileImage = chatMessageWrapper.querySelector(".profile-image");
+                    
+                    if(sessionUserPk == e.chatDto.user_pk){
+                        const chatMessageCol = chatMessageWrapper.querySelector(".chatMessageCol");
+                        chatMessageCol.classList.add("text-end");
+                        if(lastUserPk == null || lastUserPk != e.chatDto.user_pk){
+                            userName.style.display = "none";
+                            profileImage.style.display = "none";
+                            chatMessageWrapper.style.paddingTop = "0.5em";
+                        }else{
+                            userName.style.display = "none";
+                            profileImage.style.display = "none";
+                            chatMessageWrapper.style.paddingTop = "0.3em";
+                        }
+
+                    }else{
+                        if(lastUserPk == null || lastUserPk != e.chatDto.user_pk){
+                            userName.innerText = e.userDto.name;
+                            chatMessageWrapper.style.paddingTop = "0.5em";
+                        }else{
+                            userName.style.display = "none";
+                            profileImage.style.display = "none";
+                            chatMessageWrapper.style.paddingTop = "0.3em";
+                        }
+
+                    }
+
+                    lastUserPk = e.chatDto.user_pk;
+                    lastChatPk = e.chatDto.pk;
+
+                    chatMessageListBox.appendChild(chatMessageWrapper);
+
+                }
+
+                if (isInitialLoad) {
+                    const chatMessageListBoxRow = document.querySelector("#chatMessageList-row");
+                    chatMessageListBoxRow.scrollTop = chatMessageListBoxRow.scrollHeight;
+                    isInitialLoad = false; // 플래그 업데이트
+                }
+
+                if (isWriteLoad){
+                    const chatMessageListBoxRow = document.querySelector("#chatMessageList-row");
+                    chatMessageListBoxRow.scrollTop = chatMessageListBoxRow.scrollHeight;
+                    isWriteLoad = false; // 플래그 업데이트
+                }
+
+
+            });
+        }  
+
+
+        function appendChatList(){
+
+            const goodsPk = document.getElementById("goodsPk").value;
+            const sessionUserPk = document.getElementById("sessionUserPk").value;
+
+            const url = "./getAppendChatList?goods_pk=" + goodsPk + "&pk=" + lastChatPk;
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+
+                const chatMessageListBox = document.getElementById("chatMessageListBox");
+
+                const chatMessageListBoxRow = document.querySelector("#chatMessageList-row");
+                const isScrolledToBottom = chatMessageListBoxRow.scrollTop + chatMessageListBoxRow.clientHeight >= chatMessageListBoxRow.scrollHeight;
+
+                for(e of response.data){
+                    const chatMessageWrapper = document.querySelector("#template .chatMessageWrapper").cloneNode(true);
+                
+                    const message = chatMessageWrapper.querySelector(".chatMessage");
+                    message.innerText = e.chatDto.message;
+                    
+                    const userName = chatMessageWrapper.querySelector(".user-name");
+                    const profileImage = chatMessageWrapper.querySelector(".profile-image");
+
+                    if(sessionUserPk == e.chatDto.user_pk){
+                        const chatMessageCol = chatMessageWrapper.querySelector(".chatMessageCol");
+                        chatMessageCol.classList.add("text-end");
+                        if(lastUserPk == null || lastUserPk != e.chatDto.user_pk){
+                            userName.style.display = "none";
+                            profileImage.style.display = "none";
+                            chatMessageWrapper.style.paddingTop = "0.5em";
+                        }else{
+                            userName.style.display = "none";
+                            profileImage.style.display = "none";
+                            chatMessageWrapper.style.paddingTop = "0.3em";
+                        }
+
+                    }else{
+                        if(lastUserPk == null || lastUserPk != e.chatDto.user_pk){
+                            userName.innerText = e.userDto.name;
+                            chatMessageWrapper.style.paddingTop = "0.5em";
+                        }else{
+                            userName.style.display = "none";
+                            profileImage.style.display = "none";
+                            chatMessageWrapper.style.paddingTop = "0.3em";
+                        }
+
+                    }
+
+                    lastUserPk = e.chatDto.user_pk;
+                    lastChatPk = e.chatDto.pk;
+
+                    chatMessageListBox.appendChild(chatMessageWrapper);
+                    
+                }
+
+                if (isScrolledToBottom) {
+                    chatMessageListBoxRow.scrollTop = chatMessageListBoxRow.scrollHeight;
+                }
+
+                if (isInitialLoad) {
+                    chatMessageListBoxRow.scrollTop = chatMessageListBoxRow.scrollHeight;
+                    isInitialLoad = false; // 플래그 업데이트
+                }
+
+                if (isWriteLoad){
+                    chatMessageListBoxRow.scrollTop = chatMessageListBoxRow.scrollHeight;
+                    isWriteLoad = false; // 플래그 업데이트
+                }
+
+                
+            });
+
+        }
+
+        let totalPrice;
+        let isSuccessfulBid = false;
+        
+        function reloadBidList(){
+		
+            const goodsPk = document.getElementById("goodsPk").value;
+            const sessionUserPk = document.getElementById("sessionUserPk").value;
+
+
+            const url = "./getBidList?goodsPk=" + goodsPk;
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+
+                const modalBidButton = document.getElementById("modal-bid-button");
+
+                const highestBidPrice = response.data.highestBidPrice;
+
+                const currentPrice = document.getElementById("current-price");
+                const modalCurrentPrice = document.getElementById("modal-current-price");
+                const startingPrice = parseInt(document.getElementById("starting-price").value);
+                const askPrice = parseInt(document.getElementById("ask-price").value);
+
+                if(isBidEnd == false){
+                    
+                    if(highestBidPrice == 0){
+                        totalPrice = startingPrice + askPrice;
+                        currentPrice.innerText = "KRW " + startingPrice;
+                        modalCurrentPrice.innerText = "KRW " + startingPrice;
+                        modalBidButton.innerText = "KRW " + totalPrice + " 입찰하기";
+                    }else{
+                        totalPrice = highestBidPrice + askPrice;
+                        currentPrice.innerText = "KRW " + highestBidPrice;
+                        modalCurrentPrice.innerText = "KRW " + highestBidPrice;
+                        modalBidButton.innerText = "KRW " + totalPrice + " 입찰하기";
+                    }
+                }else{
+                    if(highestBidPrice == 0){
+                        currentPrice.innerText = "KRW " + startingPrice;
+                        modalCurrentPrice.innerText = "KRW " + startingPrice;
+                    }else{
+                        currentPrice.innerText = "KRW " + highestBidPrice;
+                        modalCurrentPrice.innerText = "KRW " + highestBidPrice;
+                    }
+                }
+
+                const bidHistoryListBox = document.getElementById("bidHistoryListBox");
+                bidHistoryListBox.innerHTML = "";
+
+                for(let i = 0; i < response.data.bidList.length; i++){
+                    const e = response.data.bidList[i];
+
+                    const bidHistoryWrapper = document.querySelector("#template .bidHistoryWrapper").cloneNode(true);
+
+                    const bidder = bidHistoryWrapper.querySelector(".modal-bidder");
+                    let name = e.userDto.name;
+                    if(sessionUserPk != e.bidDto.user_pk){
+                        if(name.length > 1){
+                            name = name.substring(0, 1) + '*'.repeat(name.length - 1);
+                        }else{
+                            name = "*";
+                        }
+                    }
+                    bidder.innerText = name;
+
+                    const bidPrice = bidHistoryWrapper.querySelector(".modal-bid-price");
+                    bidPrice.innerText = e.bidDto.bid_price;
+
+                    const bidDate = bidHistoryWrapper.querySelector(".modal-bid-date");
+                    const bidTime = bidHistoryWrapper.querySelector(".modal-bid-time");
+
+                    const createdAtArray = e.bidDto.created_at;
+
+                    const createdAtYear = createdAtArray[0];
+                    const createdAtMonth = createdAtArray[1];
+                    const createdAtDays = createdAtArray[2];
+                    const createdAtHour = createdAtArray[3];
+                    const createdAtMinutes = createdAtArray[4];
+                    const createdAtSeconds = createdAtArray[5];
+
+                    const createdDateFormatted = `${createdAtYear}-${createdAtMonth}-${createdAtDays}`;
+                    const createdTimeFormatted = `${createdAtHour}:${createdAtMinutes}:${createdAtSeconds}`;
+
+                    bidDate.innerText = createdDateFormatted;
+                    bidTime.innerText = createdTimeFormatted;
+
+                    bidHistoryListBox.appendChild(bidHistoryWrapper);
+
+                    if(i == 0){
+                        bidder.style.color = "#FA075B";
+                        bidPrice.style.color = "#FA075B";
+                        bidder.style.fontSize = "0.9em";
+                        bidPrice.style.fontSize = "0.9em";
+
+                        if(isBidEnd == false){
+                            if(sessionUserPk == e.bidDto.user_pk) {
+                                modalBidButton.innerText = "최고가 응찰 중";
+                                modalBidButton.onclick = null;
+                                modalBidButton.classList.add("modal-disabled-button");
+                                modalBidButton.classList.remove("modal-enabled-button");
+                            }else {
+                                modalBidButton.classList.remove("modal-disabled-button");
+                                modalBidButton.classList.add("modal-enabled-button");
+                                modalBidButton.setAttribute("onclick", "registerBid()");
+                            }
+                        }
+
+                        if(isBidEnd == true && isSuccessfulBid == false){
+                            isSuccessfulBid = true;
+                            const chatMessageListBox = document.getElementById("chatMessageListBox");
+                            const successfulbidWrapper = document.querySelector("#template .successfulbidWrapper").cloneNode(true);
+
+                            const successfulbidName = successfulbidWrapper.querySelector(".successfulbidName");
+                            successfulbidName.innerText = name;
+
+                            const successfulbidPrice = successfulbidWrapper.querySelector(".successfulbidPrice");
+                            successfulbidPrice.innerText = e.bidDto.bid_price;
+
+                            const successfulbidGoods = successfulbidWrapper.querySelector(".successfulbidGoods");
+                            successfulbidGoods.innerText = document.getElementById("goods-title").value;
+
+                            chatMessageListBox.appendChild(successfulbidWrapper);
+
+                            const chatMessageListBoxRow = document.querySelector("#chatMessageList-row");
+                            chatMessageListBoxRow.scrollTop = chatMessageListBoxRow.scrollHeight;
+
+                        }
+                    }
+
+                }
+
+            });
+        }  
+
+
+        function registerBid(){
+            
+            const goodsPk = document.getElementById("goodsPk").value;
+            const sessionUserPk = document.getElementById("sessionUserPk").value;
+
+            const url = "./registerBid?goods_pk=" + goodsPk + "&user_pk=" + sessionUserPk + "&bid_price=" + totalPrice;
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                const e = response.data;
+
+                if(e.isBidEnd == true){
+
+                    alert("경매가 종료되었습니다.");
+                }else{
+                    
+                    if(e.isBid == false){
+                        alert("최고 입찰가가 변경되었습니다.");
+                    }else{
+                        alert("입찰 완료");
+                    }
+                }
+                fetchRemainingTime();
+                reloadBidList();
+
+            });
+        }     
+
+        function finishAuction(){
+            const remainingTimeText = document.getElementById("remainingTime");
+            const modalRemainingTimeText = document.getElementById("modal-remainingTime");
+
+            remainingTimeText.innerText = '경매 종료';
+            modalRemainingTimeText.innerText = '경매 종료';
+            const modalBidButton = document.getElementById("modal-bid-button");
+            modalBidButton.innerText = "경매 종료";
+            modalBidButton.onclick = null;
+            modalBidButton.classList.add("modal-disabled-button");
+            modalBidButton.classList.remove("modal-enabled-button");
+
+            const modalCurrentPriceText = document.getElementById("modal-current-price-text");
+            const currentPriceText = document.getElementById("current-price-text");
+
+            modalCurrentPriceText.innerText = "낙찰가";
+            currentPriceText.innerText = "낙찰가";
+
+            const bidInfoRow = document.getElementById("bidInfo-row");
+            bidInfoRow.classList.add("d-none");
+
+            const chatMessageListRow = document.getElementById("chatMessageList-row");
+            chatMessageListRow.style.height = "21em";
+
+            const sendIconBox = document.getElementById("send-icon-box");
+            sendIconBox.onclick = null;
+
+            
+
+        }   
+
+
+        function showModal(){
+
+            const bidModal = bootstrap.Modal.getOrCreateInstance("#bidModal");
+
+            bidModal.show();
+        }
+
+        function closeModal(){
+            const bidModal = bootstrap.Modal.getOrCreateInstance("#bidModal");
+
+            bidModal.hide();
+        }
+
+
+
+
+
+        function templete(){
+		
+            const url = "";
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                
+            });
+        }  
+
+        let chatListIntervalId;
+        let bidListIntervalId; 
+        let remainingTimeIntervalId;
+        
+        chatListIntervalId = setInterval(appendChatList, 1000);
+        bidListIntervalId = setInterval(reloadBidList, 15000);
+        remainingTimeIntervalId = setInterval(fetchRemainingTime, 15000);
+
+        window.addEventListener("DOMContentLoaded", () => {
+            reloadGoodsInfo();
+            reloadChatList();
+            reloadBidList();
+            fetchRemainingTime();
+            
+        });  
+
+
+    </script>
+
+
+
+
+    <style>
+        html, body{
+            height: 100vh;
+            max-height: 100vh;
+            width: 100vw;
+        }
+
+        .container-fluid{
+            position: relative; 
+            height: 100%;
+            width: 100%;
+        }
+
+        #goods-image{
+            z-index: 1; 
+            width: 100%; 
+            height: 100%; 
+            position: absolute; 
+            top: 0; 
+            left: 0;
+        }
+
+        #image-opacity{
+            height: 100%; 
+            width: 100%; 
+            background-color: rgba(68, 68, 68, 0.5);
+            z-index: 2; 
+            position: absolute; 
+            top: 0; 
+            left: 0;
+        }
+
+
+        #back-icon-box{
+            height: 2.3em;
+            width: 2.3em;
+            border-radius: 100%;
+            position: absolute;
+            top: 50%;
+            left: 0.85em;
+            transform: translate(0, -50%);
+            background-color: rgba(226, 226, 226, 0.2);
+        }
+
+        #back-icon{
+            font-size: 1.2em;
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #wishlist-icon-box{
+            height: 2.3em;
+            width: 2.3em;
+            border-radius: 100%;
+            position: absolute;
+            top: 50%;
+            right: 0.85em;
+            transform: translate(0, -50%);
+            background-color: rgba(226, 226, 226, 0.2);
+        }
+
+        #wishlist-icon{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1em;
+        }
+
+
+        #goods-title{
+            width: 100%;
+            position: absolute;
+            bottom: 0%;
+            left: 0.85em;
+            transform: translate(0, 0);
+            color: #E2E2E2;
+            font-size: 1em;
+        }
+
+        #category-name-box{
+            position: absolute;
+            top: 50%;
+            left: 0.85em;
+            transform: translate(0, -50%);
+            width: 3em;
+            height: 1.2em;
+            border-radius: 0.2em;
+            background-color: rgba(226, 226, 226, 0.2);
+            z-index: 3;
+        }
+
+        #category-name{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #C0C0C0;
+            font-size: 0.6em;
+        }
+
+        #remainingTime{
+            position: absolute;
+            top: 50%;
+            left: 32%;
+            transform: translate(0, -50%);
+            font-size: 0.8em;
+            color: #E2E2E2;
+        }
+
+        #goods-content{
+            position: absolute;
+            width: 100%;
+            top: 0%;
+            left: 0.9em;
+            transform: translate(0, 0);
+            font-size: 0.8em;
+            color: #C0C0C0;
+        }
+
+
+        #send-icon-box{
+            width: 2.6em;
+            height: 2.6em;
+            background-color: #FA075B;
+            border-radius: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #send-icon{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+        }
+
+        #send-massage{
+            height: 2.6em;
+            width: calc(100% - 0.85em);
+            background-color: rgba(226, 226, 226, 0.6);
+            border-radius: 0.5em;
+            border-width: 0;
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform: translate(0, -50%);
+            padding-left: 1em;
+        }
+
+        .chatMessageBox{
+            /* background-color: rgba(226, 226, 226, 0.2); */
+            /* border-radius: 0.5em; */
+            display: inline-block;
+            width: auto;
+            max-width: 80%;
+            /* padding-left: 0.6em; */
+            /* padding-right: 0.6em; */
+
+        }
+
+        .profile-image{
+            width: 2.2em;
+            height: 2.2em;
+            border-radius: 100%;
+            
+        }
+
+        .user-name{
+            color: #C0C0C0;
+            font-size: 0.8em;
+            padding-bottom: 0.5em;
+            padding-top: 1em;
+
+        }
+
+        .chatMessage{
+            color: #E2E2E2;   
+            font-size: 0.8em;
+            background-color: rgba(226, 226, 226, 0.2);        
+            border-radius: 0.5em;
+            padding-left: 0.7em;
+            padding-right: 0.7em;
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+        }
+
+        #chatMessageList-row{
+            height: 16em; 
+            overflow-y: scroll;
+        }
+
+        #chatMessageList-row::-webkit-scrollbar{
+            display: none;
+        }
+
+        .profile-image-box{
+            width: 2.2em; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+        }
+
+        .messageBox{
+            padding-left: 0.7em;
+            display: flex; 
+            justify-content: center; 
+            flex-direction: column;
+        }
+
+        #starting-price-text{
+            color: #C0C0C0;
+            font-size: 0.75em;
+            position: absolute;
+            top: 25%;
+            left: 0%;
+            transform: translate(0, -50%);
+        }
+
+        #starting-price{
+            color: #E2E2E2;
+            font-size: 0.75em;
+            font-weight: 600;
+            position: absolute;
+            top: 75%;
+            left: 0%;
+            transform: translate(0, -50%);
+        }
+
+        #current-price-text{
+            color: #C0C0C0;
+            font-size: 0.75em;
+            position: absolute;
+            top: 25%;
+            left: 0%;
+            transform: translate(0, -50%);
+        }
+
+        #current-price{
+            color: #FA075B;
+            font-size: 0.75em;
+            font-weight: 600;
+            position: absolute;
+            top: 75%;
+            left: 0%;
+            transform: translate(0, -50%);
+        }
+
+        #bid-box{
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 0.5em;
+            width: 61%;
+            margin-right: 2%;
+            height: 3.8em;
+            display: flex;
+            align-items: center;
+            padding-left: 0.6em;
+            padding-right: 0.6em;
+            padding-top: 0.4em;
+            padding-bottom: 0.4em;
+
+        }
+
+        #bid-starting-box{
+            height: 3em;
+            width: 50%;
+            position: relative;
+        }
+
+        #bid-current-box{
+            height: 3em;
+            width: 50%;
+            position: relative;
+        }
+        
+        .fold-icon{
+            color: white;
+            font-size: 1em;
+        }
+
+        #folding-row{
+            position: fixed; 
+            bottom: 0; 
+            height: 28em; 
+            width: 100%; 
+            z-index: 3; 
+            background-color: rgba(17, 17, 17, 0.9); 
+            border-top-left-radius: 1.5em; 
+            border-top-right-radius: 1.5em;
+        }
+
+        #bid-button{
+            background-color: rgba(250, 7, 91, 0.8);
+            border-radius: 0.5em;
+            width: 35%;
+            margin-left: 2%;
+            height: 3.8em;
+            padding-left: 0.6em;
+            padding-right: 0.6em;
+            padding-top: 0.4em;
+            padding-bottom: 0.4em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* border-color: #777777;
+            border-width: 0.1em;
+            border-style: solid;  */
+        }
+
+        #bid-button-text{
+            font-size: 1em;
+            font-weight: bold;
+            color: white;
+            /* color: #777777; */
+        }
+
+        #modal-currentprice-text{
+            position: absolute; 
+            top: 50%; 
+            left: 5%; 
+            transform: translate(0, -50%);
+        }
+
+        #modal-currentprice{
+            position: absolute; 
+            top: 50%; 
+            right: 5%; 
+            transform: translate(0, -50%);
+        }
+
+        .modal-bidder{
+            position: absolute;
+            top: 50%;
+            left: 5%;
+            transform: translate(0, -50%);
+            font-size: 0.8em;
+            color: #777777;
+            font-weight: bold;
+        }
+        .modal-bid-price{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.8em;
+            color: #111111;
+            font-weight: bold;
+        }
+        .modal-bid-date{
+            position: absolute;
+            top: 50%;
+            right: 5%;
+            transform: translate(0, -100%);
+            font-size: 0.7em;
+            color: #777777;
+            font-weight: bold;
+        }
+        .modal-bid-time{
+            position: absolute;
+            top: 50%;
+            right: 5%;
+            transform: translate(0, 0%);
+            font-size: 0.7em;
+            color: #777777;
+            font-weight: bold;
+        }
+    
+
+        .modal-enabled-button{
+            width: 100%; 
+            height: 3em; 
+            border-radius: 0.5em;
+            border-width: 0em;
+            border-style: solid; 
+            background-color: #111111;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            font-size: 1em;
+            color: #E2E2E2;
+            font-weight: bold;
+        }
+
+        /* #modal-bid-button{
+            width: 100%; 
+            height: 3em; 
+            border-radius: 0.2em; 
+            border-width: 0em;
+            border-style: solid; 
+            background-color: #111111;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            font-size: 1em;
+            color: #E2E2E2;
+            font-weight: bold;
+        } */
+
+        .modal-disabled-button{
+            width: 100%; 
+            height: 3em; 
+            border-radius: 0.5em;
+            border-color: #E2E2E2;
+            border-width: 0.1em;
+            border-style: solid; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            font-size: 1em;
+            color: #777777;
+            font-weight: bold;
+        }
+
+        #modal-title{
+            font-size:1em;
+            position: absolute;
+            top: 50%;
+            left: 0em;
+            transform: translate(0, -50%);
+        }
+
+        #modal-close{
+            font-size:1em;
+            position: absolute;
+            top: 50%;
+            right: 0em;
+            transform: translate(-50%, -50%);
+        }
+
+        .modal-caution{
+            font-size: 0.65em;
+            color: #777777;
+            font-weight: bold;
+        }
+
+        #modal-bidList-row{
+            padding-top: 1em;
+            margin-top: 1em;
+            /* background-color: rgba(226, 226, 226, 0.2); 
+            border-radius: 1em;  */
+            border-top-color: #E2E2E2;
+            border-top-style: solid;
+            border-top-width: 0.1em;
+            /* border-bottom-color: #E2E2E2;
+            border-bottom-style: solid;
+            border-bottom-width: 0.1em; */
+            height: 15em;
+        }
+
+        #modal-price-row{
+            padding-top: 1em;
+            margin-top: 1em;
+            border-top-color: #E2E2E2;
+            border-top-style: solid;
+            border-top-width: 0.1em;
+        }
+
+        #bidHistoryListBox{
+            height: 13em; 
+            overflow-y: scroll;
+            
+        }
+
+        #bidHistoryListBox::-webkit-scrollbar{
+            display: none;
+        }
+
+        #modal-bid-button.highestbid-disabled{
+            background-color: #E2E2E2;
+            color: #111111;
+        }
+
+        .successfulbidBox{
+            background-color: rgba(0, 0, 0, 0.5); 
+            border-radius: 0.5em; 
+            width: 80%; 
+            padding-top: 1em; 
+            padding-bottom: 1em; 
+            padding-left: 1em; 
+            padding-right: 1em;
+            height: 6em;
+            position: relative;
+
+        }
+
+    </style>
+
+</head>
+
+
+
+
+
+
+
+<body>
+
+    <div class="container-fluid">
+
+        <!--백그라운드 이미지, opacity-->
+        <img id="goods-image" th:src="@{/public/image/trade/dogimage.png}">
+        <div id="image-opacity"></div>
+    
+         <!--상단 바 = 좋아요, 뒤로가기-->
+        <div class="row" style="height: 4em;">
+            <div class="col" style="position: relative; z-index: 3;">
+                <div id="back-icon-box" class="text-center">
+                    <div id="back-icon" class="fw-bold"><i class="fa-solid fa-angle-left" style="color: #ffffff;"></i></div>
+                </div>
+                <div id="wishlist-icon-box">
+                    <div id="wishlist-icon"><i class="fa-solid fa-heart" style="color: #ffffff;"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="height: 0.5em;"></div>
+        <!-- 상품 정보-->
+        <div class="row">
+            <div class="col">
+                <div class="row" style="height: 3em;">
+                    <div class="col" style="position: relative; z-index: 3;">
+                        <div id="goods-title" class="fw-bold"></div>
+                    </div>
+                </div>
+                <div class="row" style="height: 2em;">
+                    <div class="col" style="position: relative; z-index: 3;">
+                        <div id="category-name-box">
+                            <div id="category-name" class="fw-bold"></div>
+                        </div>
+                        <div id="remainingTime"></div>
+                    </div>
+                </div>
+                <div class="row" style="height: 1.5em;"></div>
+                <div class="row" style="height: 5em;">
+                    <div class="col" style="position: relative; z-index: 3;">
+                        <div id="goods-content"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4"></div>
+        </div>
+
+        <div class="row" style="height: 3em; position: fixed; bottom: 0; height: 3em; width: 100%; 
+        z-index: 3; 
+        background-color: rgba(17, 17, 17, 0.9); 
+        border-top-left-radius: 1.5em; 
+        border-top-right-radius: 1.5em;">
+            <div class="col" style="display: flex; align-items: center; justify-content: center;">
+                <div data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" class="fold-icon"><i class="fa-solid fa-chevron-up"></i></div>
+            </div>
+        </div>
+        
+
+        <div class="collapse show" id="collapseExample">
+            <div id="folding-row" class="row">
+                <div class="col">
+
+                    <div class="row" style="height: 3em;">
+                        <div class="col" style="display: flex; align-items: center; justify-content: center;">
+                            <div data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" class="fold-icon"><i class="fa-solid fa-chevron-down"></i></div>
+                        </div>
+                    </div>
+
+                        <!--입찰-->
+                        <div id="bidInfo-row" class="row" style="height: 3.8em; margin-bottom: 1.2em;">
+                            <div class="col" style="display: flex; align-items: center;">
+                                <div id="bid-box">
+                                    <div id="bid-starting-box">
+                                        <div id="starting-price-text">시작가</div>
+                                        <div id="starting-price"></div>
+                                    </div>
+                                    <div id="bid-current-box">
+                                        <div id="current-price-text">현재가</div>
+                                        <div id="current-price"></div>
+                                    </div>
+                                </div>
+                                <div id="bid-button" onclick="showModal()">
+                                    <div id="bid-button-text">입찰 신청</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--메시지 리스트-->
+                        <div id="chatMessageList-row" class="row">
+                            <div id="chatMessageListBox" class="col">
+                                
+
+                            </div>
+                        </div>
+
+                        <!--메시지 입력-->
+                        <div class="row" style="height: 4em;">
+                            <div class="col" style="position: relative;">
+                                <input id="send-massage" type="text">
+                            </div>
+                            <div class="col-2" style="position: relative;">
+                                <div id="send-icon-box" onclick="writeChatMessage()">
+                                    <div id="send-icon"><i class="fa-solid fa-arrow-right"></i></div>
+                                </div>
+                            </div>
+                        </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- <div style="width: 100%; height: 100%; background-color: white; position: absolute; top: 0; left: 0; z-index: 4;">
+        
+        </div> -->
+
+    </div>
+
+
+    <!--템플릿-->
+    <div id="template" class="d-none">
+
+        <!--채팅메시지-->
+        <div class="row chatMessageWrapper" style="padding-top: 0.5em;">
+            <div class="col chatMessageCol">
+                <div class="chatMessageBox">
+                    <div style="display: flex; align-items: center;">
+                        <div class="profile-image-box">
+                            <img class="profile-image" th:src="@{/public/image/trade/puppy1.jpg}">
+                        </div>
+                        <div class="messageBox">
+                            <div class="user-name"></div>
+                            <div class="chatMessage"></div>
+                        </div>   
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--입찰 내역-->
+        <div class="row bidHistoryWrapper" style="height: 3em; padding-bottom: 1em;">
+            <div class="col" style="position: relative;">
+                <div class="modal-bidder"></div>
+                <div class="modal-bid-price"></div>
+                <div class="modal-bid-date"></div>
+                <div class="modal-bid-time"></div>
+            </div>
+        </div>
+
+        <div class="row successfulbidWrapper" style="padding-top: 2em;">
+            <div class="col text-center">
+                <div class="row">
+                    <div class="col">
+                        <div style="color: #E2E2E2; font-size: 0.8em;">경매가 종료되었습니다.</div>
+                    </div>
+                </div>
+                <div class="row" style="padding-top: 1em;">
+                    <div class="col" style="display: flex; justify-content: center;">
+                        <div class="text-start successfulbidBox">
+                            <div class="successfulbidGoods" style="color: #E2E2E2; font-size: 0.8em; padding-bottom: 1em; position: absolute; top: 1em; left: 1em;"></div>
+                            <div style="color: #C0C0C0; font-size: 0.8em; position: absolute; bottom: 2.5em; left: 1em;">낙찰자</div>
+                            <div class="successfulbidName" style="color: #E2E2E2; font-size: 0.8em; position: absolute; bottom: 2.5em; left: 5em;"></div>
+                            <div style="color: #C0C0C0; font-size: 0.8em; position: absolute; bottom: 1em; left: 1em;">낙찰가</div>
+                            <div class="successfulbidPrice fw-bold" style="color: #FA075B; font-size: 0.8em; position: absolute; bottom: 1em; left: 5em;"></div>
+                            <img style="width: 2.5em; height: 2.5em; position: absolute; bottom: 1em; right: 1em;" th:src = "@{/public/image/trade/dogpaw.png}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 모달창-->
+    <div id="bidModal" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" style="max-height: 100vh; position: fixed; top: 0; left: 0; border-radius: 0; border: none;">
+                
+                <div class="modal-body" style="padding-left: 1.5em; padding-right: 1.5em; padding-top: 0em; overflow-y: auto;">
+
+                    <div class="row" style="height: 3em;">
+                        <div class="col" style="position: relative;">
+                            <div id="modal-title" class="fw-bold"></div>
+                            <div id="modal-close" onclick="closeModal()"><i class="fa-solid fa-x"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col-5" style="display: flex; justify-content: center;">
+                                    <div style="width: 70%;"><img class="img-fluid" th:src="@{/public/image/trade/dogimage.png}" style="border-style: solid; border-color: #777777; border-width: 0.05em;"></div>
+                                </div>
+                                <div class="col-7">
+                                    <div class="row" style="height: 0.1em;"></div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div style="font-size: 0.9em; font-weight: bold; color: #111111;">미스김</div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="height: 2.5em;"></div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div style="font-size: 0.8em; color: #777777; font-weight: bold;">그레이 하운드 오리털 패딩</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" style="padding-top: 0.5em;">
+                                        <div class="col">
+                                            <div style="font-size: 0.8em; color: #777777; font-weight: bold;">07/01 16:00</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div style="font-size: 0.8em; color: #777777; font-weight: bold;">07/03 18:00 | 2024</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="modal-price-row" class="row">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col">
+                                    <div id="modal-current-price-text" style="font-size: 0.8em; font-weight: bold; color: #777777;">현재가</div>
+                                </div>
+                                <div class="col text-end">
+                                    <div id="modal-current-price" style="font-size: 0.8em; font-weight: bold; color: #FA075B;"></div>
+                                </div>
+                            </div>
+                            <div class="row" style="padding-top: 0.5em;">
+                                <div class="col">
+                                    <div style="font-size: 0.8em; font-weight: bold; color: #777777;">시작가</div>
+                                </div>
+                                <div class="col text-end">
+                                    <div id="modal-starting-price" style="font-size: 0.8em; font-weight: bold;"></div>
+                                </div>
+                            </div>
+                            <div class="row" style="padding-top: 0.5em;">
+                                <div class="col">
+                                    <div style="font-size: 0.8em; font-weight: bold; color: #777777;">호가단위</div>
+                                </div>
+                                <div class="col text-end">
+                                    <div id="ask-price" style="font-size: 0.8em; font-weight: bold;"></div>
+                                </div>
+                            </div>
+                            <div class="row" style="padding-top: 0.5em;">
+                                <div class="col">
+                                    <div style="font-size: 0.8em; font-weight: bold; color: #777777;">남은시간</div>
+                                </div>
+                                <div class="col text-end">
+                                    <div id="modal-remainingTime" style="font-size: 0.8em; font-weight: bold;">17:15:36</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div id="modal-bidList-row" class="row">
+                        <div id="bidHistoryListBox" class="col">
+                            
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 2em;">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="modal-caution" style="color: #FA075B;">* 입찰하기 버튼을 누르시면 취소가 불가능합니다.</div>
+                                </div>
+                            </div>
+                            <div class="row" style="padding-top: 0.25em;">
+                                <div class="col">
+                                    <div class="modal-caution">* 동시 응찰자 경우, 서버시각(KST) 기준 우선순위가 부여됩니다.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 1em; margin-bottom: 1em;">
+                        <div class="col">
+                            <div id="modal-bid-button" class="modal-enabled-button"></div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <input id="goodsPk" type="hidden" th:value="${goodsPk}">
+    <input id="sessionUserPk" type="hidden" th:value="${session.sessionUser.user_pk}">
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+
+</html>

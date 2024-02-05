@@ -36,6 +36,8 @@ public interface FundingSqlMapper {
     public int totalSales(int product_pk);
     //상품의 매출총액과 목표금액 대비해서 퍼센트로 구하기
     public int countPercentByPk(int pk);
+    //상품의 총 구매횟수 가져오기
+    public int countPurchase(int product_pk);
     //상품 찜하기 
     public void insertWish(FundingWishlistDto paraWishDto);
     public void deleteWish(FundingWishlistDto paraWishDto);
@@ -94,5 +96,8 @@ public interface FundingSqlMapper {
     //목표 달성유무 판단해서 숫자로 돌려주기 
     public int selectCountSuccessGoal(int user_pk);
     public int selectCountFailGoal(int user_pk);
+
+    //응원 페이지에서 보일 물건별 응원수 카운트
+    public int countCheeringByPk(int product_pk);
 
 }

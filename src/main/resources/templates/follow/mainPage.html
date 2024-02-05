@@ -9,56 +9,544 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
         <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-
-        <link rel="stylesheet" th:href="@{/public/css/follow/root.css}" />
-        <link rel="stylesheet" th:href="@{/public/css/follow/font.css}" />
-        <link rel="stylesheet" th:href="@{/public/css/follow/clickEffect.css}" />
-        <link rel="stylesheet" th:href="@{/public/css/follow/icon.css}" />
-        <link rel="stylesheet" th:href="@{/public/css/follow/marker.css}" />
-        <link rel="stylesheet" th:href="@{/public/css/follow/myPosition.css}" />
-        <link rel="stylesheet" th:href="@{/public/css/follow/myBag.css}" />
-        <link rel="stylesheet" th:href="@{/public/css/follow/action.css}" />
-
-        <script src="/public/js/commons/lockLikeMobile.js"></script>
+        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a277eb582a644847f86de6196a42745f"></script>
 
         <style>
+
+            @font-face {
+                font-family: 'omyu_pretty';
+                src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
+                font-weight: normal;
+                font-style: normal;
+            }
+
+            body {
+                font-family: 'omyu_pretty';
+                min-width: 375px;
+            }
+
+            div.clickEffect{
+                position: fixed;
+                box-sizing: border-box;
+                border-style: solid;
+                border-color: #CACACA;
+                border-radius: 50%;
+                animation: clickEffect 0.8s ease-out;
+                z-index: 1500;
+            }
+            
+            @keyframes clickEffect{
+                from {
+                    opacity:1;
+                    width:0.5rem; height:0.5rem;
+                    margin:-0.25rem;
+                    border-width:0.2rem;
+                }
+                to {
+                    opacity:0.1;
+                    width:10rem; height:10rem;
+                    margin:-5rem;
+                    border-width:0.01rem;
+                }
+            }
+
+            :root {
+                --color-white: 255, 255, 255;
+                --color-black: 0, 0, 0;
+                
+                --border-circular: 50%;
+
+                --my-location-marker-box-size: 2rem;
+                --my-location-marker-first-diameter: 2rem;
+                --my-location-marker-second-diameter: 0.9rem;
+                --my-location-marker-third-diameter: 0.65625rem;
+
+                --my-track-marker-size: 2rem;
+
+                --action-background-circle-diameter: 50rem;
+                --action-background-circle-color: radial-gradient(rgb(125, 131, 199, 1) 0%, rgb(255, 255, 255, 0) 70%, rgb(255, 255, 255, 0) 100%);
+                --action-menu-button-diameter: 3.5rem;
+                --action-menu-button-color: linear-gradient(to bottom, #ad93c2 40%, #6F3C95 100%);;
+                --action-close-button-out-diameter: 2.5rem;
+                --action-close-button-in-diameter: 2rem;
+                --action-out-circle-diameter: 3.5rem;
+                --action-in-circle-diameter: 3rem;
+                --action-out-circle-color: rgb(233, 233, 233, 0.3);
+                --action-out-circle-border: 2px solid rgba(46, 51, 116, 0.4);
+                --action-in-circle-border: 2px solid rgb(80, 89, 205);
+                --action-main-color: rgb(80, 89, 205);
+            }
+
+            #topBanner {
+                height: 5rem;
+            }
 
             #map {
                 position: relative;
                 overflow: hidden;
                 width: 100%;
-                height: 90vh;
+                height: 32rem;
             }
-            
+
+            #block {
+                position: absolute;
+                z-index: 9999;
+                width: 100%;
+                height: 32rem;
+            }
+
+            .myLocationMarkerBox {
+                position: relative;
+                width: var(--my-location-marker-box-size);
+                height: var(--my-location-marker-box-size);
+            }
+
+            .myLocationMarker {
+                position: absolute;
+                border-radius: var(--border-circular);
+                top: calc(50% - var(--my-location-marker-radius));
+                left: calc(50% - var(--my-location-marker-radius));
+            }
+
+            .myLocationMarker.first {
+                width: var(--my-location-marker-first-diameter);
+                height: var(--my-location-marker-first-diameter);
+                border-radius: var(--border-circular);
+                background: rgb(var(--color-black), 0.1);
+                --my-location-marker-radius: var(--my-location-marker-first-diameter) / 2;
+            }
+
+            .myLocationMarker.second {
+                width: var(--my-location-marker-second-diameter);
+                height: var(--my-location-marker-second-diameter);
+                border-radius: var(--border-circular);
+                background: rgb(var(--color-white));
+                box-shadow: 0 0 2px 2px rgb(var(--color-black), 0.5);
+                --my-location-marker-radius: var(--my-location-marker-second-diameter) / 2;
+            }
+
+            .myLocationMarker.third {
+                width: var(--my-location-marker-third-diameter);
+                height: var(--my-location-marker-third-diameter);
+                border-radius: var(--border-circular);
+                background: rgb(var(--color-black));
+                --my-location-marker-radius: var(--my-location-marker-third-diameter) / 2;
+            }
+
+            .pinImage {
+                width: var(--my-track-marker-size);
+                height: var(--my-track-marker-size);
+                background: url('/public/image/follow/pin.png') center no-repeat;
+                background-size: cover;
+            }
+
+            #shopButtonBox {
+                position: absolute;
+                z-index: 1000;
+                width: 4rem;
+                height: 4rem;
+                top: 5%;
+                right: 5%;
+                border-radius: var(--border-circular);
+                background: linear-gradient(to bottom, #ad93c2 40%, #6F3C95 100%);
+                border: 2px solid #422C52;
+            }
+
+            #shopButtonLight {
+                position: absolute;
+                z-index: -1;
+                width: 0.8rem;
+                height: 0.5rem;
+                top: 7%;
+                left: 17%;
+                border-radius: var(--border-circular);
+                background-color: #fff;
+                transform: rotate(-30deg);
+            }
+
+            #shopButtonContent {
+                position: absolute;
+                font-size: 1.1rem;
+                bottom: 0%;
+                left: 30%;
+                color: #fff;
+            }
+
+            #myPageButtonBox {
+                position: absolute;
+                z-index: 1000;
+                width: 4rem;
+                height: 4rem;
+                top: 20%;
+                right: 5%;
+                border-radius: var(--border-circular);
+                background: linear-gradient(to bottom, #ad93c2 40%, #6F3C95 100%);
+                border: 2px solid #422C52;
+            }
+
+            #myPageButtonLight {
+                position: absolute;
+                z-index: -1;
+                width: 0.8rem;
+                height: 0.5rem;
+                top: 7%;
+                left: 17%;
+                border-radius: var(--border-circular);
+                background-color: #fff;
+                transform: rotate(-30deg);
+            }
+
+            #myPageButtonContent {
+                position: absolute;
+                font-size: 1.1rem;
+                bottom: 0%;
+                left: 19%;
+                color: #fff;
+            }
+
+            #collectionButtonBox {
+                position: absolute;
+                z-index: 1000;
+                width: 4rem;
+                height: 4rem;
+                top: 35%;
+                right: 5%;
+                border-radius: var(--border-circular);
+                background: linear-gradient(to bottom, #ad93c2 40%, #6F3C95 100%);
+                border: 2px solid #422C52;
+            }
+
+            #collectionButtonLight {
+                position: absolute;
+                z-index: -1;
+                width: 0.8rem;
+                height: 0.5rem;
+                top: 7%;
+                left: 17%;
+                border-radius: var(--border-circular);
+                background-color: #fff;
+                transform: rotate(-30deg);
+            }
+
+            #collectionButtonContent {
+                position: absolute;
+                font-size: 1.1rem;
+                bottom: 0%;
+                left: 18%;
+                color: #fff;
+            }
+
+            #reloadLoactionButton {
+                position: absolute;
+                z-index: 1000;
+                width: 3rem;
+                height: 3rem;
+                bottom: 5%;
+                right: 7%;
+                border-radius: var(--border-circular);
+                background: linear-gradient(to bottom, #dd9bac 20%, #d12a2a 100%);
+                border: 2px solid rgb(var(--color-black));
+            }
+
+            #reloadLoactionButtonLight {
+                position: absolute;
+                z-index: -1;
+                width: 0.8rem;
+                height: 0.5rem;
+                top: 8%;
+                left: 11%;
+                border-radius: var(--border-circular);
+                background-color: #fff;
+                transform: rotate(-30deg);
+            }
+
+            .pets_icon {
+                position: absolute;
+                font-size: 2rem;
+                top: calc(50% - 1rem);
+                left: calc(50% - 1rem);
+                background: linear-gradient(to bottom, #fff 50%, #CACACA 100%);
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+                user-select: none;
+            }
+
+            .close_icon {
+                position: absolute;
+                font-size: 1.5rem;
+                top: calc(50% - 0.75rem);
+                left: calc(50% - 0.75rem);
+                color: var(--action-main-color);
+                user-select: none;
+            }
+
+            .mark_icon {
+                position: absolute;
+                width: 1.8rem;
+                height: 1.8rem;
+                top: calc(50% - 0.9rem);
+                left: calc(50% - 0.9rem);
+                color: var(--action-main-color);
+            }
+
+            .scan_icon {
+                position: absolute;
+                width: 1.8rem;
+                height: 1.8rem;
+                top: calc(50% - 0.9rem);
+                left: calc(50% - 0.9rem);
+                color: var(--action-main-color);
+                border-radius: var(--border-circular);
+            }
+
+            .track_icon {
+                position: absolute;
+                width: 2rem;
+                height: 2rem;
+                top: calc(50% - 1rem);
+                left: calc(50% - 1rem);
+                color: var(--action-main-color);
+            }
+
+            #actionBackgroundCircle {
+                position: absolute;
+                z-index: 2000;
+                width: var(--action-background-circle-diameter);
+                height: var(--action-background-circle-diameter);
+                top: calc(110% - var(--action-background-circle-diameter) / 2);
+                left: calc(50% - var(--action-background-circle-diameter) / 2);
+                background: var(--action-background-circle-color);
+            }
+
+            #actionMenuButton {
+                position: absolute;
+                z-index: 2000;
+                width: var(--action-menu-button-diameter);
+                height: var(--action-menu-button-diameter);
+                bottom: calc(10.5% - var(--action-menu-button-diameter) / 2);
+                left: calc(50% - var(--action-menu-button-diameter) / 2);
+                background: var(--action-menu-button-color);
+                border-radius: var(--border-circular);
+                border: 2px solid black;
+                box-shadow: 0 2px 1px 0.5px var(--box-shadow-color);
+            }
+
+            #actionMenuButtonLight {
+                position: absolute;
+                z-index: -1;
+                width: 0.8rem;
+                height: 0.5rem;
+                top: 7%;
+                left: 16%;
+                border-radius: var(--border-circular);
+                background-color: #fff;
+                transform: rotate(-30deg);
+            }
+
+            #actionMenuButton:active {
+                box-shadow: 0 1px 0 rgb(0,0,0,0.3);
+                bottom: calc(10.2% - var(--action-menu-button-diameter) / 2);;
+            }
+
+            .actionCircleOut {
+                position: absolute;
+                z-index: 2000;
+                width: var(--action-out-circle-diameter);
+                height: var(--action-out-circle-diameter);
+                background: var(--action-out-circle-color);
+                border: var(--action-out-circle-border);
+                border-radius: var(--border-circular);
+            }
+
+            .actionCircleIn {
+                position: absolute;
+                width: var(--action-in-circle-diameter);
+                height: var(--action-in-circle-diameter);
+                top: calc(50% - var(--action-in-circle-diameter) / 2);
+                left: calc(50% - var(--action-in-circle-diameter) / 2);
+                background: rgb(var(--color-white));
+                border: var(--action-in-circle-border);
+                border-radius: var(--border-circular);
+            }
+
+            .actionCircleCloseOut {
+                position: absolute;
+                z-index: 2000;
+                width: var(--action-close-button-out-diameter);
+                height: var(--action-close-button-out-diameter);
+                bottom: calc(11% - var(--action-close-button-out-diameter) / 2);
+                left: calc(50% - var(--action-close-button-out-diameter) / 2);
+                background: var(--action-out-circle-color);
+                border: var(--action-out-circle-border);
+                border-radius: var(--border-circular);
+            }
+
+            .actionCircleCloseIn {
+                position: absolute;
+                width: var(--action-close-button-in-diameter);
+                height: var(--action-close-button-in-diameter);
+                top: calc(50% - var(--action-close-button-in-diameter) / 2);
+                left: calc(50% - var(--action-close-button-in-diameter) / 2);
+                background: rgb(var(--color-white));
+                border: var(--action-in-circle-border);
+                border-radius: var(--border-circular);
+            }
+
+            .markOut {
+                top: calc(83% - var(--action-out-circle-diameter) / 2);
+                left: calc(36% - var(--action-out-circle-diameter) / 2);
+            }
+
+            .scanOut {
+                top: calc(79% - var(--action-out-circle-diameter) / 2);
+                left: calc(50% - var(--action-out-circle-diameter) / 2);
+            }
+
+            .trackOut {
+                top: calc(83% - var(--action-out-circle-diameter) / 2);
+                right: calc(36% - var(--action-out-circle-diameter) / 2);
+            }
+
+            .action_text {
+                font-size: 1rem;
+                position: absolute;
+                top: -30%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                color: #313681;
+                user-select: none;
+            }
+
+            @keyframes markButtonSpreadOut {
+                from {
+                    transform: translate(0, 0);
+                    animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    opacity: 0;
+                }
+                to {
+                    transform: translate(-2rem, -2rem);
+                    opacity: 1;
+                }
+            }
+
+            @keyframes markButtonSpreadIn {
+                from {
+                    transform: translate(-2rem, -2rem);
+                    animation-timing-function: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+                    opacity: 1;
+                }
+                to {
+                    transform: translate(0, 0);
+                    opacity: 0;
+                }
+            }
+
+            @keyframes scanButtonSpreadOut {
+                from {
+                    transform: translate(0, 0);
+                    animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(-2rem);
+                    opacity: 1;
+                }
+            }
+
+            @keyframes scanButtonSpreadIn {
+                from {
+                    transform: translateY(-2rem);
+                    animation-timing-function: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+                    opacity: 1;
+                }
+                to {
+                    transform: translate(0, 0);
+                    opacity: 0;
+                }
+            }
+
+            @keyframes trackButtonSpreadOut {
+                from {
+                    transform: translate(0, 0);
+                    animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    opacity: 0;
+                }
+                to {
+                    transform: translate(2rem, -2rem);
+                    opacity: 1;
+                }
+            }
+
+            @keyframes trackButtonSpreadIn {
+                from {
+                    transform: translate(2rem, -2rem);
+                    animation-timing-function: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+                    opacity: 1;
+                }
+                to {
+                    transform: translate(0, 0);
+                    opacity: 0;
+                }
+            }
+
+            @keyframes showScale {
+                from {
+                    transform: scale(0);
+                }
+                to {
+                    transform: scale(1);
+                }
+            }
+
+            @keyframes hideScale {
+                from {
+                    transform: scale(1);
+                }
+                to {
+                    transform: scale(0);
+                }
+            }
+
+            @keyframes showOpacity {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes hideOpacity {
+                from {
+                    opacity: 1;
+                }
+                to {
+                    opacity: 0;
+                }
+            }
+
         </style>
 
         <script>
 
-            let user_pk;
-
             let map;
 
-            const staticLat = 37.4996259;
-            const staticLng = 127.0304801;
+            let myLocation;
 
             let currentLat;
             let currentLng;
 
-            const totalMarkingCountEveryDay = 3;
-            const markingRadius = 100;
-            const markingDate = 7;
+            const staticLat = 37.4996259;
+            const staticLng = 127.0304801;
 
-            let markedMineMarkers = [];
+            let myTrackMarkers = [];
+            let tracingTrackMarkers = [];
+            let tracingTrackInfoMarkers = [];
 
-            function clickEffect(e) {
-                const d = document.createElement("div");
-                d.className="clickEffect";
-                d.style.top = e.clientY + "px";
-                d.style.left = e.clientX + "px";
-                document.body.appendChild(d);
-                d.addEventListener('animationend', function() {
-                    d.parentElement.removeChild(d);
-                }.bind(this));
+            const alertTime = 1000;
+
+            function reloadMyLocation() {
+                getMyLocation();
             }
 
             function showActionMenu() {
@@ -67,7 +555,7 @@
 
                 const actionBackgroundCircle = document.getElementById("actionBackgroundCircle");
                 actionBackgroundCircle.hidden = false;
-                actionBackgroundCircle.style.animation = 'showBackgroundCircle 0.3s linear 1';
+                actionBackgroundCircle.style.animation = 'showScale 0.3s linear 1';
                 
                 for(e of document.getElementsByClassName("actionCircleOut")) {
                     e.hidden = false;
@@ -75,17 +563,12 @@
                     e.style.animationFillMode = 'both';
                 }
 
-                const reloadPositionButton = document.getElementById("reloadPositionButton");
-                reloadPositionButton.style.animation = 'hideSomthing 0.2s linear 1';
-                reloadPositionButton.style.animationFillMode = 'both';
-                
-                const collectionButton = document.getElementById("collectionButton");
-                collectionButton.style.animation = 'hideSomthing 0.2s linear 1';
-                collectionButton.style.animationFillMode = 'both';
+                const reloadLoactionButton = document.getElementById("reloadLoactionButton");
+                reloadLoactionButton.style.animation = 'hideOpacity 0.2s linear 1';
+                reloadLoactionButton.style.animationFillMode = 'both';
 
                 setTimeout(() => {
-                    reloadPositionButton.hidden = true;
-                    collectionButton.hidden = true;
+                    reloadLoactionButton.hidden = true;
                 }, 200);
 
             }
@@ -103,24 +586,19 @@
                     document.getElementById("actionCloseButton").hidden = true;
 
                     const actionMenuButton = document.getElementById("actionMenuButton");
-                    actionMenuButton.style.animation = 'showSomthing 0.3s linear 1';
+                    actionMenuButton.style.animation = 'showOpacity 0.3s linear 1';
                     actionMenuButton.style.animationFillMode = 'both';
                     actionMenuButton.hidden = false;
 
-                    const reloadPositionButton = document.getElementById("reloadPositionButton");
-                    reloadPositionButton.style.animation = 'showSomthing 0.3s linear 1';
-                    reloadPositionButton.style.animationFillMode = 'both';
+                    const reloadLoactionButton = document.getElementById("reloadLoactionButton");
+                    reloadLoactionButton.style.animation = 'showOpacity 0.3s linear 1';
+                    reloadLoactionButton.style.animationFillMode = 'both';
 
-                    const collectionButton = document.getElementById("collectionButton");
-                    collectionButton.style.animation = 'showSomthing 0.3s linear 1';
-                    collectionButton.style.animationFillMode = 'both';
-
-                    reloadPositionButton.hidden = false;
-                    collectionButton.hidden = false;
+                    reloadLoactionButton.hidden = false;
                 }, 150);
 
                 const actionBackgroundCircle = document.getElementById("actionBackgroundCircle");
-                actionBackgroundCircle.style.animation = 'hideBackgroundCircle 0.3s linear 1';
+                actionBackgroundCircle.style.animation = 'hideScale 0.3s linear 1';
                 
                 setTimeout(() => {
                     actionBackgroundCircle.hidden = true;
@@ -128,814 +606,137 @@
                         e.hidden = true;
                     }
                 }, 300);
+            }
+
+            function openMyCollection() {
+                // asdf 마저 채우기
+                showMyCollectionModal();
+            }
+            
+            function showAndHideAlertModal() {
+                const modal = bootstrap.Modal.getOrCreateInstance("#alertModal");
+                modal.show();
+
+                setTimeout(() => {
+                    modal.hide();
+                }, alertTime);
+            }
+
+            function showMyCollectionModal() {
+                const modal = bootstrap.Modal.getOrCreateInstance("#myCollectionModal");
+                modal.show();
+            }
+
+            function createMap() {
+
+                const mapContainer = document.getElementById("map");
+                mapOption = {
+                    center: new kakao.maps.LatLng(staticLat, staticLng),
+                    level: 4
+                };
+
+                map = new kakao.maps.Map(mapContainer, mapOption);
+
+            }
+
+            function getMyLocation() {
+                if(navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition((position) => {
+
+                        currentLat = position.coords.latitude;
+                        currentLng = position.coords.longitude;
+
+                        const currentPosition = new kakao.maps.LatLng(currentLat, currentLng)
+
+                        displayMyLocation(currentPosition);
+                    });
+                }else {
+                    const staticPosition = new kakao.maps.LatLng(staticLat, staticLng);
+                    displayMyLocation(staticPosition);
+
+                    document.getElementById("alertContent").innerText = "위치정보가 필요합니다";
+                    showAndHideAlertModal();
+
+                    setTimeout(() => {
+                        location.href = "/commons/mainPage";
+                    }, alertTime);
+                }
+            }
+
+            function displayMyLocation(position) {
+                // asdf 지우기
+                displayMyTrackMarker();
+
+                if(myLocation) {
+                    myLocation.setPosition(position);
+                    map.panTo(position);
+
+                    return;
+                }
+
+                const content = document.createElement("div");
+                content.classList.add("myLocationMarkerBox");
+
+                const div1 = document.createElement("div");
+                div1.classList.add("myLocationMarker", "first");
+                const div2 = document.createElement("div");
+                div2.classList.add("myLocationMarker", "second");
+                const div3 = document.createElement("div");
+                div3.classList.add("myLocationMarker", "third");
+
+                content.appendChild(div1);
+                content.appendChild(div2);
+                content.appendChild(div3);
+                
+                    myLocation = new kakao.maps.CustomOverlay({
+                    position: position,
+                    content: content
+                });
+
+                myLocation.setMap(map);
+                map.panTo(position);
+
+            }
+            
+            function displayMyTrackMarker() {
+
+                const position = new kakao.maps.LatLng(currentLat, currentLng);
+
+                const content = document.createElement("div");
+                content.classList.add("pinImage");
+
+                const marker = new kakao.maps.CustomOverlay({
+                    position: position,
+                    content: content,
+                    xAnchor: 0.57,
+                    yAnchor: 0.98,
+                    zIndex: 1
+                });
+
+                marker.setMap(map);
             }
 
             document.addEventListener('click', clickEffect);
 
-            function getUserPk() {
-
-                const url = "./getUserPk";
-
-                fetch(url)
-                .then(response => response.json())
-                .then(response => {
-                    user_pk = response.data;
-                    checkWriteMarkCount();
-                    getTrackingList();
-                });
-
-            }
-
-            function marking() {
-
-                removeMarkedMineMarkers();
-                isFirstTimeMark();
-
-            }
-
-            function isFirstTimeMark() {
-
-                const url = "./isFirstTimeMark?user_pk=" + user_pk;
-
-                fetch(url)
-                .then(response => response.json())
-                .then(response => {
-                    let isFirstTimeMark_boolean = response.data;
-
-                    if(isFirstTimeMark_boolean) {
-                        showMoreInfoAlertModal();
-                    }else {
-                        getMyLocation();
-                        setTimeout(() => {
-                            checkWriteMarkDistanceWithScan();
-                        }, 500);
-                    }
-
-                }).catch((error) => {
-                    alert("으아아아: " + error);
-                });
-
-            }
-
-            function textToUpperCase(target) {
-
-                target.value = target.value.toUpperCase();
-
-            }
-
-            function saveMoreInfo() {
-                const height = document.getElementById("moreInfoHeight").value;
-                const weight = document.getElementById("moreInfoWeight").value;
-                const bloodType = document.getElementById("moreInfoBloodType").value;
-                const mbtiType = document.getElementById("moreInfoMbtiType").value;
-                const hobby = document.getElementById("moreInfoHobby").value;
-                const drink = document.querySelector('input[name="isDrink"]:checked').value;
-                const smoke = document.querySelector('input[name="isSmoke"]:checked').value;
-                const preference = document.getElementById("moreInfoPreference").value;
-
-                if(height == "" || weight == "" || bloodType == "" || mbtiType == "" ||
-                    hobby == "" || drink == "" || smoke == "" || preference == "0") {
-                    showFillAlertModal();
-                    return;
-                }
-
-                const url = "./insertMoreInfo?user_pk="+user_pk+"&height="+height+"&weight="+weight+
-                    "&blood_type="+bloodType+"&mbti_type="+mbtiType+"&hobby="+hobby+"&drinking="+drink+"&smoking="+smoke+"&preference="+preference;
-
-                fetch(url)
-                .then(response => response.json())
-                .then(response => {
-                    showSuccessMoreInfoAlertModal();
-                });
-            }
-
-            function inputImage() {
-                const input = document.getElementById("writeMarkImage");
-                input.click();
-            }
-
-            function previewImage() {
-                const input = document.getElementById("writeMarkImage");
-                const writeMarkImageHere = document.getElementById("writeMarkImageHere");
-                if([...input.files].length === 0) {
-                    return;
-                }
-
-                const imageUrl = URL.createObjectURL(input.files[0]);
-                document.getElementById("writeMarkNoimage").hidden = true;
-                writeMarkImageHere.style.background = "url(" + imageUrl + ") no-repeat center";
-                writeMarkImageHere.style.backgroundSize = "cover";
-            }
-
-            function saveWriteMarkInfo() {
-
-                const input = document.getElementById("writeMarkImage");
-                const content = document.getElementById("writeMarkContent").value;
-                const formData = new FormData();
-                formData.append("user_pk", user_pk);
-                formData.append("content", content);
-                formData.append("latitude", currentLat);
-                formData.append("longitude", currentLng);
-                formData.append("imageFile", input.files[0]);
-
-                const url = "./saveWriteMarkInfo";
-                const option = {
-                    method: "post",
-                    body: formData
-                };
-
-                fetch(url, option)
-                .then(response => response.json())
-                .then(response => {
-                    checkWriteMarkCount();
-                    hideActionMenu();
-                    const modal = bootstrap.Modal.getOrCreateInstance("#writeMarkModal");
-                    modal.hide();
-                    showJustBeforeIMarked();
-                }).catch(error => {
-                    alert("으아아22: " + error);
-                });
-
-            }
-
-            function showJustBeforeIMarked() {
-
-                const url = "./getJustBeforeIMarked?user_pk=" + user_pk;
-
-                fetch(url)
-                .then(response => response.json())
-                .then(response => {
-                    var position = new kakao.maps.LatLng(currentLat, currentLng);
-                    displayMarkedMine(position, response.data);
-                })
-
-            }
-
-            function checkWriteMarkDistanceWithScan() {
-
-                hideActionMenu();
-                markedScan();
-                setTimeout(() => {
-                    checkWriteMarkDistance();
-                }, 3000);
-                
-            }
-
-            function checkWriteMarkDistance() {
-                const url = "./checkWriteMarkDistance?user_pk=" + user_pk + "&markingRadius=" + markingRadius +
-                    "&markingDate=" + markingDate + "&latitude=" + currentLat + "&longitude=" + currentLng;
-                
-                fetch(url)
-                .then(response => response.json())
-                .then(response => {
-                    if(response.data.length <= 0) {
-                        showWriteMarkModal();
-                    }else {
-
-                        for(e of response.data) {
-                            var position = new kakao.maps.LatLng(e.latitude, e.longitude)
-                            displayMarkedMine(position, e);
-
-                            setTimeout(() => {
-                                console.log("0.5초");   
-                            }, 500)
-                        }
-
-                        setTimeout(() => {
-                            showAlreadyMakredAlertModal();
-                        }, 500);
-
-                    }
-
-                });
-            }
-
-            function checkWriteMarkCount() {
-
-                const url = "./checkWriteMarkCount?user_pk=" + user_pk;
-
-                fetch(url)
-                .then(response => response.json())
-                .then(response => {
-                    if(totalMarkingCountEveryDay - response.data == 0) {
-                        document.getElementById("markButton").classList.add("disabled");
-                        showAllUsedAlertModal();
-                    }
-                });
-
-            }
-
-            function showScanResult() {
-                
-                const url = "./getScanResult?user_pk=" + user_pk + "&latitude=" + currentLat + "&longitude=" + currentLng;
-                console.log(url);
-                fetch(url)
-                .then(response => response.json())
-                .then(response => {
-                    console.log(response.data);
-                    if(response.data.length == 0) {
-                        showNoMakredAlertModal();
-                        return;
-                    }
-                    
-                    for(e of response.data) {
-
-                        const position = new kakao.maps.LatLng(e.latitude, e.longitude);
-                        displayMarkedMine(position, e);
-
-                        setTimeout(() => {
-                            console.log("0.5초");   
-                        }, 500)
-
-                    }
-                    
-                });
-
-            }
-
-            function collectMarkedInfo(e) {
-                const url = "./insertCollectionInfo?user_pk=" + user_pk + "&log_pk=" + e.log_pk;
-
-                fetch(url)
-                .then(response => response.json())
-                .then(response => {
-                    document.getElementById("showMarkedImage").style.background = 
-                        "url(/uploadFiles/" + e.image_link + ") no-repeat center";
-                    document.getElementById("showMarkedImage").style.backgroundSize = "cover";
-                    document.getElementById("showMarkedContent").innerText = e.content;
-                    document.getElementById("collectButton").hidden = true;
-                    document.getElementById("showMarkedHideContent").hidden = true;
-                    document.getElementById("showMarkedHideImage").hidden = true;
-
-                    removeMarkedMineMarkers();
-                    
-                });
-            }
-
-            function reloadCollectionPersonList() {
-
-                const url = "./getCollectionPersonList?user_pk=" + user_pk;
-
-                fetch(url)
-                .then(response => response.json())
-                .then(response => {
-                    
-                    if(response.data.length == 0) {
-                        
-                        return;
-                    }
-
-                    const collectionPersonBox = document.getElementById("collectionPersonBox");
-
-                    for(e of response.data) {
-
-                        const collectionPersonWrapper = document.querySelector("#templete .collectionPersonWrapper").cloneNode(true);
-
-                        collectionPersonWrapper.querySelector(".collectionPersonRateCircle");
-                        const collectionPersonImage = collectionPersonWrapper.querySelector(".collectionPersonImage");
-
-                        if(e.open_rating >= 9) {
-                            collectionPersonImage.innerText = "";
-                            collectionPersonImage.style.background = "url(/uploadFiles/" + e.profile_photo + ") no-repeat center";
-                            collectionPersonImage.style.backgroundSize = "cover";
-                        }
-                        
-                        const collectionPersonRateContent = collectionPersonWrapper.querySelector(".collectionPersonRateContent");
-                        let cnt = 0;
-
-                        if(e.star_rating == 'oneStar') {
-                            cnt = 1;
-                        }else if(e.star_rating == 'twoStar') {
-                            cnt = 2;
-                        }else if(e.star_rating == 'threeStar') {
-                            cnt = 3;
-                        }else if(e.star_rating == 'fourStar') {
-                            cnt = 4;
-                        }else if(e.star_rating == 'fiveStar') {
-                            cnt = 5;
-                        }else if(e.star_rating == 'S') {
-                            collectionPersonRateContent.innerText = e.star_rating;
-                        }else if(e.star_rating == 'SR') {
-                            collectionPersonRateContent.innerText = e.star_rating;
-                        }else {
-                            collectionPersonRateContent.innerText = e.star_rating;
-                        }
-
-                        for(let i = 0 ; i < cnt ; i++) {
-                            const star_icon = document.querySelector("#templete .star_icon").cloneNode(true);
-                            collectionPersonRateContent.appendChild(star_icon);
-                        }
-
-                        let goalCount = 0;
-                        
-                        if(e.open_rating == 1) {
-                            goalCount = 2;
-                        }else if(e.open_rating == 2) {
-                            goalCount = 7;
-                        }else if(e.open_rating == 3) {
-                            goalCount = 14;
-                        }else if(e.open_rating == 4) {
-                            goalCount = 24;
-                        }else if(e.open_rating == 5) {
-                            goalCount = 36;
-                        }else if(e.open_rating == 6) {
-                            goalCount = 49;
-                        }else if(e.open_rating == 7) {
-                            goalCount = 64;
-                        }else if(e.open_rating == 8) {
-                            goalCount = 80;
-                        }else if(e.open_rating == 9) {
-                            goalCount = 100;
-                        }
-
-                        const collectionPersonProgress = collectionPersonWrapper.querySelector(".collectionPersonProgress");
-                        collectionPersonProgress.style.width = (e.collect_count / goalCount * 100) + "%";
-                        // collectionPersonProgress.innerText = e.collect_count + ' / ' + goalCount;
-                        
-                        if(e.open_rating == 10) {
-                            collectionPersonProgress.style.width = "100%";
-                            // collectionPersonProgress.innerText = e.collect_count + ' / ∞';
-                        }
-
-                        collectionPersonWrapper.addEventListener("click", asdf);
-                        collectionPersonBox.appendChild(collectionPersonWrapper);
-
-                    }
-
-                });
-
-            }
-            
-            function openMyBag() {
-                resetMyBagInput();
-                const modal = bootstrap.Modal.getOrCreateInstance("#myBagModal");
-                modal.show();
-
-                bootstrap.Tab.getOrCreateInstance("#pills-home-tab").show();
-                reloadCollectionPersonList();
-
-            }
-
-            function tracking() {
-                
-                getMyLocation();
-                removeMarkedMineMarkers();
-
-                document.getElementById("actionMenuButton").hidden = true;
-                document.getElementById("collectionButton").hidden = true;
-                document.getElementById("reloadPositionButton").hidden = true;
-
-                const actionCircleOut = document.getElementsByClassName("actionCircleOut");
-
-                for(e of actionCircleOut) {
-                    e.style.animation = e.id + 'SpreadIn 0.3s linear 1';
-                    e.style.animationFillMode = 'both';
-                }
-
-                const actionBackgroundCircle = document.getElementById("actionBackgroundCircle");
-                actionBackgroundCircle.style.animation = 'hideBackgroundCircle 0.3s linear 1';
-                
-                setTimeout(() => {
-                    document.getElementById("actionCloseButton").hidden = true;
-                    actionBackgroundCircle.hidden = true;
-                    for(e of actionCircleOut) {
-                        e.hidden = true;
-                    }
-                    reloadTrackLikeList();
-                }, 300);
-
-            }
-
-            function reloadTrackLikeList() {
-
-                const url = "./getTrackLikeList?user_pk=" + user_pk;
-
-                fetch(url)
-                .then(response => response.json())
-                .then(response => {
-
-                    document.getElementById("trackLikeListHidden").hidden = false;
-
-                    const trackLikeListAnimation = document.getElementById("trackLikeListAnimation");
-                    trackLikeListAnimation.style.animation = 'showTrackLikeList 0.2s linear 1';
-
-                    const trackLikeListBox = document.getElementById("trackLikeListBox");
-                    trackLikeListBox.innerHTML = "";
-
-                    console.log(response.data);
-
-                    if(response.data.length == 0) {
-                        const noTrackLikeWrapper = document.querySelector("#templete .noTrackLikeWrapper").cloneNode(true);
-                        trackLikeListBox.appendChild(noTrackLikeWrapper);
-                        return;
-                    }
-
-                    for(e of response.data) {
-
-                        const trackLikeListWrapper = document.querySelector("#templete .trackLikeListWrapper").cloneNode(true);
-
-                        trackLikeListWrapper.onclick = () => {
-                            trackClosestMark(e);
-                        };
-                        
-                        trackLikeListWrapper.querySelector(".trackLikeListOpenRate").innerText = e.cnt + " / " + e.open_rating;
-                        trackLikeListWrapper.querySelector(".trackLikeListNumber").innerText = e.user_more_pk;
-
-                        switch(e.open_rating) {
-
-                            case 10 :
-                                trackLikeListWrapper.querySelector(".trackLikeListName").innerText = e.nick_name;
-                            case 9 :
-                                trackLikeListWrapper.querySelector(".trackLikeListImage").style.background = 
-                                    "url(/uploadFiles/" + e.profile_photo + ") no-repeat center";
-                                trackLikeListWrapper.querySelector(".trackLikeListImage").style.backgroundSize =
-                                    "cover";
-                            case 8 : 
-                                trackLikeListWrapper.querySelector(".trackLikeListPreference").innerText = e.preference;
-                            case 7, 6 : 
-                                trackLikeListWrapper.querySelector(".trackLikeListMbtiType").innerText = e.blood_type;
-                                trackLikeListWrapper.querySelector(".trackLikeListHobby").innerText = e.hobby;
-                            case 5 :
-                                trackLikeListWrapper.querySelector(".trackLikeListSmoking").innerText = e.smoking;
-                                trackLikeListWrapper.querySelector(".trackLikeListDrinking").innerText = e.drinking;
-                            case 4, 3 : 
-                                trackLikeListWrapper.querySelector(".trackLikeListHeight").innerText = e.height;
-                                trackLikeListWrapper.querySelector(".trackLikeListWeight").innerText = e.weight;
-                                trackLikeListWrapper.querySelector(".trackLikeListBloodType").innerText = e.blood_type;
-                            case 2: 
-                                if(e.gender == 'W') {
-                                    // wrapper 성별 자리 만들기
-                                }else {
-                                    // wrapper 성별 자리 만들기
-                                }
-                                
-                            case 1:
-                                // 활동 여부 (온도 형식), 인간 등급 추가
-
-                        }
-                        // 추적여부
-                        trackLikeListBox.appendChild(trackLikeListWrapper);
-                        
-                    }
-
-                });
-            }
-
-            function hideTrackLikeList() {
-
-                const trackLikeListAnimation = document.getElementById("trackLikeListAnimation");
-                trackLikeListAnimation.style.animation = 'hideTrackLikeList 0.3s linear 1';
-                trackLikeListAnimation.style.animationFillMode = 'both';
-
-                setTimeout(() => {
-                    document.getElementById("trackLikeListHidden").hidden = true;
-                }, 500)
-
-                document.getElementById("actionCloseButton").hidden = false;
-
-                const actionBackgroundCircle = document.getElementById("actionBackgroundCircle");
-                actionBackgroundCircle.hidden = false;
-                actionBackgroundCircle.style.animation = 'showBackgroundCircle 0.3s linear 1';
-                
-
-                const actionCircleOut = document.getElementsByClassName("actionCircleOut");
-
-                for(e of actionCircleOut) {
-                    e.hidden = false;
-                    e.style.animation = e.id + 'SpreadOut 0.4s linear 1';
-                    e.style.animationFillMode = 'both';
-                }
-
-            }
-
-            function trackClosestMark(e) {
-                
-                const trackLikeListAnimation = document.getElementById("trackLikeListAnimation");
-                trackLikeListAnimation.style.animation = 'hideTrackLikeList 0.3s linear 1';
-                trackLikeListAnimation.style.animationFillMode = 'both';
-
-                setTimeout(() => {
-                    document.getElementById("trackLikeListHidden").hidden = true;
-                }, 500)
-
-                getClosestMarkLatLng(e.user_pk);
-            }
-
-            function getClosestMarkLatLng(userPk) {
-
-                const url = "./getClosestMarkLatLng?user_pk=" + userPk + "&latitude=" + currentLat + "&longitude=" + currentLng;
-
-                fetch(url)
-                .then(response => response.json())
-                .then(response => {
-
-                    saveTrackLikeLogInfo(response.data.log_pk, response.data.latitude, response.data.longitude);
-
-                });
-
-            }
-
-            function saveTrackLikeLogInfo(logPk, lat, lng) {
-
-                const url = "./insertTrackLikeLogInfo?user_pk=" + user_pk + "&log_pk=" + logPk +
-                    "&markLat=" + lat + "&markLng=" + lng;
-
-                fetch(url)
-                .then(response => response.json())
-                .then(response => {
-
-                    // 애니메이션(response.data.latitude, response.data.longitude); >>> getTrackingList();
-
-                });
-
-            }
-
-            function getTrackingList() {
-
-                const url = "./getTrackingList?user_pk=" + user_pk;
-
-                fetch(url)
-                .then(response => response.json())
-                .then(response => {
-
-                    if(response.data.length == 0) {
-                        return;
-                    }
-                    
-                    // 영역 생성하기
-
-                });
-
-            }
-
-            function showMoreInfoAlertModal() {
-                const modal = bootstrap.Modal.getOrCreateInstance("#moreInfoAlertModal");
-                modal.show();
-            }
-            
-            function showMoreInfoModal() {
-                const moreInfoAlertModal = bootstrap.Modal.getOrCreateInstance("#moreInfoAlertModal");
-                moreInfoAlertModal.hide();
-                const modal = bootstrap.Modal.getOrCreateInstance("#moreInfoModal");
-                resetMoreInfoInput();
-                modal.show();
-
-                setTimeout(() => {
-                    const height = document.querySelector("#moreInfoHeight");
-                    height.focus();
-                }, 500);
-            }
-
-            function showFillAlertModal() {
-                const modal = bootstrap.Modal.getOrCreateInstance("#fillAlertModal");
-                modal.show();
-
-                setTimeout(() => {
-                    modal.hide();
-                }, 1500);
-            }
-
-            function showSuccessMoreInfoAlertModal() {
-                const modal = bootstrap.Modal.getOrCreateInstance("#successMoreInfoAlertModal");
-                modal.show();
-                const moreInfoModal = bootstrap.Modal.getOrCreateInstance("#moreInfoModal");
-                moreInfoModal.hide();
-
-                setTimeout(() => {
-                    modal.hide();
-                    showWriteMarkModal();
-                }, 1500);
-
-            }
-
-            function showWriteMarkModal() {
-                const modal = bootstrap.Modal.getOrCreateInstance("#writeMarkModal");
-                resetWriteMarkInput();
-                modal.show();
-            }
-            
-            function showAllUsedAlertModal() {
-                const modal = bootstrap.Modal.getOrCreateInstance("#allUsedAlertModal");
-                modal.show();
-
-                setTimeout(() => {
-                    modal.hide();
-                }, 1500);
-            }
-
-            function showAlreadyMakredAlertModal() {
-                const modal = bootstrap.Modal.getOrCreateInstance("#alreadyMakredAlertModal");
-                modal.show();
-
-                setTimeout(() => {
-                    modal.hide();
-                }, 1500);
-            }
-
-            let qwer = null;
-
-
-            function showMarkedModal(e) {
-                const modal = bootstrap.Modal.getOrCreateInstance("#showMarkedModal");
-                resetShowMarkedInput();
-                console.log(e);
-                console.log(document.getElementById("showMarkedHideContent"));
-                if(user_pk == e.user_pk) {
-                    document.getElementById("showMarkedImage").style.background = 
-                        "url(/uploadFiles/" + e.image_link + ") no-repeat center";
-                    document.getElementById("showMarkedImage").style.backgroundSize = "cover";
-                    document.getElementById("showMarkedContent").innerText = e.content;
-                    document.getElementById("collectButton").hidden = true;
-                    document.getElementById("showMarkedHideContent").hidden = true;
-                    document.getElementById("showMarkedHideImage").hidden = true;
-                }else {
-
-                    // qwer = aaa(e);
-
-                    // document.getElementById("collectButton").addEventListener("click", qwer);
-
-                    document.getElementById("collectButton").onclick = () => {
-                        console.log("1111111111111111111111111");
-                        console.log(e);
-                        collectMarkedInfo(e);
-                    }
-
-                    document.getElementById("collectButton").hidden = false;
-                    document.getElementById("showMarkedHideContent").hidden = false;
-                    document.getElementById("showMarkedHideImage").hidden = false;
-                }
-
-                modal.show();
-            }
-
-            function hideMarkedModal() {
-                const modal = bootstrap.Modal.getOrCreateInstance("#showMarkedModal");
-                modal.hide();
-
-                // if(qwer){
-                //     document.getElementById("collectButton").removeEventListener("click", qwer);
-                //     qwer = null;
-                // }
-
-                
-            }
-
-            // function aaa(e){
-            //     return () => {
-            //         console.log("1111111111111111111111111");
-            //         console.log(e);
-            //         collectMarkedInfo(e);
-            //     }
-            // }
-            
-            function showNoMakredAlertModal() {
-                const modal = bootstrap.Modal.getOrCreateInstance("#noMakredAlertModal");
-                modal.show();
-
-                setTimeout(() => {
-                    modal.hide();
-                }, 1500);
-            }
-
-            function resetMoreInfoInput() {
-                document.getElementById("moreInfoHeight").value = "";
-                document.getElementById("moreInfoWeight").value = "";
-                document.getElementById("moreInfoBloodType").value = "";
-                document.getElementById("moreInfoMbtiType").value = "";
-                document.getElementById("moreInfoHobby").value = "";
-                document.getElementById("yesDrink").checked = false;
-                document.getElementById("yesSmoke").checked = false;
-                document.getElementById("moreInfoPreference").value = 0;
-            }
-
-            function resetWriteMarkInput() {
-                document.getElementById("writeMarkNoimage").hidden = false;
-                document.getElementById("writeMarkImageHere").style.removeProperty("background", "background-size");
-                document.getElementById("writeMarkContent").value = "";
-            }
-
-            function resetShowMarkedInput() {
-                document.getElementById("showMarkedImage").style.removeProperty("background", "background-size");
-                document.getElementById("showMarkedContent").innerText = "";
-            }
-
-            function resetMyBagInput() {
-                document.getElementById("collectionPersonBox").innerHTML = "";
+            function clickEffect(e) {
+                const d = document.createElement("div");
+                d.className="clickEffect";
+                d.style.top = e.clientY + "px";
+                d.style.left = e.clientX + "px";
+                document.body.appendChild(d);
+                d.addEventListener('animationend', function() {
+                    d.parentElement.removeChild(d);
+                }.bind(this));
             }
 
             window.addEventListener("DOMContentLoaded", () => {
 
-                getUserPk();
                 createMap();
                 getMyLocation();
-                
+
             });
 
         </script>
-
-        <style>
-            .more-info-check:checked {
-                background-color: #D96161;
-                border-color: #D96161;
-            }
-
-            input:invalid {
-                background: rgb(217, 97, 97, 0.3);
-                border: 2px solid #D96161;
-            }
-
-            #markScanCircle{
-                position: absolute;
-                z-index: 1500;
-                border-radius: var(--border-circular);
-                background: rgb(0, 0, 0, 0.3);
-                width: 44rem;
-                height: 44rem;
-                top: calc(50% - 22rem);
-                left: calc(50% - 22rem);
-                animation: markScanCircle 1s linear 3;
-                animation-fill-mode: both;
-            }
-            
-            @keyframes markScanCircle {
-                from {
-                    scale: 0;
-                    opacity: 1;
-                }
-                to {
-                    scale: 1;
-                    opacity: 0;
-                }
-            }
-
-            #MarkedMineFirst{
-                position: absolute;
-                z-index: 1500;
-                border-radius: var(--border-circular);
-                background: rgb(0, 0, 0, 0.3);
-                width: 44rem;
-                height: 44rem;
-                top: calc(50% - 22rem);
-                left: calc(50% - 22rem);
-            }
-
-            .markedMineThirdCircle {
-                width: var(--myPosition-thirdCircle-diameter);
-                height: var(--myPosition-thirdCircle-diameter);
-                --myPosition-radius: var(--myPosition-thirdCircle-diameter) / 2;
-                background: orange;
-            }
-
-            .markedMineSecondCircle {
-                width: var(--myPosition-secondCircle-diameter);
-                height: var(--myPosition-secondCircle-diameter);
-                --myPosition-radius: var(--myPosition-secondCircle-diameter) / 2;
-                background: var(--color-white);
-                box-shadow: 0 0 2px 2px orange;
-            }
-
-            .markedMineFirstCircle {
-                width: var(--myPosition-firstCircle-diameter);
-                height: var(--myPosition-firstCircle-diameter);
-                --myPosition-radius: var(--myPosition-firstCircle-diameter) / 2;
-                background: rgb(255, 166, 0, 0.1);
-            }
-
-            .star_icon {
-                font-variation-settings:
-                'FILL' 1
-            }
-
-            .overflow-x-auto::-webkit-scrollbar {
-                display: none;
-            }
-
-            @keyframes showTrackLikeList {
-                from {
-                    transform: translateY(15rem);
-                    opacity: 0;
-                    scale: 0;
-                }
-                to {
-                    transform: translateY(0);
-                    opacity: 1;
-                    scale: 1;
-                }
-            }
-
-            @keyframes hideTrackLikeList {
-                from {
-                    transform: translateY(0);
-                    opacity: 1;
-                    scale: 1;
-                }
-                to {
-                    transform: translateY(15rem);
-                    opacity: 0;
-                    scale: 0;
-                }
-            }
-        </style>
 
     </head>
 
@@ -943,25 +744,42 @@
 
         <div class="container-fluid">
             <div class="row">
+                <div id="topBanner" class="col"></div>
+            </div>
+            <div class="row">
                 <div class="col px-0">
+                    <div id="block" hidden></div>
                     <div id="map">
-                        <!-- my location -->
-                        <div onclick="getMyLocation()" id="reloadPositionButton">
-                            <span class="material-symbols-outlined my_location_icon">
+                        <div id="shopButtonBox" class="text-center">
+                            <div id="shopButtonLight"></div>
+                            <div id="shopButtonContent">
+                                상점
+                            </div>
+                            <img class="mt-1" th:src="@{/public/image/follow/shop.png}" style="width: 2.1rem; height: 2.1rem;">
+                        </div>
+                        <div id="myPageButtonBox" class="text-center">
+                            <div id="myPageButtonLight"></div>
+                            <div id="myPageButtonContent">
+                                내정보
+                            </div>
+                            <img class="mt-1" th:src="@{/public/image/follow/person.png}" style="width: 2.1rem; height: 2.1rem;">
+                        </div>
+                        <div onclick="openMyCollection()" id="collectionButtonBox" class="text-center">
+                            <div id="collectionButtonLight"></div>
+                            <div id="collectionButtonContent">
+                                컬렉션
+                            </div>
+                            <img th:src="@{/public/image/follow/bag.png}" style="width: 3.8rem; height: 2.8rem;">
+                        </div>
+                        <div onclick="reloadMyLocation()" id="reloadLoactionButton" class="text-center align-items-center d-grid">
+                            <div id="reloadLoactionButtonLight"></div>
+                            <span class="material-symbols-outlined my-location-icon">
                                 my_location
                             </span>
                         </div>
-                        <!-- my bag -->
-                        <div onclick="openMyBag()" id="collectionButton">
-                            <i class="bi bi-backpack2-fill"></i>
-                            <i class="bi bi-gift-fill"></i>
-                            <span class="material-symbols-outlined military_tech_icon">
-                                military_tech
-                            </span>
-                        </div>
-                        <!-- action -->
                         <div id="actionBackgroundCircle" hidden></div>
                         <div onclick="showActionMenu()" id="actionMenuButton">
+                            <div id="actionMenuButtonLight"></div>
                             <span class="material-symbols-outlined pets_icon">
                                 pets
                             </span>
@@ -991,361 +809,30 @@
                                 <svg class="track_icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#5059cd" transform="rotate(0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path fill="none" d="M0 0h24v24H0z"></path> <path d="M4 18h5.5v1.25a2.75 2.75 0 1 1-5.5 0V18zm4.058-4l.045-.132C8.87 11.762 9 11.37 9 11c0-.75-.203-1.643-.528-2.273C8.23 8.257 8.06 8.12 8 8.12 6.72 8.12 5.5 9.484 5.5 11c0 .959.075 1.773.227 2.758l.038.242h2.293zM8 6.12c2 0 3 2.88 3 4.88 0 1-.5 2-1 3.5L9.5 16H4c0-1-.5-2.5-.5-5S5.498 6.12 8 6.12zm12.054 7.978l-.217 1.231a2.75 2.75 0 0 1-5.417-.955l.218-1.23 5.416.954zm-1.05-4.246c.165-.5.301-.895.303-.9.202-.658.361-1.303.485-2.008.263-1.492-.702-3.047-1.962-3.27-.059-.01-.25.095-.57.515-.43.565-.784 1.41-.915 2.147-.058.33-.049.405.27 2.263.045.256.082.486.116.717l.02.138 2.254.398zm-.826-8.147c2.464.434 4.018 3.124 3.584 5.586-.434 2.463-1.187 3.853-1.36 4.838l-5.417-.955-.232-1.564c-.232-1.564-.55-2.636-.377-3.62.347-1.97 1.832-4.632 3.802-4.285z"></path> </g> </g></svg>
                             </div>
                         </div>
-                        <div id="trackLikeListHidden" class="row" hidden>
-                            <div class="col">
-                                <div id="trackLikeListAnimation" class="row bg-transparent overflow-x-auto" style="width: 95%; position: absolute; z-index: 2000; top: 55%; left: 5.5%;">
-                                    <div class="col">
-                                        <div id="trackLikeListBox" class="row d-flex" style="flex-wrap: nowrap;">
-                                            
-                                            <!-- wrapper -->
-                                                                                        
-                                        </div>
-                                    </div>
-                                </div>
-                                <div onclick="hideTrackLikeList()" id="trackLikeListCloseButton" class="actionCircleCloseOut">
-                                    <div class="actionCircleCloseIn">
-                                        <span class="material-symbols-outlined close_icon">
-                                            close
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- <div style="width: 100%; height: 23vh; position: absolute; z-index: 1500; top: 75%;"></div> -->
                     </div>
                 </div>
             </div>
-            <div class="row fixed-bottom">
-                <div class="col bg-white" style="height: 41px;"></div>
-            </div>
         </div>
 
-        <div id="moreInfoAlertModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2100; background: rgb(0, 0, 0, 0.4);">
+        <div id="alertModal" class="modal fade" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-body text-center" style="font-size: 0.9rem;">
-                        <p class="mb-0">😍 체취를 처음 남기실 경우 <span style="color: #D96161;">추가 정보</span>를 입력해 주셔야 합니다</p>
-                        <!-- <p class="mb-0">추가 정보는 수집하는 누군가가 확인할 수 있습니다</p>
-                        <p class="mb-0">민감한 개인정보는 다루지 않으니 안심하셔도 됩니다</p>
-                        <p class="mb-0">전 문항을 양심에 따라 솔직히 입력해 주시기 바랍니다</p> -->
-                    </div>
-                    <div class="modal-footer pt-0 pb-2 border-0 justify-content-center">
-                        <button type="button" class="btn btn-secondary py-1" data-bs-dismiss="modal">닫기</button>
-                        <button onclick="showMoreInfoModal()" class="btn py-1 text-white" style="background: #D96161;">추가정보 입력</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div id="fillAlertModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2200; background: rgb(0, 0, 0, 0.4);">
-            <div class="modal-dialog modal-sm modal-dialog-centered">
-                <div class="modal-content mx-auto text-white" style="width: 50%; background: #D96161;">
-                    <div class="modal-body text-center" style="font-size: 0.9rem;">
-                        빈칸을 모두 채워주세요
+                <div class="modal-content fw-bold text-white mx-auto" style="width: auto; font-size: 0.8rem; background: #D96161;">
+                    <div id="alertContent" class="modal-body text-center">
+                        
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="successMoreInfoAlertModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2200; background: rgb(0, 0, 0, 0.4);">
-            <div class="modal-dialog modal-sm modal-dialog-centered">
-                <div class="modal-content mx-auto text-white" style="width: 50%; background: #D96161;">
-                    <div class="modal-body text-center" style="font-size: 0.9rem;">
-                        등록이 완료되었습니다
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="allUsedAlertModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2200; background: rgb(0, 0, 0, 0.4);">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content mx-auto text-white" style="width: 50%; background: #D96161;">
-                    <div class="modal-body text-center" style="font-size: 0.9rem;">
-                        횟수를 전부 사용하셨습니다
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="alreadyMakredAlertModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2200; background: rgb(0, 0, 0, 0.4);">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content mx-auto text-white" style="width: 50%; background: #D96161;">
-                    <div class="modal-body text-center" style="font-size: 0.9rem;">
-                        근처에 이미 체취를 남기셨습니다
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="noMakredAlertModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2200; background: rgb(0, 0, 0, 0.4);">
-            <div class="modal-dialog modal-sm modal-dialog-centered">
-                <div class="modal-content mx-auto text-white" style="width: 50%; background: #D96161;">
-                    <div class="modal-body text-center" style="font-size: 0.9rem;">
-                        채취가 없습니다
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="moreInfoModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2100; background: rgb(0, 0, 0, 0.4);">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col ps-4 pe-5">
-                                <div class="row">
-                                    <div class="col text-center fw-bold" style="font-size: 1.3rem;">
-                                        추가 정보
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col-3 text-end">신장</div>
-                                    <div class="col">
-                                        <div class="input-group">
-                                            <input id="moreInfoHeight" class="form-control py-1 rounded text-end" type="number" min="140" max="200" style="box-shadow: none; font-size: 0.8rem;" placeholder="소수점 제외 | 140~200">
-                                            <span class="ms-2">cm</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-3 text-end">몸무게</div>
-                                    <div class="col">
-                                        <div class="input-group">
-                                            <input id="moreInfoWeight" class="form-control py-1 rounded text-end" type="number" min="30" max="200" style="box-shadow: none; font-size: 0.8rem;" placeholder="소수점 제외 | 30~200">
-                                            <span class="ms-2">kg</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-3 text-end">혈액형</div>
-                                    <div class="col">
-                                        <div class="input-group">
-                                            <input id="moreInfoBloodType" oninput="textToUpperCase(this)" class="form-control py-0 rounded text-end" type="text" style="text-transform: uppercase; box-shadow: none;" pattern="A|B|AB|O" maxlength="2">
-                                            <span class="ms-2">형</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-3 text-end">MBTI</div>
-                                    <div class="col">
-                                        <input id="moreInfoMbtiType" oninput="textToUpperCase(this)" class="form-control py-0 rounded" type="text" style="text-transform: uppercase; box-shadow: none;" pattern="ESTJ|ESTP|ESFJ|ESFP|ENTJ|ENTP|ENFJ|ENFP|ISTJ|ISTP|ISFJ|ISFP|INTJ|INTP|INFJ|INFP" maxlength="4">
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-3 text-end">취미</div>
-                                    <div class="col">
-                                        <div class="input-group">
-                                            <input id="moreInfoHobby" class="form-control py-0 rounded" type="text" maxlength="10" style="box-shadow: none;">
-                                            <span class="ms-2 mt-3" style="font-size: 0.65rem;">최대 10글자 이내</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-3 text-end">음주여부</div>
-                                    <div class="col">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input more-info-check moreInfoDrink" type="radio" name="isDrink" id="yesDrink" value="Y" style="box-shadow: none;">
-                                            <label class="form-check-label" for="yesDrink">Y</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input more-info-check moreInfoDrink" type="radio" name="isDrink" id="noDrink" value="N" style="box-shadow: none;" checked>
-                                            <label class="form-check-label" for="noDrink">N</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-3 text-end">흡연여부</div>
-                                    <div class="col">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input more-info-check moreInfoSmoke" type="radio" name="isSmoke" id="yesSmoke" value="Y" style="box-shadow: none;">
-                                            <label class="form-check-label" for="yesSmoke">Y</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input more-info-check moreInfoSmoke" type="radio" name="isSmoke" id="noSmoke" value="N" style="box-shadow: none;" checked>
-                                            <label class="form-check-label" for="noSmoke">N</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-3 text-end">지향</div>
-                                    <div class="col">
-                                        <select id="moreInfoPreference" class="form-select py-0" style="box-shadow: none;">
-                                            <option hidden selected value="0">
-                                                선택해주세요
-                                            </option>
-                                            <option value="M">남자가 좋아요</option>
-                                            <option value="W">여자가 좋아요</option>
-                                            <option value="B">성별은 상관없어요</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer pb-2 border-0 justify-content-center">
-                        <button type="button" class="btn btn-secondary py-1" data-bs-dismiss="modal">닫기</button>
-                        <button onclick="saveMoreInfo()" class="btn py-1 text-white" style="background: #D96161;">저장하기</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="writeMarkModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2100; background: rgb(0, 0, 0, 0.4);">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col">
-                                <div class="row">
-                                    <div onclick="inputImage()" onchange="previewImage()" id="writeMarkImageHere" class="col border rounded-pill mx-3 px-0" style="aspect-ratio: 4/3;">
-                                        <!-- hidden -->
-                                        <div id="writeMarkNoimage" class="row text-center align-items-center" style="height: 100%;">
-                                            <div class="col">
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <span class="material-symbols-outlined" style="color: #BFBFBF; font-size: 2rem;">
-                                                            add_photo_alternate
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col" style="color: #BFBFBF; font-size: 1rem;">
-                                                        이미지 추가하기
-                                                    </div>
-                                                </div>
-                                                <input id="writeMarkImage" type="file" accept="image/*" hidden>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-4">
-                                    <div class="col">
-                                        <span class="material-symbols-outlined align-middle" style="font-size: 1.1rem;">
-                                            stylus_note
-                                        </span>
-                                        한줄글
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col">
-                                        <textarea id="writeMarkContent" class="form-control" rows="2" placeholder="체취와 함께 흔적을 남겨주세요" maxlength="50" style="resize: none;"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer pb-2 border-0 justify-content-center">
-                        <button type="button" class="btn btn-secondary py-1" data-bs-dismiss="modal">닫기</button>
-                        <button onclick="saveWriteMarkInfo()" class="btn py-1 text-white" style="background: #D96161;">체취등록</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="showMarkedModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 2100; background: rgb(0, 0, 0, 0.4);">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col">
-                                <div class="row">
-                                    <div id="showMarkedImage" class="col border rounded-pill mx-3 px-0" style="aspect-ratio: 4/3;">
-                                        <div id="showMarkedHideImage" class="row text-center align-items-center" style="height: 100%;" hidden>
-                                            <div class="col">
-                                                <div class="row">
-                                                    <div class="col" style="color: #BFBFBF; font-size: 1rem;">
-                                                        ? ? ?
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-4">
-                                    <div class="col">
-                                        <span class="material-symbols-outlined align-middle" style="font-size: 1.1rem;">
-                                            stylus_note
-                                        </span>
-                                        한줄글
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col">
-                                        <span id="showMarkedContent"></span>
-                                        <span id="showMarkedHideContent" style="color: #BFBFBF; font-size: 1rem;" hidden>?????</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer pb-2 border-0 justify-content-center">
-                        <button onclick="hideMarkedModal()" type="button" class="btn btn-secondary py-1">닫기</button>
-                        <button id="collectButton" class="btn py-1 text-white" style="background: #D96161;" hidden>수집하기</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="myBagModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 3000; background: rgb(138, 142, 184);">
+        <div id="myCollectionModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 3000; background: linear-gradient(-45deg, #422C52, #ad93c2);">
             <div class="modal-dialog modal-fullscreen">
-                <div class="modal-content mx-auto" style="width: 97%;">
+                <div class="modal-content mx-auto" style="width: 95%;">
                     <div class="modal-body">
                         <div class="row">
                             <div class="col">
-                                <ul class="nav nav-underline nav-fill" id="pills-tab" role="tablist">
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">꾸욱 List</button>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">수집도감</button>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">내 체취/흔적</button>
-                                    </li>
-                                </ul>
-                                <div class="tab-content" id="pills-tabContent">
-                                    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
-                                        <div class="row">
-                                            <div class="col text-center">
-                                                <span class="material-symbols-outlined" style="font-size: 5rem; color: #BFBFBF;">
-                                                    engineering
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col text-center">
-                                                <span class="material-symbols-outlined" style="font-size: 1.1rem; color: #BFBFBF;">
-                                                    서비스 준비 중
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
-                                        <div class="row">
-                                            <div class="col">
-                                                <div id="collectionPersonBox" class="row row-cols-3 px-4">
-
-                                                    <!-- wrapper -->
-                                                    
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab" tabindex="0">
-                                        <div class="row">
-                                            <div class="col text-center">
-                                                <span class="material-symbols-outlined" style="font-size: 5rem; color: #BFBFBF;">
-                                                    engineering
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col text-center">
-                                                <span class="material-symbols-outlined" style="font-size: 1.1rem; color: #BFBFBF;">
-                                                    서비스 준비 중
-                                                </span>
-                                            </div>
-                                        </div>
+                                <div class="row">
+                                    <div class="col text-center fw-bold" style="font-size: 1.5rem; text-decoration: #6F3C95 0.2rem underline; text-underline-offset: 1rem;">
+                                        &nbsp;&nbsp;내 컬렉션&nbsp;&nbsp;
                                     </div>
                                 </div>
                             </div>
@@ -1361,308 +848,6 @@
                 </div>
             </div>
         </div>
-
-        <div id="templete" class="d-none">
-            <div class="collectionPersonWrapper col px-4 mt-5">
-                <div class="row">
-                    <div class="collectionPersonRateCircle col mx-3 d-grid align-items-center" style="aspect-ratio: 1/1; border-radius: 50%; border: 1px solid #40BAE5;">
-                        <div class="row">
-                            <div class="collectionPersonImage col mx-1 text-center fw-bold d-grid align-items-center" style="aspect-ratio: 1/1; border-radius: 50%; border: 1px solid #BFBFBF; color: #BFBFBF;">
-                                ???
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mt-1">
-                    <div class="collectionPersonRateContent col px-1 text-center" style="word-spacing: -1rem;">
-                        
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col px-2">
-                        <div class="progress" role="progressbar" style="height: 0.5rem;">
-                            <div class="collectionPersonProgress progress-bar text-bg-warning" style="width: 75%; font-size: 0.6rem;"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <span class="star_icon material-symbols-outlined" style="font-size: 0.8rem;">
-                star_rate
-            </span>
-
-            <div class="trackLikeListWrapper col-12 me-2 px-3 py-2 border bg-white border border-secondary-subtle rounded">
-                <div class="row align-items-center">
-                    <div class="col-4">
-                        <div class="row">
-                            <div class="col" style="font-size: 0.7rem;">
-                                NO.<span class="trackLikeListNumber"></span>
-                            </div>
-                        </div>
-                        <div class="row justify-content-center">
-                            <div class="trackLikeListImage col-10 border text-center d-grid align-items-center bg-white text-body-tertiary rounded" style="aspect-ratio: 1/1;">
-                                ???
-                            </div>
-                        </div>
-                        <div class="row mt-1">
-                            <div class="col fw-bold" style="font-size: 0.8rem;">
-                                <span class="trackLikeListName">?????</span> / (<span class="trackLikeListOpenRate">7 / 23</span>)
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col" style="font-size: 0.8rem; position: relative;">
-                        <div class="row">
-                            <div class="col">키 | <span class="trackLikeListHeight">???</span> cm</div>
-                            <div class="col">몸무게 | <span class="trackLikeListWeight">???</span> kg</div>
-                        </div>
-                        <div class="row mt-1">
-                            <div class="col">혈액형 | <span class="trackLikeListBloodType">???</span></div>
-                            <div class="col">MBTI | <span class="trackLikeListMbtiType">???</span></div>
-                        </div>
-                        <div class="row mt-1">
-                            <div class="col">음주여부 | <span class="trackLikeListDrinking">???</span></div>
-                            <div class="col">흡연여부 | <span class="trackLikeListSmoking">???</span></div>
-                        </div>
-                        <div class="row mt-1">
-                            <div class="col">취미 | <span class="trackLikeListHobby">?????</span></div>
-                        </div>
-                        <div class="row mt-1">
-                            <div class="col">취향 | <span class="trackLikeListPreference">?????</span></div>
-                        </div>
-                        <div style="position: absolute; top: 70%; right: 10%; width: 4rem; height: 4 / 3rem;">
-                            <img class="img-fluid" th:src="@{/public/image/follow/dogfoot.png}">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="noTrackLikeWrapper col-12 me-2 px-3 py-5 border bg-white border border-secondary-subtle rounded">
-                <div class="row align-items-center">
-                    <div class="col text-center">
-                        <div class="row">
-                            <div class="col">
-                                <span class="material-symbols-outlined text-body-tertiary" style="font-size: 1.5rem;">
-                                    cardiology
-                                </span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col text-body-tertiary" style="font-size: 1.1rem;">
-                                꾸욱 누른 사람이 없습니다
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <style>
-            .overlayBox {position: relative; width: 5rem; height: 12rem; animation: opacity 0.1s, vibration 0.1s 5;}
-            .circleProp {position: absolute; top: calc(50% - 0.15rem); left: calc(50% - 0.5rem); width: 1rem; height: 0.3rem; border-radius: 50%; background: black;}
-            .lineProp {position: absolute; z-index: 1; left: calc(50% - 0.05rem); top: calc(50% - 2rem); width: 0.1rem; height: 2rem; background: #BFBFBF;}
-            .squareProp {position: absolute; z-index: 2; left: calc(50% - 1rem); top: calc(50% - 2.3rem); width: 2rem; height: 0.7rem;}
-            .topSquareProp {position: absolute; left: 0.25rem; width: 1.5rem; height: 0.5rem; transform: skew(-45deg); background: black;}
-            .frontSquareProp {position: absolute; bottom: 0; width: 1.5rem; height: 0.2rem; background: #CCC;}
-            .sideSquareProp {position: absolute; right: 0.03rem; bottom: 0.25rem; width: 0.5rem; height: 0.2rem; background: #8f8f8f; transform: skewY(-45deg);}
-            .myMarkCircleBox {position: absolute; z-index: 3; width: 5rem; height: 5rem; top: calc(50% - 6.9rem); animation: trunning 1s;}
-            .myMarkCircle {position: absolute; border-radius: 50%;}
-            /* conic-gradient(transparent 20deg, darkcyan 20deg 70deg, transparent 70deg 200deg, darkcyan 200deg 250deg, transparent 250deg) */
-            .myMarkCircle.first {width: 5rem; height: 5rem; left: calc(50% - 2.5rem); top: calc(50% - 2.5rem); padding: 0.15rem; background:conic-gradient(transparent 20deg, tomato 20deg 60deg, transparent 60deg 200deg, tomato 200deg 240deg, transparent 240deg); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude;}
-            .myMarkCircle.second {width: 4.6rem; height: 4.6rem; border: 0.4rem solid tomato; left: calc(50% - 2.3rem); top: calc(50% - 2.3rem);}
-            .myMarkCircle.third {width: 4.4rem; height: 4.4rem; border: 0.15rem solid pink; left: calc(50% - 2.2rem); top: calc(50% - 2.2rem);}
-            .myMarkCircle.fourth {width: 3.5rem; height: 3.5rem; left: calc(50% - 1.75rem); top: calc(50% - 1.75rem); padding: 0.15rem; background:conic-gradient(transparent 110deg, tomato 110deg 150deg, transparent 150deg 260deg, tomato 260deg 350deg, transparent 350deg); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude;}
-            .myMarkCircle.fifth {width: 3rem; height: 3rem; left: calc(50% - 1.5rem); top: calc(50% - 1.5rem); background: white; border: 0.15rem solid tomato; font-size: 0.9rem;}
-
-            @keyframes opacity {
-                from {
-                    scale: 5;
-                    opacity: 0;
-                }
-                to {
-                    scale: 1;
-                    opacity: 1;
-                }
-            }
-
-            @keyframes vibration {
-                from {
-                    transform: rotate(1deg);
-                }
-                to {
-                    transform: rotate(-1deg);
-                }
-            }
-
-            @keyframes trunning {
-                from {
-                    scale: 0;
-                    transform: rotateY(0);
-                }
-                to {
-                    scale: 1;
-                    transform: rotateY(720deg);
-                }
-            }
-            
-        </style>
-
-        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a277eb582a644847f86de6196a42745f"></script>
-        <script>
-
-            let myMarker;
-
-            function createMap() {
-                const mapContainer = document.getElementById("map");
-                mapOption = {
-                    center: new kakao.maps.LatLng(staticLat, staticLng),
-                    // center: new kakao.maps.LatLng(33.450701, 126.570667),
-                    level: 4
-                };
-
-                map = new kakao.maps.Map(mapContainer, mapOption);
-
-            }
-
-            function getMyLocation() {
-                if(navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition((position) => {
-
-                        currentLat = position.coords.latitude;
-                        currentLng = position.coords.longitude;
-
-                        let currentPosition = new kakao.maps.LatLng(currentLat, currentLng)
-
-                        displayMarker(currentPosition);
-                    });
-                }else {
-                    let staticPosition = new kakao.maps.LatLng(staticLat, staticLng);
-
-                    displayMarker(staticPosition);
-                }
-            }
-
-            function displayMarker(locPosition) {
-                if(!myMarker) {
-                    var content = '<div id="firstCircle" class="myPosition">' + 
-                        '<div id="secondCircle" class="myPosition">' + 
-                        '<div id="thirdCircle" class="myPosition">' + 
-                        '</div></div></div>';
-                    
-                    myMarker = new kakao.maps.CustomOverlay({
-                        position: locPosition,
-                        content: content
-                    });
-                }else {
-                    myMarker.setPosition(locPosition);
-                }
-                myMarker.setMap(map);
-                map.panTo(locPosition);
-            }
-
-            function markedScan() {
-                
-                var content = '<div id="markScanCircle"></div>';
-                var position = new kakao.maps.LatLng(currentLat, currentLng);
-
-                var customOverlay = new kakao.maps.CustomOverlay({
-                    position: position,
-                    content: content
-                });
-
-                customOverlay.setMap(map);
-
-                setTimeout(() => {
-                    customOverlay.setMap(null);
-                }, 3000);
-            }
-
-            function displayMarkedMine(position, e) {
-                // const content = document.createElement('div');
-                // content.setAttribute("class", "myPosition markedMineFirstCircle");
-                // const div2 = document.createElement('div');
-                // div2.setAttribute("class", "myPosition markedMineSecondCircle");
-                // const div3 = document.createElement('div');
-                // div3.setAttribute("class", "myPosition markedMineThirdCircle");
-
-                // div2.appendChild(div3);
-                // content.appendChild(div2);
-
-                var content = '<div class="overlayBox">' +
-                    '<div class="myMarkCircleBox">' +
-                            '<div class="myMarkCircle first"></div>' +
-                            '<div class="myMarkCircle second"></div>' + 
-                            '<div class="myMarkCircle third"></div>' +
-                            '<div class="myMarkCircle fourth"></div>' +
-                            '<div class="myMarkCircle fifth text-center text-secondary d-grid align-content-center">???</div>' +
-                        '</div>' +
-                        '<div class="squareProp">' +
-                            '<div class="topSquareProp"></div>' +
-                            '<div class="frontSquareProp"></div>' +
-                            '<div class="sideSquareProp"></div>' +
-                        '</div>' +
-                        '<div class="lineProp"></div>' +
-                        '<div class="circleProp"></div>' +
-                    '</div>';
-
-                var customOverlay = new kakao.maps.CustomOverlay({
-                    position: position,
-                    content: content
-                });
-
-                customOverlay.setMap(map);
-
-                markedMineMarkers.push(customOverlay);
-
-                content.onclick = () => {
-                    showMarkedModal(e);
-                };
-
-                // content.onclick = null;
-                
-                // content.addEventListener('click', () => {
-                //     showMarkedModal(e);
-                // });
-
-            }
-
-            function setMarkedMineMarkers(map) {
-                for(var i = 0 ; i < markedMineMarkers.length ; i++) {
-                    markedMineMarkers[i].setMap(map);
-                }
-            }
-
-            function removeMarkedMineMarkers() {
-                setMarkedMineMarkers(null);
-                markedMineMarkers = [];
-            }
-
-            function scaning() {
-                hideActionMenu();
-                getMyLocation();
-                removeMarkedMineMarkers();
-                
-                setTimeout(() => {
-
-                    var content = '<div id="markScanCircle"></div>';
-                    var position =  new kakao.maps.LatLng(currentLat, currentLng);
-
-                    var customOverlay = new kakao.maps.CustomOverlay({
-                        position: position,
-                        content: content
-                    });
-
-                    customOverlay.setMap(map);
-
-                    setTimeout(() => {
-                        customOverlay.setMap(null);
-                        showScanResult();
-                    }, 3000);
-
-                }, 700);
-            }
-
-        </script>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     </body>

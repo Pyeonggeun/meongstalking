@@ -96,7 +96,7 @@
             <div class="col justify-content-between fw-bold">
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">게시판</span>
-                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">사진첩</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./photoAlbumPage'">사진첩</span>
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubMemberPage'">멤버</span>
             </div>
         </div>
@@ -116,6 +116,10 @@
                 </a>
 
             </div>
+            <div th:unless="${#strings.isEmpty(qwer['img'])}" class="row">
+                <img class="img-fluid" th:src="@{'/uploadFiles/' + ${qwer['img']}}">
+            </div>
+            
             <div class="row mx-3" th:text="${qwer['content']}"></div>
         </div>
 
