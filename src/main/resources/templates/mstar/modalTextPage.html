@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+        <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+
+        
+        <script>
+            IMP.init('imp06248571');
+
+            function showModal(){
+                const itemModal = bootstrap.Modal.getOrCreateInstance("#itemModal");
+                itemModal.show();
+            }
+            function payCheck(){
+                
+            }
+            function requestPay() {
+                const IMP = window.IMP;
+                const payAmount = document.querySelector("#payAmount");
+                const payProduct = document.querySelector("#payProduct");
+
+                const amount = payAmount.innerText;
+                const name = payProduct.innerText;
+                console.log(amount);
+                console.log(name);
+
+                // IMP.request_pay({
+                //     pg: "kakaopay.{store-f6b234a2-a968-45b7-b144-d64102ca7d6d}",
+                //     pay_method: "card", // 생략가
+                //     merchant_uid: "order_no_0002", // 상점에서 생성한 고유 주문번호
+                //     name: "주문명:결제테스트",
+                //     amount: 1004,
+                //     buyer_email: "test@portone.io",
+                //     buyer_name: "구매자이름",
+                //     buyer_tel: "010-1234-5678",
+                //     buyer_addr: "서울특별시 강남구 삼성동",
+                //     buyer_postcode: "123-456",
+                //     m_redirect_url: "../commons/loginPage"
+
+                
+                // }, function (rsp) { // callback
+                //     if(rsp.success){
+                //         console.log(rsp);
+                //     }else{
+                //         console.log(rsp);
+                //     }
+                // });
+            }
+            
+            function selectItem(target){
+                const itemPrice = target.querySelector(".itemPrice");
+                const itemImg = target.querySelector(".itemImg");
+
+                const itemExplainImg = document.querySelector("#itemExplainImg");
+                const itemExplainName = document.querySelector("#itemExplainName");
+                const itemExplainDetail = document.querySelector("#itemExplainDetail");
+
+                itemExplainImg.src = itemImg.src;
+                itemExplainDetail.innerText = "하하하하";
+            }
+            function selectItemPrice(){
+                const checkItemOrderBox = document.querySelector("#checkItemOrderBox");
+                checkItemOrderBox.classList.remove("d-checkItemOrderBox");
+            }
+            function selectProduct(){
+                const checkOrderBox = document.querySelector("#checkOrderBox");
+                checkOrderBox.classList.remove("d-none");
+            }
+            function closeCheckOrderBox(){
+                const checkOrderBox = document.querySelector("#checkOrderBox");
+                checkOrderBox.classList.add("d-none");
+            }
+            function goAthorShop(){
+                const itemShopButton = document.querySelector("#itemShopButton");
+                itemShopButton.click();
+                const checkOrderBox = document.querySelector("#checkOrderBox");
+                checkOrderBox.classList.add("d-none");
+                const checkItemOrderBox = document.querySelector("#checkItemOrderBox");
+                checkItemOrderBox.classList.remove("d-checkItemOrderBox");
+            }
+            
+            
+        </script>
+        <style>
+             @font-face {
+                font-family: 'omyu_pretty';
+                src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
+                font-weight: normal;
+                font-style: normal;
+            }
+            
+
+            body {
+                font-family: 'omyu_pretty';
+                overflow: hidden;
+            }
+        .shackMove {
+            z-index: 100;
+            -webkit-animation: shackMove-move 1s ease-in-out infinite;
+        }
+        @-webkit-keyframes shackMove-move {
+            50% { 
+                -webkit-transform: rotate(-10deg); 
+            }
+        }
+        .updownMove {
+            z-index: 100;
+            -webkit-animation: updownMove-move 1s ease-in-out infinite;
+        }
+        @-webkit-keyframes updownMove-move {
+            50% { 
+                -webkit-transform: translateY(-1em); 
+            }
+        }
+        .leftRightMove {
+            z-index: 100;
+            -webkit-animation: leftRightMove-move 1s ease-in-out infinite;
+        }
+        @-webkit-keyframes leftRightMove-move {
+            50% { 
+                -webkit-transform: translateX(0.5em); 
+            }
+        }
+
+        #steam-container {
+            position: relative;
+            top: 0;
+            left: 0;
+            width: 15em;
+            height: 10em;
+            background: url('/public/image/mFollow/ornerPeople.png') center/contain no-repeat;
+            z-index: 2;
+            margin-top: 2em;
+        }
+        
+
+    @keyframes steamAnimation {
+      0% {
+        opacity: 0.8;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-3em) scale(2);
+      }
+    }
+
+    .steam {
+      position: absolute;
+      background: url('/public/image/mFollow/smoke2.png') center/cover no-repeat;
+      width: 2.5em;
+      height: 2.5em;
+      border-radius: 50%;
+      animation: steamAnimation 1.5s linear infinite;
+      transform-origin: center bottom;
+      z-index: 3;
+    }
+    .label{
+        background: url('/public/image/mFollow/label.jpg') center/cover no-repeat;
+    }
+    .wood{
+        background: url('/public/image/mFollow/wood.jpeg') center/cover no-repeat;
+        height: 22em;
+        
+    }
+    .pattern{
+        position: relative;
+        background: url('/public/image/mFollow/pattern.png') center/cover no-repeat;
+        z-index: 1;
+        height: 12em;
+    }
+    .food{
+        position: absolute;
+        background: url('/public/image/mFollow/food.png') center/cover no-repeat;
+        background-size: contain;
+        height: 12em;
+        width: 30em;
+        z-index: 5;
+    }
+    .none-scrollbar {
+        scrollbar-width: none; /* Firefox */
+    }
+    .itemBox{
+        width: 180%;
+    }
+    .itemBox .col{
+        width: 20%;
+    }
+
+    .rotated_gradient_box {
+        filter: hue-rotate(340deg);
+        border: 0.2em solid transparent;
+        background-image: linear-gradient(#f7d180, #dea006), linear-gradient(to left,#d6c46c,#aa8936);
+        background-clip: content-box, border-box;
+        background-origin: border-box;
+        animation: huerotate 3s infinite linear;
+
+    }
+
+    @keyframes huerotate    {
+        0%{
+            filter: hue-rotate(340deg);
+        }
+        50% {
+            filter: hue-rotate(360deg);
+        }
+    }
+    #itemShopMainImg{
+        background: url('/public/image/mFollow/itemShop.png') center/contain no-repeat;
+        height: 37em;
+    }
+    /* .itemBackGroundImg{
+        background: url('/public/image/mFollow/itemBackGround.png') center/contain no-repeat;
+    } */
+    .itemBackground{
+        background: url('/public/image/mFollow/itmBackground1.png') center/cover no-repeat;
+    }
+    .sizeUP{
+        animation: zoom 3s infinite linear;
+    }
+    @keyframes zoom {
+        50%{
+            opacity: 0.8;
+            transform: scale(1.1);    
+        }
+        
+
+    }
+
+        </style>
+
+    </head>
+    <body>
+    <div  class="container-fluid">
+       <div class="row">
+            <div class="col">
+                <button onclick="showModal()">ddddd</button>
+            </div>
+       </div>
+    </div>
+
+    <div id="itemModal" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content" style="background-color: transparent; border: none;">
+            <div class="row mt-2 justify-content-end">
+                <div class="col-3 rounded-pill bg-white" style="z-index: 100;">
+                    <div class="row align-self-center">
+                        <div class="col-auto">
+                            <img class="img-fluid" src="/public/image/mFollow/coin.png" alt="" style="height: 1em;">
+                        </div>
+                        <div class="col text-end">
+                            0
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="row">
+                        <div class="col">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body py-1  position-relative" style="overflow-y: hidden; border: none;">
+                <div id="carouselExample" class="carousel slide">
+                    <div class="carousel-inner">
+                      <div class="carousel-item active ">
+                        <div class="row" style="height: 3em; overflow: hidden;">
+                            <div class="col">
+                              <img class=" py-0 px-0 d-block" src="/public/image/mFollow/caenofi.png" alt="" style="position: absolute; z-index: 9999; height: 5em; width: 120%; left: -10%;">
+                            </div>  
+                          </div>
+                          <div class="row  mx-1 px-0 pattern rounded-top">
+                              <div class="col food"></div>
+                              <div class="col">
+                                  <div  class="row justify-content-center">
+                                      <div id="steam-container" class="col updownMove">
+                                          <div class="steam" style="top: 8em; left: 4em;"></div>
+                                          <div class="steam" style="top: 3em; left: 7em;"></div>
+                                          <div class="steam" style="top: 6em; left: 10em;"></div>
+                                          <div class="steam" style="top: 4em; left: 12em;"></div>
+                                          <div class="steam" style="top: 7em; left: 15em;"></div>  
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div id="checkOrderBox" class="row rounded position-absolute px-auto mx-auto d-none" style="background-color: rgb(255, 255, 255); z-index: 9999; width: 80%; left: 10%; top: 20%; border: 0.2em solid rgb(175, 144, 50);">
+                              <div class="col">
+                                  <div class="row">
+                                      <div class="col text-end">
+                                          <i onclick="closeCheckOrderBox()" class="fa-solid fa-xmark"></i>
+                                      </div>
+                                  </div>
+                                  <div class="row">
+                                      <div class="col"></div>
+                                      <div class="col-auto">
+                                          <img class="img-fluid" src="/public/image/mFollow/coin1.png" alt="" style="height: 6em;">
+                                      </div>
+                                      <div class="col"></div>
+                                  </div>
+                                  <div class="row mt-3">
+                                      <div id="payProduct" class="col text-center fw-bold" style="font-size: 0.8em;">
+                                          고기 보석 400개 + 추가 고기보석 0개
+                                      </div>
+                                  </div>
+                                  <div class="row mt-2">
+                                      <div class="col text-center" style="font-size: 0.9em;">
+                                          고기 보석으로 멍스토킹 콘텐츠를 구매할 수 있습니다. 구매한 콘텐츠는 환불이 불가능합니다.
+                                      </div>
+                                  </div>
+                                  <div class="row mt-3 mb-2 justify-content-center">
+                                      <div class="col"></div>
+                                      <div onclick="requestPay()" class="col px-0 text-center rotated_gradient_box" style="font-size: 0.8em;">
+                                          KRW<span id="payAmount">9,900</span>
+                                      </div>
+                                      <div class="col"></div>
+                                  </div>
+                              </div>
+                          </div>
+                          
+                          <div class="row mx-1 wood rounded-bottom">
+                              <div class="col">
+                                  <div class="row mt-5" style="overflow-x: scroll;">
+                                      <div class="col none-scrollbar" style="overflow-x: scroll; scrollbar-width: none; height: 15em;">
+                                          <div class="row mt-2 py-0 px-0 " style="width: 700%;">
+                                              <div  onclick="selectProduct()" class="col">
+                                                  <div class="row justify-content-center">
+                                                      <div class="col-auto mt-2">
+                                                          <img class="sizeUP" src="/public/image/mFollow/coin1.png" alt="" style="height: 10em; width: 10em;">
+                                                      </div>
+                                                  </div>
+                                                  <div class="row">
+                                                        <div class="col text-center text-white" style="font-size: 0.8em;">
+                                                            고기 보석 100개 + 0개
+                                                        </div>
+                                                 </div>
+                                                  <div class="row mt-2">
+                                                      <div class="col">
+                                                          <div class="row justify-content-center" >
+                                                              <div class="col-auto mt-1 rounded-pill" style="height: 1.5em; background-color: beige;">
+                                                                  KDW4,900
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                              <div  onclick="selectProduct()" class="col">
+                                                <div class="row justify-content-center">
+                                                    <div class="col-auto mt-2">
+                                                        <img class="sizeUP" src="/public/image/mFollow/coin2.png" alt="" style="height: 10em; width: 10em;">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                      <div class="col text-center text-white" style="font-size: 0.8em;">
+                                                          고기 보석 200개 + 20개
+                                                      </div>
+                                               </div>
+                                                <div class="row mt-2">
+                                                    <div class="col">
+                                                        <div class="row justify-content-center" >
+                                                            <div class="col-auto mt-1 rounded-pill" style="height: 1.5em; background-color: beige;">
+                                                                KDW9,800
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>     
+                                            <div  onclick="selectProduct()" class="col">
+                                                <div class="row justify-content-center">
+                                                    <div class="col-auto mt-2">
+                                                        <img class="sizeUP" src="/public/image/mFollow/coin3.png" alt="" style="height: 10em; width: 10em;">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                      <div class="col text-center text-white" style="font-size: 0.8em;">
+                                                          고기 보석 800개 + 200개
+                                                      </div>
+                                               </div>
+                                                <div class="row mt-2">
+                                                    <div class="col">
+                                                        <div class="row justify-content-center" >
+                                                            <div class="col-auto mt-1 rounded-pill" style="height: 1.5em; background-color: beige;">
+                                                                KDW39,200
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>     
+                                            <div  onclick="selectProduct()" class="col">
+                                                <div class="row justify-content-center">
+                                                    <div class="col-auto mt-2">
+                                                        <img class="sizeUP" src="/public/image/mFollow/coin4.png" alt="" style="height: 10em; width: 10em;">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                      <div class="col text-center text-white" style="font-size: 0.8em;">
+                                                          고기 보석 1600개 + 320개
+                                                       </div>
+                                               </div>
+                                                <div class="row mt-2">
+                                                    <div class="col">
+                                                        <div class="row justify-content-center" >
+                                                            <div class="col-auto mt-1 rounded-pill" style="height: 1.5em; background-color: beige;">
+                                                                KDW78,400
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>     
+                                            <div  onclick="selectProduct()" class="col">
+                                                <div class="row justify-content-center">
+                                                    <div class="col-auto mt-2">
+                                                        <img class="sizeUP" src="/public/image/mFollow/coin5.png" alt="" style="height: 10em; width: 10em;">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                      <div class="col text-center text-white" style="font-size: 0.8em;">
+                                                          고기 보석 2000개 + 400개
+                                                      </div>
+                                               </div>
+                                                <div class="row mt-2">
+                                                    <div class="col">
+                                                        <div class="row justify-content-center" >
+                                                            <div class="col-auto mt-1 rounded-pill" style="height: 1.5em; background-color: beige;">
+                                                                KDW98,000
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>     
+                                            <div  onclick="selectProduct()" class="col">
+                                                <div class="row justify-content-center">
+                                                    <div class="col-auto mt-2">
+                                                        <img class="sizeUP" src="/public/image/mFollow/coin6.png" alt="" style="height: 10em; width: 10em;">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                      <div class="col text-center text-white" style="font-size: 0.8em;">
+                                                          고기 보석 3000개 + 700개
+                                                      </div>
+                                               </div>
+                                                <div class="row mt-2">
+                                                    <div class="col">
+                                                        <div class="row justify-content-center" >
+                                                            <div class="col-auto mt-1 rounded-pill" style="height: 1.5em; background-color: beige;">
+                                                                KDW147,000
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>     
+                                            <div  onclick="selectProduct()" class="col">
+                                                <div class="row justify-content-center">
+                                                    <div class="col-auto mt-2">
+                                                        <img class="sizeUP" src="/public/image/mFollow/coin7.png" alt="" style="height: 10em; width: 10em;">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                      <div class="col text-center text-white" style="font-size: 0.8em;">
+                                                          고기 보석 5000개 + 1500개
+                                                      </div>
+                                               </div>
+                                                <div class="row mt-2">
+                                                    <div class="col">
+                                                        <div class="row justify-content-center" >
+                                                            <div class="col-auto mt-1 rounded-pill" style="height: 1.5em; background-color: beige;">
+                                                                KDW245,000
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>     
+                                            <div  onclick="selectProduct()" class="col">
+                                                <div class="row justify-content-center">
+                                                    <div class="col-auto mt-2">
+                                                        <img class="sizeUP" src="/public/image/mFollow/coin8.png" alt="" style="height: 10em; width: 10em;">         
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                      <div class="col text-center text-white" style="font-size: 0.8em;">
+                                                          고기 보석 7500개 + 2000개
+                                                      </div>
+                                               </div>
+                                                <div class="row mt-2">
+                                                    <div class="col">
+                                                        <div class="row justify-content-center" >
+                                                            <div class="col-auto mt-1 rounded-pill" style="height: 1.5em; background-color: beige;">
+                                                                KDW367,500
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>     
+                                            <div  onclick="selectProduct()" class="col">
+                                                <div class="row justify-content-center">
+                                                    <div class="col-auto mt-2">
+                                                        <img class="sizeUP" src="/public/image/mFollow/coin9.png" alt="" style="height: 10em; width: 10em;">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                      <div class="col text-center text-white" style="font-size: 0.8em;">
+                                                          고기 보석 10000개 + 3000개
+                                                      </div>
+                                               </div>
+                                                <div class="row mt-2">
+                                                    <div class="col">
+                                                        <div class="row justify-content-center" >
+                                                            <div class="col-auto mt-1 rounded-pill" style="height: 1.5em; background-color: beige;">
+                                                                KDW490,000
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>     
+                                            <div  onclick="selectProduct()" class="col">
+                                                <div class="row justify-content-center">
+                                                    <div class="col-auto mt-2">
+                                                        <img class="sizeUP" src="/public/image/mFollow/coin10.png" alt="" style="height: 10em; width: 10em;">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                      <div class="col text-center text-white" style="font-size: 0.8em;">
+                                                          고기 보석 20,000개 + 7,000개
+                                                      </div>
+                                               </div>
+                                                <div class="row mt-2">
+                                                    <div class="col">
+                                                        <div class="row justify-content-center" >
+                                                            <div class="col-auto mt-1 rounded-pill" style="height: 1.5em; background-color: beige;">
+                                                                KDW880,000
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>          
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <!--두번쨰 시작-->
+                                  
+                                  <!--두번쨰 끝-->
+                                  <div class="row mx-2 mt-4">
+                                      <div class="col-auto">
+                                          <div class="row">
+                                              <div class="col rounded-pill" style="background-color: rgb(232, 232, 235);">
+                                                  돌아가기
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <div onclick="goAthorShop()" class="col fs--5 text-white text-end align-self-center">
+                                            아이템 상점으로
+                                      </div>
+                                      <div onclick="goAthorShop()" class="col-auto fs-5 px-0 text-white align-self-center">
+                                        <i class="fa-solid fa-arrow-right leftRightMove"></i>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                     </div>
+                      <div class="carousel-item">
+                        <div id="checkItemOrderBox" class="row rounded position-absolute px-auto mx-auto d-none" style="background-color: rgb(255, 255, 255); z-index: 9999; width: 80%; left: 10%; top: 20%; border: 0.2em solid rgb(175, 144, 50);">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-end">
+                                        <i onclick="closeCheckOrderBox()" class="fa-solid fa-xmark"></i>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col"></div>
+                                    <div class="col-auto">
+                                        <img class="img-fluid productImg" src="/public/image/mFollow/coin1.png" alt="" style="height: 6em;">
+                                    </div>
+                                    <div class="col"></div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col text-center fw-bold payProduct" style="font-size: 0.8em;">
+                                        고기 보석 400개 + 추가 고기보석 0개
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col text-center checkMessage" style="font-size: 0.9em;">
+                                        고기 보석으로 멍스토킹 콘텐츠를 구매할 수 있습니다. 구매한 콘텐츠는 환불이 불가능합니다.
+                                    </div>
+                                </div>
+                                <div class="row mt-3 mb-2 justify-content-center">
+                                    <div class="col"></div>
+                                    <div onclick="requestPay()" class="col px-0 text-center rotated_gradient_box" style="font-size: 0.8em;">
+                                        KRW<span class="payAmount">9,900</span>
+                                    </div>
+                                    <div class="col"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="itemShopMainImg" class="row">
+                            <div id="checkOrderBox" class="row rounded position-absolute px-auto mx-auto d-none" style="background-color: rgb(255, 255, 255); z-index: 9999; width: 80%; left: 10%; top: 20%; border: 0.2em solid rgb(175, 144, 50);">
+                              <div class="col">
+                                  <div class="row">
+                                      <div class="col text-end">
+                                          <i onclick="closeCheckOrderBox()" class="fa-solid fa-xmark"></i>
+                                      </div>
+                                  </div>
+                                  <div class="row">
+                                      <div class="col"></div>
+                                      <div class="col-auto">
+                                          <img class="img-fluid productImg" src="/public/image/mFollow/coin1.png" alt="" style="height: 6em;">
+                                      </div>
+                                      <div class="col"></div>
+                                  </div>
+                                  <div class="row mt-3">
+                                      <div class="col text-center fw-bold payProduct" style="font-size: 0.8em;">
+                                          고기 보석 400개 + 추가 고기보석 0개
+                                      </div>
+                                  </div>
+                                  <div class="row mt-2">
+                                      <div class="col text-cente checkMessage" style="font-size: 0.9em;">
+                                          고기 보석으로 멍스토킹 콘텐츠를 구매할 수 있습니다. 구매한 콘텐츠는 환불이 불가능합니다.
+                                      </div>
+                                  </div>
+                                  <div class="row mt-3 mb-2 justify-content-center">
+                                      <div class="col"></div>
+                                      <div onclick="requestPay()" class="col px-0 text-center rotated_gradient_box" style="font-size: 0.8em;">
+                                          KRW<span class="payAmount">9,900</span>
+                                      </div>
+                                      <div class="col"></div>
+                                  </div>
+                              </div>
+                          </div>
+                            <div class="col mt-5">
+                                <div class="row mx-3 mt-5">
+                                    <div class="col mt-5 rounded none-scrollbar " style="overflow-x: scroll; height: 7em;">
+                                        <div class="row" style="width: 130%;">
+                                            <div onclick="selectItem(this)" class="col itemBackground">
+                                                <div class="row mt-1">
+                                                    <div class="col text-center shackMove text-white itemLV" style="font-size: 0.8em;">
+                                                        Lv.1
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col align-self-center py-0">
+                                                        <img class=" img-fluid sizeUP itemImg" src="/public/image/mFollow/scanCountUp.png" alt="" style="height: 3.5em;">
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-2">
+                                                    <div class="col-auto pe-0 align-self-center justify-content-center">
+                                                        <img class="img-fluid" src="/public/image/mFollow/coin.png" alt="" style="height: 1em;">
+                                                    </div>
+                                                    <div class="col-auto ps-1 itemPrice">
+                                                        300
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div  onclick="selectItem(this)" class="col itemBackground">
+                                                <div class="row mt-1">
+                                                    <div class="col text-center shackMove text-white" style="font-size: 0.8em;">
+                                                        Lv.1
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col align-self-center py-0">
+                                                        <img class=" img-fluid sizeUP" src="/public/image/mFollow/scanSizeUp.png" alt="" style="height: 3.5em;">
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-1 pt-1 justify-content-center">
+                                                    <div class="col-auto pe-0 align-self-center">
+                                                        <img src="/public/image/mFollow/coin.png" alt="" style="height: 1em;">
+                                                    </div>
+                                                    <div class="col-auto ps-1">
+                                                        300
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div onclick="selectItem(this)" class="col  itemBackground">
+                                                <div class="row mt-1">
+                                                    <div class="col text-center shackMove text-white" style="font-size: 0.8em;">
+                                                        Lv.1
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col align-self-center py-0">
+                                                        <img class=" img-fluid sizeUP" src="/public/image/mFollow/plustget.png" alt="" style="height: 3.5em;">
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-1 pt-1 justify-content-center">
+                                                    <div class="col-auto pe-0 align-self-center">
+                                                        <img src="/public/image/mFollow/coin.png" alt="" style="height: 1em;">
+                                                    </div>
+                                                    <div class="col-auto ps-1">
+                                                        300
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div onclick="selectItem(this)" class="col itemBackground">
+                                                <div class="row mt-1">
+                                                    <div class="col text-center shackMove text-white" style="font-size: 0.8em;">
+                                                        Lv.1
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col align-self-center py-0">
+                                                        <img class="img-fluid sizeUP" src="/public/image/mFollow/eyeScan.png" alt="" style="height: 3.5em;">
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-1 pt-1 justify-content-center">
+                                                    <div class="col-auto pe-0 align-self-center">
+                                                        <img src="/public/image/mFollow/coin.png" alt="" style="height: 1em;">
+                                                    </div>
+                                                    <div class="col-auto ps-1">
+                                                        300
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 두번째 줄-->
+                                <div class="row mx-3 mt-3">
+                                    <div class="col  rounded none-scrollbar " style="overflow-x: scroll; height: 7em;">
+                                        <div class="row" style="width: 130%;">
+                                            <div class="col itemBackground">
+                                                <div class="row mt-1">
+                                                    <div class="col text-center shackMove text-white itemLV" style="font-size: 0.8em;">
+                                                        Lv.1
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col align-self-center py-0">
+                                                        <img class="img-fluid sizeUP itemImg" src="/public/image/mFollow/scanCountUp.png" alt="" style="height: 3.5em;">
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-2">
+                                                    <div class="col-auto pe-0 align-self-center justify-content-center">
+                                                        <img class="img-fluid" src="/public/image/mFollow/coin.png" alt="" style="height: 1em;">
+                                                    </div>
+                                                    <div class="col-auto ps-1 itemPrice">
+                                                        300
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col itemBackground">
+                                                <div class="row mt-1">
+                                                    <div class="col text-center shackMove text-white itemLV" style="font-size: 0.8em;">
+                                                        Lv.1
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col align-self-center py-0">
+                                                        <img class="img-fluid sizeUP itemImg" src="/public/image/mFollow/scanSizeUp.png" alt="" style="height: 3.5em;">
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-1 pt-1 justify-content-center">
+                                                    <div class="col-auto pe-0 align-self-center">
+                                                        <img src="/public/image/mFollow/coin.png" alt="" style="height: 1em;">
+                                                    </div>
+                                                    <div class="col-auto ps-1 itemPrice">
+                                                        300
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col itemBackground">
+                                                <div class="row mt-1">
+                                                    <div class="col text-center shackMove text-white" style="font-size: 0.8em;">
+                                                        Lv.1
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col align-self-center py-0">
+                                                        <img class="img-fluid sizeUP" src="/public/image/mFollow/plustget.png" alt="" style="height: 3.5em;">
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-1 pt-1 justify-content-center">
+                                                    <div class="col-auto pe-0 align-self-center">
+                                                        <img src="/public/image/mFollow/coin.png" alt="" style="height: 1em;">
+                                                    </div>
+                                                    <div class="col-auto ps-1">
+                                                        300
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col itemBackground">
+                                                <div class="row mt-1">
+                                                    <div class="col text-center shackMove text-white" style="font-size: 0.8em;">
+                                                        Lv.1
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col align-self-center py-0">
+                                                        <img class="img-fluid sizeUP" src="/public/image/mFollow/eyeScan.png" alt="" style="height: 3.5em;">
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-1 pt-1 justify-content-center">
+                                                    <div class="col-auto pe-0 align-self-center">
+                                                        <img src="/public/image/mFollow/coin.png" alt="" style="height: 1em;">
+                                                    </div>
+                                                    <div class="col-auto ps-1">
+                                                        300
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3 rounded" >
+                                    <div class="col">
+                                        <div class="row mx-3 px-2 py-1 rounded" style="background-color: #d6c46c; border: 0.2em solid rgb(158, 114, 2);">
+                                            <div class="col mt-2">
+                                                <div class="row justify-content-center">
+                                                    <div id="itemExplainName" class="col-auto rounded-pill " style="background-color: #f2e5a4; color: #917326;">
+                                                        스캔 범위 up!
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-2 justify-content-center">
+                                                    <div id="itemExplainDetail" class="col py-2 rounded" style="background-color: #835b0c; color: #eed9a5; font-size: 0.8em; height: 5.5em;">
+                                                        구매시 스캔범위가 30m 늘어납니다.
+                                                        스캔 범위 증가는 영구적이며 최대 증가치는 Lv.10 입니다.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-auto rounded ms-2 py-1 px-0 align-self-center" style="background-color: rgb(250, 237, 171);">
+                                                <img id="itemExplainImg" class="img-fluid sizeUP" src="/public/image/mFollow/scanSizeUp.png" alt="" style="height: 5em;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mx-2 mt-3 mb-2">
+                                    <div class="col-auto">
+                                        <div class="row">
+                                            <div class="col text-white rounded-pill" style="background-color: rgb(67, 168, 62);">
+                                                돌아가기
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div onclick="goAthorShop()" class="col text-end align-self-center" style="color: rgb(67, 168, 62);">
+                                          고기 보석점으로
+                                    </div>
+                                    <div onclick="goAthorShop()" class="col-auto fs-5 pe-3 text-white align-self-center">
+                                      <i class="fa-solid fa-arrow-right leftRightMove" style="color: rgb(67, 168, 62);"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button  class="carousel-control-prev d-none" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button id="itemShopButton" class="carousel-control-next d-none" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+                         
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    </body>
+</html>

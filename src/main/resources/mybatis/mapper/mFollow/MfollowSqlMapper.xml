@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.psychopath.dogstalking.mFollow.mapper.MfollowSqlMapper">
+
+    <select id="selectCoinProductList" resultType="com.psychopath.dogstalking.mFollow.dto.CoinCategoryDto">
+        SELECT * FROM ms_mFollow_coin_category
+    </select>
+    <select id="selectShopItemList" resultType="com.psychopath.dogstalking.mFollow.dto.ItemShopDto">
+        SELECT * FROM ms_mFollow_item
+    </select>
+    <select id="selectItemInfo" resultType="com.psychopath.dogstalking.mFollow.dto.ItemShopDto">
+        SELECT * FROM ms_mFollow_item
+        where item_pk = #{item_pk}
+    </select>
+    <select id="selectCoinInfo" resultType="com.psychopath.dogstalking.mFollow.dto.CoinCategoryDto">
+        SELECT * FROM ms_mFollow_coin_category
+        where coin_category_pk = #{coin_category_pk}
+    </select>
+
+</mapper>
