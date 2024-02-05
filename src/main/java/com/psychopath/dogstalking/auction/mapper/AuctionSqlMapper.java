@@ -9,6 +9,7 @@ import com.psychopath.dogstalking.auction.dto.AuctionImageDto;
 import com.psychopath.dogstalking.auction.dto.BidDto;
 import com.psychopath.dogstalking.auction.dto.ChatDto;
 import com.psychopath.dogstalking.dto.UserDto;
+import com.psychopath.dogstalking.follow.dto.CollectionDto;
 
 @Mapper
 public interface AuctionSqlMapper {
@@ -51,6 +52,12 @@ public interface AuctionSqlMapper {
 
     // 입찰하기
     public void insertBidDto(BidDto bidDto);
+
+    // 경매 시간 추가
+    public void updateGoodsExpiryDatePlusMinutes(AuctionGoodsDto auctionGoodsDto);
+
+    // 추가된 채팅 가져오기
+    public List<ChatDto> getAppendChatList(ChatDto chatDto);
 
 
 }

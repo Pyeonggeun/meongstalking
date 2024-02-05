@@ -53,6 +53,13 @@ public class AuctionController {
         return "/auction/goodsDetailPage";
     }
 
+    @RequestMapping("registerLogPage")
+    public String registerLogPage(){
+
+        return "/auction/registerLogPage";
+    }
+
+
 
     @RequestMapping("test")
     public String test(){

@@ -107,4 +107,19 @@
         )      
     </insert>
 
+    <update id="updateGoodsExpiryDatePlusMinutes">
+        update ms_auction_goods
+        set expiry_date = #{expiry_date}
+        where pk = #{pk}
+    </update>
+
+    <select id="getAppendChatList" resultType="com.psychopath.dogstalking.auction.dto.ChatDto">
+        select * from ms_auction_chat
+        where goods_pk = #{goods_pk}
+        <![CDATA[
+        and pk > #{pk}
+        order by created_at asc
+        ]]>
+    </select>
+
 </mapper>

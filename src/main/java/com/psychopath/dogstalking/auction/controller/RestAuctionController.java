@@ -111,6 +111,7 @@ public class RestAuctionController {
 				
 			}
 		}
+
 		List<AuctionImageDto> sessionCareDogImageList = (List<AuctionImageDto>)session.getAttribute("auctionImageDtoList");
 
 		if(sessionCareDogImageList == null){
@@ -134,6 +135,7 @@ public class RestAuctionController {
 		
 		return restResponseDto;
 	}      
+	
 
     @RequestMapping("registerGoodsInfo")
     public RestResponseDto registerGoodsInfo(String title, String content, String[] images, HttpSession session) {
@@ -252,6 +254,26 @@ public class RestAuctionController {
         RestResponseDto restResponseDto = new RestResponseDto();
         
         restResponseDto.setData(auctionService.registerBid(prams));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+	}    
+
+	@RequestMapping("getGoodsInfo")
+	public RestResponseDto getGoodsInfo(int goodsPk) {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(auctionService.getGoodsInfo(goodsPk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+	}    
+
+	@RequestMapping("getAppendChatList")
+	public RestResponseDto getAppendChatList(ChatDto chatDto) {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(auctionService.getAppendChatList(chatDto));
         restResponseDto.setResult("success");
         
         return restResponseDto;
