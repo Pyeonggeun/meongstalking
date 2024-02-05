@@ -19,7 +19,7 @@
 
 <body>
     <div class="container">
-        <div class="row px-0">
+        <div class="row">
             <div class="col-2 my-2 ms-1">
                 <button class="btn" onclick="goBack()">
                     <i class="bi bi-arrow-left"></i>
@@ -28,12 +28,13 @@
             <div th:text="${clubTF.clubname}" class="col d-flex align-items-center px-0">
             </div>
         </div>
-        <div class="row scrollable-menu">
+        <div class="row scrollable-menu px-0">
             <div class="col justify-content-between fw-bold">
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">게시판</span>
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./photoAlbumPage'">사진첩</span>
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubMemberPage'">멤버</span>
+
             </div>
         </div>
 
