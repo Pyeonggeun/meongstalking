@@ -10,5 +10,6 @@ public class ClubDto {
     private String name;
     private String content;
     private String img;
+    private String imgPath;
     private LocalDateTime created_at;
 }

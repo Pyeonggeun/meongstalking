@@ -13,7 +13,10 @@
     .overflow-x-auto{
         overflow-x: auto;
         display: flex;
+    }
 
+    a {
+        text-decoration-line: none;
     }
 
 </style>
@@ -29,16 +32,21 @@
 
                 <!--메인 콜 시작-->
                 <div class="col">
-                    <div class="row py-2"><div class="col"><a href="./listPage"><i class="bi bi-arrow-left-square" style="color: black;"></i></a></div><div class="col text-end"><a href="../commons/mainPage"><i class="bi bi-house" style="color: black;"></i></a></div></div>   
-                    <div class="row border-bottom mb-1"><div class="col fw-bold" style="font-size: 1.25em;"> 마이페이지 <span style="font-size: 0.65em; color:gray">for 일반 회원</span></div></div>
-
-                    <div class="row py-1 my-2">
-                        <div class="col-3 px-0 text-center" style="font-size:1.3em;">
-                            <i class="bi bi-person-circle" style="font-size:1.45em;"></i>
+                    <div class="row py-3">
+                        <div class="col-1 ps-3"><a class="px-0" href="./listPage"><i class="bi bi-arrow-left-square px-0" style="font-size: 1.25em; color: black;"></i></a></div>
+                        <div class="col ps-4 fw-bold text-start"><span style="font-size: 1.3em;">마이페이지</span></div>
+                        <div class="col-3 px-0 me-2">
+                            <div class="row border border-0 rounded me-2" style="background-color: gainsboro;"><div class="col px-0 py-1 rounded fw-bold text-white text-center link-underline-opacity-0" style="background-color: black; font-size: 0.85em;">후원</div><div class="col px-0 py-1 text-center border border-0  rounded" style="background-color: gainsboro; font-size: 0.85em"><a href="./fundingSellerMyPage" class="link-underline-opacity-0" style="color: gray;">등록</a></div></div>
                         </div>
-                        <div class="col px-0">
+                    </div>
+
+                    <div class="row py-1 mb-2 mx-1">
+                        <div class="col-2 px-1 text-center" style="font-size:1.3em;">
+                            <i class="bi bi-person-circle" style="font-size:1.5em;"></i>
+                        </div>
+                        <div class="col">
                             <div class="row">
-                                <div class="col px-0" th:text="${session.sessionUser.userid}"><span style="font-size: 0.75em; color:gray">님</span>></div>
+                                <div class="col px-0 pt-1" style="font-size: 0.85em;"><span  class="fw-bold" th:utext="${session.sessionUser.userid}" style="font-size: 1.25em;"></span> 님 안녕하세요</div>
                             </div>
                         </div>
                     </div>
@@ -63,41 +71,39 @@
                         </div>
                     </div>
 
-                    <div class="row"><div class="col"></div></div>
-
                     <div class="row mt-3"><div class="col fw-bold" style="font-size: 1em;">내가 찜한 목록</div></div>
                     <div class="row mb-3">
-                        <div class="col py-2 px-2 overflow-x-auto" style="white-space: nowrap;">
-                            <th:block th:each="wish : ${wish}">
-                                <a th:href="@{./productDetailPage(id = ${wish.wish.product_pk})}">
-                                    <div class="row" style="display: flex">
-                                        <div class="col mx-1">
-                                            <div class="row"><div class="col d-grid"><img th:src="@{'/uploadFiles/'+${wish.product.title_image}}" alt="등록된 이미지가 없습니다" style="height: 10em; width: 16em;"></div></div>
-                                            <div class="row" style="width: 15em;"><div class="col" style="overflow-x: hidden; color: black;" th:text="${wish.product.product_name}" ></div></div>
+                        <div class="col py-2 px-2">
+                            <div class="container overflow-x-auto" style="white-space: nowrap;">    
+                                <th:block th:each="wish : ${wish}">
+                                    <a th:href="@{./productDetailPage(id = ${wish.wish.product_pk})}">
+                                        <div class="row py-2" style="display: flex">
+                                            <div class="col mx-1">
+                                                <div class="row"><div class="col d-grid"><img th:src="@{'/uploadFiles/'+${wish.product.title_image}}" alt="등록된 이미지가 없습니다" style="height: 10em; width: 16em;"></div></div>
+                                                <div class="row" style="width: 15em;"><div class="col" style="overflow-x: hidden; color: black;" th:text="${wish.product.product_name}" ></div></div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </a>  
-                            </th:block>
+                                    </a>  
+                                </th:block>
+                            </div>    
                         </div>
                     </div>
 
-
-
-
-
                     <div class="row mt-3"><div class="col fw-bold" style="font-size: 1em;">내가 구매한 목록</div></div>
                     <div class="row mb-3">
-                        <div class="col py-2 px-2 overflow-x-auto" style="white-space: nowrap;">
-                            <th:block th:each="order : ${order}">
-                                <a th:href="@{./purchaseProductManagePage(id = ${order.order.order_pk})}">
-                                    <div class="row" style="display: flex">
-                                        <div class="col mx-1">
-                                            <div class="row"><div class="col d-grid"><img th:src="@{'/uploadFiles/'+${order.product.title_image}}" alt="등록된 이미지가 없습니다" style="height: 10em; width: 16em;"></div></div>
-                                            <div class="row" style="width: 15em;"><div class="col" style="overflow-x: hidden; color: black;" th:text="${order.product.product_name}"></div></div>
+                        <div class="col py-2 px-2">
+                            <div class="container overflow-x-auto" style="white-space: nowrap;">
+                                <th:block th:each="order : ${order}">
+                                    <a th:href="@{./purchaseProductManagePage(id = ${order.order.order_pk})}">
+                                        <div class="row py-2" style="display: flex">
+                                            <div class="col mx-1">
+                                                <div class="row"><div class="col d-grid"><img th:src="@{'/uploadFiles/'+${order.product.title_image}}" alt="등록된 이미지가 없습니다" style="height: 10em; width: 16em;"></div></div>
+                                                <div class="row" style="width: 15em;"><div class="col" style="overflow-x: hidden; color: black;" th:text="${order.product.product_name}"></div></div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </a>  
-                            </th:block>
+                                    </a>  
+                                </th:block>
+                            </div>    
                         </div>
                     </div>
 

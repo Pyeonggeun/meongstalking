@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
         <script th:inline="javascript">
+            
             let profile_info_pk = null;
             let another_info_pk = null;
             function getUrlKey() {
@@ -19,7 +20,7 @@
                 console.log(profile_info_pk)
                 const anotherkey = urlParams.get("another_info_pk");
                 another_info_pk = anotherkey;
-                console.log(another_info_pk)
+                updateDirectReadStatus();
                 const insertButtonStatus = document.querySelector("#insertButtonStatus");
                 const directChat = document.querySelector("#directChat");
                 const insertDirectButton = document.querySelector("#insertDirectButton");
@@ -35,18 +36,39 @@
                     }
 
                 });
-                loadAnotherProfileInfo(another_info_pk);
+                const beforePageButton = document.querySelector("#beforePageButton");
+                beforePageButton.setAttribute("onclick" , "location.href='./directListPage?profile_info_pk="+profile_info_pk+"'")
+                loadAnotherProfileInfo(another_info_pk, another_info_pk);
+                loadDirectChatList(profile_info_pk, another_info_pk);
+                loadMyProfileInfoForFollow(profile_info_pk, another_info_pk);
+            }
+            
+
+            function loadMyProfileInfoForFollow(){
+                const url = "./loadMyProfileInfoForFollow";
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    const myProfilePhoto = document.querySelector("#myProfilePhoto");
+                    myProfilePhoto.src = response.data.profileInfoDto.profile_photo;
+                });
+
             }
 
-
-            function loadAnotherProfileInfo(another_info_pk){
+            function loadAnotherProfileInfo(profile_info_pk, another_info_pk){
                 const url = "./loadAnotherProfileInfo";
                 fetch(url, {
                      method: "post",
                      headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
-                     body: "profile_info_pk="+another_info_pk
+                     body: "profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk
             	})
                 .then(response => response.json())
                 .then((response) =>{
@@ -62,6 +84,9 @@
 
                     const anotherUserId = document.querySelector("#anotherUserId");
                     anotherUserId.innerText = response.data.userDto.userid;
+
+                    const topAnotherUserNickName = document.querySelector("#topAnotherUserNickName");
+                    topAnotherUserNickName.innerText = response.data.profileInfoDto.nick_name;
 
                     const anotherUserFollowArricle = document.querySelector("#anotherUserFollowArricle");
                     if(response.data.followCount != 0){
@@ -86,14 +111,217 @@
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
                      body: "send_user_pk="+profile_info_pk+"&rcv_user_pk="+another_info_pk+"&chat="+chat
-            	});
-                chat.value="";
-               
+            	})
+                .then(() => {
+                    // fetch가 완료된 후에 실행할 코드
+                    directChat.value = "";
+                    loadNewChat(lastDirectPk);
+                    const scrollBox = document.querySelector("#scrollBox");
+                    scrollBox.scrollTop = scrollBox.scrollHeight;
+                });
             }
 
-            function loadDirectList(){
+            let lastDirectPk = 0;
+            function loadDirectChatList(profile_info_pk, another_info_pk){
+                const url = "./loadDirectChatList";
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    console.log(response.data)
+                    const directListBox =  document.querySelector("#directListBox");
+                    directListBox.innerHTML = "";
+                    let beforeCount = 0;
+                    if(response.data.length != 0){
+
+                        for(e of response.data){
+                        
+                        const dateWrapper = document.querySelector("#dateTemplete .dateWrapper").cloneNode(true);
+                        const chatDate = dateWrapper.querySelector(".chatDate");
+                        if (beforeCount == 0) {
+                           // 최초의 메시지는 무조건 날짜를 출력
+                            chatDate.innerText = e.directDto.created_at[0] + "년 " + e.directDto.created_at[1] + "월 " + e.directDto.created_at[2] + "일 ";
+                            directListBox.appendChild(dateWrapper);
+
+                        } else {
+                            const beforeDate = response.data[beforeCount - 1].directDto.created_at;
+                            const currentDate = e.directDto.created_at;
+
+                            if (
+                                currentDate[0] === beforeDate[0] &&
+                                currentDate[1] === beforeDate[1] &&
+                                currentDate[2] === beforeDate[2]
+                            ) {
+                                // 같은 날이면 시간을 출력
+                                if ((currentDate[3] - beforeDate[3]) >= 3) {
+                                    chatDate.innerText = e.directDto.created_at[3] + "시 " + e.directDto.created_at[4] + "분";
+                                    directListBox.appendChild(dateWrapper);
+                                }
+
+                            } else {
+                                // 다른 날이면 날짜를 출력
+                                chatDate.innerText = e.directDto.created_at[0] + "년 " + e.directDto.created_at[1] + "월 " + e.directDto.created_at[2] + "일 ";
+                                directListBox.appendChild(dateWrapper);
+
+                            }
+                        }
+                        beforeCount++;
+                        
+                        
+                        if(e.directDto.send_user_pk == profile_info_pk){
+                            const sendChatWrapper = document.querySelector("#sendChatTemplete .sendChatWrapper").cloneNode(true);
+
+                            const myChat = sendChatWrapper.querySelector(".myChat");
+                            myChat.innerText = e.directDto.chat;
+                            if(myChat.textContent.length >=20){
+                                myChat.classList.add("py-2");
+                                myChat.classList.remove("rounded-pill");
+                                myChat.setAttribute("style","background-color: rgb(36, 106, 246); max-width: 70%; word-wrap: break-word; border-bottom-left-radius: 7%; border-top-left-radius: 7%; border-top-right-radius: 8%;");
+                                
+                            }
+                            if(e.directDto.read_status == 'N'){
+                                const readStatus = sendChatWrapper.querySelector(".readStatus");
+                                readStatus.classList.remove("d-none");
+                            }
+                            
+                            
+
+                            directListBox.appendChild(sendChatWrapper);
+                        }else{
+                            const rcvChatWrapper = document.querySelector("#rcvChatTemplete .rcvChatWrapper").cloneNode(true);
+
+                            const anotherProfilePhoto = rcvChatWrapper.querySelector(".anotherProfilePhoto");
+                            anotherProfilePhoto.src = e.anotherProfileInfoDto.profile_photo;
+
+                            const anotherChat = rcvChatWrapper.querySelector(".anotherChat");
+                            anotherChat.innerText = e.directDto.chat; 
+                            if(anotherChat.textContent.length >=20){
+                                anotherChat.classList.add("py-2");
+                                anotherChat.classList.remove("rounded-pill");
+                                anotherChat.setAttribute("style","background-color: rgb(219, 219, 219); max-width: 70%; word-wrap: break-word; border-bottom-left-radius: 7%; border-top-left-radius: 7%; border-top-right-radius: 8%;");
+                            }
+                            
+                            directListBox.appendChild(rcvChatWrapper);
+                        }
+                        updateDirectReadStatus();
+                    }
+                    
+                    lastDirectPk = response.data[response.data.length - 1].directDto.direct_pk;
+                    
+                    setInterval(function() {
+                        loadNewChat();
+                    }, 3000);
+                    const scrollBox = document.querySelector("#scrollBox")
+                    scrollBox.scrollTop = scrollBox.scrollHeight;
+                    }
+                    
+                });
+            }
+            
+        
+
+            function loadNewChat(){
+                loadMyDirectReadStatus()
+                const url = "./loadNewChat";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "direct_pk="+lastDirectPk+"&profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    updateDirectReadStatus();
+                    if(response.data.length !=0){
+                        const directListBox =  document.querySelector("#directListBox");
+                        
+                        for(e of response.data){                            
+                                
+                            if(e.directDto.send_user_pk == profile_info_pk){
+                                const sendChatWrapper = document.querySelector("#sendChatTemplete .sendChatWrapper").cloneNode(true);
+
+                                const myChat = sendChatWrapper.querySelector(".myChat");
+                                myChat.innerText = e.directDto.chat;
+                                if(myChat.textContent.length >=20){
+                                    myChat.classList.add("py-2");
+                                    myChat.classList.remove("rounded-pill");
+                                    myChat.setAttribute("style","background-color: rgb(36, 106, 246); max-width: 70%; word-wrap: break-word; border-bottom-left-radius: 7%; border-top-left-radius: 7%; border-top-right-radius: 8%;");
+                                    
+                                }
+                                if(e.directDto.read_status == 'N'){
+                                    const readStatus = sendChatWrapper.querySelector(".readStatus");
+                                    readStatus.classList.remove("d-none");
+                                }
+                                
+                                
+
+                                directListBox.appendChild(sendChatWrapper);
+                            }else{
+                                const rcvChatWrapper = document.querySelector("#rcvChatTemplete .rcvChatWrapper").cloneNode(true);
+
+                                const anotherProfilePhoto = rcvChatWrapper.querySelector(".anotherProfilePhoto");
+                                anotherProfilePhoto.src = e.anotherProfileInfoDto.profile_photo;
+
+                                const anotherChat = rcvChatWrapper.querySelector(".anotherChat");
+                                anotherChat.innerText = e.directDto.chat; 
+                                if(anotherChat.textContent.length >=20){
+                                    anotherChat.classList.add("py-2");
+                                    anotherChat.classList.remove("rounded-pill");
+                                    anotherChat.setAttribute("style","background-color: rgb(219, 219, 219); max-width: 70%; word-wrap: break-word; border-bottom-left-radius: 7%; border-top-left-radius: 7%; border-top-right-radius: 8%;");
+                                }
+                                
+                                directListBox.appendChild(rcvChatWrapper);
+                            }
+                            
+                        }
+                        lastDirectPk = response.data[response.data.length - 1].directDto.direct_pk;
+                        const scrollBox = document.querySelector("#scrollBox")
+                        scrollBox.scrollTop = scrollBox.scrollHeight;
+                    }
+                    
+                });
                 
             }
+            function updateDirectReadStatus(){
+                const url = "./updateDirectReadStatus";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk
+            	})
+            }
+            function loadMyDirectReadStatus(){
+                const url = "./loadMyDirectReadStatus";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "direct_pk="+lastDirectPk+"&profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    if(response.data ==0){
+                        const readStatus = document.querySelectorAll(".readStatus") ;
+                        for(e of readStatus){
+                            e.classList.add("d-none");
+                        }
+                    }
+                });
+
+            }
+            
             
 
 
@@ -121,11 +349,11 @@
     </head>
 
     <body>
-        <div class="container-fluid">
-            <div class="row sticky-top bg-white border-bottom">   
+        <div id="scrollBox" class="container-fluid" style="height: 100vh; width: 100%; overflow-y: auto;">
+            <div class="row fixed-top bg-white border-bottom">   
                 <div class="col">
                     <div class="row my-2">
-                        <div class="col-auto align-self-center">
+                        <div id="beforePageButton" class="col-auto align-self-center">
                             <i class="fa-solid fa-chevron-left ps-2"></i>
                         </div>
                         <div class="col-auto align-self-center">   
@@ -134,25 +362,25 @@
                         <div class="col">
                             <div class="row">
                                 <div id="topAnotherUserid" class="col-auto align-self-center ps-0">
-                                    eun_jin-log
+                                    
                                 </div>
                             </div>
                             <div class="row">
                                 <div id="topAnotherUserNickName" class="col text-secondary ps-0" style="font-size: 0.7em;">
-                                    김쿼카
+                                    
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row mt-5" style="height: auto;">
+            <div class="row pt-5">
                 <div class="col">
                     <div class="row text-center" style="font-size: 0.8em;">
                         <div class="col">
-                            <div class="row">
+                            <div class="row pt-5">
                                 <div  class="col">
-                                    <img id="anotherUserPoriflePhoto" class="rounded-circle" src="/public/image/commons/commonsDogImg1.png" alt="" style="aspect-ratio: 1/1; height: 5em;">
+                                    <img id="anotherUserPoriflePhoto" class="rounded-circle"  alt="" style="aspect-ratio: 1/1; height: 5em;">
                                 </div>
                             </div>
                             <div class="row">
@@ -171,30 +399,30 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col">
+                                <div id="followFollow" class="col">
                                     jo_seongmu 님 외 4명을 함께 팔로우합니다.
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row pe-0" style="height: 40em;">
-                        <div id="directListBox" class="col mt-3">
+                    <div class="row pe-0 mb-5">
+                        <div id="directListBox" class="col my-3">
                            
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row bg-white fixed-bottom">
+            <div class="row bg-white fixed-bottom border-top pt-2">
                 <div class="col">
-                    <div class="row mb-3">
-                        <div class="col-auto ms-3">
+                    <div class="row pb-2">
+                        <div class="col-auto ms-2">
                             <div class="row">
                                 <div class="col">
-                                    <img class="img-fluid rounded-circle" src="/uploadFiles/2024/01/15/f885a6db-fca1-4ba7-ae6b-abab85028745_1705282946649.jpeg" alt="" style="aspect-ratio: 1/1; height: 2.7em;">
+                                    <img id="myProfilePhoto" class="img-fluid rounded-circle" src="" alt="" style="aspect-ratio: 1/1; height: 2.7em;">
                                 </div>
                             </div>
                         </div>
-                        <div class="col">
+                        <div class="col pe-0">
                             <div class="row rounded-pill me-4" style="border: 0.1em solid rgb(215, 216, 220)">
                                 <div class="col">
                                     <input id="directChat" class="form-control px-0" type="text" style="box-shadow: none; border: none;" placeholder="Jo_inchune(으)로 댓글 달기..">
@@ -209,26 +437,33 @@
             </div>  
         </div>
 
-        <div id="rcvChatTemplete"  class="d-none">
-            <div class="row mt-2">
+        <div id="rcvChatTemplete" class="d-none">
+            <div class="row mt-2 rcvChatWrapper">
                 <div class="col">
                     <div class="row">
                         <div class="col-auto ms-1 pe-0">
-                            <img class="img-fluid rounded-circle" src="/public/image/commons/commonsDogImg1.png" alt="" style="aspect-ratio: 1/1; height: 2em;">
+                            <img class="img-fluid rounded-circle anotherProfilePhoto" alt="" style="aspect-ratio: 1/1; height: 2em;">
                         </div>
-                        <div class="col-auto text-start py-0 align-self-center  rounded-pill" style="background-color: rgb(219, 219, 219);">
-                            dhkffkfkfkffkfkf
+                        <div class="col-auto text-start py-0 align-self-center  rounded-pill anotherChat" style="background-color: rgb(219, 219, 219); max-width: 70%; word-wrap: break-word;">
+                            
+                        </div>
+                        <div class="col-auto align-self-end fw-bold text-warning px-1 readStatus d-none" style="font-size: 0.2em;">
+                            <i class="fa-solid fa-circle "></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
         <div id="sendChatTemplete" class="d-none">
-            <div class="row pe-0 mt-2">
+            <div class="row pe-0 pt-2 sendChatWrapper">
                 <div class="col">
                     <div class="row justify-content-end pe-0">
-                        <div class="col-auto text-white rounded-pill" style="background-color: rgb(36, 106, 246);">
-                            dhkffkfkfkffkfkf
+                        <div class="col-auto align-self-end fw-bold text-warning px-1 readStatus d-none" style="font-size: 0.2em;">
+                            <i class="fa-solid fa-circle "></i>
+                        </div>
+                        <div class="col-auto text-white align-self-center rounded-pill myChat" style="background-color: rgb(36, 106, 246); max-width: 70%; word-wrap: break-word;">
+                            
                         </div>
                     </div>
                 </div>
@@ -236,11 +471,11 @@
         </div>
 
         <div id="dateTemplete" class="d-none">
-            <div class="row dateWrapper mt-2">
+            <div class="row dateWrapper pt-2">
                 <div class="col">
                     <div class="row">
                         <div class="col text-center text-secondary chatDate" style="font-size: 0.8em;">
-                            2023년 10월 19일
+                            
                         </div>
                     </div>
                 </div>

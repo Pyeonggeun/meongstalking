@@ -140,16 +140,38 @@
 </head>
 
 <body>
-    <div class="container p-0">
-        <th:block th:replace="~{club/clubTopNavi.html :: topNavi}"></th:block>
+    <div class="container">
+        <div class="row">
+            <div class="col-2 mt-3 px-0 mb-3">
+                <button class="btn" onclick="goBack()">
+                    <i class="bi bi-arrow-left"></i>
+                </button>
+            </div>
+            <div th:text="${showclubpk.name}" class="col d-flex align-items-center px-0"></div>
+            <div th:if="${checkMember == 1}" class="col-1 d-flex align-items-center me-4">
+                <span style="cursor: pointer;" onclick="location.href='./clubLeaderPage'"><i
+                        class="bi bi-gear"></i></span>
+            </div>
+        </div>
+
+        <div class="row scrollable-menu">
+            <div class="col justify-content-between fw-bold">
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">게시판</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./photoAlbumPage'">사진첩</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubMemberPage'">멤버</span>
+            </div>
+        </div>
+
         <div class="row border-bottom border-2 border-gray">
             <div class="col-md-4  px-0">
-                <img th:src="@{../public/image/guild_mainImg.png}" class="img-fluid">
+                <img class="img-fluid" th:src="@{'/uploadFiles/'+${showclubpk.img}}"
+                        alt="등록된 이미지가 없습니다">
             </div>
         </div>
 
         <div class="row border-bottom border-5 border-gray">
-            <div class="col-md-8 my-3">
+            <div class="col my-3">
                 <p th:text="${showclubpk.name}" class="bold-text"></p>
                 <p th:utext="${showclubpk.content}"></p>
             </div>
@@ -159,9 +181,19 @@
             <p><strong>사진첩</strong></p>
             우왕 사진들
         </div>
-        <div class="row">
-        <button class="btn btn-secondary col-12 " onclick="loadSignupModal()">가입하기</button>
+
+        <div th:if="${ApplyStatus != 2}" class="row">
+            <div th:if="${ApplyStatus == 1} or ${ApplyStatus == 3}" class="col">
+                <!-- ApplyStatus가 1 또는 3일 때의 콘텐츠 -->
+            </div>
+            <div th:unless="${ApplyStatus == 1} or ${ApplyStatus == 3}" class=" col-11">
+                <button class="btn btn-secondary" onclick="loadSignupModal()">가입하기</button>
+            </div>
         </div>
+        <div th:if="${ApplyStatus == 2}" class="row">
+            <button class="btn btn-secondary col-12">신청 대기중 입니다.</button>
+        </div>
+
     </div>
 
 
@@ -171,16 +203,17 @@
             <form action="./createUserProcess" method="post">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" >가입인사를 작성해주세요.</h5>
+                        <h5 class="modal-title">가입인사를 작성해주세요.</h5>
                         <buttontype="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <textarea class="form-control"  id="content" name="content" rows="3"></textarea>
-                        
+                        <textarea class="form-control" id="content" name="content" rows="3"></textarea>
+
                     </div>
                     <div class="modal-footer d-flex">
                         <button type="button" class="flex-fill btn border-gray border-end"
-                            style="background-color: white; color: blue; border: none;" data-bs-dismiss="modal">취소</button>
+                            style="background-color: white; color: blue; border: none;"
+                            data-bs-dismiss="modal">취소</button>
                         <button type="submit" class="flex-fill btn"
                             style="background-color: white; color: blue; border: none; opacity: 0.8;">제출</button>
                     </div>
@@ -188,7 +221,7 @@
                 </div>
             </form>
         </div>
-     </div>   
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"

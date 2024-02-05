@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+        <script>
+             let profile_info_pk = null;
+             let user_pk = null;
+            function getProfileInfoKey() {
+                const urlParams = new URLSearchParams(location.search);
+                const userKey = urlParams.get("user_pk");
+                user_pk = userKey;
+
+                const profileKey = urlParams.get("profile_info_pk");
+                profile_info_pk = profileKey;
+
+                loadScrapArticleList(profile_info_pk, user_pk);
+                anotherUserDto(profile_info_pk)
+                
+            }
+            function anotherUserDto(profile_info_pk){
+                const url = "./anotherUserDto?profile_info_pk="+profile_info_pk;
+                fetch(url)
+                .then(response => response.json())
+                .then((response) =>{
+                    const articleListUserid = document.querySelector("#articleListUserid");
+                    articleListUserid.innerText = response.data.userid;
+                });
+            }
+
+            let profileInfoDto = null;
+            function getProfileInfoDto(){
+                const url = "./myProfileInfoDto?user_pk="+user_pk;
+                fetch(url)
+                .then(response => response.json())
+                .then((response) =>{
+                    profileInfoDto = response.data;
+                    const profile_info_pk = profileInfoDto.profile_info_pk;
+                    const myCommentProfileImg = document.querySelector("#myCommentProfileImg");
+                    myCommentProfileImg.src = profileInfoDto.profile_photo;
+
+                    
+                });
+            }
+            
+
+
+            
+            function loadScrapArticleList(profile_info_pk, user_pk){
+                const url = "./loadScrapArticleList";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "profile_info_pk="+profile_info_pk+"&user_pk="+user_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    
+                    const backProfilePage = document.querySelector("#backProfilePage");
+                    if(profileInfoDto.profile_info_pk != profile_info_pk){
+                        console.log("ddd")
+                        backProfilePage.setAttribute("onclick", "location.href='./anotherProfilePage?profile_info_pk="+profileInfoDto.profile_info_pk+"&another_info_pk="+profile_info_pk+"'");
+                    }else{
+                        console.log("ddd3")
+                        backProfilePage.setAttribute("onclick", "location.href='./profilePage?user_pk="+user_pk+"'");
+                        console.log(backProfilePage)
+                    }
+
+
+                    const articleListBox = document.querySelector("#articleListBox");
+
+                    const useridSpan = document.createElement("span");
+                    useridSpan.classList.add("fw-bold","pe-2");
+                    useridSpan.innerText = response.data.scrapUserDto.userid;
+                    if(response.data.followStatus == 0){
+
+                    }
+
+                    for(e of response.data.list){
+
+                        const articleListWrapper = document.querySelector("#articleListTemplete .articleListWrapper").cloneNode(true);
+                        
+                        const articleUserId = articleListWrapper.querySelector(".articleUserId");
+                        articleUserId.innerText = e.userDto.userid;
+
+                        const profile_photo = articleListWrapper.querySelector(".profile_photo");
+                        profile_photo.setAttribute("src", e.profileInfoDto.profile_photo);
+                        if(profileInfoDto.profile_info_pk != e.profileInfoDto.profile_info_pk){
+                            profile_photo.setAttribute("onclick", "location.href='./anotherProfilePage?profile_info_pk="+profileInfoDto.profile_info_pk+"&another_info_pk="+e.profileInfoDto.profile_info_pk+"'");
+                        }else{
+                            profile_photo.setAttribute("onclick", "location.href='./profilePage?user_pk="+user_pk+"'");
+                        }
+
+                        const likeCountAndUserId = articleListWrapper.querySelector(".likeCountAndUserId");
+                        if(e.likeList[0] != null){
+                            var count = 0;
+                            for(l of e.likeList){
+                                count += 1;
+                                const likeProfile = articleListWrapper.querySelector(".likeProfile"+count);
+                                likeProfile.src = l.profileInfoDto.profile_photo;
+                                
+                            }    
+                            likeCountAndUserId.style.paddingLeft = (count-1) * 0.7 + "em";
+                            const span1 = document.createElement("span");
+                            span1.classList.add("fw-bold");
+                            span1.innerText = e.likeList[0].userDto.userid;
+
+                            const span2 = document.createElement("span");
+                            span2.classList.add("another")
+                            const span3 = document.createElement("span");
+                            span3.classList.add("likeCount");
+                            if(e.likeCount == 1){
+                                span2.innerText = " 님";
+                                
+                            }else{
+                                span2.innerText = " 님 외 ";
+                                span3.classList.add("fw-bold");
+                                span3.innerText = (e.likeCount-1)+"명"; 
+                            }
+                            const span4 = document.createElement("span");
+                            span4.innerText = "이 좋아합니다.";
+
+                            likeCountAndUserId.appendChild(span1);
+                            likeCountAndUserId.appendChild(span2);
+                            likeCountAndUserId.appendChild(span3);
+                            likeCountAndUserId.appendChild(span4);
+
+                        }else{
+                            if(e.likeCount != 0)
+                            likeCountAndUserId.innerText = e.likeCount+"명이 좋아합니다."
+                        }
+                        
+
+                        const articleImgBox = articleListWrapper.querySelector(".articleImgBox");
+
+                        
+
+                        const carouselWrapper = document.querySelector("#carouselTemplete .carouselWrapper").cloneNode(true);
+                        
+                        carouselWrapper.setAttribute("id","carouselId"+e.articleDto.article_pk);
+                        carouselWrapper.setAttribute("data-bs-target" ,"carouselId"+e.articleDto.article_pk);
+                        
+                        const articleImg = carouselWrapper.querySelector(".articleImg");
+
+                        const backButton = carouselWrapper.querySelector(".backButton");
+                        backButton.setAttribute("data-bs-target","#carouselId"+e.articleDto.article_pk);
+                        
+                        const nextButton = carouselWrapper.querySelector(".nextButton");
+                        nextButton.setAttribute("data-bs-target","#carouselId"+e.articleDto.article_pk);
+                        var count =1 ;
+                        for(p of e.photoList){
+
+                            const articleImgWrapper =  document.querySelector("#articleImgTemplete .articleImgWrapper").cloneNode(true);
+                            
+                            const img = articleImgWrapper.querySelector(".img");
+                            
+                            if(count ==1){
+                                articleImgWrapper.classList.add("active");
+                            }
+                            count +=1;
+                        
+                            img.src = p.photo_path;
+                            
+                            articleImg.appendChild(articleImgWrapper);
+                            
+                        }
+                        console.log()
+                        articleImgBox.appendChild(carouselWrapper);
+
+                        var carousel = new bootstrap.Carousel(carouselWrapper);
+                        carousel.prev();
+
+                        const contentUserId = articleListWrapper.querySelector(".contentUserId");
+                        
+                        const contentSpan = document.createElement("span");
+                        contentSpan.innerText = e.articleDto.content;
+                        
+                        contentUserId.appendChild(useridSpan);
+                        contentUserId.appendChild(contentSpan);
+                        
+                        const followStatus = articleListWrapper.querySelector(".followStatus");
+                        if(e.followStatus == 0 && profileInfoDto.profile_info_pk != e.profileInfoDto.profile_info_pk){
+                            followStatus.innerText = "팔로우";
+                            followStatus.style.backgroundColor = "rgb(228,226,226 )";
+                            followStatus.setAttribute("onclick", "followingUser("+e.profileInfoDto.profile_info_pk+","+profileInfoDto.profile_info_pk+", this)");
+                        }
+                        const myProfileImg = articleListWrapper.querySelector("#myProfileImg");
+                        myProfileImg.src = profileInfoDto.profile_photo;
+
+                        const articleScrapButton = articleListWrapper.querySelector(".articleScrapButton");
+                        const scrapIcon = articleListWrapper.querySelector(".scrapIcon");
+                        
+                        if(e.scrapStatus == 0){
+                            articleScrapButton.setAttribute("onclick", "insertArticleScrap("+e.articleDto.article_pk+" , this)");
+                            scrapIcon.classList.add("fa-regular");
+
+                        }else{
+                            articleScrapButton.setAttribute("onclick", "deleteArticleScrap("+e.articleDto.article_pk+", this)");
+                            scrapIcon.classList.add("fa-solid","text-primary");
+                        }
+
+
+                        const articleLike = articleListWrapper.querySelector(".articleLike");
+                        if(e.articleLikeStatus == 1){
+                            articleLike.src = "/public/image/mstar/like.png";
+                            articleLike.setAttribute("onclick","deleteArticleLike("+e.articleDto.article_pk+", this)");
+                        }else{
+                            articleLike.src = "/public/image/mstar/unLike.png";
+                            articleLike.setAttribute("onclick","insertArticleLike("+e.articleDto.article_pk+", this)");
+                        }
+                        
+
+                        const articleCreatedAt = articleListWrapper.querySelector(".articleCreatedAt");
+                        
+                        const currentDate = new Date();
+                        if (e.articleDto.created_at[0]+"."+e.articleDto.created_at[1]+"."+e.articleDto.created_at[2] == 
+        	    			currentDate.getFullYear() +"."+ (currentDate.getMonth()+1) + "."+ currentDate.getDate()){
+        	    			if((currentDate.getHours() - e.articleDto.created_at[3]) == 0){
+        	    				if((currentDate.getMinutes() - e.articleDto.created_at[4]) < 10){
+        	    					articleCreatedAt.innerText = "방금";
+        	    				}else{
+        	    					articleCreatedAt.innerText = (currentDate.getMinutes() - e.articleDto.created_at[4])+ "분전";
+        	    				}
+        	    			
+        	    			}else{
+        	    				articleCreatedAt.innerText = (currentDate.getHours() - e.articleDto.created_at[3])+ "시간전";
+        	    			}
+        	    		}else{
+        	    			articleCreatedAt.innerText = e.articleDto.created_at[0]+"."+e.articleDto.created_at[1]+"."+e.articleDto.created_at[2];
+        	    		}
+                        
+                        const writeCommentBox = articleListWrapper.querySelector(".writeCommentBox");
+                        writeCommentBox.setAttribute("onclick", "openCommentWriteBox("+e.articleDto.article_pk+",this)");
+                        
+                    
+                        
+                        const commentCount  = articleListWrapper.querySelector(".commentCount");
+                        if(e.articleCommentCount != 0){
+                            commentCount.innerText = "댓글 "+e.articleCommentCount+"개 모두 보기";
+                        }else{
+                            commentCount.innerText = "댓글 달기";
+                        }
+                        commentCount.setAttribute("onclick", "openCommentListBox("+e.articleDto.article_pk+", this)");
+                        
+
+                        articleListBox.appendChild(articleListWrapper);
+                    }
+
+                });
+            }            
+            function insertArticleComment(article_pk, target){
+                const comment = document.querySelector("#commentText").value;
+                const profile_info_pk = profileInfoDto.profile_info_pk;
+               
+                const url = "./insertMyComment";
+
+                fetch(url, {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: "profile_info_pk="+profile_info_pk+"&comment="+comment+"&article_pk="+article_pk
+                })
+                .then(response => response.json())
+                .then((response) =>{
+                    commentText.value = "";
+                    loadArticeleCommentList(article_pk);
+
+                    const writeMyCommentBox = document.querySelector("#writeMyCommentBox");
+
+                    const writeMyCommentWrapper = document.querySelector("#writeMyCommentTemplete .writeMyCommentWrapper").cloneNode(true);
+                    
+                    const content = writeMyCommentWrapper.querySelector(".content");
+                    const spans = document.createElement("spans");
+                    spans.innerText = response.data.comment;
+                    content.appendChild(spans);
+
+                    const likebutton = writeMyCommentWrapper.querySelector(".likebutton");
+                    likebutton.setAttribute("onclick", "insertLikeOutside("+response.data.comment_pk+", this)");
+
+                    writeMyCommentBox.appendChild(writeMyCommentWrapper);
+                });
+            }
+            function reloadCommentCount(article_pk, target){
+                const url ="./reloadCommentCount";
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "article_pk="+article_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    const articleListWrapper = target.closest("#articleListWrapper");
+                    const commentCount = articleListWrapper.querySelector(".commentCount");
+                    commentCount.innerText = "댓글 "+response.data.commentCount+"개 모두 보기";
+
+
+
+                    
+                });
+            }
+
+            function loadArticeleCommentList(article_pk, target){
+                const url = "./loadArticeleCommentList";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "article_pk="+article_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                   
+                    const articleCommentListBox = document.querySelector("#articleCommentListBox");
+                    articleCommentListBox.innerHTML = "";
+                   for(e of response.data){
+                        const commentListWrapper = document.querySelector("#commentListTemplete .commentListWrapper").cloneNode(true);
+
+                        const commentProfilePhoto = commentListWrapper.querySelector(".commentProfilePhoto");
+                        commentProfilePhoto.src = e.profileInfoDto.profile_photo;
+
+                        const commentUserId = commentListWrapper.querySelector(".commentUserId");
+                        commentUserId.innerText = e.userDto.userid;
+
+                        const checkWriter= commentListWrapper.querySelector(".checkWriter");
+
+                        
+                            
+                        if(e.checkWriterLikeComment == 1){
+                            checkWriter.innerText = "\u00B7 ❤️작성자가 이 댓글을 좋아합니다.";
+                        }else if(e.writerProfilePk == e.commentDto.profile_info_pk){
+                            checkWriter.innerText = "\u00B7 작성자";
+                        }
+
+                        const created_at = commentListWrapper.querySelector(".created_at");
+                        const currentDate = new Date();
+
+                        const createdDate = new Date(e.commentDto.created_at[0], e.commentDto.created_at[1] - 1, e.commentDto.created_at[2], e.commentDto.created_at[3], e.commentDto.created_at[4], e.commentDto.created_at[5]);
+                        const timeDifference = currentDate - createdDate;
+                        const weeksDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24 * 7));
+
+                        if (createdDate.toDateString() === currentDate.toDateString()) {
+                            if (currentDate.getHours() - createdDate.getHours() === 0) {
+                                if (currentDate.getMinutes() - createdDate.getMinutes() < 10) {
+                                    created_at.innerText = "방금";
+                                } else {
+                                    created_at.innerText = (currentDate.getMinutes() - createdDate.getMinutes()) + "분전";
+                                }
+                            } else {
+                                created_at.innerText = (currentDate.getHours() - createdDate.getHours()) + "시간전";
+                            }
+                        } else {
+                            const hoursDifference = Math.floor(timeDifference / (1000 * 60 * 60));
+                            const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+                            if (hoursDifference < 24) {
+                                created_at.innerText = hoursDifference + "시간전";
+                            } else if (daysDifference > 0) {
+                                created_at.innerText = daysDifference + "일전";
+                            } else {
+                                created_at.innerText = weeksDifference + "주전";
+                            }
+                        }
+                        const commentLike = commentListWrapper.querySelector(".commentLike");
+
+                        if(e.commentLike == 0){
+                            commentLike.classList.add("fa-regular","text-secondary");
+                            commentLike.setAttribute("onclick", "insertLikeStatus("+e.commentDto.comment_pk+", this)");
+                        }else{
+                            commentLike.classList.add("fa-solid","text-danger");
+                            commentLike.setAttribute("onclick", "deleteLikeStatus("+e.commentDto.comment_pk+", this)");
+                        }
+
+                        const commentLikeCount = commentListWrapper.querySelector(".commentLikeCount");
+                        if(e.commentLikeCount !=0){
+                            commentLikeCount.innerText = e.commentLikeCount;
+                        }
+                        
+
+
+                        const comment = commentListWrapper.querySelector(".comment");
+                        comment.innerText = e.commentDto.comment;
+
+                        const writeTcomment = commentListWrapper.querySelector(".writeTcomment");
+                        
+                        writeTcomment.innerText = "답글 달기";
+                        writeTcomment.setAttribute("onclick","writeTcomment("+e.commentDto.comment_pk+",'"+e.userDto.userid+"',this)");
+                        
+                            
+                        const tcommentCount = commentListWrapper.querySelector(".tcommentCount");
+                        
+                        if(e.tCommentCount != 0){
+                            tcommentCount.innerText = "----  답글 "+e.tCommentCount+"개 더보기";
+                            tcommentCount.setAttribute("onclick","showTcommentList("+e.commentDto.comment_pk+",'"+e.userDto.userid+"', this)");    
+                        }
+
+                        articleCommentListBox.appendChild(commentListWrapper);
+                   }
+
+                });
+            }
+            function insertLikeStatus(comment_pk, target){
+                const url = "./likeComment"
+                
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "profile_info_pk="+profileInfoDto.profile_info_pk+"&comment_pk="+comment_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    target.classList.remove("fa-regular","text-secondary");
+                    target.classList.add("fa-solid", "text-danger");
+                    target.setAttribute("onclick", "deleteLikeStatus("+comment_pk+", this)");
+
+                    const commentListWrapper = target.closest(".commentListWrapper");
+
+                    const commentLikeCount = commentListWrapper.querySelector(".commentLikeCount");
+                    commentLikeCount.innerText = response.data.commentLikeCount;
+                    
+                        
+                    
+
+                    if(response.data.profile_info_pk == response.data.writerProfilePk){
+                        const checkWriter = commentListWrapper.querySelector(".checkWriter");
+                        checkWriter.innerText = "\u00B7 ❤️작성자가 이 댓글을 좋아합니다.";
+                    }
+                   
+                        
+                    
+                });
+                
+                
+
+            }
+            function insertLikeOutside(comment_pk, target){
+                const url = "./likeComment"
+                
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "profile_info_pk="+profileInfoDto.profile_info_pk+"&comment_pk="+comment_pk
+            	});
+                    target.classList.remove("fa-regular","text-secondary");
+                    target.classList.add("fa-solid", "text-danger");
+                    target.setAttribute("onclick", "deleteLikeOutside("+comment_pk+", this)");
+            }
+
+            function deleteLikeStatus(comment_pk, target){
+
+                const url = "./deleteComment";
+                
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "profile_info_pk="+profileInfoDto.profile_info_pk+"&comment_pk="+comment_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    target.classList.remove("fa-solid", "text-danger");
+                    target.classList.add("fa-regular","text-secondary");
+                    target.setAttribute("onclick", "insertLikeStatus("+comment_pk+", this)");
+
+                    const commentListWrapper = target.closest(".commentListWrapper");
+
+                    const commentLikeCount = commentListWrapper.querySelector(".commentLikeCount");
+                    if(response.data.commentLikeCount == 0){
+                        commentLikeCount.innerText = "";
+                    }else{
+                        commentLikeCount.innerText = response.data.commentLikeCount;
+                        
+                    }
+
+                    if(response.data.profile_info_pk == response.data.writerProfilePk){
+                        const checkWriter = commentListWrapper.querySelector(".checkWriter");
+                        checkWriter.innerText = "";
+                    }
+                    
+                });
+
+            }
+            
+            function deleteLikeOutside(comment_pk, target){
+
+                const url = "./deleteComment";
+
+                fetch(url, {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: "profile_info_pk="+profileInfoDto.profile_info_pk+"&comment_pk="+comment_pk
+                })
+                target.classList.remove("fa-solid", "text-danger");
+                target.classList.add("fa-regular","text-secondary");
+                target.setAttribute("onclick", "insertLikeOutside("+comment_pk+", this)");
+
+            }
+            
+
+            function openCommentWriteBox(article_pk, target) {
+                
+                const commentListBox = document.querySelector("#commentListBox");
+                commentListBox.classList.add("d-none");
+
+                var commentWriteBox = new bootstrap.Offcanvas(document.getElementById('commentWriteBox'));
+                commentWriteBox.show();
+                const insertCommentButton = document.querySelector("#insertCommentButton");
+                insertCommentButton.setAttribute("data-bs-dismiss","offcanvas");
+                
+
+                const commentText = document.querySelector("#commentText");
+                commentText.value="";
+                setTimeout(function () {
+                    commentText.focus();
+                }, 400);
+                const insertButtonColor = document.querySelector("#insertButtonColor");
+                commentText.addEventListener("input", function() {
+                    // 입력된 글자의 유무에 따라 버튼 활성화/비활성화 처리
+                
+                    if(commentText.value.trim() === ""){
+                        insertButtonColor.style.color = "rgb(190, 190, 245)";
+                        insertCommentButton.removeAttribute("onclick");
+                        insertCommentButton.setAttribute("disabled","disabled");
+                    }else{
+                        insertButtonColor.style.color = "rgb(250, 250, 250)";
+                        insertCommentButton.setAttribute("onclick", "insertArticleComment("+article_pk+")");
+                        insertCommentButton.removeAttribute("disabled")
+                    }
+                     
+                });
+                
+            }
+           
+
+            function loadTcommentList(comment_pk, target){
+                const url = "./loadTcommentList";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "comment_pk="+comment_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    var commentListWrapper = null;
+                    
+                    if(TcommentTarget != null){
+                        commentListWrapper = TcommentTarget.closest(".commentListWrapper");
+                        console.log(commentListWrapper);
+                    }else{
+                        commentListWrapper = target.closest(".commentListWrapper");    
+                        console.log(commentListWrapper);
+                    }
+                    const myTcommentBox = commentListWrapper.querySelector(".myTcommentBox");
+                    console.log(myTcommentBox);
+                    myTcommentBox.innerHTML = "";
+                    
+                    const tCommentListBox = commentListWrapper.querySelector(".tCommentListBox");
+                    tCommentListBox.innerHTML ="";
+
+                    for(e of response.data){
+                        const tCommentListWrapper = document.querySelector("#tCommentListTemplete .tCommentListWrapper").cloneNode(true);
+
+                        const profilePhoto = tCommentListWrapper.querySelector(".profilePhoto");
+                        profilePhoto.src = e.profileInfoDto.profile_photo;
+
+                        const userId = tCommentListWrapper.querySelector(".userId");
+                        userId.innerText = e.userDto.userid;
+
+                        const created_at = tCommentListWrapper.querySelector(".created_at");
+                        
+                        const createdDate = new Date(e.tCommentDto.created_at[0], e.tCommentDto.created_at[1] - 1, e.tCommentDto.created_at[2], e.tCommentDto.created_at[3], e.tCommentDto.created_at[4], e.tCommentDto.created_at[5]);
+                        const currentDate = new Date();
+                        const timeDifference = currentDate - createdDate;
+                        const weeksDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24 * 7));
+
+                        if (createdDate.toDateString() === currentDate.toDateString()) {
+                            if (currentDate.getHours() - createdDate.getHours() === 0) {
+                                if (currentDate.getMinutes() - createdDate.getMinutes() < 10) {
+                                    created_at.innerText = "방금";
+                                } else {
+                                    created_at.innerText = (currentDate.getMinutes() - createdDate.getMinutes()) + "분전";
+                                }
+                            } else {
+                                created_at.innerText = (currentDate.getHours() - createdDate.getHours()) + "시간전";
+                            }
+                        } else {
+                            const hoursDifference = Math.floor(timeDifference / (1000 * 60 * 60));
+                            const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+                            if (hoursDifference < 24) {
+                                created_at.innerText = hoursDifference + "시간전";
+                            } else if (daysDifference > 0) {
+                                created_at.innerText = daysDifference + "일전";
+                            } else {
+                                created_at.innerText = weeksDifference + "주전";
+                            }
+                        }
+
+                        const t_comment = tCommentListWrapper.querySelector(".t_comment");
+                        t_comment.innerText = e.tCommentDto.t_comment;
+
+                        tCommentListBox.appendChild(tCommentListWrapper);
+
+                    }
+                    const row = document.createElement("div");
+                    row.classList.add("row");
+
+                    const col = document.createElement("div");
+                    col.classList.add("col","text-secondary");
+                    col.style.fontSize = "0.9em";
+                    col.innerText = "---- 답글 숨기기";
+                    col.setAttribute("onclick", "closeTcommentList("+comment_pk+", this)");
+
+                    row.appendChild(col);
+
+                    tCommentListBox.appendChild(row);
+                    
+                    TcommentTarget = null;
+                });
+
+            }
+            function insertTcomment(comment_pk ,target){
+                const t_comment = document.querySelector("#commentText").value;
+                const profile_info_pk = profileInfoDto.profile_info_pk;
+                
+               
+                const url = "./insertMyTcomment";
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "profile_info_pk="+profile_info_pk+"&comment_pk="+comment_pk+"&t_comment="+t_comment
+            	});
+
+                // 카운트값 가지고와서 변화시켜줘야해...    
+                const commentText = document.querySelector("#commentText");
+                removeWriteTcomment();
+                commentText.value = "";
+                
+                const commentListWrapper = TcommentTarget.closest(".commentListWrapper");
+                const myTcommentBox =  commentListWrapper.querySelector(".myTcommentBox");
+
+                const myTcommentWrapper = document.querySelector("#myTcommentTemplete .myTcommentWrapper").cloneNode(true);
+                const myProfilePhoto = myTcommentWrapper.querySelector(".myProfilePhoto");
+                myProfilePhoto.src = profileInfoDto.profile_photo;
+
+                const comment = myTcommentWrapper.querySelector(".t_comment");
+                comment.innerText = t_comment;
+
+                myTcommentBox.appendChild(myTcommentWrapper);
+
+                // setTimeout(function () {
+                //     loadTcommentList(comment_pk, target);
+                // }, 400);
+                
+
+
+            }
+            var commentSwitch = null;
+            var TcommentTarget = null;
+            function writeTcomment(comment_pk , userid, target){
+                commentSwitch =true;
+                const commentText = document.querySelector("#commentText");
+                commentText.value="";
+                TcommentTarget= target;
+               const insertCommentButton = document.querySelector("#insertCommentButton");
+               insertCommentButton.setAttribute("onclick", "insertTcomment("+comment_pk+")");
+               
+
+               const tCommentStatusBox = document.querySelector("#tCommentStatusBox");
+               tCommentStatusBox.classList.remove("d-none");
+               
+               const commentUser_id = document.querySelector("#commentUser_id");
+            
+               commentUser_id.innerText = userid+"님 에게 답글작성 중";
+
+            }
+            function removeWriteTcomment(){
+                commentSwitch = null;
+                const commentText = document.querySelector("#commentText");
+                commentText.value="";
+
+                const tCommentStatusBox = document.querySelector("#tCommentStatusBox");
+                tCommentStatusBox.classList.add("d-none");
+
+                const articlePK = document.querySelector("#articlePK").value;
+
+                const insertCommentButton = document.querySelector("#insertCommentButton");
+                insertCommentButton.removeAttribute("onclick");
+
+            }
+
+            function showTcommentList(comment_pk, userid, target){
+                loadTcommentList(comment_pk, target);   
+
+                const commentListWrapper = target.closest(".commentListWrapper");
+                
+                const tcommentCount = commentListWrapper.querySelector(".tcommentCount");
+                tcommentCount.classList.add("d-none");
+
+            }
+            function closeTcommentList(comment_pk, target){
+                removeWriteTcomment();
+                // target 설정 들어가야함..
+                const tCommentListBox = target.closest(".tCommentListBox");
+                tCommentListBox.innerHTML ="";
+                const commentListWrapper =  tCommentListBox.closest(".commentListWrapper");
+                
+                const tcommentCount = commentListWrapper.querySelector(".tcommentCount");
+                tcommentCount.classList.remove("d-none");
+                
+            }
+
+            function openCommentListBox(article_pk, target) {
+                
+                loadArticeleCommentList(article_pk);
+                const articlePK = document.querySelector("#articlePK");
+                articlePK.value = article_pk;
+
+                const commentListBox = document.querySelector("#commentListBox");
+                commentListBox.classList.remove("d-none");
+
+                var commentWriteBox = new bootstrap.Offcanvas(document.getElementById('commentWriteBox'));
+                commentWriteBox.show();
+                const insertCommentButton = document.querySelector("#insertCommentButton");
+                insertCommentButton.removeAttribute("data-bs-dismiss");
+                
+
+                const commentText = document.querySelector("#commentText");
+                commentText.value="";
+
+                const insertButtonColor = document.querySelector("#insertButtonColor");
+                commentText.addEventListener("input", function() {
+                    // 입력된 글자의 유무에 따라 버튼 활성화/비활성화 처리
+                    if(commentSwitch == null){
+                        if(commentText.value.trim() === ""){
+                            insertButtonColor.style.color = "rgb(190, 190, 245)";
+                            insertCommentButton.removeAttribute("onclick");
+                            insertCommentButton.setAttribute("disabled","disabled");
+                        }else{
+                            insertButtonColor.style.color = "rgb(250, 250, 250)";
+                            insertCommentButton.setAttribute("onclick", "insertArticleComment("+article_pk+")");
+                            insertCommentButton.removeAttribute("disabled")
+                        }
+                    }else{
+                        if(commentText.value.trim() === ""){
+                            insertButtonColor.style.color = "rgb(190, 190, 245)";
+                            insertCommentButton.setAttribute("disabled","disabled");
+                        }else{
+                            insertButtonColor.style.color = "rgb(250, 250, 250)";
+                            insertCommentButton.removeAttribute("disabled")
+                        }
+
+                    }
+                        
+                    
+                });
+
+            }
+
+            ///////////////////새로운마음으로 시작해보자!!!
+            function insertArticleLike(article_pk, target){
+                const url = "./insertMyArticleLike";
+                
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "article_pk="+article_pk+"&profile_info_pk="+profileInfoDto.profile_info_pk
+            	});
+                
+                const articleListWrapper = target.closest(".articleListWrapper");
+                
+                const articleLike = articleListWrapper.querySelector(".articleLike");
+                
+                articleLike.src = "/public/image/mstar/like.png";
+                articleLike.setAttribute("onclick","deleteArticleLike("+article_pk+", this)");
+                
+                
+
+            }
+
+            function deleteArticleLike(article_pk, target){
+                const url = "./deleteMyArticleLike";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "article_pk="+article_pk+"&profile_info_pk="+profileInfoDto.profile_info_pk
+            	});
+                const articleListWrapper = target.closest(".articleListWrapper");
+                const articleLike = articleListWrapper.querySelector(".articleLike");
+                articleLike.src = "/public/image/mstar/unLike.png";
+                articleLike.setAttribute("onclick","insertArticleLike("+article_pk+", this)");
+            }
+            function followingUser(another_info_pk , profile_info_pk , target){
+
+                const url = "./followingAnotherUser";
+                fetch(url, {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: "follow_user_pk="+another_info_pk+"&following_user_pk="+profile_info_pk
+                }).then(() => {
+                    target.classList.add("d-none")
+                });
+            }
+            
+
+
+            function appendHeart(){
+                const commentText = document.querySelector("#commentText");
+                commentText.value += "❤️"
+                commentText.focus();
+            }
+            function appendTwoHands(){
+                const commentText = document.querySelector("#commentText");
+                commentText.value += "🙌"
+                commentText.focus();
+            }
+            function appendSmileSad(){
+                const commentText = document.querySelector("#commentText");
+                commentText.value += "🤣"
+                commentText.focus();
+            }
+            function appendHeartFace(){
+                const commentText = document.querySelector("#commentText");
+                commentText.value += "😍"
+                commentText.focus();
+            }
+            function appendSad(){
+                const commentText = document.querySelector("#commentText");
+                commentText.value += "😢"
+                commentText.focus();
+            }
+            function appendSuprise(){
+                const commentText = document.querySelector("#commentText");
+                commentText.value += "😮"
+                commentText.focus();
+            }
+            function appendFire(){
+                const commentText = document.querySelector("#commentText");
+                commentText.value += "🔥"
+                commentText.focus();
+            }
+
+
+            window.addEventListener("DOMContentLoaded", () =>{
+                getProfileInfoKey();
+                getProfileInfoDto();
+            });
+        </script>
+        <style>
+
+            @font-face {
+                font-family: 'omyu_pretty';
+                src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
+                font-weight: normal;
+                font-style: normal;
+            }
+
+            body {
+                font-family: 'omyu_pretty';
+                
+            }
+
+            #d-none-scroll::-webkit-scrollbar {
+                display: none;
+            }
+
+            .offcanvas-backdrop {
+                background-color: rgba(0, 0, 0, 0.1); 
+            }
+            .profileImg {
+                position: relative;
+                border: 0.1em solid transparent;
+                border-radius: 50%;
+                background-image: linear-gradient(#fff, #fff), 
+                linear-gradient(to right, red 0%,  orange 100%);
+                background-origin: border-box;
+                background-clip: content-box, border-box;
+            }
+            .swipe-container {
+                overflow-x: scroll;
+                white-space: nowrap;
+            }
+
+            .swipe-container .col {
+                vertical-align: top;
+                display: inline-block;
+                width: 25%;
+            }
+            #barBox{
+                display: flex;
+                height: 0.25em;
+           }
+            .bar {
+                width: 92%;
+                height: 0.15em; /* 바의 높이 설정 */
+                background-color: rgb(89, 86, 86); /* 바의 배경색 설정 */
+                margin-right: 0.2em;
+            }
+            
+            .bar.active {
+                background-color: rgb(229, 223, 223);
+              
+            }
+
+            .bar:last-child {
+                margin-right: 1em;
+            } 
+            .bar:first-child {
+                margin-left: 1em;
+            }
+            .form-control::placeholder {
+                color: white; /* placeholder 글자 색상을 원하는 색상으로 설정 */
+                font-size: 0.9em
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container-fluid">
+            <div class="row border-bottom">
+                <div class="col px-4 py-2">
+                    <div class="row">
+                        <div class="col">
+                            <i class="fa-solid fa-bars"></i>
+                        </div>
+                        <div class="col text-center fw-bold">
+                            멍's토킹
+                        </div>
+                        <div class="col text-end">
+                            <i class="fa-regular fa-bell"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row text-center border-bottom" style="font-size: 0.8em;">
+                <div id="backProfilePage" class="col-2 align-self-center">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <div id="articleListUserid" class="col text-secondary">
+                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            스크랩됨
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2 align-self-center pe-3">
+                    <div class="row">
+                        <div id="articleUserFollowStatus"  class="col text-center rounded" style="background-color: #ccced1;">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div id ="articleListBox" class="col">
+                    
+                </div>
+            </div>
+            <div class="row bg-white border-top sticky-bottom">
+                <div class="col px-4 py-2">
+                    <div class="row">
+                        <div class="col text-center ps-0" style="font-size: 4vw;">
+                            <div class="row">
+                                <div class="col text-body-tertiary">
+                                    <i class="fa-solid fa-house"></i>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col text-secondary">
+                                    홈
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col text-center ps-0" style="font-size: 4vw;">
+                            <div class="row">
+                                <div class="col text-body-tertiary">
+                                    <i class="fa-solid fa-bolt"></i>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col text-secondary">
+                                    먹거리
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col text-center ps-0" style="font-size: 4vw;">
+                            <div class="row">
+                                <div class="col text-body-tertiary">
+                                    <i class="fa-solid fa-hand-holding-medical"></i>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col text-secondary">
+                                    멍냥닥터
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col text-center ps-0" style="font-size: 4vw;">
+                            <div class="row">
+                                <div class="col">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    멍냥피드
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col text-center ps-0" style="font-size: 4vw;">
+                            <div class="row">
+                                <div class="col text-body-tertiary">
+                                    <i class="fa-solid fa-comment-dots"></i>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col text-secondary">
+                                    커뮤니티
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      
+        <!--게시물 반복문-->
+        <div id="articleListTemplete" class="d-none">
+            <div class="row articleListWrapper">
+                <div class="col">
+                    <div class="row">
+                        <div class="col py-3">
+                            <div class="row" style="position: relative;">
+                                <div class="col-2">
+                                    <img class="profile_photo img-fluid rounded-circle float-start" style="aspect-ratio: 1/1;">
+                                </div>
+                                <div class="col my-auto ps-0" style="font-size: 0.95rem;">
+                                    <div class="row">
+                                        <div class="col articleUserId">
+                                            
+                                        </div>
+                                    </div>      
+                                </div>  
+                                <div class="col-2 text-center my-auto py-0 px-0 rounded followStatus" style="font-size: 0.9em">
+                                    
+                                </div>
+                                <div class="col-2 px-0 text-center my-auto">
+                                    <i class="fa-solid fa-ellipsis text-body-tertiary"></i>
+                                </div>
+                                <div class="col-7 text-secondary text-truncate d-block" style="position: absolute; top: 2.1em; left: 4em; font-size: small;">
+                                    서울시 23-3 여의도 벚꽃길, 뽀삐와 삐뽀와
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col articleImgBox px-0">
+                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col pt-2">
+                            <div class="row fs-5">
+                                <div class="col-auto ">
+                                    <img class="img-fluid pt-0 mb-1 articleLike" alt="" style="height: 1em;">
+                                </div>
+                                <div class="col-1 px-0 text-start commnetListButton">
+                                    <i class="fa-regular fa-comment-dots"></i>
+                                </div>
+                                <div class="col ps-0 text-start directButton">
+                                    <i class="fa-regular fa-paper-plane"></i>
+                                </div>
+                                <div class="col text-end articleScrapButton">
+                                    <i class="fa-regular fa-bookmark scrapIcon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pt-0">
+                        <div class="col-auto ps-2 pe-1 likeProfileListBox">
+                            <img class="img-fluid rounded-circle float-start border border-white border-2 likeProfile1"  style="aspect-ratio: 1/1; height: 1.5em; position: relative; z-index: 1;">
+                            <img class="img-fluid rounded-circle float-start border border-white border-2 likeProfile2"  style="aspect-ratio: 1/1; height: 1.5em; position: absolute; left: 1.5em; z-index: -1">
+                            <img class="img-fluid rounded-circle float-start border border-white border-2 likeProfile3"  style="aspect-ratio: 1/1; height: 1.5em; position: absolute; left: 2.5em; z-index: -2">
+                        </div>
+                        <div class="col likeCountAndUserId" style="padding-left: 0em; font-size: 0.9em;">
+                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col pb-0">
+                            <div class="row">
+                                <div class="col-auto pe-0 contentUserId fw-bold">
+                                    
+                                </div>
+                                <div class="col articleContent text-start">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col pt-1 pb-0">
+                            <div class="row">
+                                <div class="col px-4">
+                                    <div class="row row-cols-auto">
+                                        <div class="col ps-0 pe-1">
+                                            <span style="color: #95B372;">#</span><span style="color: #687795;">견생</span>
+                                        </div>
+                                        <div class="col ps-0 pe-1">
+                                            <span style="color: #95B372;">#</span><span style="color: #687795;">쳐즥</span>
+                                        </div>
+                                        <div class="col ps-0 pe-1">
+                                            <span style="color: #95B372;">#</span><span style="color: #687795;">벚꽃</span>
+                                        </div>
+                                        <div class="col ps-0 pe-1">
+                                            <span style="color: #95B372;">#</span><span style="color: #687795;">상남자</span>
+                                        </div>
+                                        <div class="col ps-0 pe-1">
+                                            <span style="color: #95B372;">#</span><span style="color: #687795;">남아</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pt-1">
+                        <div class="col text-secondary commentCount">
+                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="writeMyCommentBox" class="col">
+                            
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-auto">
+                            <img id="myProfileImg" class="img-fluid rounded-circle float-start border border-white border-2 "  style="aspect-ratio: 1/1; height: 35px; position: relative;">
+                        </div>
+                        <div class="col mt-1 text-secondary writeCommentBox">
+                            댓글 달기...
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col px-4 py-1">
+                            <div class="row">
+                                <div class="col text-body-tertiary ps-0 articleCreatedAt" style="font-size: 0.8rem;">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="offcanvas offcanvas-bottom" tabindex="-1" id="commentWriteBox" aria-labelledby="offcanvasBottomLabel" style="height: auto; background-color: transparent; border: none;"> 
+            <div id="commentListBox" class="row d-none">
+                <div class="col bg-white" style="border-top-left-radius: 2.5em; border-top-right-radius: 2.5em; border-top: 0.1em solid rgb(211, 211, 215) ;">
+                    <div class="row py-2 ">
+                        <div class="col-5"></div>
+                        <div class="col rounded-pill border-4" style="background-color: rgb(194, 195, 195); height: 0.2em;"></div>
+                        <div class="col-5"></div>
+                    </div>
+                    <div class="row border-bottom mt-2">
+                        <div class="col-2"></div>
+                        <div class="col fs-4 fw-bold text-center">
+                            댓글
+                        </div>
+                        <div class="col-2 fs-4">
+                            <i class="fa-regular fa-paper-plane"></i>
+                        </div>
+                    </div>
+                    <div class="row overflow-y-auto">
+                        <div id="articleCommentListBox" class="col" style="height: 20em;">
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row bg-white">
+                <div class="col">
+                    <div id="tCommentStatusBox" class="row ps-3 py-2 d-none" style="background-color: #dddfe3;">
+                        <input id="articlePK" type="hidden">
+                        <div id="commentUser_id" class="col text-secondary " style="font-size: 0.9em;">
+                            
+                        </div>
+                        <div class="col pe-4 text-end">
+                            <i onclick="removeWriteTcomment()" class="fa-solid fa-xmark" style="font-size: 0.8em;"></i>
+                        </div>
+                    </div>
+                    <div class="row fs-3 py-2 border-top border-2">
+                        <div onclick="appendHeart()" class="col ms-3" style="user-select: none;">
+                            ❤️
+                        </div>
+                        <div onclick="appendTwoHands()" class="col" style="user-select: none;">
+                            🙌
+                        </div>
+                        <div onclick="appendFire()" class="col" style="user-select: none;">
+                            🔥
+                        </div>
+                        <div onclick="appendSad()" class="col" style="user-select: none;">
+                            😢
+                        </div>
+                        <div onclick="appendHeartFace()" class="col" style="user-select: none;">
+                            😍
+                        </div>
+                        <div onclick="appendSuprise()" class="col" style="user-select: none;">
+                            😮
+                        </div>
+                        <div onclick="appendSmileSad()" class="col me-3" style="user-select: none;">
+                            🤣
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-auto ms-3">
+                            <div class="row">
+                                <div class="col">
+                                    <img id="myCommentProfileImg" class="img-fluid rounded-circle" alt="" style="aspect-ratio: 1/1; height: 2.7em;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row rounded-pill me-4" style="border: 0.1em solid rgb(215, 216, 220)">
+                                <div class="col">
+                                    <input id="commentText" class="form-control px-0" type="text" style="box-shadow: none; border: none;" placeholder="Jo_inchune(으)로 댓글 달기..">
+                                </div>
+                                <div id="insertCommentButton" class="col-auto py-0 text-center py-0 rounded-pill mx-2 my-1" disabled data-bs-dismiss="offcanvas" style="background-color: rgb(81, 120, 235);">
+                                    <i id="insertButtonColor" class="fa-solid fa-arrow-up pt-1" style="color: rgb(190, 190, 245);"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="commentListTemplete" class="d-none">
+            <div class="row my-1 pb-3 commentListWrapper">
+                <div class="col-auto ms-3">
+                    <div class="row">
+                        <div class="col-auto profileImg px-0 py-0 ">
+                            <img class="img-fluid rounded-circle border border-2 commentProfilePhoto " alt="" style="height: 2em; aspect-ratio: 1/1;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <div class="col-auto ps-1 fw-bold pe-0 commentUserId" style="font-size: 0.8em;">
+                            
+                        </div>
+                        <div class="col-auto ps-1 pe-0 text-secondary created_at" style="font-size: 0.8em; padding-top: 0.1em;">
+                            
+                        </div>
+                        <div class="col-auto px-0 text-secondary checkWriter" style="font-size: 0.8em; padding-top: 0.1em;">
+                           
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col ps-1 comment" style="font-size: 0.9em;">
+                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-secondary">
+                           
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col ps-1 text-secondary writeTcomment" style="font-size: 0.9em;">
+                                    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col myTcommentBox">
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col ps-1 text-secondary tcommentCount" style="font-size: 0.9em;">
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col tCommentListBox">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="row">
+                        <div class="col-auto mt-2">
+                            <div class="row">
+                                <div class="col">
+                                    <i class="fa-heart commentLike"></i>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col text-secondary text-center commentLikeCount" style="font-size: 0.8em;">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="writeMyCommentTemplete" class="d-none">
+            <div class="row align-self-center writeMyCommentWrapper">
+                <div class="col-11 text-start content" style="font-size: 0.9em;">
+                    <spans class="fw-bold" th:text="${session.sessionUser.userid}"></spans>
+                </div>
+                <div class="col-1 ps-0 align-self-center" style="font-size: 0.9em;">
+                    <i class="fa-heart fa-regular likebutton"></i>
+                </div>
+            </div>
+        </div>
+
+        <div id="tCommentListTemplete" class="d-none">
+            <div class="row mt-2 tCommentListWrapper">
+                <div class="col-auto">
+                    <div class="row">
+                        <div class="col-auto profileImg px-0 py-0">
+                            <img class="img-fluid rounded-circle border border-2 profilePhoto" alt="" style="aspect-ratio: 1/1; height: 2em;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col ps-2" >
+                    <div class="row align-self-center">
+                        <div class="col-auto pe-0 userId" style="font-size: 0.8em;">
+                            
+                        </div>
+                        <div class="col ps-2 text-secondary created_at" style="font-size: 0.8em;">
+                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col t_comment" style="font-size: 0.8em;">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="myTcommentTemplete" class="d-none">
+            <div class="row mt-2 myTcommentWrapper">
+                <div class="col-auto">
+                    <div class="row">
+                        <div class="col-auto profileImg px-0 py-0">
+                            <img class="img-fluid rounded-circle border border-2 myProfilePhoto" alt="" style="aspect-ratio: 1/1; height: 2em;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col ps-2" >
+                    <div class="row align-self-center">
+                        <div class="col-auto pe-0" th:text="${session.sessionUser.userid}" style="font-size: 0.8em;">
+                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col t_comment" style="font-size: 0.8em;">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="articleImgTemplete" class="d-none">
+            <div class="carousel-item articleImgWrapper">
+                <img class="d-block w-100 img" alt="..." style="height: 21em;">
+            </div>
+        </div>
+
+        <div id="carouselTemplete" class="d-none">
+            <div class="carousel slide carouselWrapper" data-bs-wrap="false" >
+                <div class="carousel-inner articleImg" style="overflow: hidden;">
+                    
+                </div>
+                <button class="carousel-control-prev backButton d-none" type="button"  data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next nextButton d-none" type="button" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    </body>
+
+</html>

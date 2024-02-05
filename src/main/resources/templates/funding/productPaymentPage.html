@@ -10,21 +10,17 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="container img-fluid">
         <div class="row">
             <div class="col">
     <!--컨테이너 로우 콜 세팅 여기까지-->
                 
-                    <!--이제 여기서 상품 가격을 가져옴 그리고 세션에 넣어놨던 수량과 곱해서 결제 예상액을 산출해서 보여줘야 한다 -->
-                    
-            
-                    <div class="row py-2"><div class="col"></div><div class="col text-end"><a href="./listPage" class="me-3"><i class="bi bi-shop" style="color: black;"></i></a><a href="../commons/mainPage"><i class="bi bi-house" style="color: black;"></i></a></div></div>
-                <div clas="row"><div class="col py-4"></div></div>
+                <div class="row py-2"><div class="col"></div><div class="col text-end"><a href="./listPage" class="me-3"><i class="bi bi-shop" style="color: black;"></i></a><a href="../commons/mainPage"><i class="bi bi-house" style="color: black;"></i></a></div></div>
                 
                 <div clas="row">
-                        <div class="col text-center">
-                            <span style="font-size: 3em; color: gainsboro;"><i class="bi bi-check-circle-fill"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-dash-lg"></i></span><span style="font-size: 3em;"><i class="bi bi-check-circle"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-dash-lg"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-circle"></i></span>
-                        </div>
+                    <div class="col text-center">
+                        <span style="font-size: 3em; color: gainsboro;"><i class="bi bi-check-circle-fill"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-dash-lg"></i></span><span style="font-size: 3em;"><i class="bi bi-check-circle"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-dash-lg"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-circle"></i></span>
+                    </div>
                 </div>
                 <div class="row mb-3"><div class="col text-center" style="font-size: 0.7em;">결제 정보 확인이 진행중입니다.</div></div>
 
@@ -36,12 +32,12 @@
                 <div clas="row py-2 my-2">
                     <div class="col py-2" style="background-color: gainsboro;">
                         <div class="row mb-1"><div class="col-4" style="font-size: 0.8em;"> 쿠폰 사용</div><div class="col text-end" style="font-size: 0.8em;">사용가능한 쿠폰이 없습니다.</div></div>
-                        <div class="row"><div class="col-4" style="font-size: 0.8em;"> 포인트 사용</div><div class="col text-end" style="font-size: 0.8em;">모두사용(보유 포인트0P) <input type="text"></div></div>
+                        <div class="row"><div class="col-4" style="font-size: 0.8em;"> 포인트 사용</div><div class="col text-end" style="font-size: 0.8em;"><input type="checkbox"> 모두사용(보유 포인트0P) <input type="text"></div></div>
                     </div>
                 </div>
 
                 <div clas="row">
-                    <div class="col py-2 my-2">
+                    <div class="col pt-1 pb-2 mt-1 mb-2">
                         <div class="row py-2"><div class="col fw-bold" style="font-size:1.05em">결제 금액</div></div>
                         <div class="row"><div class="col ps-4" style="font-size:0.9em; color:gray;">펀딩상품 금액</div> <div class="col pe-4 text-end" style="font-size:1em;">0원</div></div>
                         <div class="row"><div class="col ps-4" style="font-size:0.9em; color:gray;">쿠폰 할인 금액</div> <div class="col pe-4 text-end" style="font-size:1em;">0원</div></div>
@@ -50,10 +46,60 @@
                         <div class="row py-2 mb-2"><div class="col ps-4 fw-bold" style="font-size:1.05em;">총 결제 금액</div> <div class="col pe-4 fw-bold text-end" style="font-size:1.15em;"><span th:text="${session.purchaseMap.quantity * product.detail.price}"></span>원</div></div>
                     </div>
                 </div>
+
+                <div class="row"><div class="col fw-bold" style="font-size:1.05em">회원님 정보</div></div>
+                <div class = "row">
+                    <div class="col pt-1 pb-2 mt-1 mb-2 mx-2" style="background-color: gainsboro;">
+                        <div class="row"><div class="col"><span style="font-size: 0.85em;">이름</span></div></div>
+                        <div class="row"><div class="col"><span style="font-size: 0.9em; color: gray;" th:text="${session.sessionUser.name}"></span></div></div>
+                        <div class="row"><div class="col"><span style="font-size: 0.85em;">이메일</span></div></div>
+                        <div class="row"><div class="col"><span style="font-size: 0.9em; color: gray;" th:text="${session.sessionUser.email}"></span></div></div>
+                        <div class="row"><div class="col"><span style="font-size: 0.85em;">연락처</span></div></div>
+                        <div class="row"><div class="col"><span style="font-size: 0.9em; color: gray;" th:text="${session.sessionUser.phone}"></span></div></div>
+                        <div class="row"><div class="col"></div></div>
+                        
+                    </div>
+                </div>
                 
+                <div class="row mt-3"><div class="col fw-bold" style="font-size:1.05em">배송지 정보</div></div>
+                <div class = "row">
+                    <div class="col pt-1 pb-2 mt-1 mb-2 mx-2">
+                        
+                        <div class="row pt-1 py-3 mb-2 border-bottom">
+                            <div class="col-1"><input type="radio"></div>
+                            <div class="col">
+                                <div class="row"><div class="col" style="font-size: 0.85em;">기존 설정 배송지</div></div>
+                                <div class="row"><div class="col"><span style="font-size: 0.75em; color: gray;" th:text="${session.sessionUser.name}"></span> <span style="font-size: 0.75em; color: gray;" th:text="${session.sessionUser.phone}"></span></div></div>
+                                <div class="row"><div class="col" style="font-size: 0.75em; color: gray;">상세주소지는 회원기본정보에 입력된 주소를 따릅니다</div></div>
+                            </div>
+                        </div>
+
+                        <div class="row py-1 mb-2">
+                            <div class="col-1 pt-1"><input type="radio"></div>
+                            <div class="col pt-1">
+                                <div class="row"><div class="col" style="font-size: 0.85em;">새로입력</div></div>
+                                <div class="row py-1"><div class="col" style="font-size: 0.85em;">이름</div></div>
+                                <div class="row pb-2"><div class="col" style="font-size: 0.75em;"><input type="text" class="border border-none" style="width: 15em; height: 2em;"></div></div>
+                                <div class="row pb-1"><div class="col" style="font-size: 0.85em;">연락처</div></div>
+                                <div class="row pb-2"><div class="col" style="font-size: 0.75em;"><input type="text" class="border border-none" style="width: 15em; height: 2em;"></div></div>
+                                <div class="row pb-1"><div class="col" style="font-size: 0.85em;">주소</div></div>
+                                <div class="row pb-2"><div class="col" style="font-size: 0.75em;"><input type="text" class="border border-none" style="width: 23em; height: 2.1em;" placeholder="상세주소"></div></div>
+                                
+                            </div>
+                        </div>
+
+                        <div class="row py-1">
+                            <div class="col">
+                                <div class="row pb-1"><div class="col" style="font-size: 0.85em;">배송 시 요청사항(선택)</div></div>
+                                <div class="row"><div class="col"><input type="text" class="border border-none form-control py-1" style="width: 20em; height: 2em;" placeholder="ex)부재시 경비실에 보관해주세요."></div></div>
+                            </div>
+                        </div>
 
 
-                <div class="row py-2 mb-2"><div class="col">배송받는 회원정보 확인 배송지, 요청사항 >  추후에 </div></div>
+                        
+                    </div>
+                </div>
+
                 <div class="row"><div class="col"></div></div>
 
                 <div class="row my-2">

@@ -29,6 +29,7 @@
                     myCommentProfileImg.src = profileInfoDto.profile_photo;
                     const myStoryListProfileImg = document.querySelector("#myStoryListProfileImg");
                     myStoryListProfileImg.src= profileInfoDto.profile_photo;
+                    myStoryListProfileImg.setAttribute("onclick","showMyStoryModal("+profileInfoDto.profile_info_pk+")")
                     const goDirectPage = document.querySelector("#goDirectPage");
                     goDirectPage.setAttribute("onclick" , "location.href='./directListPage?profile_info_pk="+profile_info_pk+"'");
 
@@ -40,7 +41,7 @@
             let storyProfileInPkList = [];
             let currentUser = 0 ;
             function loadStoryProfileList(profile_info_pk){
-                
+                storyProfileInPkList =[];
                 const url = "./loadStoryList";
                 
                 fetch(url, {
@@ -72,11 +73,13 @@
                 });
                 
             }
+
             let storyList = [];
             let currentPage = 0 ;
             function getPeopleStoryList(profile_info_pk){
                 currentPage=0;
                 storyList=[];
+                
                 const myProfile_info_pk = profileInfoDto.profile_info_pk;
                 const url = "./userStoryList";
                 
@@ -107,6 +110,10 @@
                             startPageActive +=1;
                             div.classList.add("active");
                         }
+
+                        if(currentPage == response.data.storyList.length){
+                            currentPage--;
+                        }
                        
                         storyList.push(e.storyDto.story_pk);
                         console.log(e.storyDto.story_pk);
@@ -117,15 +124,18 @@
                     const storyProfileImg = document.querySelector("#storyProfileImg");
                     storyProfileImg.src = response.data.profileInfoDto.profile_photo;
 
+                    const sendDirectButton = document.querySelector("#sendDirectButton");
+                    sendDirectButton.setAttribute("onclick", "insertDirect("+profile_info_pk+")");
                     //클릭시 바뀌어야함.
                     
                     loadStory(storyList[currentPage]);
-                    console.log(storyList[currentPage]);
                     
                     
                 });
                 
             }
+
+
 
             function loadStory(story_pk){
                 const url = "./loadUserStory";
@@ -139,11 +149,23 @@
             	})
                 .then(response => response.json())
                 .then((response) =>{
-                    console.log("tlf")
-                    console.log(story_pk)
-                    console.log(response.data.story_text)
                     const story_created_at = document.querySelector("#story_created_at");
-                    story_created_at.innerText = response.data.created_at;
+                    const currentDate = new Date();
+                        if (response.data.created_at[0]+"."+response.data.created_at[1]+"."+response.data.created_at[2] == 
+        	    			currentDate.getFullYear() +"."+ (currentDate.getMonth()+1) + "."+ currentDate.getDate()){
+        	    			if((currentDate.getHours() - response.data.created_at[3]) == 0){
+        	    				if((currentDate.getMinutes() - response.data.created_at[4]) < 10){
+        	    					story_created_at.innerText = "방금";
+        	    				}else{
+        	    					story_created_at.innerText = (currentDate.getMinutes() - response.data.created_at[4])+ "분전";
+        	    				}
+        	    			
+        	    			}else{
+        	    				story_created_at.innerText = (currentDate.getHours() - response.data.created_at[3])+ "시간전";
+        	    			}
+        	    		}else{
+        	    			story_created_at.innerText = response.data.created_at[0]+"."+response.data.created_at[1]+"."+response.data.created_at[2];
+        	    		}
 
                     const story_img = document.querySelector("#story_img");
                     story_img.style.backgroundImage = "url("+response.data.story_photo+")";
@@ -155,10 +177,23 @@
                     /// x y 위치정보
                     const storyTextBox =  document.querySelector("#storyTextBox");
                     storyTextBox.setAttribute("style", "top:"+response.data.y_coordinates+"%;left:"+response.data.x_coordinates+"%;");
-
-                   
+                    if(profileInfoDto.profile_info_pk != storyProfileInPkList[currentUser]){
+                        insertViewStory(story_pk);
+                    }
+                    
 
                 });
+            }
+            function insertViewStory(story_pk){
+                const url = "./insertViewStory";
+                
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "story_pk="+story_pk+"&profile_info_pk="+profileInfoDto.profile_info_pk
+            	});
             }
             function removeTouchImgEventListener() {
                 const story_img = document.querySelector("#story_img");
@@ -252,14 +287,39 @@
                         const articleUserId = articleListWrapper.querySelector(".articleUserId");
                         articleUserId.innerText = e.userDto.userid;
                         
-                        const profile_photo = articleListWrapper.querySelector(".profile_photo");
+                        
+                        const articleScrapButton = articleListWrapper.querySelector(".articleScrapButton");
+                        const scrapIcon = articleListWrapper.querySelector(".scrapIcon");
+
+                        if(e.scrapStatus == 0){
+                            articleScrapButton.setAttribute("onclick", "insertArticleScrap("+e.articleDto.article_pk+" , this)");
+                            scrapIcon.classList.add("fa-regular");
+
+                        }else{
+                            articleScrapButton.setAttribute("onclick", "deleteArticleScrap("+e.articleDto.article_pk+", this)");
+                            scrapIcon.classList.add("fa-solid","text-primary");
+                        }
+                        const commnetListButton = articleListWrapper.querySelector(".commnetListButton");
+                        commnetListButton.setAttribute("onclick", "openCommentListBox("+e.articleDto.article_pk+", this)");
+
+                        const directButton = articleListWrapper.querySelector(".directButton");
+                        if(profile_info_pk == e.profileInfoDto.profile_info_pk){
+                            directButton.classList.add("d-none");
+                        }else{
+                            directButton.setAttribute("onclick", "location.href='./directPage?profile_info_pk="+profile_info_pk+"&another_info_pk="+e.profileInfoDto.profile_info_pk+"'");
+                        }
                         
 
+                        const profile_photo = articleListWrapper.querySelector(".profile_photo");
                         profile_photo.setAttribute("src", e.profileInfoDto.profile_photo);
+
+                        const goProfile = articleListWrapper.querySelector(".goProfile");
                         if(profile_info_pk != e.profileInfoDto.profile_info_pk){
-                            profile_photo.setAttribute("onclick", "location.href='./anotherProfilePage?profile_info_pk="+e.profileInfoDto.profile_info_pk+"'");
+                            goProfile.setAttribute("onclick", "location.href='./anotherProfilePage?profile_info_pk="+profile_info_pk+"&another_info_pk="+e.profileInfoDto.profile_info_pk+"'");
+                            articleUserId.setAttribute("onclick", "location.href='./anotherProfilePage?profile_info_pk="+profile_info_pk+"&another_info_pk="+e.profileInfoDto.profile_info_pk+"'");
                         }else{
-                            profile_photo.setAttribute("onclick", "location.href='./profilePage?user_pk="+user_pk+"'");
+                            goProfile.setAttribute("onclick", "location.href='./profilePage?user_pk="+user_pk+"'");
+                            articleUserId.setAttribute("onclick", "location.href='./profilePage?user_pk="+user_pk+"'");
                         }
                         
                         const likeCountAndUserId = articleListWrapper.querySelector(".likeCountAndUserId");
@@ -428,22 +488,25 @@
                 .then((response) =>{
                     commentText.value = "";
                     loadArticeleCommentList(article_pk);
+                    console.log(articleListWrapperTarget);
+                    if(articleListWrapperTarget != null){
+                        const writeMyCommentBox = articleListWrapperTarget.querySelector(".writeMyCommentBox");
 
-                    const writeMyCommentBox = articleListWrapperTarget.querySelector(".writeMyCommentBox");
+                        const writeMyCommentWrapper = document.querySelector("#writeMyCommentTemplete .writeMyCommentWrapper").cloneNode(true);
 
-                    const writeMyCommentWrapper = document.querySelector("#writeMyCommentTemplete .writeMyCommentWrapper").cloneNode(true);
+                        const content = writeMyCommentWrapper.querySelector(".content");
+                        const spans = document.createElement("spans");
+                        spans.innerText = response.data.comment;
+                        content.appendChild(spans);
+
+                        const likebutton = writeMyCommentWrapper.querySelector(".likebutton");
+                        likebutton.setAttribute("onclick", "insertLikeOutside("+response.data.comment_pk+", this)");
+
+                        writeMyCommentBox.appendChild(writeMyCommentWrapper);
+
+                        articleListWrapperTarget = null; 
+                    }
                     
-                    const content = writeMyCommentWrapper.querySelector(".content");
-                    const spans = document.createElement("spans");
-                    spans.innerText = response.data.comment;
-                    content.appendChild(spans);
-
-                    const likebutton = writeMyCommentWrapper.querySelector(".likebutton");
-                    likebutton.setAttribute("onclick", "insertLikeOutside("+response.data.comment_pk+", this)");
-
-                    writeMyCommentBox.appendChild(writeMyCommentWrapper);
-
-                    articleListWrapperTarget = null;
                 });
             }
             function reloadCommentCount(article_pk, target){
@@ -678,7 +741,7 @@
             let articleListWrapperTarget = null;
             function openCommentWriteBox(article_pk, target) {
                 articleListWrapperTarget = target.closest(".articleListWrapper");
-                
+                console.log(articleListWrapperTarget);
                 const commentListBox = document.querySelector("#commentListBox");
                 commentListBox.classList.add("d-none");
 
@@ -1005,6 +1068,230 @@
                 articleLike.src = "/public/image/mstar/unLike.png";
                 articleLike.setAttribute("onclick","insertArticleLike("+article_pk+", this)");
             }
+
+            function insertArticleScrap(article_pk, target){
+                const url = "./articleScrap";
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "profile_info_pk="+profileInfoDto.profile_info_pk+"&article_pk="+article_pk
+            	});
+                
+                const articleListWrapper = target.closest(".articleListWrapper");
+                
+                const articleScrapButton = articleListWrapper.querySelector(".articleScrapButton");
+                articleScrapButton.setAttribute("onclick", "deleteArticleScrap("+e.articleDto.article_pk+" , this)");
+
+                const scrapIcon = articleListWrapper.querySelector(".scrapIcon");
+                scrapIcon.classList.remove("fa-regular");
+                scrapIcon.classList.add("fa-solid","text-primary");
+                        
+            }
+            
+            function deleteArticleScrap(article_pk, target){
+                const url = "./removeArticleScrap";
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "profile_info_pk="+profileInfoDto.profile_info_pk+"&article_pk="+article_pk
+            	});
+                const articleListWrapper = target.closest(".articleListWrapper");
+                
+                const articleScrapButton = articleListWrapper.querySelector(".articleScrapButton");
+                articleScrapButton.setAttribute("onclick", "insertArticleScrap("+e.articleDto.article_pk+" , this)");
+
+                const scrapIcon = articleListWrapper.querySelector(".scrapIcon");
+                scrapIcon.classList.remove("fa-solid","text-primary");
+                scrapIcon.classList.add("fa-regular");
+            }
+
+
+            /////////////////////////////// 내스토리 보여주기...
+            let myStoryList = [];
+            let myCurrentPage = 0 ;
+            function loadMyStoryList(profile_info_pk){
+                myCurrentPage=0;
+                
+                const url = "./loadMyStoryList";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    const myBarBox = document.querySelector("#myBarBox");
+                    myBarBox.innerHTML = '';
+                    
+                    console.log(response.data);
+                    let startPageActive = 0;
+                    for(e of response.data){
+                        
+                        const div = document.createElement("div");
+                        div.classList.add("bar");
+                        div.setAttribute("id","myBar"+e.story_pk);
+                        if(startPageActive == 0){
+                            div.classList.add("active");
+                        }
+                        startPageActive += 1;
+                        myBarBox.appendChild(div);                        
+                        myStoryList.push(e.story_pk);
+                    }
+                    console.log(myStoryList)
+                    //클릭시 바뀌어야함.
+                    
+                    loadMyStory(myStoryList[myCurrentPage]);
+                    
+                });
+            }
+
+            function loadMyStory(story_pk){
+                const url = "./loadUserStory";
+                
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "story_pk="+story_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    
+                    const my_story_created_at = document.querySelector("#my_story_created_at");
+                    const d = response.data.created_at;
+                    my_story_created_at.innerText = d[0]+"."+d[1]+"."+d[2]+".";
+
+                    const my_story_img = document.querySelector("#my_story_img");
+                    my_story_img.style.backgroundImage = "url("+response.data.story_photo+")";
+                    //텍스트 + color
+                    const my_story_text = document.querySelector("#my_story_textAndColor");
+                    my_story_text.innerText = response.data.story_text;
+                    my_story_text.style.color = response.data.text_color;
+                    my_story_text.style.backgroundColor = response.data.background_color;
+                    /// x y 위치정보
+                    const my_storyTextBox =  document.querySelector("#my_storyTextBox");
+                    my_storyTextBox.setAttribute("style", "top:"+response.data.y_coordinates+"%;left:"+response.data.x_coordinates+"%;");
+
+                    loadMyStoryViewInfo(story_pk);
+
+                });
+            }
+            function removeTouchImgEventListener() {
+                const my_story_img = document.querySelector("#my_story_img");
+                my_story_img.removeEventListener('touchstart', touchMyImg());
+            }
+
+
+            function touchMyImg(event) {
+                
+                const touchX = event.touches[0].clientX; // 터치 이벤트의 X 좌표
+                // 이미지의 가로 중앙 좌표
+                const imageCenterX = my_story_img.getBoundingClientRect().left + my_story_img.offsetWidth / 2;
+
+                if (touchX < imageCenterX) {
+                    if(currentPage == 0){
+                            closeMyStoryModal();
+                    }else{
+                        loadMyStory(myStoryList[myCurrentPage-1]);
+                        myCurrentPage -=1;
+                        const bar = document.querySelector("#myBar"+myStoryList[myCurrentPage+1]);
+                        bar.classList.remove("active");
+                    }
+                    
+                } else {
+                    // 이미지의 오른쪽 절반을 터치했을 때의 처리
+                    if(myStoryList.length == myCurrentPage+1){                            
+                            closeMyStoryModal();
+                    }else{
+                        loadMyStory(myStoryList[myCurrentPage+1]);
+                        myCurrentPage +=1;
+                        const bar = document.querySelector("#myBar"+myStoryList[myCurrentPage]);
+                        bar.classList.add("active");
+                    }
+                    
+                }
+            }
+            function loadMyStoryViewInfo(story_pk){
+                const url = "./loadMyStoryViewInfo";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "story_pk="+story_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    const viewCount = document.querySelector("#viewCount");
+                    viewCount.innerText = response.data.viewCount;
+
+                    
+                    if(response.data.viewList.length != 0){
+                        let setCount = 1;
+                        for(e of response.data.viewList){
+                            if(setCount == 4){
+                                return
+                            }else{
+                                const viewProfile = document.getElementById("viewProfile"+setCount); 
+                                viewProfile.src = e.profileInfoDto.profile_photo;
+                                viewProfile.classList.remove("d-none");
+                                setCount +=1;
+                            }
+                            
+                        }     
+                    }
+                   
+                });
+            }
+            
+
+
+            function showMyStoryModal(profile_info_pk){
+                loadMyStoryList(profile_info_pk);
+                
+                const my_story_img = document.querySelector("#my_story_img");
+                
+                my_story_img.addEventListener('touchstart', touchMyImg);
+                
+                const myStoryModal = bootstrap.Modal.getOrCreateInstance("#myStoryModal");
+                myStoryModal.show();
+            }
+
+            function closeMyStoryModal(){
+                const myStoryModal = bootstrap.Modal.getOrCreateInstance("#myStoryModal");
+                myStoryModal.hide();
+                
+                const my_story_img = document.querySelector("#my_story_img");
+                my_story_img.src ="";
+                my_story_img.removeEventListener("touchstart", touchMyImg);    
+            } 
+
+            function insertDirect(another_info_pk){
+                
+                const directChat = document.querySelector("#directChat");
+                const chat = directChat.value;
+
+                const url = "./insertDirect";
+
+                fetch(url, {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: "send_user_pk="+profileInfoDto.profile_info_pk+"&rcv_user_pk="+another_info_pk+"&chat="+chat
+                });
+                directChat.value = "";
+               
+            }
             
 
 
@@ -1089,6 +1376,10 @@
                 display: inline-block;
                 width: 25%;
             }
+            #myBarBox{
+                display: flex;
+                height: 0.25em;
+           }
             #barBox{
                 display: flex;
                 height: 0.25em;
@@ -1256,9 +1547,9 @@
                 <div class="col">
                     <div class="row">
                         <div class="col py-3">
-                            <div class="row" style="position: relative;">
-                                <div class="col-2">
-                                    <img class="profile_photo img-fluid rounded-circle float-start" style="aspect-ratio: 1/1;">
+                            <div class="row " style="position: relative;">
+                                <div class="col-2 goProfile">
+                                    <img class="profile_photo img-fluid rounded-circle float-start" src="" style="aspect-ratio: 1/1;">
                                 </div>
                                 <div class="col my-auto ps-0" style="font-size: 0.95rem;">
                                     <div class="row">
@@ -1290,14 +1581,14 @@
                                 <div class="col-auto ">
                                     <img class="img-fluid pt-0 mb-1 articleLike" alt="" style="height: 1em;">
                                 </div>
-                                <div class="col-1 px-0 text-start">
+                                <div class="col-1 px-0 text-start commnetListButton">
                                     <i class="fa-regular fa-comment-dots"></i>
                                 </div>
-                                <div class="col ps-0 text-start">
+                                <div class="col ps-0 text-start directButton">
                                     <i class="fa-regular fa-paper-plane"></i>
                                 </div>
-                                <div class="col-7 text-end">
-                                    <i class="fa-regular fa-bookmark"></i>
+                                <div class="col text-end articleScrapButton">
+                                    <i class="fa-regular fa-bookmark scrapIcon"></i>
                                 </div>
                             </div>
                         </div>
@@ -1659,12 +1950,11 @@
                             </div>
                         </div>    
                         <div class="row px-2 py-3 mt-3">
-                            <div class="col">
-                                <input class="form-control rounded-pill border-white py-1 text-white" type="text" placeholder="메세지를 입력해주세요." style="background-color: transparent;">
+                            <div class="col ps-0">
+                                <input id="directChat" class="form-control rounded-pill border-white py-1 text-white" type="text" placeholder="메세지를 입력해주세요." style="background-color: transparent;">
                             </div>
-                            <div class="col-auto text-end me-1 text-white fs-4">
-                                <i class="fa-regular fa-heart"></i>&nbsp;&nbsp;
-                                <i class="fa-regular fa-paper-plane"></i>
+                            <div class="col-auto ps-0 text-end me-1 text-white fs-4 align-self-center">
+                                <i id="sendDirectButton" class="fa-regular fa-paper-plane"></i>
                             </div>
                         </div>
                     </div>    
@@ -1672,6 +1962,63 @@
             </div>
         </div>
        
+        <div id="myStoryModal" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content " style="background-color: black; overflow: hidden;">
+                    <div class="modal-body" style="overflow: hidden;">
+                        <div id="my_story_img" class="row position-relative px-0 rounded" style="height: 35em; background-size: 100%; background-repeat: no-repeat; background-position: center; background-color: rgb(49, 49, 49); top: 1rem;">   
+                            <div class="col px-0">
+                                <div class="row">
+                                    <div class="col">
+                                        <div id="myBarBox" class="mt-1 "> 
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row text-light mt-2">
+                                    <div class="col-auto">
+                                        <img id="my_story_profile_img" class="rounded-circle ms-2"  alt="" style="aspect-ratio: 1/1; height: 2em;">
+                                    </div>
+                                    <div id="my_story_userid" class="col-auto align-self-center px-0">
+                                        
+                                    </div>
+                                    <div id="my_story_created_at" class="col-auto text-secondary align-self-center pt-1" style="font-size: 0.9em;">
+                                        
+                                    </div>
+                                    <div class="col pe-4 text-end text-white fs-4">
+                                        <i class="fa-solid fa-xmark" data-bs-dismiss="modal"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="my_storyTextBox" class="col-auto px-0 position-absolute" style="cursor: pointer; top: 50%; left: 0%;">
+                                <div id="my_story_textAndColor" class="px-2">
+                                    
+                                </div>
+                            </div>
+                        </div>    
+                        <div class="row px-2 py-3 mt-3">
+                            <div onclick="showViewBox()" class="col-auto">
+                                <div class="row">
+                                    <div class="col align-self-center" style="font-size: 0.8em;">
+                                        <i class="fa-solid fa-eye text-white"></i>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div id="viewCount" class="col align-self-center text-white text-center" style="font-size: 0.9em;">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div onclick="showViewBox()" class="col ps-2 pe-1 likeProfileListBox align-self-center">
+                                <img id="viewProfile1" class="img-fluid rounded-circle float-start border border-white border-2 d-none " src=""  style="aspect-ratio: 1/1; height: 2em; position: relative; z-index: 3;">
+                                <img id="viewProfile2" class="img-fluid rounded-circle float-start border border-white border-2 d-none" src=""  style="aspect-ratio: 1/1; height: 2em; position: absolute; left: 5em; z-index: 2">
+                                <img id="viewProfile3" class="img-fluid rounded-circle float-start border border-white border-2 d-none" src=""  style="aspect-ratio: 1/1; height: 2em; position: absolute; left: 6.5em; z-index: 1">
+                            </div>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+        </div>
         
         
         

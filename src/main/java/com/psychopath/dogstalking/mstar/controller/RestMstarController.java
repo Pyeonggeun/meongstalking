@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.psychopath.dogstalking.dto.RestResponseDto;
+import com.psychopath.dogstalking.dto.UserDto;
 import com.psychopath.dogstalking.mstar.dto.ArticleDto;
 import com.psychopath.dogstalking.mstar.dto.ArticleLikeDto;
 import com.psychopath.dogstalking.mstar.dto.CmtLikeDto;
 import com.psychopath.dogstalking.mstar.dto.CommentDto;
 import com.psychopath.dogstalking.mstar.dto.DirectDto;
+import com.psychopath.dogstalking.mstar.dto.FollowDto;
 import com.psychopath.dogstalking.mstar.dto.ProfileInfoDto;
 import com.psychopath.dogstalking.mstar.dto.StorageDto;
 import com.psychopath.dogstalking.mstar.dto.StoryDto;
@@ -39,7 +41,7 @@ public class RestMstarController {
     }
 
     @RequestMapping("loadMyProfileInfo")
-    public RestResponseDto getMyProfileInfo(int user_pk){
+    public RestResponseDto loadMyProfileInfo(int user_pk){
         RestResponseDto responseDto = new RestResponseDto();
 
         Map<String, Object> map = mstarService.getProfileInfo(user_pk);
@@ -50,11 +52,23 @@ public class RestMstarController {
         return responseDto;
 
     }
-    @RequestMapping("loadAnotherProfileInfo")
-    public RestResponseDto loadAnotherProfileInfo(int profile_info_pk){
+    @RequestMapping("loadMyProfileInfoForFollow")
+    public RestResponseDto loadMyProfileInfoForFollow(int profile_info_pk, int another_info_pk){
         RestResponseDto responseDto = new RestResponseDto();
 
-        Map<String, Object> map = mstarService.loadAnotherProfileInfo(profile_info_pk);
+        Map<String, Object> map = mstarService.loadMyProfileInfoForFollowStatus(profile_info_pk, another_info_pk);
+
+        responseDto.setResult("success");
+        responseDto.setData(map);
+
+        return responseDto;
+
+    }
+    @RequestMapping("loadAnotherProfileInfo")
+    public RestResponseDto loadAnotherProfileInfo(int profile_info_pk, int another_info_pk){
+        RestResponseDto responseDto = new RestResponseDto();
+
+        Map<String, Object> map = mstarService.loadAnotherProfileInfo(profile_info_pk, another_info_pk);
 
         responseDto.setResult("success");
         responseDto.setData(map);
@@ -84,6 +98,17 @@ public class RestMstarController {
 
         return responseDto;
     }
+    @RequestMapping("loadMyScrapArticleList")
+    public RestResponseDto loadMyScrapArticleList(int profile_info_pk){
+        RestResponseDto responseDto = new RestResponseDto();
+
+       List<Map<String, Object>> list = mstarService.getMyScrapArticleList(profile_info_pk);
+       
+        responseDto.setResult("success");
+        responseDto.setData(list);
+
+        return responseDto;
+    }
     @RequestMapping("loadStoryStorageList")
     public RestResponseDto loadStoryStorageList(int profile_info_pk){
         RestResponseDto responseDto = new RestResponseDto();
@@ -97,14 +122,14 @@ public class RestMstarController {
     }
     @RequestMapping("insertStory")
     public void insertStory(MultipartFile imageFiles, StoryDto storyDto){
-        System.out.println("무슨색~?");
-        System.out.println(storyDto.getBackground_color());
+        
         mstarService.insertMyStory(imageFiles, storyDto);
     }
 
     @RequestMapping("insertStoryStorage")
-    public void insertStoryStorage(MultipartFile imageFiles, StorageDto storageDto){
-        mstarService.insertMyStoryStorage(imageFiles, storageDto);
+    public void insertStoryStorage(MultipartFile imageFiles, StorageDto storageDto, int[] storyPkList){
+        mstarService.insertMyStoryStorage(imageFiles, storageDto, storyPkList);
+
     }
     @RequestMapping("loadArticeleList")
     public RestResponseDto loadArticeleList(int profile_info_pk){
@@ -128,9 +153,38 @@ public class RestMstarController {
 
         return responseDto;
     }
+    @RequestMapping("loadScrapArticleList")
+    public RestResponseDto loadScrapArticleList(int profile_info_pk, int user_pk){
+        RestResponseDto responseDto = new RestResponseDto();
+
+       Map<String, Object> map = mstarService.getUserScrapArticleList(profile_info_pk, user_pk);
+
+        responseDto.setResult("success");
+        responseDto.setData(map);
+
+        return responseDto;
+    }
+    
+    @RequestMapping("anotherUserDto")
+    public RestResponseDto anotherUserDto(int profile_info_pk){
+        RestResponseDto responseDto = new RestResponseDto();
+
+        UserDto userDto = mstarService.getUserDto(profile_info_pk);
+
+        responseDto.setResult("success");
+        responseDto.setData(userDto);
+
+        return responseDto;
+    }
+
     @RequestMapping("followingAnotherUser")
-    public void followingAnotherUser(int profile_info_pk, int user_pk){
-        mstarService.insertFollow(profile_info_pk, user_pk);
+    public void followingAnotherUser(FollowDto followDto){
+        mstarService.insertFollow(followDto);
+    }
+    
+    @RequestMapping("unFollowingAnotherUser")
+    public void unFollowingAnotherUser(FollowDto followDto){
+        mstarService.deleteFollow(followDto);
     }
     @RequestMapping("insertMyComment")
     public RestResponseDto insertMyComment(CommentDto commentDto){
@@ -200,7 +254,33 @@ public class RestMstarController {
     public void deleteMyArticleLike(ArticleLikeDto articleLikeDto){
         mstarService.deleteArticleLike(articleLikeDto);
     }
-    
+
+    @RequestMapping("loadStorageStoryList")
+    public RestResponseDto loadStorageStoryList(int storage_pk){
+        RestResponseDto responseDto = new RestResponseDto();
+
+        List<Map<String, Object>> list = mstarService.getStorageStoryList(storage_pk);
+ 
+         responseDto.setResult("success");
+         responseDto.setData(list);
+ 
+         return responseDto;
+
+    }
+    @RequestMapping("loadStoryStorageInfo")
+    public RestResponseDto loadStoryStorageInfo(int storage_pk){
+        RestResponseDto responseDto = new RestResponseDto();
+
+        StorageDto storageDto = mstarService.getStorageDto(storage_pk);
+ 
+         responseDto.setResult("success");
+         responseDto.setData(storageDto);
+ 
+         return responseDto;
+
+    }
+
+
     @RequestMapping("loadStoryList")
     public RestResponseDto loadStoryList(int profile_info_pk){
         RestResponseDto responseDto = new RestResponseDto();
@@ -214,11 +294,10 @@ public class RestMstarController {
 
     }
 
+
     @RequestMapping("userStoryList")
     public RestResponseDto userStoryList(int profile_info_pk, int myProfile_info_pk){
-        System.out.println("여기다");
-        System.out.println(profile_info_pk);
-        System.out.println(myProfile_info_pk);
+    
         RestResponseDto responseDto = new RestResponseDto();
 
         Map<String,Object> map = mstarService.getUserStoryList(profile_info_pk, myProfile_info_pk);
@@ -258,8 +337,8 @@ public class RestMstarController {
     public RestResponseDto searchUserInfo(int profile_info_pk, String search_text){
         
         RestResponseDto responseDto = new RestResponseDto();
-        System.out.println(search_text);
-        List<Map<String, Object>> list = mstarService.selectSearchInfoList(profile_info_pk,search_text);
+        
+        List<Map<String, Object>> list = mstarService.selectSearchInfoList(profile_info_pk, search_text);
  
          responseDto.setResult("success");
          responseDto.setData(list);
@@ -272,11 +351,188 @@ public class RestMstarController {
         mstarService.insertDirectDto(directDto);
     }
 
+    @RequestMapping("loadDirectChatList")
+    public RestResponseDto loadDirectChatList(int profile_info_pk, int another_info_pk){
+        
+        RestResponseDto responseDto = new RestResponseDto();
+        
+        List<Map<String, Object>> list = mstarService.selectDirectChatList(profile_info_pk, another_info_pk);
+ 
+         responseDto.setResult("success");
+         responseDto.setData(list);
+ 
+         return responseDto;
+
+    }
+    @RequestMapping("loadNewChat")
+    public RestResponseDto loadNewChat(int direct_pk, int profile_info_pk, int another_info_pk){
+        
+        RestResponseDto responseDto = new RestResponseDto();
+        
+        List<Map<String, Object>> list = mstarService.selectNewChatList(direct_pk, profile_info_pk, another_info_pk);
+ 
+         responseDto.setResult("success");
+         responseDto.setData(list);
+ 
+         return responseDto;
+
+    }
+    @RequestMapping("loadMyDirectReadStatus")
+    public RestResponseDto loadMyDirectReadStatus(int direct_pk, int profile_info_pk, int another_info_pk){
+        
+        RestResponseDto responseDto = new RestResponseDto();
+        
+        int loadMyDirectReadStatus = mstarService.selectChangeDirectStatus(direct_pk, profile_info_pk, another_info_pk);
+ 
+         responseDto.setResult("success");
+         responseDto.setData(loadMyDirectReadStatus);
+ 
+         return responseDto;
+
+    }
+    @RequestMapping("loadUserFollowingList")
+    public RestResponseDto loadUserFollowingList(int profile_info_pk, int another_info_pk, String searchText){
+        
+        RestResponseDto responseDto = new RestResponseDto();
+        
+        List<Map<String, Object>> list = mstarService.userFollowingInfoList(profile_info_pk, another_info_pk,searchText);
+ 
+         responseDto.setResult("success");
+         responseDto.setData(list);
+ 
+         return responseDto;
+
+    }
+    @RequestMapping("loadUserFollowList")
+    public RestResponseDto loadUserFollowList(int profile_info_pk, int another_info_pk, String searchText){
+        
+        RestResponseDto responseDto = new RestResponseDto();
+        
+        List<Map<String, Object>> list = mstarService.userFollowInfoList(profile_info_pk, another_info_pk,searchText);
+ 
+         responseDto.setResult("success");
+         responseDto.setData(list);
+ 
+         return responseDto;
+
+    }
+    @RequestMapping("loadMyFollowList")
+    public RestResponseDto loadMyFollowList(int profile_info_pk, String searchText){
+        
+        RestResponseDto responseDto = new RestResponseDto();
+        
+        List<Map<String, Object>> list = mstarService.myFollowInfoList(profile_info_pk, searchText);
+ 
+         responseDto.setResult("success");
+         responseDto.setData(list);
+ 
+         return responseDto;
+
+    }
+    @RequestMapping("loadMyFollowingList")
+    public RestResponseDto loadMyFollowingList(int profile_info_pk, String searchText){
+        
+        RestResponseDto responseDto = new RestResponseDto();
+        
+        List<Map<String, Object>> list = mstarService.myFollowingInfoList(profile_info_pk ,searchText);
+ 
+         responseDto.setResult("success");
+         responseDto.setData(list);
+ 
+         return responseDto;
+
+    }
+    @RequestMapping("loadFollowFollowingList")
+    public RestResponseDto loadFollowFollowingList(int profile_info_pk, int another_info_pk, String searchText){
+        
+        RestResponseDto responseDto = new RestResponseDto();
+        
+        List<Map<String, Object>> list = mstarService.followFollowingInfoList(profile_info_pk, another_info_pk,searchText);
+ 
+         responseDto.setResult("success");
+         responseDto.setData(list);
+ 
+         return responseDto;
+
+    }
+
+    @RequestMapping("blockAnotherUser")
+    public void blockAnotherUser(int profile_info_pk, int another_info_pk){
+        mstarService.userBlock(profile_info_pk, another_info_pk);
+    }
+    @RequestMapping("unBlockAnotherUser")
+    public void unBlockAnotherUser(int profile_info_pk, int another_info_pk){
+        mstarService.userUnBlock(profile_info_pk, another_info_pk);
+    }
+
+    @RequestMapping("articleScrap")
+    public void articleScrap(int profile_info_pk, int article_pk){
+        mstarService.insertArticleScrap(profile_info_pk, article_pk);
+    }
+    @RequestMapping("removeArticleScrap")
+    public void removeArticleScrap(int profile_info_pk, int article_pk){
+        mstarService.deleteArticleScrap(profile_info_pk, article_pk);
+    }
+    
+    @RequestMapping("loadMyAllStoryList")
+    public RestResponseDto loadMyAllStoryList(int profile_info_pk){
+        
+        RestResponseDto responseDto = new RestResponseDto();
+        
+        List<StoryDto> list = mstarService.myStoryList(profile_info_pk);
+ 
+         responseDto.setResult("success");
+         responseDto.setData(list);
+ 
+         return responseDto;
+
+    }
+    @RequestMapping("loadMyStoryViewInfo")
+    public RestResponseDto loadMyStoryViewInfo(int story_pk){
+        
+        RestResponseDto responseDto = new RestResponseDto();
+        
+        Map<String,Object> map = mstarService.getMyStoryViewInfo(story_pk);
+ 
+         responseDto.setResult("success");
+         responseDto.setData(map);
+ 
+         return responseDto;
+
+    }
+    
+
+    @RequestMapping("insertBookMark")
+    public void insertBookMark(int profile_info_pk, int another_info_pk){
+        mstarService.insertBookMarkUser(profile_info_pk, another_info_pk);
+    }
+    @RequestMapping("deleteBookMark")
+    public void deleteBookMark(int profile_info_pk, int another_info_pk){
+        mstarService.deleteBookMarkUser(profile_info_pk, another_info_pk);
+    }
+    
+    @RequestMapping("insertViewStory")
+    public void insertViewStory(int story_pk, int profile_info_pk){
+        mstarService.insertViewStoryDto(story_pk, profile_info_pk);
+    }
+    @RequestMapping("loadMyStoryList")
+    public RestResponseDto loadMyStoryList(int profile_info_pk){
+        RestResponseDto responseDto = new RestResponseDto();
+        List<StoryDto> list = mstarService.getMyStoryList(profile_info_pk);
+
+        responseDto.setResult("success");
+        responseDto.setData(list);
+ 
+         return responseDto;
+    }
+
+    @RequestMapping("updateDirectReadStatus")
+    public void updateDirectReadStatus(int profile_info_pk, int another_info_pk){
+        mstarService.changeReadStatus(profile_info_pk,another_info_pk);
+    }
+    
 
 
-    
-    
-    
     
     
 

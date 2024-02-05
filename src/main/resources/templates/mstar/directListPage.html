@@ -15,6 +15,7 @@
                 const urlParams = new URLSearchParams(location.search);
                 const key = urlParams.get("profile_info_pk");
                 profile_info_pk = key;
+                loadDirectUserList(profile_info_pk);
             }
 
             function loadDirectUserList(profile_info_pk){
@@ -50,16 +51,49 @@
                             lastDirectMessage.innerText = "전송됨."
                         }else{
                             lastDirectMessage.innerText = e.directDto.chat;
+                            if(e.directDto.read_status=='N'){
+                                console.log("ddd")
+                                const noReadChat = directListWrapper.querySelector(".noReadChat");
+                                noReadChat.classList.remove("d-none");
+                            }
                         }
 
                         const lastDirectCreatedAt = directListWrapper.querySelector(".lastDirectCreatedAt");
                         lastDirectCreatedAt.innerText = e.directDto.created_at;
+                        const currentDate = new Date();
+                        if (e.directDto.created_at[0]+"."+e.directDto.created_at[1]+"."+e.directDto.created_at[2] == 
+        	    			currentDate.getFullYear() +"."+ (currentDate.getMonth()+1) + "."+ currentDate.getDate()){
+        	    			if((currentDate.getHours() - e.directDto.created_at[3]) == 0){
+        	    				if((currentDate.getMinutes() - e.directDto.created_at[4]) < 10){
+        	    					lastDirectCreatedAt.innerText = "방금";
+                                    lastDirectCreatedAt.classList.add("text-primary");
+        	    				}else{
+        	    					lastDirectCreatedAt.innerText = (currentDate.getMinutes() - e.directDto.created_at[4])+ "분전";
+        	    				}
+        	    			
+        	    			}else{
+        	    				lastDirectCreatedAt.innerText = (currentDate.getHours() - e.directDto.created_at[3])+ "시간전";
+        	    			}
+        	    		}else{
+        	    			lastDirectCreatedAt.innerText = e.directDto.created_at[0]+"."+e.directDto.created_at[1]+"."+e.directDto.created_at[2];
+        	    		}
 
+
+                        directListWrapper.setAttribute("onclick","location.href='./directPage?profile_info_pk="+profile_info_pk+"&another_info_pk="+e.anotherProfileInfoDto.profile_info_pk+"'")
+
+                        directListBox.appendChild(directListWrapper);
                     }
                     
 
                 });
 
+            }
+            function removeSearchBox(){
+                const searchInputBox = document.querySelector("#searchInputBox");
+                searchInputBox.value ="";
+                const resetButton = document.querySelector("#resetButton");
+                resetButton.classList.add("d-none");
+                selectSearchUserList("");
             }
 
             function showSearchModal(){
@@ -78,15 +112,17 @@
                     }else{
                         resetButton.classList.remove("d-none");
                     }
+                    
                     selectSearchUserList(searchInputBox.value);
                 });
             }
+            function closeSearchModal(){
+                const searchModal = bootstrap.Modal.getOrCreateInstance("#searchModal");
+                searchModal.hide();
+            }
             function selectSearchUserList(text){
 
-                console.log(profile_info_pk);
-                console.log(text);
-
-                const url = "./searchUserInfo"
+                const url = "./searchUserInfo";
 
                 fetch(url, {
                      method: "post",
@@ -97,9 +133,9 @@
             	})
                 .then(response => response.json())
                 .then((response) =>{
-                    if(response.data.length == 0){
-                        return;
-                    }
+                    // if(response.data.length == 0){
+                    //     return;
+                    // }
                     const searchListBox = document.querySelector("#searchListBox");
                     searchListBox.innerHTML = "";
                     for(e of response.data){
@@ -113,9 +149,9 @@
                         const search_nick_nameAndFollow = searchListWrapper.querySelector(".search_nick_nameAndFollow");
                         if(e.followingFollowingCount != 0){
                           if(e.followingFollowingCount-1 == 0){
-                            search_nick_nameAndFollow.innerHTML = e.profileInfoDto.nick_name+" &middot; 가져와야한다 값님이 팔로우합니다.";
+                            search_nick_nameAndFollow.innerHTML = e.profileInfoDto.nick_name+" &middot; " +e.followUserDto.userid+ "님이 팔로우합니다.";
                           }else{
-                            search_nick_nameAndFollow.innerHTML = e.profileInfoDto.nick_name+" &middot; 님 외"+e.followingFollowingCount-1+"명이 팔로우합니다.";
+                            search_nick_nameAndFollow.innerHTML = e.profileInfoDto.nick_name+" &middot; "+e.followUserDto.userid+"님 외"+e.followingFollowingCount-1+"명이 팔로우합니다.";
                           } 
                         }else{
                             search_nick_nameAndFollow.innerText = e.profileInfoDto.nick_name;
@@ -124,8 +160,11 @@
                         const search_userid = searchListWrapper.querySelector(".search_userid");
                         search_userid.innerText = e.userDto.userid;
                         
+                        
+
                         searchListBox.appendChild(searchListWrapper);
                     }
+
                 });
 
             }
@@ -176,7 +215,7 @@
             </div>
             <div class="row fs-4">
                 <div class="col-auto">
-                    <i class="fa-solid fa-chevron-left"></i>
+                    <i onclick="window.history.back()" class="fa-solid fa-chevron-left"></i>
                 </div>
                 <div class="col" th:text="${session.sessionUser.userid}">
                     
@@ -206,7 +245,7 @@
             <!--리스트 구간-->
             <div class="row mt-2" style="font-size: 0.9em;">
                 <div id="directListBox" class="col">
-                   <div class="row text-center mt-5">
+                   <div class="row text-center mt-2">
                         <div class="col mt-5">
                             <img class="img-fluid" src="/public/image/mstar/nodirect.png" alt="">
                         </div>
@@ -227,7 +266,7 @@
 
         <!--채팅하는사람들 리스트-->
         <div id="directListTemplete" class="d-none">
-            <div class="row directListWrapper">
+            <div class="row directListWrapper mt-3">
                 <div class="col-auto pe-0 align-self-center">
                     <div class="row">
                         <div class="col-auto ">
@@ -237,8 +276,11 @@
                 </div>
                 <div class="col">
                     <div class="row">
-                        <div class="col userIdAndNickName">
+                        <div class="col-auto userIdAndNickName pe-0">
                             김쿼카 (eun_jin_log)
+                        </div>
+                        <div class="col noReadChat d-none">
+                            <i class="fa-solid fa-circle text-primary align-items-start d-flex mt-1" style="font-size: 0.4em;"></i>
                         </div>
                     </div>
                     <div class="row">
@@ -270,12 +312,12 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="resetButton" class="col px-0 align-self-center d-none">
+                                    <div onclick="removeSearchBox()" id="resetButton" class="col px-0 align-self-center d-none">
                                         <i class="fa-solid fa-xmark"></i>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-auto fw-bold ps-0 align-self-center">
+                            <div onclick="closeSearchModal()" class="col-auto fw-bold ps-0 align-self-center">
                                 취소
                             </div>
                         </div>
@@ -288,6 +330,7 @@
                 </div>
             </div>
         </div>
+
         <div id="searchListTemplete" class="d-none">
             <div class="row searchListWrapper mt-3">
                 <div class="col-auto pe-0 align-self-center">

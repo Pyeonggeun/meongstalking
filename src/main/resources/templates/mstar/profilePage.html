@@ -16,6 +16,7 @@
                 const key = urlParams.get("user_pk");
                 user_pk = key;
             }
+            
             let profileInfoDto = null;
             function getProfileInfoDto(){
                 const url = "./myProfileInfoDto?user_pk="+user_pk;
@@ -25,7 +26,15 @@
                     profileInfoDto = response.data;
                     const profile_info_pk = profileInfoDto.profile_info_pk;
                     loadMyArticleFirstImgList(profile_info_pk); 
-                    loadStoryStorageList(profile_info_pk)   
+                    loadStoryStorageList(profile_info_pk);
+                    
+                    const scrapArticleListButton = document.querySelector("#scrapArticleListButton");
+                    scrapArticleListButton.setAttribute("onclick" , "loadMyScrapArticleList("+profile_info_pk+")");
+
+                    const userArticleListButton = document.querySelector("#userArticleListButton");
+                    userArticleListButton.setAttribute("onclick" , "loadMyArticleFirstImgList("+profile_info_pk+")");
+
+                    
                 });
                 
             }
@@ -52,9 +61,11 @@
 
                     const followCount = document.querySelector("#followCount");
                     followCount.innerText = response.data.followCount;
+                    followCount.setAttribute("onclick","showFollowListModal()");
                     
                     const followingCount = document.querySelector("#followingCount");
                     followingCount.innerText = response.data.followingCount;
+                    followingCount.setAttribute("onclick","showFollowingListModal()");
 
                     const nickName = document.querySelector("#nickName");
                     nickName.innerText = response.data.profileInfoDto.nick_name;
@@ -64,6 +75,15 @@
 
                     const updateProfilePageButton = document.querySelector("#updateProfilePageButton");
                     updateProfilePageButton.setAttribute("onclick", "location.href='./updateProfilePage?user_pk="+response.data.profileInfoDto.user_pk+"'");
+
+                    const profileUser_id = document.querySelector("#profileUser_id");
+                    profileUser_id.innerText = response.data.userDto.userid;
+
+                    const follow = document.querySelector("#follow");
+                    follow.innerText = response.data.followCount+" 팔로우";
+
+                    const following = document.querySelector("#following");
+                    following.innerText = response.data.followingCount+" 팔로잉";
                 })
             }
 
@@ -85,8 +105,20 @@
 
                         return;
                     }
-                    
                     articleListBox.innerHTML ="";
+
+                    const scrapArticleListButton = document.querySelector("#scrapArticleListButton");
+                    scrapArticleListButton.classList.remove("border-bottom" , "border-black");
+                    scrapArticleListButton.classList.add("text-secondary");
+
+                    const userArticleListButton = document.querySelector("#userArticleListButton");
+                    userArticleListButton.classList.add("border-bottom" , "border-black");
+                    userArticleListButton.classList.remove("text-secondary");
+
+                    const tagArticleListButton = document.querySelector("#tagArticleListButton");
+                    tagArticleListButton.classList.remove("border-bottom" , "border-black");
+                    tagArticleListButton.classList.add("text-secondary");
+
                     for(e of response.data){
                         const articleListWrapper = document.querySelector("#articleListTemplete .articleListWrapper").cloneNode(true);
                         const articleFirstImg = articleListWrapper.querySelector(".articleFirstImg");
@@ -97,14 +129,78 @@
                         
                         
                         const icon = articleListWrapper.querySelector(".icon");
+                        console.log(e.artPhotoList.length)
                         if(e.artPhotoList.length >= 2){
                             icon.classList.add("fa-copy" ,"fa-solid")
+                            console.log(icon)
                         }
+
                         articleListBox.appendChild(articleListWrapper);
 
                     }
                 });
             }
+            function loadMyScrapArticleList(profile_info_pk){
+                const url = "./loadMyScrapArticleList";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    const articleListBox = document.querySelector("#articleListBox");
+                    articleListBox.innerHTML ="";
+
+                    const scrapArticleListButton = document.querySelector("#scrapArticleListButton");
+                    scrapArticleListButton.classList.add("border-bottom" , "border-black");
+                    scrapArticleListButton.classList.remove("text-secondary");
+
+                    const userArticleListButton = document.querySelector("#userArticleListButton");
+                    userArticleListButton.classList.remove("border-bottom" , "border-black");
+                    userArticleListButton.classList.add("text-secondary");
+                    
+                    const tagArticleListButton = document.querySelector("#tagArticleListButton");
+                    tagArticleListButton.classList.remove("border-bottom" , "border-black");
+                    tagArticleListButton.classList.add("text-secondary");
+
+                    if(response.data.length != 0){
+                        articleListBox.classList.add("row-cols-3")
+                        for(e of response.data){
+                            const articleListWrapper = document.querySelector("#articleListTemplete .articleListWrapper").cloneNode(true);
+                            const articleFirstImg = articleListWrapper.querySelector(".articleFirstImg");
+                            articleFirstImg.src = e.artPhotoList[0].photo_path;
+                            articleFirstImg.style.objectFit = "fill";
+                            articleFirstImg.setAttribute("onclick","location.href='userScrapArticleListPage?profile_info_pk="+profile_info_pk+"&user_pk="+user_pk+"'");
+                            
+                            
+                            const icon = articleListWrapper.querySelector(".icon");
+                            if(e.artPhotoList.length >= 2){
+                                icon.classList.add("fa-copy" ,"fa-solid")
+                            }
+                            articleListBox.appendChild(articleListWrapper);
+
+                        }
+
+                    }else{
+                        const div = document.createElement("div");
+                        div.classList.add("col","mt-5","text-center");
+                        const img = document.createElement("img");
+                        img.classList.add("img-fluid");
+                        img.src = "/public/image/mstar/noPhoto.png";
+                        img.style.height = "10em";
+                        div.appendChild(img);
+                        articleListBox.appendChild(div);
+                        articleListBox.classList.remove("row-cols-3");
+                    }
+
+                });
+            }
+
+
             function loadStoryStorageList(profile_info_pk){
                 const url = "./loadStoryStorageList";
 
@@ -124,25 +220,27 @@
                             const storyStorageListWrapper = document.querySelector("#storyStorageListTemplete .storyStorageListWrapper").cloneNode(true);
                             const storage_name = storyStorageListWrapper.querySelector(".storage_name");
                             storage_name.innerText = e.storage_name;
+
                             const storage_img = storyStorageListWrapper.querySelector(".storage_img");
                             storage_img.src = e.storage_img;
-                            
+                            storyStorageListWrapper.setAttribute("onclick" , "showStoryModal("+e.storage_pk+")");
+
                             storyStorageListBox.appendChild(storyStorageListWrapper);
 
                         }
                         const storageAddButton = document.querySelector("#storageAddButton");
                         storageAddButton.remove();
                         const addButton = document.createElement("div");
-                        addButton.classList.add("col-auto");
+                        addButton.classList.add("col-auto", "mt-1");
                         addButton.setAttribute("onclick", "location.href='./addStoryStoragePage?user_pk="+user_pk+"'");
                         addButton.setAttribute("id", "storageAddButton");
                         const row1 = document.createElement("div");
-                        row1.classList.add("row");
+                        row1.classList.add("row", "align-self-center");
                         const col1 = document.createElement("div");
                         col1.classList.add("col","fs-5", "text-center");
                         const i = document.createElement("i");
-                        i.classList.add("fa-solid","fa-plus" ,"rounded-circle","border","border-black","py-3","px-3");
-                        i.setAttribute("style","height: 15vw; aspect-ratio: 1/1;")
+                        i.classList.add("fa-solid","fa-plus" ,"rounded-circle","border","border-black","px-3", "py-3");
+                        i.setAttribute("style","height: 3em; aspect-ratio: 1/1;")
                         col1.appendChild(i);
                         row1.appendChild(col1);
 
@@ -160,6 +258,10 @@
                         storyStorageListBox.appendChild(addButton);
                     }
                 });
+            }
+            function showStorySaveModal(){
+                const storySaveModal = bootstrap.Modal.getOrCreateInstance("#storySaveModal");
+                storySaveModal.show();
             }
 
             function downStoryStoreList(){
@@ -181,6 +283,435 @@
                 storyButton.removeAttribute("onclick");
                 storyButton.setAttribute("onclick", "downStoryStoreList()");
             }
+            //////////////////////adsfd////////////////////////////////////////////////////////////////////////////////////////
+            let followSwitch = null;
+            function showFollowingListModal(){
+                const followListModal = bootstrap.Modal.getOrCreateInstance("#followListModal");
+                followListModal.show();
+                followSwitch=1;
+                loadUserFollowList("")
+                console.log(followSwitch)
+                const searchInputBox = document.querySelector("#searchInputBox");
+                searchInputBox.addEventListener("input", function() {
+                    
+                    if(searchInputBox.value.trim() === ""){
+                        resetButton.classList.add("d-none");
+                    }else{
+                        resetButton.classList.remove("d-none");
+                    }
+                    if(followSwitch == 1){
+                        loadUserFollowList(searchInputBox.value);
+                    }else{
+                        loadUserFollowingList(searchInputBox.value);
+                    }
+                    
+                });
+                
+            }
+            function showFollowListModal(){
+                const followListModal = bootstrap.Modal.getOrCreateInstance("#followListModal");
+                followListModal.show();
+                loadUserFollowingList("")
+                
+                followSwitch = 0;
+
+                const searchInputBox = document.querySelector("#searchInputBox");
+                searchInputBox.addEventListener("input", function() {
+                    if(searchInputBox.value.trim() === ""){
+                        resetButton.classList.add("d-none");
+                    }else{
+                        resetButton.classList.remove("d-none");
+                    }
+                    if(followSwitch == 1){
+                        loadUserFollowList(searchInputBox.value);
+                    }else if (followSwitch == 0){
+                        loadUserFollowingList(searchInputBox.value);
+                    }else if(followSwitch == 3){
+                        loadFollowFollowingList(searchInputBox.value);
+                    }
+                    
+                });
+                
+            }
+            function closeFollowListModal(){
+                const followListModal = bootstrap.Modal.getOrCreateInstance("#followListModal");
+                followListModal.hide();
+            }
+
+            
+            function loadUserFollowingList(searchText){
+                
+                
+                if(followSwitch != 0){
+                    const searchInputBox = document.querySelector("#searchInputBox");
+                    searchInputBox.value ="";
+                }
+                followSwitch = 0;
+                const url = "./loadMyFollowList";
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profileInfoDto.profile_info_pk+"&searchText="+searchText
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    
+                    const follow = document.querySelector("#follow");
+                    follow.classList.remove("border-bottom","text-secondary");
+                    follow.classList.add("fw-bold");
+                    follow.setAttribute("style", "border-bottom: 0.1em solid gray;");
+
+                    const following = document.querySelector("#following");
+                    following.classList.add("border-bottom","text-secondary");
+                    following.classList.remove("fw-bold");
+                    following.removeAttribute("style");
+
+
+
+                    if(response.data.length == 0){
+                        return;
+                    }
+                    const searchListBox = document.querySelector("#searchListBox");
+                    searchListBox.innerHTML = "";
+                    for(e of response.data){
+                        const searchListWrapper = document.querySelector("#searchListTemplete .searchListWrapper").cloneNode(true);
+                        const another_info_pk = e.followProfileInfoDto.profile_info_pk;
+                        
+                        const searchProfile_photo = searchListWrapper.querySelector(".searchProfile_photo");
+                        searchProfile_photo.src = e.followProfileInfoDto.profile_photo;
+                        searchProfile_photo.setAttribute("onclick", "location.href='./anotherProfilePage?profile_info_pk="+profileInfoDto.profile_info_pk+"&another_info_pk="+another_info_pk+"'");
+
+                        const search_nick_name = searchListWrapper.querySelector(".search_nick_name");
+                        search_nick_name.innerText = e.followProfileInfoDto.nick_name;
+                        
+                        
+        
+                        const search_userid = searchListWrapper.querySelector(".search_userid");
+                        search_userid.innerText = e.followUserDto.userid;
+                        
+                        const listFollowButton = searchListWrapper.querySelector(".listFollowButton");
+                        if(e.followStatus == 1){
+                            listFollowButton.setAttribute("onclick", "listUnFollowingUser("+e.followProfileInfoDto.profile_info_pk+", this)");
+                            
+                            listFollowButton.setAttribute("style","background-color: rgb(231, 229, 229);");
+                            listFollowButton.innerText = "팔로잉 ";
+                            listFollowButton.classList.remove("text-white");
+                          
+                        }else{
+                            listFollowButton.setAttribute("onclick", "listFollowingUser("+e.followProfileInfoDto.profile_info_pk+", this)");
+                            listFollowButton.innerText = "팔로우 ";
+                            listFollowButton.setAttribute("style","background-color: rgb(65,147,239);");
+                            listFollowButton.classList.add("text-white");
+                        }
+
+                        searchListBox.appendChild(searchListWrapper);
+                    }
+
+                });
+
+            }
+
+            function loadUserFollowList(searchText){
+                
+                if(followSwitch != 1){
+                    const searchInputBox = document.querySelector("#searchInputBox");
+                    searchInputBox.value ="";
+                }
+                followSwitch=1;
+                const url = "./loadMyFollowingList";
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profileInfoDto.profile_info_pk+"&searchText="+searchText
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+
+                    const follow = document.querySelector("#follow");
+                    follow.classList.add("border-bottom","text-secondary");
+                    follow.classList.remove("fw-bold");
+                    follow.removeAttribute("style");
+
+                    const following = document.querySelector("#following");
+                    following.classList.remove("border-bottom", "text-secondary");
+                    following.classList.add("fw-bold");
+                    following.setAttribute("style", "border-bottom: 0.1em solid gray;");
+
+
+                    const searchListBox = document.querySelector("#searchListBox");
+                    searchListBox.innerHTML = "";
+
+                    if(response.data.length == 0){
+                        
+                        return;
+                    }
+                    
+                    for(e of response.data){
+                        const searchListWrapper = document.querySelector("#searchListTemplete .searchListWrapper").cloneNode(true);
+                        const another_info_pk = e.followProfileInfoDto.profile_info_pk;
+
+                        
+                        
+                        const searchProfile_photo = searchListWrapper.querySelector(".searchProfile_photo");
+                        searchProfile_photo.src = e.followProfileInfoDto.profile_photo;
+                        searchProfile_photo.setAttribute("onclick", "location.href='./anotherProfilePage?profile_info_pk="+profileInfoDto.profile_info_pk+"&another_info_pk="+another_info_pk+"'");
+
+                        const search_nick_name = searchListWrapper.querySelector(".search_nick_name");
+                        search_nick_name.innerText = e.followProfileInfoDto.nick_name;
+        
+                        const search_userid = searchListWrapper.querySelector(".search_userid");
+                        search_userid.innerText = e.followUserDto.userid;
+                        
+                        const listFollowButton = searchListWrapper.querySelector(".listFollowButton");
+                        listFollowButton.setAttribute("onclick", "listUnFollowingUser("+e.followProfileInfoDto.profile_info_pk+", this)");
+                            
+                        listFollowButton.setAttribute("style","background-color: rgb(231, 229, 229);");
+                        listFollowButton.innerText = "삭제";
+                        listFollowButton.classList.remove("text-white");
+                       
+
+                        searchListBox.appendChild(searchListWrapper);
+                    }
+
+                });
+
+            }
+            function listFollowingUser(follow_user_pk,target){
+
+                const url = "./followingAnotherUser";
+                fetch(url, {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: "follow_user_pk="+follow_user_pk+"&following_user_pk="+profileInfoDto.profile_info_pk
+                    }).then(() => {
+                        target.setAttribute("onclick", "listUnFollowingUser("+follow_user_pk+", this)");
+                        target.setAttribute("style","background-color: rgb(231, 229, 229);");
+                        target.innerText = "팔로잉 ";
+                        target.classList.remove("text-white");    
+                        loadMyProfileInfo();
+                    });
+            }
+            function listUnFollowingUser(follow_user_pk, target){
+
+                const url = "./unFollowingAnotherUser";
+                fetch(url, {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: "follow_user_pk="+follow_user_pk+"&following_user_pk="+profileInfoDto.profile_info_pk
+                }).then(() => {
+
+                    if(followSwitch==1){
+                        
+                        const searchListWrapper = target.closest(".searchListWrapper");
+                        searchListWrapper.remove();
+                    }else{
+                        target.setAttribute("onclick", "listFollowingUser("+follow_user_pk+", this)");
+                        target.innerText = "팔로우 ";
+                        target.setAttribute("style","background-color: rgb(65,147,239);");
+                        target.classList.add("text-white");
+                    }
+                    loadMyProfileInfo(); 
+                    
+                });
+            }
+
+            /////////////////////스토리///////////////////////////////////////////////////////////////////////
+            function loadStoryStorageInfo(storage_pk){
+                const url = "./loadStoryStorageInfo";
+
+                fetch(url, {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: "storage_pk="+storage_pk
+                })
+                .then(response => response.json())
+                .then((response) =>{
+                    const story_storage_name = document.querySelector("#story_storage_name");
+                    story_storage_name.innerText = response.data.storage_name;
+
+                    const storyStorageImg = document.querySelector("#storyStorageImg");
+                    storyStorageImg.src = response.data.storage_img;
+                });
+            }
+
+            let storyList = [];
+            let currentPage = 0 ;
+            function loadStorageStoryList(storage_pk){
+                currentPage=0;
+                storyList=[];
+                const url = "./loadStorageStoryList";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "storage_pk="+storage_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    const barBox = document.querySelector("#barBox");
+                    barBox.innerHTML = '';
+                    
+                    let startPageActive =0;
+                    for(e of response.data){
+                        const div = document.createElement("div");
+                        div.classList.add("bar");
+                        div.setAttribute("id","bar"+e.storyDto.story_pk);
+                        if(startPageActive == 0){
+                            div.classList.add("active");
+                        }
+                        startPageActive += 1;
+                        barBox.appendChild(div);                        
+                       
+                        storyList.push(e.storyDto.story_pk);
+                    }
+
+                    //클릭시 바뀌어야함.
+                    
+                    loadStory(storyList[currentPage]);
+                    
+                });
+            }
+            function loadStory(story_pk){
+                const url = "./loadUserStory";
+                
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "story_pk="+story_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    
+                    const story_created_at = document.querySelector("#story_created_at");
+                    const d = response.data.created_at;
+                    story_created_at.innerText = d[0]+"."+d[1]+"."+d[2]+".";
+
+                    const story_img = document.querySelector("#story_img");
+                    story_img.style.backgroundImage = "url("+response.data.story_photo+")";
+                    //텍스트 + color
+                    const story_text = document.querySelector("#story_textAndColor");
+                    story_text.innerText = response.data.story_text;
+                    story_text.style.color = response.data.text_color;
+                    story_text.style.backgroundColor = response.data.background_color;
+                    /// x y 위치정보
+                    const storyTextBox =  document.querySelector("#storyTextBox");
+                    storyTextBox.setAttribute("style", "top:"+response.data.y_coordinates+"%;left:"+response.data.x_coordinates+"%;");
+
+                    loadMyStoryViewInfo(story_pk);
+
+                });
+            }
+            function removeTouchImgEventListener() {
+                const story_img = document.querySelector("#story_img");
+                story_img.removeEventListener('touchstart', touchImg());
+            }
+
+
+            function touchImg(event) {
+                
+                const touchX = event.touches[0].clientX; // 터치 이벤트의 X 좌표
+                // 이미지의 가로 중앙 좌표
+                const imageCenterX = story_img.getBoundingClientRect().left + story_img.offsetWidth / 2;
+
+                if (touchX < imageCenterX) {
+                    if(currentPage == 0){
+                            closeStoryModal();
+                    }else{
+                        loadStory(storyList[currentPage-1]);
+                        currentPage -=1;
+                        const bar = document.querySelector("#bar"+storyList[currentPage+1]);
+                        bar.classList.remove("active");
+                    }
+                    
+                } else {
+                    // 이미지의 오른쪽 절반을 터치했을 때의 처리
+                    if(storyList.length == currentPage+1){                            
+                            closeStoryModal();
+                    }else{
+                        loadStory(storyList[currentPage+1]);
+                        currentPage +=1;
+                        const bar = document.querySelector("#bar"+storyList[currentPage]);
+                        bar.classList.add("active");
+                    }
+                    
+                }
+            }
+            function showViewBox(){
+                
+                const viewListOffcanvas = new bootstrap.Offcanvas(document.getElementById('viewListOffcanvas'));
+                viewListOffcanvas.show();
+                
+            }
+            function loadMyStoryViewInfo(story_pk){
+                const url = "./loadMyStoryViewInfo";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "story_pk="+story_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    const viewCount = document.querySelector("#viewCount");
+                    viewCount.innerText = response.data.viewCount;
+
+                    
+                    if(response.data.viewList.length != 0){
+                        let setCount = 1;
+                        for(e of response.data.viewList){
+                            if(setCount == 4){
+                                return
+                            }else{
+                                const viewProfile = document.getElementById("viewProfile"+setCount); 
+                                viewProfile.src = e.profileInfoDto.profile_photo;
+                                viewProfile.classList.remove("d-none");
+                                setCount +=1;
+                            }
+                            
+                        }     
+                    }
+                   
+                });
+            }
+            
+
+
+            function showStoryModal(storage_pk){
+                loadStoryStorageInfo(storage_pk);
+                loadStorageStoryList(storage_pk);
+                
+                const story_img = document.querySelector("#story_img");
+                
+                story_img.addEventListener('touchstart', touchImg);
+                
+                const storyModal = bootstrap.Modal.getOrCreateInstance("#storyModal");
+                storyModal.show();
+            }
+
+            function closeStoryModal(){
+                const storyModal = bootstrap.Modal.getOrCreateInstance("#storyModal");
+                storyModal.hide();
+                
+                const story_img = document.querySelector("#story_img");
+                story_img.src ="";
+                story_img.removeEventListener("touchstart", touchImg);    
+            } 
 
         
             
@@ -207,6 +738,46 @@
             #d-none-scroll::-webkit-scrollbar {
                 display: none;
             }
+            #barBox{
+                display: flex;
+                height: 0.25em;
+           }
+            .bar {
+                width: 92%;
+                height: 0.15em; /* 바의 높이 설정 */
+                background-color: rgb(89, 86, 86); /* 바의 배경색 설정 */
+                margin-right: 0.2em;
+            }
+            
+            .bar.active {
+                background-color: rgb(229, 223, 223);
+              
+            }
+
+            .bar:last-child {
+                margin-right: 1em;
+            } 
+            .bar:first-child {
+                margin-left: 1em;
+            }
+            .storageImg {
+                position: relative;
+                border: 0.1em solid transparent;
+                border-radius: 50%;
+                background-image: linear-gradient(#fff, #fff), 
+                linear-gradient(to top, rgb(117, 154, 255) 0%,  yellow 100%);
+                background-origin: border-box;
+                background-clip: content-box, border-box;
+            }
+            .profileImg {
+                position: relative;
+                border: 0.1em solid transparent;
+                border-radius: 50%;
+                background-image: linear-gradient(#fff, #fff), 
+                linear-gradient(to right, red 0%,  orange 100%);
+                background-origin: border-box;
+                background-clip: content-box, border-box;
+            }
         </style>
         
     </head>
@@ -216,15 +787,14 @@
             <div class="row">
                 <div class="col px-4 py-2">
                     <div class="row">
-                        <div class="col">
+                        <div class="col-auto">
                             <i class="fa-solid fa-bars"></i>
                         </div>
-                        <div class="col text-center fw-bold">
-                            멍's토킹
+                        <div class="col text-center fw-bold justify-content-center">
+                            <img class="img-fluid" src="/public/image/mstar/logo1.png" alt="" style="height: 1.3em;">
                         </div>
-                        <div class="col text-end">
+                        <div class="col-auto text-end">
                             <i class="fa-solid fa-bars"></i>&nbsp;
-                            <i class="fa-solid fa-magnifying-glass"></i>
                         </div>
                     </div>
                 </div>
@@ -247,7 +817,7 @@
                         <div class="col">
                             <div class="row mt-2">
                                 <div id="articleCount" class="col fs-4 text-center">
-                                    0
+                                    
                                 </div>
                             </div>
                             <div class="row">
@@ -256,10 +826,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col">
+                         
+                        <div onclick="showFollowListModal()" class="col">
                             <div class="row mt-2">
                                 <div id="followCount" class="col fs-4 text-center">
-                                    398
+                                    
                                 </div>
                             </div>
                             <div class="row">
@@ -268,10 +839,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col">
+                        <div onclick="showFollowingListModal()" class="col">
                             <div class="row mt-2">
                                 <div id="followingCount" class="col fs-4 text-center">
-                                    329
+                                    
                                 </div>
                             </div>
                             <div class="row">
@@ -317,15 +888,15 @@
                     </div>
                     <div id="d-none-scroll" class="row mt-3 overflow-x-auto">
                         <div class="col">
-                            <div id="storyStorageListBox" class="row" style="width: 200%;">
-                                <div id="storageAddButton" th:onclick="|location.href='@{./addStoryStoragePage(user_pk=${session.sessionUser.user_pk})}'|" class="col-auto">
+                            <div id="storyStorageListBox" class="row ms-2" style="width: 200%;">
+                                <div id="storageAddButton" th:onclick="|location.href='@{./addStoryStoragePage(user_pk=${session.sessionUser.user_pk})}'|" class="col-auto align-self-center">
                                     <div class="row">
                                         <div class="col fs-5 text-center">
-                                            <i class="fa-solid fa-plus rounded-circle border border-black py-3 px-3" style="height: 15vw; aspect-ratio: 1/1;"></i>
+                                            <i class="fa-solid fa-plus rounded-circle border border-black py-3 px-3" style="height: 3em; aspect-ratio: 1/1;"></i>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col py-0 text-center" style="font-size: small;">
+                                        <div class="col pt-2 text-center" style="font-size: small;">
                                             새로 만들기
                                         </div>
                                     </div>
@@ -335,18 +906,26 @@
                     </div>
                 </div>
             </div>
-            <div class="row mt-4 text-center">
+            <div class="row mt-3 text-center">
                 <div class="col">
-                    <div class="row fs-3">
-                        <div class="col border-bottom border-black border-2">
-                            <i class="fa-solid fa-table-cells"></i>
-                        </div>
+                    <div class="row mt-4 text-center">
                         <div class="col">
-                            <i class="fa-solid fa-user-tag text-secondary"></i>
+                            <div class="row fs-5">
+                                <div id="userArticleListButton" class="col border-bottom border-black border-1">
+                                    <i  class="fa-solid fa-table-cells"></i>
+                                </div>
+                                <div id="tagArticleListButton" class="col text-secondary">
+                                    <i  class="fa-solid fa-user-tag "></i>
+                                </div>
+                                <div id="scrapArticleListButton" class="col text-secondary">
+                                    <i  class="fa-solid fa-bookmark"></i>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </div>  
                 </div>
             </div>  
+
             <div id="articleListBox" class="row row-cols-3 ps-0 overflow-y-scroll" style="height: 20em;">
                 <div class="col"></div>
                 <div class="col mt-5 text-center">
@@ -422,23 +1001,204 @@
         </div>
 
         <div id="articleListTemplete" class="d-none">
-            <div class="col-4 px-0 positiond-relative articleListWrapper">
-                <img class="img-fluid articleFirstImg"  alt="" style="aspect-ratio: 1/1;">
-                <i class="position-absolute top-0 end-0 text-white pe-2 pt-2 icon" style="font-size: small;"></i>
+            <div class="col-4 px-0 position-relative articleListWrapper">
+                <img class="img-fluid articleFirstImg border border-white"  alt="" style="aspect-ratio: 1/1;">
+                <i class="position-absolute top-0 end-0 text-white pe-2 pt-2 icon"></i>
             </div>
         </div>
         
         <div id="storyStorageListTemplete" class="d-none">
-            <div class="col-auto ms-3 storyStorageListWrapper">
+            <div class="col-auto me-1 storyStorageListWrapper">
                 <div class="row">
-                    <div class="col">
-                        <img class="img-fluid rounded-circle border border-black storage_img"  src="" alt="" style="aspect-ratio: 1/1; height: 15vw;">
+                    <div class="col-auto rounded-circle storageImg px-0 py-0">
+                        <img class="img-fluid rounded-circle border border-white border-2 storage_img"  src="" alt="" style="aspect-ratio: 1/1; height: 4em;">
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col py-0 storage_name" style="font-size: small;">
+                    <div class="col pt-2 storage_name text-center" style="font-size: small;">
                         미우는 고양이
                     </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="storyModal" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content " style="background-color: black; overflow: hidden;">
+                    <div class="modal-body" style="overflow: hidden;">
+                        <div id="story_img" class="row position-relative px-0 rounded" style="height: 35em; background-size: 100%; background-repeat: no-repeat; background-position: center; background-color: rgb(49, 49, 49); top: 1rem;">   
+                            <div class="col px-0">
+                                <div class="row">
+                                    <div class="col">
+                                        <div id="barBox" class="mt-1 "> 
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row text-light mt-2">
+                                    <div class="col-auto">
+                                        <img id="storyStorageImg" class="rounded-circle ms-2"  alt="" style="aspect-ratio: 1/1; height: 2em;">
+                                    </div>
+                                    <div id="story_storage_name" class="col-auto align-self-center px-0">
+                                        
+                                    </div>
+                                    <div id="story_created_at" class="col-auto text-secondary align-self-center pt-1" style="font-size: 0.9em;">
+                                        
+                                    </div>
+                                    <div class="col pe-4 text-end text-white fs-4">
+                                        <i class="fa-solid fa-xmark" data-bs-dismiss="modal"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="storyTextBox" class="col-auto px-0 position-absolute" style="cursor: pointer; top: 50%; left: 0%;">
+                                <div id="story_textAndColor" class="px-2">
+                                    
+                                </div>
+                            </div>
+                        </div>    
+                        <div class="row px-2 py-3 mt-3">
+                            <div onclick="showViewBox()" class="col-auto">
+                                <div class="row">
+                                    <div class="col align-self-center" style="font-size: 0.8em;">
+                                        <i class="fa-solid fa-eye text-white"></i>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div id="viewCount" class="col align-self-center text-white text-center" style="font-size: 0.9em;">
+                                        13
+                                    </div>
+                                </div>
+                            </div>
+                            <div onclick="showViewBox()" class="col ps-2 pe-1 likeProfileListBox align-self-center">
+                                <img id="viewProfile1" class="img-fluid rounded-circle float-start border border-white border-2 d-none " src=""  style="aspect-ratio: 1/1; height: 2em; position: relative; z-index: 3;">
+                                <img id="viewProfile2" class="img-fluid rounded-circle float-start border border-white border-2 d-none" src=""  style="aspect-ratio: 1/1; height: 2em; position: absolute; left: 5em; z-index: 2">
+                                <img id="viewProfile3" class="img-fluid rounded-circle float-start border border-white border-2 d-none" src=""  style="aspect-ratio: 1/1; height: 2em; position: absolute; left: 6.5em; z-index: 1">
+                            </div>
+                            <div class="col-auto text-end me-1 text-white fs-4 align-self-center">
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </div>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+        </div>
+
+        <div id="followListModal" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content">
+                    <div class="modal-body" style="overflow: hidden;">
+                        <div class="row">
+                            <div onclick="closeFollowListModal()" class="col-2">
+                                <i class="fa-solid fa-chevron-left ps-2"></i>
+                            </div>
+                            <div id="profileUser_id" class="col text-center">
+                                
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                        <div class="row  mt-3" style="font-size: 0.8em;">
+                            <div onclick="loadUserFollowingList('')" id="follow" class="col px-0 text-center pb-2 border-bottom">
+                               
+                            </div>
+                            <div onclick="loadUserFollowList('')" id="following" class="col px-0 text-center pb-2 border-bottom text-secondary">
+                               
+                            </div>
+                        </div>                      
+                        <div class="row mt-2">
+                            <div class="col mx-2 rounded" style="background-color: rgb(218, 217, 217);">
+                                <div class="row position-relative">
+                                    <div class="col-auto pe-0 align-self-center">
+                                        <i class="fa-solid fa-magnifying-glass text-secondary"></i>
+                                    </div>
+                                    <div class="col-10">
+                                        <div class="row">
+                                            <div class="col">
+                                                <input id="searchInputBox" class="form-control ps-0 py-1" type="text" placeholder="검색" style="box-shadow: none; background-color: transparent; border: none;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="resetButton" class="col px-0 align-self-center d-none">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="searchListBox" class="col">
+
+                            </div>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+        </div>
+
+        <div id="searchListTemplete" class="d-none">
+            <div class="row searchListWrapper mt-3">
+                <div class="col-auto pe-0 align-self-center">
+                    <div class="row">
+                        <div class="col-auto">
+                            <img class="img-fluid rounded-circle searchProfile_photo" alt="" style="height: 3em; aspect-ratio: 1/1;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col align-self-center">
+                    <div class="row">
+                        <div class="col search_userid">
+                            
+                        </div>
+                    </div>
+                    <div class="row text-secondary" style="font-size: 0.8em;">
+                        <div class="col search_nick_name">
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2 align-self-center text-center" style="font-size: 0.8em;">
+                    <div class="row">
+                        <div  class="col listFollowButton rounded px-1">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="offcanvas offcanvas-bottom" tabindex="-1" id="viewListOffcanvas" aria-labelledby="offcanvasBottomLabel" style="height: auto; background-color: transparent; border: none;"> 
+            <div class="row rounded text-center bg-white mx-3">
+                <div class="col">
+                    <div  class="row border-bottom">
+                        <div id="menuBlock" data-bs-dismiss="offcanvas" onclick="showBlockBox()" class="col py-2 text-danger">
+                            차단
+                        </div>
+                    </div>
+                    <div class="row border-bottom text-danger">
+                        <div data-bs-dismiss="offcanvas" class="col py-2">
+                            신고
+                        </div>
+                    </div>
+                    <div class="row border-bottom justify-content-center ">
+                        <div onclick="insertBookMark()" data-bs-dismiss="offcanvas" id="bookMarkButton" class="col-auto">
+                            <div class="row">
+                                <div id="bookMarkText" class="col-auto py-2 px-1">
+                                    
+                                </div>
+                                <div class="col-auto px-0 text-start align-self-center">
+                                    <img id="bookMarkImg" src="" alt="" style="height: 1em;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="menuFollow" class="col py-2">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row rounded text-center bg-white mx-3 mt-2 mb-3">
+                <div data-bs-dismiss="offcanvas" onclick="justHideMenuBox()" class="col py-2">
+                    취소
                 </div>
             </div>
         </div>

@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.psychopath.dogstalking.club.dto.ClubArticleImageDto;
 import com.psychopath.dogstalking.club.dto.ClubDto;
 import com.psychopath.dogstalking.club.dto.ClubFreeBoardDto;
 import com.psychopath.dogstalking.club.dto.ClubStatusLogDto;
@@ -100,6 +101,10 @@ public class ClubServiceImpl {
 	public void insertLeader(ClubUserRanklogDto clubUserRanklogDto){
 		clubSqlMapper.insertLeader(clubUserRanklogDto);
 	}
+	
+	public void insertClubUserRankTwo(ClubUserRanklogDto clubUserRanklogDto){
+		clubSqlMapper.insertClubUserRankTwo(clubUserRanklogDto);
+	}
 
 	public List<Map<String, Object>> selectApplyList(int club_pk){
 		return clubSqlMapper.selectApplyList(club_pk);	
@@ -139,5 +144,9 @@ public class ClubServiceImpl {
 	
 	public void updateLeader(ClubUserRanklogDto clubUserRanklogDto) {
 		clubSqlMapper.updateLeader(clubUserRanklogDto);
+	}
+
+	public Integer selectClubCategoryPk(int club_user_pk){
+		return clubSqlMapper.selectClubCategoryPk(club_user_pk);
 	}
 }

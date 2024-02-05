@@ -26,6 +26,10 @@
                     const profile_info_pk = profileInfoDto.profile_info_pk;
                     const insertButton = document.querySelector("#insertButton");
                     insertButton.setAttribute("onclick" , "insertStoryStorage("+profile_info_pk+")");
+                    const coverPhoto = document.querySelector("#coverPhoto");
+                    coverPhoto.src = profileInfoDto.profile_photo;
+                    loadMyAllStoryList(profile_info_pk);
+                    
                 });
                 
             }
@@ -66,22 +70,108 @@
                         console.log(xhr.responseText);
                     }
                 };
-                let storage_name = document.querySelector("#storage_name").value;
-                if(storage_name == null){
+                let storage = document.querySelector("#storage_name");
+                let storage_name = storage.value;
+                console.log(storage_name)
+                if(storage_name == ""){
                     storage_name = "하이라이트";
                 }
-                
-            
-
                 formData.append("imageFiles", imageFiles)
+                
+                
+                
+                
                 formData.append("profile_info_pk", profile_info_pk);
                 formData.append("storage_name", storage_name);
                 
+                const storyPkList = document.querySelectorAll(".insertStoryPk");
+                if(storyPkList.length != 0){
+                    for(e of storyPkList){
+                        console.log(e.value);
+                        formData.append("storyPkList", e.value)
 
-                xhr.send(formData);
+                     }
+                     xhr.send(formData);
+                     location.href='./profilePage?user_pk='+user_pk;
+                }else{
+                    alert("하나이상의 스토리를 등록해주셔야합니다.")
+                }
+                
 
-                location.href='./profilePage?user_pk='+user_pk;
+                
+
+                
             }
+            function loadMyAllStoryList(profile_info_pk){
+                const url = "./loadMyAllStoryList";
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    
+                    const storyListBox = document.querySelector("#storyListBox");
+                    
+                    for(e of response.data){
+                        const storyListWrapper  = document.querySelector("#storyListTemplete .storyListWrapper").cloneNode(true);
+                        storyListWrapper.setAttribute("onclick","selectStory("+e.story_pk+",this)")
+                        onclick="selectStory(this)"
+
+                        const storyImg = storyListWrapper.querySelector(".storyImg");
+                        storyImg.src = e.story_photo;
+
+                        const story_text = storyListWrapper.querySelector(".story_textAndColor");
+                        story_text.innerText = e.story_text;
+                        story_text.style.color = e.text_color;
+                        story_text.style.backgroundColor = e.background_color;
+                        
+                        /// x y 위치정보
+                        const storyTextBox =  storyListWrapper.querySelector(".storyTextBox");
+                        storyTextBox.setAttribute("style", "top:"+e.y_coordinates+"%;left:"+e.x_coordinates+"%;");
+
+                        storyListBox.appendChild(storyListWrapper);
+                    }   
+                });
+            }
+            function selectStory(story_pk, target){
+           
+                target.setAttribute("style" ,"filter: opacity(0.7)");
+                
+                const input = document.createElement("input");
+                input.setAttribute("class", "insertStoryPk")
+                input.setAttribute("type" , "hidden");
+                input.setAttribute("value", story_pk);
+
+                const checkIcon = target.querySelector(".checkIcon");
+                checkIcon.classList.remove("fa-regular", "fa-circle", "text-white");
+                checkIcon.classList.add("fa-solid", "fa-circle-check", "text-primary");
+
+                target.appendChild(input);
+
+                target.setAttribute("onclick","unSelectStory("+story_pk+",this)");
+
+            }
+            function unSelectStory(story_pk,target){
+                
+                target.removeAttribute("style" ,"filter: opacity(0.7)");
+
+                const insertStoryPk = target.querySelector(".insertStoryPk");
+                insertStoryPk.remove();
+                
+                const checkIcon = target.querySelector(".checkIcon");
+                checkIcon.classList.add("fa-regular", "fa-circle", "text-white");
+                checkIcon.classList.remove("fa-solid", "fa-circle-check", "text-primary");
+
+                target.setAttribute("onclick","selectStory("+story_pk+",this)");
+
+             }
+
+
+
             window.addEventListener("DOMContentLoaded", () =>{
                 getUrlKey();
                 getProfileInfoDto()
@@ -134,11 +224,11 @@
                     완료
                 </div>
             </div>
-            <div class="row mt-5">
+            <div class="row border-bottom mt-2 pb-4">
                 <div class="col">
                     <div class="row mt-3">
                         <div class="col text-center">
-                            <img onclick="coverPhotoUpload()" src="/public/image/commons/commonsDogImg1.png" id="coverPhoto" class="img-fluid rounded-circle border border-primary border-1" alt="" style="aspect-ratio: 1/1; height: 30vw;">
+                            <img onclick="coverPhotoUpload()" src="" id="coverPhoto" class="img-fluid rounded-circle border border-primary border-1" alt="" style="aspect-ratio: 1/1; height: 30vw;">
                         </div>
                     </div>
                     <div class="row mt-2">
@@ -147,7 +237,7 @@
                             커버 사진 수정
                         </div>
                     </div>
-                    <div class="row mt-3">
+                    <div class="row">
                         <div class="col"></div>
                         <div class="col fw-bold " >
                             <input id="storage_name" class="form-control border text-center" type="text" placeholder="하이라이트">
@@ -155,7 +245,33 @@
                         <div class="col"></div>
                     </div>
                 </div>   
-            </div>       
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div id="storyListBox" class="row row-cols-3">
+                      
+                    </div>
+                </div>
+            </div>    
+        </div>
+
+        <div id="storyListTemplete" class="d-none">
+            <div onclick="selectStory(this)" class="col storyListWrapper position-relative border border-white">
+                <div class="row ">
+                    <div class="col px-0">
+                        <img class="img-fluid storyImg" alt="" style="height: 10em; aspect-ratio: 1/1;">
+                        <div class="col-auto px-0 position-absolute checkBox" style="cursor: pointer; top: 0%; left: 80%;">
+                            <i class="fa-regular fa-circle text-white checkIcon"></i>
+                        </div>
+                        <div class="col-auto px-0 position-absolute storyTextBox" style="cursor: pointer; top: 50%; left: 50%;">
+                            <div class="px-2 story_textAndColor " style="font-size: 0.3em;">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
