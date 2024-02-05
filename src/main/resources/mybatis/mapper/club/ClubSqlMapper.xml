@@ -206,4 +206,15 @@
         SELECT ms_club_user_statuslog.clubcategory_pk	FROM ms_club_user_statuslog WHERE ms_club_user_statuslog.club_user_pk=#{club_user_pk};
     </select>
 
+
+    <!--이미지 게시판-->
+    <insert id="insertClubImgFreeBoard">
+        INSERT INTO ms_club_imgboard(views)
+        VALUES (0); 
+    </insert>
+
+    <insert id="insertClubImgFreeBoardImage">
+        INSERT INTO ms_club_imgboard_imgs(clubimgboard_pk,location,original_filename)
+        VALUES (#{clubimgboard_pk},#{location},#{original_filename}); 
+    </insert>
 </mapper>

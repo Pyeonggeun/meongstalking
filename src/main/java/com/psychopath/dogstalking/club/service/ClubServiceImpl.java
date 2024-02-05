@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.psychopath.dogstalking.club.dto.ClubArticleImageDto;
+import com.psychopath.dogstalking.club.dto.ClubArticleImgDto;
 import com.psychopath.dogstalking.club.dto.ClubDto;
 import com.psychopath.dogstalking.club.dto.ClubFreeBoardDto;
+import com.psychopath.dogstalking.club.dto.ClubImgBoardDto;
 import com.psychopath.dogstalking.club.dto.ClubStatusLogDto;
 import com.psychopath.dogstalking.club.dto.ClubUserDto;
 import com.psychopath.dogstalking.club.dto.ClubUserRanklogDto;
@@ -148,5 +150,18 @@ public class ClubServiceImpl {
 
 	public Integer selectClubCategoryPk(int club_user_pk){
 		return clubSqlMapper.selectClubCategoryPk(club_user_pk);
+	}
+
+	public void writeImgArticle(ClubImgBoardDto freeboardArticleDto, List<ClubArticleImgDto> articleImageDtoList) {
+		
+		int articlePk = clubSqlMapper.createArticlePk();
+
+		freeboardArticleDto.setClubimgboard_pk(articlePk);
+		clubSqlMapper.insertClubImgFreeBoard(freeboardArticleDto);
+		
+		for(ClubArticleImgDto articleImageDto : articleImageDtoList) {
+			articleImageDto.setClubimgboard_pk(articlePk);
+			clubSqlMapper.insertClubImgFreeBoardImage(articleImageDto);
+		}
 	}
 }

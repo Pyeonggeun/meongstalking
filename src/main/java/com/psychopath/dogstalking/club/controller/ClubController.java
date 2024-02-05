@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.ArrayList;
 import java.util.Date;
 import java.io.File;
 import java.io.IOException;
@@ -12,8 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.psychopath.dogstalking.club.dto.ClubArticleImageDto;
+import com.psychopath.dogstalking.club.dto.ClubArticleImgDto;
 import com.psychopath.dogstalking.club.dto.ClubDto;
 import com.psychopath.dogstalking.club.dto.ClubFreeBoardDto;
+import com.psychopath.dogstalking.club.dto.ClubImgBoardDto;
 import com.psychopath.dogstalking.club.dto.ClubStatusLogDto;
 import com.psychopath.dogstalking.club.dto.ClubUserDto;
 import com.psychopath.dogstalking.club.dto.ClubUserRanklogDto;
@@ -438,5 +441,64 @@ public class ClubController {
 
         return "club/photoAlbumWritePage";
     }
+
+    @RequestMapping("/registerImagePage")
+    public String registerImagePage(HttpSession session, ClubImgBoardDto params, MultipartFile[] imageFiles) {
+        List<ClubArticleImgDto> articleImageDtoList = new ArrayList<>(); 
+		
+		// 파일 저장 로직
+		if(imageFiles != null) {
+			for(MultipartFile multipartFile : imageFiles) {
+				if(multipartFile.isEmpty()) {
+					continue;
+				}
+
+				String rootPath = "C:/uploadFiles/";
+				
+				// 날짜별 폴더 생성.
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/");
+				String todayPath = sdf.format(new Date());
+				
+				File todayFolderForCreate = new File(rootPath + todayPath);
+				
+				if(!todayFolderForCreate.exists()) {
+					todayFolderForCreate.mkdirs();
+				}
+				
+				String originalFileName = multipartFile.getOriginalFilename();
+
+				//파일명 충돌 회피 - 랜덤, 시간 조합
+				String uuid = UUID.randomUUID().toString();
+				long currentTime = System.currentTimeMillis();
+				String fileName = uuid + "_" + currentTime;
+				
+				// 확장자 추출
+				String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
+				fileName += ext;
+				
+				try {
+					multipartFile.transferTo(new File(rootPath + todayPath + fileName));					
+				}catch(Exception e) {
+					e.printStackTrace();
+				}
+				
+				ClubArticleImgDto clubArticleImgDto = new ClubArticleImgDto();
+				clubArticleImgDto.setLocation(todayPath + fileName);
+				clubArticleImgDto.setOriginal_filename(originalFileName);
+				
+				articleImageDtoList.add(clubArticleImgDto);
+				
+			}
+		}
+
+        UserDto userDto = (UserDto) session.getAttribute("sessionUser");
+        int clubPk = clubService.selectClubPK(userDto.getUser_pk());
+        int useid = userDto.getUser_pk();
+		params.setClub_pk(clubPk);
+        params.setClub_user_pk(useid);
+		clubService.writeImgArticle(params, articleImageDtoList);
     
+
+        return "redirect:./photoAlbumPage"; 
+    }
 }
