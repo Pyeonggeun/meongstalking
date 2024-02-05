@@ -96,6 +96,10 @@
                 height: 32rem;
             }
 
+            .modal-body::-webkit-scrollbar {
+                display: none;
+            }
+
             .myLocationMarkerBox {
                 position: relative;
                 width: var(--my-location-marker-box-size);
@@ -525,16 +529,28 @@
                     opacity: 0;
                 }
             }
+
+            @keyframes scale {
+                50% {
+                    width: 10rem;
+                    transform: translateX(-0.5rem);
+                }
+            }
             
             .label-icon {
                 font-variation-settings:
                 'FILL' 1
             }
 
-            .heart-icon {
+            .lock-icon {
                 font-variation-settings:
                 'FILL' 1
             }
+
+            /* .heart-icon {
+                font-variation-settings:
+                'FILL' 1
+            } */
 
         </style>
 
@@ -623,6 +639,11 @@
                 // asdf 마저 채우기
                 showMyCollectionModal();
             }
+
+            function openDetailCollection() {
+                // asdf 마저 채우기
+                showDetailCollectionModal();
+            }
             
             function showAndHideAlertModal() {
                 const modal = bootstrap.Modal.getOrCreateInstance("#alertModal");
@@ -635,6 +656,11 @@
 
             function showMyCollectionModal() {
                 const modal = bootstrap.Modal.getOrCreateInstance("#myCollectionModal");
+                modal.show();
+            }
+
+            function showDetailCollectionModal() {
+                const modal = bootstrap.Modal.getOrCreateInstance("#detailCollectionModal");
                 modal.show();
             }
 
@@ -838,7 +864,7 @@
         <div id="myCollectionModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 3000; background: linear-gradient(-45deg, #422C52, #ad93c2);">
             <div class="modal-dialog modal-fullscreen">
                 <div class="modal-content mx-auto" style="width: 95%;">
-                    <div class="modal-body">
+                    <div class="modal-body pb-5">
                         <div class="row">
                             <div class="col">
                                 <div class="row">
@@ -847,20 +873,47 @@
                                     </div>
                                 </div>
                                 <div class="row mt-3 px-3">
-                                    <div class="col rounded-pill py-1 border" style="font-size: 1.2rem; background: linear-gradient(to top, #f3d0fa 0%, #b387d4 100%);">
+                                    <div class="col rounded-pill border" style="font-size: 1.2rem; background: linear-gradient(to top, #f3d0fa 0%, #b387d4 100%);">
                                         💛 즐겨찾기
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col">
-                                        <div id="collectionBox" class="row row-cols-3 px-2">
+                                        <div id="collectionBookmarkBox" class="row row-cols-3 px-2">
 
+                                            <div onclick="openDetailCollection()" class="collectionSSRWrapper col px-1 mt-4">
+                                                <div class="rounded d-flex align-items-center" style="aspect-ratio: 3/4; position: relative; background: linear-gradient(-45deg, #faecc7, #b9f1e2, #aac7f1, #ecd4fd, #fad0f8); box-shadow: 1px 1px 3px 1px black;">
+                                                    <img class="collectionImage img-fluid d-block mx-auto rounded" th:src="@{/public/image/commons/list2.jpeg}" style="aspect-ratio: 3/4; object-fit: cover; width: 90%;">
+                                                    <img class="collectionQuestionImage img-fluid d-block mx-auto rounded bg-black" th:src="@{/public/image/follow/question.png}" style="position: absolute; aspect-ratio: 3/4; object-fit: contain; width: 90%; left: 5%;">
+                                                    <div class="rounded-bottom" style="position: absolute; background: linear-gradient(to left, rgb(255, 255, 255, 0.8) 0%, rgb(255, 255, 255, 0.4) 100%); width: 90%; height: 1.5rem; bottom: 5%; right: 5%;">
+                                                        <div class="progress border rounded-pill mt-1 me-1 float-end" style="width: 90%; height: 70%; background: linear-gradient(to top, #3f3f3e 0%, #91908f 50%);">
+                                                            <div class="collectionProgress progress-bar rounded-pill" style="background: linear-gradient(to top, #d4a115 0%, #fddb1b 50%);">
+                                                                <span class="collectionProgressContent fw-bold" style="text-shadow: 1px 1px black; position: absolute; right: 35%;">0 / 20</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="text-white fw-bold" style="position: absolute; top: 0; left: 2%; text-shadow: 1px 1px black;">
+                                                            <span style="font-size: 0.7rem;">Lv</span><span class="collectionLevel">2</span>
+                                                        </div>
+                                                    </div>
+                                                    <div style="position: absolute; width: 3rem; height: 3rem; top: -6%; left: -2%;">
+                                                        <span class="material-symbols-rounded label-icon" style="transform: rotate(90deg); font-size: 3rem; background: linear-gradient(-135deg, #faecc7, #aac7f1, #fad0f8); background-clip: text; -webkit-text-fill-color: transparent; -webkit-text-stroke: 1px rgb(160, 160, 160);">
+                                                            label
+                                                        </span>
+                                                        <img class="img-fluid" th:src="@{/public/image/follow/SSR.png}" style="position: absolute; width: 1.5rem; height: 1rem; bottom: 15%; left: 24.5%; opacity: 0.4;">
+                                                        <span class="text-white fw-bold" style="position: absolute; top: 11%; left: 24.5%; -webkit-text-stroke: 1px rgb(160, 160, 160); background: linear-gradient(to top, #b387d4, #fff, #719ee2); background-clip: text; -webkit-text-fill-color: transparent;">SSR</span>
+                                                    </div>
+                                                    <div class="rounded text-center d-grid align-items-center" style="position: absolute; width: 1.7rem; height: 1.7rem; top: 2%; right: 2%; background: #D96161; border: 1.5px solid #9b3b3b;">
+                                                        <span class="material-symbols-rounded heart-icon" style="font-size: 1.1rem; color: #fff; text-shadow: 1px 1px black;">
+                                                            favorite
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             
-
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mt-3 px-3">
+                                <div class="row mt-4 px-3">
                                     <select class="rounded-pill py-1 border" style="font-size: 1.2rem; background: linear-gradient(to top, #f3d0fa 0%, #b387d4 100%);">
                                         <option>💛 A-Z</option>
                                         <option>💛 Z-A</option>
@@ -868,14 +921,255 @@
                                         <option>💛 ★-SSR</option>
                                     </select>
                                 </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div id="collectionBox" class="row row-cols-3 px-2">
+
+
+
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div id="sortingButton"></div>
+                        <!-- <div id="sortingButton"></div> -->
                         <div class="actionCircleCloseOut" data-bs-dismiss="modal" style="position: fixed;">
                             <div class="actionCircleCloseIn">
                                 <span class="material-symbols-outlined close_icon">
                                     close
                                 </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="detailCollectionModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 3000; background: linear-gradient(-45deg, #422C52, #ad93c2);">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content mx-auto" style="width: 95%;">
+                    <div class="modal-body py-1">
+                        <div class="row">
+                            <div class="col rounded" style="position: relative; height: 13rem; background: linear-gradient(-45deg, #faecc7, #b9f1e2, #aac7f1, #ecd4fd, #fad0f8);">
+                                <span class="rounded-pill px-2 border" style="position: absolute; top: 4%; left: 2%; background: linear-gradient(to bottom, #eca381, #fad1c7);" data-bs-dismiss="modal">돌아가기 &#8617;</span>
+                                <span class="material-symbols-rounded heart-icon" style="position: absolute; font-size: 2rem; top: 4%; right: 3%; color: #fff;">
+                                    favorite
+                                </span>
+                                <span class="material-symbols-outlined" style="position: absolute; font-size: 2.3rem; top: 24%; right: 2.3%; color: #fff;">
+                                    open_with
+                                </span>
+                                <span class="material-symbols-outlined" style="position: absolute; font-size: 2.3rem; top: 48%; right: 2.3%; color: #fff;">
+                                    lightbulb
+                                </span>
+                                <span class="material-symbols-outlined" style="position: absolute; font-size: 2.3rem; top: 72%; right: 2.3%; color: #fff;">
+                                    mail
+                                </span>
+                                <img class="img-fluid d-block mx-auto" th:src="@{/public/image/follow/prop.png}" style="position: absolute; width: 10rem; height: 3rem; bottom: 0; left: 28%;">
+                                <div class="d-grid align-items-center" style="position: absolute; width: 9rem; height: 10rem; top: 10%; left: 28%; border-radius: 50%; background: linear-gradient(to bottom, #faecc7, #b9f1e2, #aac7f1, #ecd4fd, #fad0f8); box-shadow: 1px 0 0 1px #636363, 2px 0 0 1px #636363, 3px 0 0 1px #636363, 4px 0 0 1px #636363, 5px 0 0 1px #636363; animation: scale 3s linear infinite;">
+                                    <!-- <img class="img-fluid d-block mx-auto" th:src="@{/public/image/commons/list1.jpeg}" style="width: 90%; height: 90%; border-radius: 50%;"> -->
+                                    <img class="img-fluid d-block mx-auto bg-black" th:src="@{/public/image/follow/question.png}" style="width: 90%; height: 90%; border-radius: 50%;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rounded-pill bg-white border border-2 text-secondary text-center" style="position: absolute; width: 90%; height: 2rem; top: 30%; left: 5%; font-size: 1.4rem;">? ? ?</div>
+                        <div class="row justify-content-center" style="margin-top: 2rem;">
+                            <div class="col-6">
+                                <div class="progress rounded-pill bg-black border" style="height: 0.7rem;">
+                                    <div class="progress-bar rounded-pill bg-warning" style="width: 50%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                <span>24</span> / <span>80</span>&nbsp;&nbsp;&nbsp;Lv <span>3</span>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-center fw-bold" style="font-size: 1.1rem;">
+                                        ? ? ? kg
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-body-tertiary text-center" style="font-size: 0.9rem;">
+                                        몸무게
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 2rem;"></div>
+                            <div class="col-3">
+                                <div class="row">
+                                    <div class="col text-center fw-bold" style="font-size: 1.1rem;">
+                                        ? ?
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-body-tertiary text-center" style="font-size: 0.9rem;">
+                                        성별
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 2rem;"></div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-center fw-bold" style="font-size: 1.1rem;">
+                                        ? ? ? cm
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-body-tertiary text-center" style="font-size: 0.9rem;">
+                                        키
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <hr class="border-2 text-body-tertiary">
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-center fw-bold" style="font-size: 1.1rem;">
+                                        ? ? ? ?
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-body-tertiary text-center" style="font-size: 0.9rem;">
+                                        MBTI
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 2rem;"></div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-center fw-bold" style="font-size: 1.1rem;">
+                                        ? ? 형
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-body-tertiary text-center" style="font-size: 0.9rem;">
+                                        혈액형
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 2rem;"></div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-center fw-bold" style="font-size: 1.1rem;">
+                                        ? ?
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-body-tertiary text-center" style="font-size: 0.9rem;">
+                                        음주여부
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 2rem;"></div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-center fw-bold" style="font-size: 1.1rem;">
+                                        ? ?
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-body-tertiary text-center" style="font-size: 0.9rem;">
+                                        흡연여부
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <hr class="border-2 text-body-tertiary">
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-center fw-bold" style="font-size: 1.1rem;">
+                                        ? ? ? ? ?
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-body-tertiary text-center" style="font-size: 0.9rem;">
+                                        취미
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-center fw-bold" style="font-size: 1.1rem;">
+                                        ? ? ? ? ?
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-body-tertiary text-center" style="font-size: 0.9rem;">
+                                        성적지향
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-center text-body-tertiary" style="font-size: 0.8rem;">
+                                        <p class="mb-0" style="height: 1rem;">첫 온도 36.5℃</p>
+                                        <p class="mb-0" style="height: 1rem;">&dtrif;</p>
+                                    </div>
+                                    <div class="col-3 fw-bold text-end" style="font-size: 1.1rem; color: #719ee2;">
+                                        37.5℃
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="progress">
+                                            <div class="progress-bar rounded" style="background: #719ee2; width: 37.5%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-1">
+                                    <div class="col text-body-tertiary text-center" style="font-size: 0.9rem;">
+                                        인스타 활동온도
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col rounded" style="height: 20rem; background: #fbf9ff;">
+                                <div class="row mt-2">
+                                    <div class="col text-center fw-bold" style="font-size: 1.2rem;">
+                                        체취도감&nbsp;&nbsp;<span style="font-size: 0.75rem;">5 / 10</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="row row-cols-4">
+
+                                            <div class="col px-1 mt-3">
+                                                <div class="rounded d-grid align-content-center" style="position: relative; aspect-ratio: 1/1; background: linear-gradient(135deg, #7d7b7b, #595858); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" data-bs-title="<p class='mb-0'>총 수집된 횟수 | 3회</p><p class='mb-0'>관심표현 갯수 | 10개</p>">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #899593, #4D5655); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #9B9396;">No.123</span>
+                                                        <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -7%; font-size: 2rem; color: #68645D; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <!-- <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="<em>Tooltip</em> <u>with</u> <b>HTML</b>">
+                                                    Tooltip with HTML
+                                                </button> -->
+                                            </div>
+
+                                            <div class="col px-1 mt-3">
+                                                <div class="rounded d-grid align-content-center" style="position: relative; aspect-ratio: 1/1; background: linear-gradient(135deg, #9e3f3f, #902929); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #a85f50, #964636); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1119,6 +1413,13 @@
 
         </div>
 
+        <!-- <script>
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+        </script> -->
+
+        <!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script> -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     </body>
     
