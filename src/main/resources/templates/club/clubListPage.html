@@ -174,15 +174,89 @@
 
         <div class="row border-bottom border-5 border-gray">
             <div class="col my-3">
-                <p th:text="${showclubpk.name}" class="bold-text"></p>
-                <p th:utext="${showclubpk.content}"></p>
+                <p th:text="${showclubpk.name}" class="fw-bold fs-5" style="color: #30c000;"></p>
+                <p class="text-secondary" style="font-size: 0.9em;" th:utext="${showclubpk.content}"></p>
             </div>
         </div>
 
-        <div class="row p-3">
-            <p><strong>사진첩</strong></p>
-            우왕 사진들
+        <div class="row py-3 border-bottom border-5 border-gray">
+            <div class="col">
+                <div class="row">
+                    <div class="col fw-bold">사진첩</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col" style="overflow: auto;">
+                        <div class="row" style="width: 230%;">
+                            <div class="col px-1">
+                                <img style="height: 7em;" class="img-fluid" src="/uploadFiles/2024/02/06/2a5993da-e659-446c-9067-2cd4356b51a8_1707180392210.jpg">
+                            </div>
+                            <div class="col px-1">
+                                <img style="height: 7em;" class="img-fluid" src="/uploadFiles/2024/02/06/2a5993da-e659-446c-9067-2cd4356b51a8_1707180392210.jpg">
+                            </div>
+                            <div class="col px-1">
+                                <img style="height: 7em;" class="img-fluid" src="/uploadFiles/2024/02/06/2a5993da-e659-446c-9067-2cd4356b51a8_1707180392210.jpg">
+                            </div>
+                            <div class="col px-1">
+                                <img style="height: 7em;" class="img-fluid" src="/uploadFiles/2024/02/06/2a5993da-e659-446c-9067-2cd4356b51a8_1707180392210.jpg">
+                            </div>
+                            <div class="col px-1">
+                                <img style="height: 7em;" class="img-fluid" src="/uploadFiles/2024/02/06/2a5993da-e659-446c-9067-2cd4356b51a8_1707180392210.jpg">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <div class="row py-3 border-bottom border-5 border-gray">
+            <div class="col">
+                <div class="row">
+                    <div class="col fw-bold">최근 방명록</div>
+                </div>
+                <div class="row">
+                    <!-- 리스트 박스 -->
+                    <div class="col">
+
+                        <div class="row pt-3 px-1">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col-7">
+                                        <img src="/public/image/dog_img.png" class="img-fluid rounded-circle" style="width: 2em; height: 2em;">
+                                        <span class="fw-bold" style="color: #f45600;">닉네임1</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-2" >
+                                    <div class="col" style="color: #200909;">레이아웃 테스트글 입니다. 야호홓.... 으하하... 큐큐큐큐... 야야야야양...아아아으</div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col d-grid">
+                                        <a class="text-black btn btn-secondary" style="background-color: #d5e9ff;">더보기</a>
+                                    </div>
+                                </div>
+                    
+                            </div>
+                        </div>
+            
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row py-3">
+            <div class="col">
+                <div class="row">
+                    <div class="col fw-bold">멤버</div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        멤버 리스트
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
 
         <div th:if="${ApplyStatus != 2}" class="row">
             <div th:if="${ApplyStatus == 1} or ${ApplyStatus == 3}" class="col">

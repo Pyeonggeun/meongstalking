@@ -426,8 +426,12 @@ public class ClubController {
         int useid = userDto.getUser_pk();
         int pk = clubService.selectClubPK(useid);
 
-        List<Map<String, Object>> freeBoardList = clubService.selectFreeBoardAll(pk);
+        //System.out.println("pk: "+pk);
+
+        List<Map<String, Object>> freeBoardList = clubService.selectImgFreeBoardAll(pk);
         model.addAttribute("freeBoardList", freeBoardList);
+
+        //System.out.println("freeBoardList: "+freeBoardList);
 
         Map<String, Object> clubTF = clubService.applyClubUserTF(userDto.getUser_pk());
         model.addAttribute("clubTF", clubTF);
@@ -445,7 +449,7 @@ public class ClubController {
 
         List<Map<String, Object>> freeImgBoardList = clubService.selectImgFreeBoardAll(pk);
 
-        System.out.println("freeImgBoardList: "+freeImgBoardList);
+       // System.out.println("freeImgBoardList: "+freeImgBoardList);
         model.addAttribute("freeBoardList", freeImgBoardList);
 
         Map<String, Object> clubTF = clubService.applyClubUserTF(userDto.getUser_pk());
