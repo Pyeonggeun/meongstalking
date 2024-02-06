@@ -31,20 +31,15 @@ public class ClubServiceImpl {
     public List<Map<String, Object>> selectFreeBoardAll(int pk) {
 		return clubSqlMapper.selectFreeBoardAll(pk);
 	}
+
+	public List<Map<String, Object>> selectImgFreeBoardAll(int pk) {
+		return clubSqlMapper.selectImgFreeBoardAll(pk);
+	}
     
 	//게시판
 	public void writeArticle(ClubFreeBoardDto clubFreeBoardDto) {
-		
-		//int articlePk = clubSqlMapper.createArticlePk();
-		//, List<ClubArticleImageDto> clubArticleImageDto
-
-		//clubFreeBoardDto.setClubfreeboard_pk(articlePk);
+	
 		clubSqlMapper.insertFreeBoard(clubFreeBoardDto);
-		/* 
-		for(ArticleImageDto articleImageDto : articleImageDtoList) {
-			articleImageDto.setArticle_id(articlePk);
-			guestBookSqlMapper.insertImage(articleImageDto);
-		}*/
 	}
 
 	// 댓글
@@ -152,12 +147,12 @@ public class ClubServiceImpl {
 		return clubSqlMapper.selectClubCategoryPk(club_user_pk);
 	}
 
-	public void writeImgArticle(ClubImgBoardDto freeboardArticleDto, List<ClubArticleImgDto> articleImageDtoList) {
+	public void writeImgArticle(ClubImgBoardDto clubImgBoardDto, List<ClubArticleImgDto> articleImageDtoList) {
 		
 		int articlePk = clubSqlMapper.createArticlePk();
 
-		freeboardArticleDto.setClubimgboard_pk(articlePk);
-		clubSqlMapper.insertClubImgFreeBoard(freeboardArticleDto);
+		clubImgBoardDto.setClubimgboard_pk(articlePk);
+		clubSqlMapper.insertClubImgFreeBoard(clubImgBoardDto);
 		
 		for(ClubArticleImgDto articleImageDto : articleImageDtoList) {
 			articleImageDto.setClubimgboard_pk(articlePk);

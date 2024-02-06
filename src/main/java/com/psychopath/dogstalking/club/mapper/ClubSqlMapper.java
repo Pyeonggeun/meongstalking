@@ -5,8 +5,10 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.psychopath.dogstalking.club.dto.ClubArticleImgDto;
 import com.psychopath.dogstalking.club.dto.ClubDto;
 import com.psychopath.dogstalking.club.dto.ClubFreeBoardDto;
+import com.psychopath.dogstalking.club.dto.ClubImgBoardDto;
 import com.psychopath.dogstalking.club.dto.ClubStatusLogDto;
 import com.psychopath.dogstalking.club.dto.ClubUserDto;
 import com.psychopath.dogstalking.club.dto.ClubUserRanklogDto;
@@ -76,5 +78,10 @@ public interface ClubSqlMapper {
 
     //회원 승인 미승인 상태
     public Integer selectClubCategoryPk(int club_user_pk);
+
+
+    public void insertClubImgFreeBoard(ClubImgBoardDto clubImgBoardDto);
+    public void insertClubImgFreeBoardImage(ClubArticleImgDto articleImageDto);
+    public List<Map<String, Object>> selectImgFreeBoardAll(int s);
 
 }

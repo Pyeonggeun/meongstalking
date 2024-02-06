@@ -16,6 +16,12 @@
         where ms_club_freeboard.club_pk=#{club_pk}
     </select>
 
+    <select id="selectImgFreeBoardAll" resultType="map">
+        SELECT * FROM ms_club_imgboard
+        JOIN ms_club_imgboard_imgs ON ms_club_imgboard.clubimgboard_pk = ms_club_imgboard_imgs.clubimgboard_pk
+        WHERE ms_club_imgboard.club_pk=#{club_pk};
+    </select>
+
     <!-- 댓글 -->
 
 	<insert id="insertComment">
@@ -209,12 +215,17 @@
 
     <!--이미지 게시판-->
     <insert id="insertClubImgFreeBoard">
-        INSERT INTO ms_club_imgboard(views)
-        VALUES (0); 
+        INSERT INTO ms_club_imgboard(,club_user_pk,club_pk,views)
+        VALUES (#{img},#{club_user_pk},#{club_pk},0); 
     </insert>
 
     <insert id="insertClubImgFreeBoardImage">
         INSERT INTO ms_club_imgboard_imgs(clubimgboard_pk,location,original_filename)
-        VALUES (#{clubimgboard_pk},#{location},#{original_filename}); 
+        VALUES (#{clubimgboard_pk},#{location},#{original_filename});
     </insert>
+
+    <select id="createArticlePk" resultType="int">
+        SELECT COALESCE(MAX(clubimgboard_pk) + 1, 0) FROM ms_club_imgboard;  
+		<!-- SELECT ms_club_imgboard.clubimgboard_pk FROM ms_club_imgboard WHERE club_pk=#{club_pk}; -->
+	</select>
 </mapper>

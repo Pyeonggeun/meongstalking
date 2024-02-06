@@ -38,8 +38,22 @@
             </div>
         </div>
 
+        <!-- <c:forEach items="${qwer.articleImageDtoList}" var="articleImageDto">
+		<img src="/uploadFiles/${articleImageDto.location}"><br>
+	</c:forEach> -->
         <div class="row row-cols-1 row-cols-md-3 g-4">
-            <!-- 반복문으로 동적으로 카드 생성 -->
+            <div th:each="board : ${freeBoardList}">
+                <div class="card">
+                    <!-- <img class="card-img-top" th:src="@{'/uploadFiles/'+${board.articleImageDto.location}}" alt="사진"> -->
+                    <img class="card-img-top" th:src="@{'/uploadFiles/'+${qwer.clubimgboard_pk}}/${board.articleImageDto.location}" alt="사진" />
+
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${board.clubimgboard_pk}"></h5>
+                        <p class="card-text" th:text="${board.created_at}"></p>
+                    </div>
+                </div>
+            </div>
+            
             <!-- <div th:each="photo, iterStat : ${photos}" class="col">
                 <div class="card">
                     <img th:src="${photo.imageUrl}" class="card-img-top" alt="사진" />
