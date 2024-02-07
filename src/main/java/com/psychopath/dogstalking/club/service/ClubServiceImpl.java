@@ -15,6 +15,7 @@ import com.psychopath.dogstalking.club.dto.ClubStatusLogDto;
 import com.psychopath.dogstalking.club.dto.ClubUserDto;
 import com.psychopath.dogstalking.club.dto.ClubUserRanklogDto;
 import com.psychopath.dogstalking.club.dto.CommentDto;
+import com.psychopath.dogstalking.club.dto.ImgCommentDto;
 import com.psychopath.dogstalking.club.mapper.ClubSqlMapper;
 
 @Service
@@ -158,5 +159,34 @@ public class ClubServiceImpl {
 			articleImageDto.setClubimgboard_pk(articlePk);
 			clubSqlMapper.insertClubImgFreeBoardImage(articleImageDto);
 		}
+	}
+
+	public Map<String, Object> selectLatestPost(int club_pk){
+		return clubSqlMapper.selectLatestPost(club_pk);	
+	}
+
+	public List<Map<String, Object>> selectLatestAlbum(int club_pk){
+		return clubSqlMapper.selectLatestAlbum(club_pk);	
+	}
+	
+	public List<Map<String, Object>> selectAlbumFreeBoard(int club_pk, int clubimgboard_pk){
+		return clubSqlMapper.selectAlbumFreeBoard(club_pk,clubimgboard_pk);	
+	}
+	
+	// 앨범 댓글
+	public void writeImgComment(ImgCommentDto commentDto) {
+		clubSqlMapper.insertImgComment(commentDto);
+	}
+	
+	public List<Map<String, Object>> getImgCommentList(int articleId){
+		return clubSqlMapper.selectImgCommentAll(articleId);	
+	}
+
+	public void updateImgComment(ImgCommentDto commentDto) {
+		clubSqlMapper.updateImgComment(commentDto);
+	}
+
+	public void deleteImgComment(int commentId) {
+		clubSqlMapper.deleteImgComment(commentId);
 	}
 }

@@ -44,7 +44,7 @@ public class ClubController {
 
         Integer memberLank = null;
         memberLank = clubService.selectLeaderLank(userDto.getUser_pk());
-        System.out.println("memberLank : " + memberLank);
+        //System.out.println("memberLank : " + memberLank);
         if (memberLank == null || !(memberLank >= 1 && memberLank <= 3)) {
             memberLank = 9;
         }
@@ -75,7 +75,7 @@ public class ClubController {
         int useid = userDto.getUser_pk();
         int pk = clubService.selectClubPK(useid);
 
-        System.out.println("clubPk: " + pk);
+        //System.out.println("clubPk: " + pk);
 
         List<Map<String, Object>> freeBoardList = clubService.selectFreeBoardAll(pk);
         model.addAttribute("freeBoardList", freeBoardList);
@@ -167,7 +167,7 @@ public class ClubController {
         int pk = (int) clubTF.get("club_pk");
         List<Map<String, Object>> applyList = clubService.selectApplyList(pk);
 
-        System.out.println("applyList: " + applyList);
+        //System.out.println("applyList: " + applyList);
 
         if (applyList != null && !applyList.isEmpty()) {
             model.addAttribute("applyList", applyList);
@@ -210,11 +210,22 @@ public class ClubController {
         model.addAttribute("checkMember", memberLank);
 
         Integer ApplyStatus = clubService.selectClubCategoryPk(userDto.getUser_pk());
-        System.out.println("ApplyStatus : " + ApplyStatus);
+        //System.out.println("ApplyStatus : " + ApplyStatus);
         if (ApplyStatus == null) {
             ApplyStatus = 9;
         }
         model.addAttribute("ApplyStatus", ApplyStatus);
+
+        Map<String, Object> latestPost = clubService.selectLatestPost(clubPk);
+        model.addAttribute("latestPost", latestPost);
+
+        List<Map<String, Object>> latestAlbum = clubService.selectLatestAlbum(clubPk);
+        model.addAttribute("latestAlbum", latestAlbum);
+
+        List<Map<String, Object>> memberlist = clubService.selectMember(clubPk);
+        model.addAttribute("memberlist", memberlist);
+
+       // System.out.println("memberlist: "+memberlist);
 
         return "club/clubListPage";
     }
@@ -264,7 +275,7 @@ public class ClubController {
         if (showclubpk != null) {
             model.addAttribute("showclubpk", showclubpk);
         }
-        System.out.println("showclubpk : " + showclubpk);
+        //System.out.println("showclubpk : " + showclubpk);
         Integer memberLank = null;
         memberLank = clubService.selectLeaderLank(userDto.getUser_pk());
         // System.out.println("memberLank : " + memberLank);
@@ -462,7 +473,7 @@ public class ClubController {
     public String registerImagePage(HttpSession session, ClubImgBoardDto params, MultipartFile[] imageFiles) {
         List<ClubArticleImgDto> articleImageDtoList = new ArrayList<>();
 
-        System.out.println("registerImagePage 시작");
+        //System.out.println("registerImagePage 시작");
         // 파일 저장 로직
         if (imageFiles != null) {
             for (MultipartFile multipartFile : imageFiles) {
@@ -503,11 +514,11 @@ public class ClubController {
                 clubArticleImgDto.setLocation(todayPath + fileName);
                 clubArticleImgDto.setOriginal_filename(originalFileName);
 
-                System.out.println("clubArticleImgDto: "+clubArticleImgDto);
+                //System.out.println("clubArticleImgDto: "+clubArticleImgDto);
 
                 articleImageDtoList.add(clubArticleImgDto);
 
-                System.out.println("articleImageDtoList: "+articleImageDtoList);
+                //System.out.println("articleImageDtoList: "+articleImageDtoList);
 
             }
         }
@@ -523,4 +534,22 @@ public class ClubController {
 
         return "redirect:./photoAlbumPage";
     }
+
+    @RequestMapping("photoAlbumReadPage")
+    public String photoAlbumReadPage(@RequestParam("clubimgboard_pk") int clubimgboard_pk,HttpSession session, Model model) {
+       
+        //System.out.println("photoAlbumReadPage 진입");
+       
+        UserDto userDto = (UserDto) session.getAttribute("sessionUser");
+        int useid = userDto.getUser_pk();
+        int club_pk = clubService.selectClubPK(useid);
+
+        List<Map<String, Object>> albumBoardList = clubService.selectAlbumFreeBoard(club_pk,clubimgboard_pk);
+        model.addAttribute("albumBoardList", albumBoardList);
+
+        //System.out.println("albumBoardList: "+albumBoardList);
+        return "club/photoAlbumReadPage";
+    }
+
+    
 }

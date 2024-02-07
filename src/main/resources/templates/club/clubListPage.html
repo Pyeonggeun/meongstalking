@@ -167,10 +167,9 @@
 
         <div class="row border-bottom border-2 border-gray">
             <div class="col-md-4  px-0">
-                <img class="img-fluid" th:src="@{'/uploadFiles/'+${showclubpk.img}}"
-                        alt="등록된 이미지가 없습니다">
+                <img class="img-fluid" th:src="@{'/uploadFiles/'+${showclubpk.img}}" alt="등록된 이미지가 없습니다">
             </div>
-        </div>  
+        </div>
 
         <div class="row border-bottom border-5 border-gray">
             <div class="col my-3">
@@ -187,28 +186,19 @@
                 <div class="row mt-2">
                     <div class="col" style="overflow: auto;">
                         <div class="row" style="width: 230%;">
-                            <div class="col px-1">
-                                <img style="height: 7em;" class="img-fluid" src="/uploadFiles/2024/02/06/2a5993da-e659-446c-9067-2cd4356b51a8_1707180392210.jpg">
-                            </div>
-                            <div class="col px-1">
-                                <img style="height: 7em;" class="img-fluid" src="/uploadFiles/2024/02/06/2a5993da-e659-446c-9067-2cd4356b51a8_1707180392210.jpg">
-                            </div>
-                            <div class="col px-1">
-                                <img style="height: 7em;" class="img-fluid" src="/uploadFiles/2024/02/06/2a5993da-e659-446c-9067-2cd4356b51a8_1707180392210.jpg">
-                            </div>
-                            <div class="col px-1">
-                                <img style="height: 7em;" class="img-fluid" src="/uploadFiles/2024/02/06/2a5993da-e659-446c-9067-2cd4356b51a8_1707180392210.jpg">
-                            </div>
-                            <div class="col px-1">
-                                <img style="height: 7em;" class="img-fluid" src="/uploadFiles/2024/02/06/2a5993da-e659-446c-9067-2cd4356b51a8_1707180392210.jpg">
+                            <div th:each="image : ${latestAlbum}" class="col px-1">
+                                <!-- <img style="height: 7.5em;" class="img-fluid" th:src="@{'/uploadFiles/'+${board.location}}" alt="사진">                     -->
+                                <img th:src="@{'/uploadFiles/'+${image.location}}" style="height: 7em;"
+                                    class="img-fluid" />
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="row py-3 border-bottom border-5 border-gray">
+        <div th:if="${latestPost.name}!=null" class="row py-3 border-bottom border-5 border-gray">
             <div class="col">
                 <div class="row">
                     <div class="col fw-bold">최근 방명록</div>
@@ -221,22 +211,26 @@
                             <div class="col">
                                 <div class="row">
                                     <div class="col-7">
-                                        <img src="/public/image/dog_img.png" class="img-fluid rounded-circle" style="width: 2em; height: 2em;">
-                                        <span class="fw-bold" style="color: #f45600;">닉네임1</span>
+                                        <img src="/public/image/dog_img.png" class="img-fluid rounded-circle"
+                                            style="width: 2em; height: 2em;">
+                                        <span class="fw-bold" style="color: #f45600;"
+                                            th:text="${latestPost.name}">닉네임1</span>
+
                                     </div>
                                 </div>
-                                <div class="row mt-2" >
-                                    <div class="col" style="color: #200909;">레이아웃 테스트글 입니다. 야호홓.... 으하하... 큐큐큐큐... 야야야야양...아아아으</div>
+                                <div class="row mt-2">
+                                    <div class="col" style="color: #200909;" th:text="${latestPost.content}"></div>
                                 </div>
                                 <div class="row mt-3">
                                     <div class="col d-grid">
-                                        <a class="text-black btn btn-secondary" style="background-color: #d5e9ff;">더보기</a>
+                                        <a href="./freeBoardPage" class="text-black btn btn-secondary"
+                                            style="background-color: #d5e9ff;">더보기</a>
                                     </div>
                                 </div>
-                    
+
                             </div>
                         </div>
-            
+
 
                     </div>
                 </div>
@@ -248,11 +242,20 @@
                 <div class="row">
                     <div class="col fw-bold">멤버</div>
                 </div>
-                <div class="row">
+                <div class="row p-1 pt-3" th:each="member : ${memberlist}">
                     <div class="col">
-                        멤버 리스트
+                        <div class="row align-items-center">
+                            <div class="col-2">
+                                <img th:src="@{/public/image/dog_img.png}" class="img-fluid rounded-circle profile-image">
+                            </div>
+                            
+                            <div class="col">
+                                <span th:text="${member.name}"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                
             </div>
         </div>
 

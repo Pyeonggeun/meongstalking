@@ -13,6 +13,7 @@ import com.psychopath.dogstalking.club.dto.ClubStatusLogDto;
 import com.psychopath.dogstalking.club.dto.ClubUserDto;
 import com.psychopath.dogstalking.club.dto.ClubUserRanklogDto;
 import com.psychopath.dogstalking.club.dto.CommentDto;
+import com.psychopath.dogstalking.club.dto.ImgCommentDto;
 
 
 @Mapper
@@ -84,4 +85,18 @@ public interface ClubSqlMapper {
     public void insertClubImgFreeBoardImage(ClubArticleImgDto articleImageDto);
     public List<Map<String, Object>> selectImgFreeBoardAll(int s);
 
+    //최근게시물
+    public Map<String, Object> selectLatestPost(int club_pk);
+
+    //최신 앨범
+    public List<Map<String, Object>> selectLatestAlbum(int s);
+
+    public List<Map<String, Object>> selectAlbumFreeBoard(int club_pk, int clubimgboard_pk);
+
+    //앨범 댓글
+	public void insertImgComment(ImgCommentDto commentDto);
+    public List<Map<String, Object>> selectImgCommentAll(int article_id);
+    public void updateImgComment(ImgCommentDto commentDto);
+    public void deleteImgComment(int id);
+    
 }

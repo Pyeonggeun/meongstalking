@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.psychopath.dogstalking.club.dto.ClubImgBoardDto;
 import com.psychopath.dogstalking.club.dto.CommentDto;
+import com.psychopath.dogstalking.club.dto.ImgCommentDto;
 import com.psychopath.dogstalking.club.service.ClubServiceImpl;
 import com.psychopath.dogstalking.dto.RestResponseDto;
 import com.psychopath.dogstalking.dto.UserDto;
@@ -36,6 +37,7 @@ public class ClubRestController {
 		return response;
 	}
 
+	//freeboard
 	@RequestMapping("writeComment")
 	public RestResponseDto writeComment(HttpSession session, CommentDto params) {
 		RestResponseDto restResponseDto = new RestResponseDto();
@@ -85,5 +87,53 @@ public class ClubRestController {
 			return new ResponseEntity<>("이미지 업로드 실패", HttpStatus.BAD_REQUEST);
 		}
 	}
+
+	//imgfreeboard
+	@RequestMapping("writeImgComment")
+	public RestResponseDto writeImgComment(HttpSession session, ImgCommentDto params) {
+		RestResponseDto restResponseDto = new RestResponseDto();
+
+		UserDto userDto = (UserDto) session.getAttribute("sessionUser");
+		params.setClub_user_pk(userDto.getUser_pk());
+
+		clubService.writeImgComment(params);
+
+		restResponseDto.setResult("success");
+		return restResponseDto;
+	}
+
+	@RequestMapping("getImgCommentList")
+	public RestResponseDto getImgCommentList(@RequestParam("clubimgboard_pk") int articleId) {
+		RestResponseDto restResponseDto = new RestResponseDto();
+
+		restResponseDto.setData(clubService.getImgCommentList(articleId));
+		
+		// System.out.println("articleId: "+articleId);
+		// System.out.println("결과: "+clubService.getImgCommentList(articleId));
+
+		restResponseDto.setResult("success");
+		return restResponseDto;
+	}
+
+	@RequestMapping("updateImgComment")
+	public RestResponseDto updateImgComment(ImgCommentDto params) {
+		RestResponseDto restResponseDto = new RestResponseDto();
+		
+		clubService.updateImgComment(params);
+		
+		restResponseDto.setResult("success");
+		return restResponseDto;
+	}
+
+	@RequestMapping("deleteImgComment")
+	public RestResponseDto deleteImgComment(int comment_id) {
+		RestResponseDto restResponseDto = new RestResponseDto();
+		
+		clubService.deleteImgComment(comment_id);
+		
+		restResponseDto.setResult("success");
+		return restResponseDto;
+	}
+	
 
 }

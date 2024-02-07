@@ -13,7 +13,9 @@
         SELECT *
         FROM ms_club_freeboard
         JOIN ms_user ON ms_user.USER_PK = ms_club_freeboard.user_pk
-        where ms_club_freeboard.club_pk=#{club_pk}
+        WHERE ms_club_freeboard.club_pk = #{club_pk}
+        ORDER BY ms_club_freeboard.created_at DESC;
+
     </select>
 
     <select id="selectImgFreeBoardAll" resultType="map">
@@ -233,4 +235,54 @@
         SELECT COALESCE(MAX(clubimgboard_pk) + 1, 0) FROM ms_club_imgboard;  
 		<!-- SELECT ms_club_imgboard.clubimgboard_pk FROM ms_club_imgboard WHERE club_pk=#{club_pk}; -->
 	</select>
+
+    <!--최신글-->
+    <select id="selectLatestPost" resultType="map">
+        SELECT *
+        FROM ms_club_freeboard
+        join ms_user on ms_user.user_pk =ms_club_freeboard.user_pk 
+        WHERE ms_club_freeboard.club_pk = #{club_pk}
+        ORDER BY ms_club_freeboard.created_at DESC
+        LIMIT 1;
+    </select>
+
+    <!--최신앨범-->
+    <select id="selectLatestAlbum" resultType="map">
+        SELECT mci.*, mci_img.*
+        FROM ms_club_imgboard mci
+        JOIN ms_club_imgboard_imgs mci_img ON mci.clubimgboard_pk = mci_img.clubimgboard_pk
+        WHERE mci.club_pk = #{club_pk}
+        GROUP BY mci.clubimgboard_pk
+        ORDER BY mci.created_at DESC
+        LIMIT 5;
+    </select>
+
+    <select id="selectAlbumFreeBoard" resultType="map">
+        SELECT mci.*, mci_img.*
+        FROM ms_club_imgboard mci
+        JOIN ms_club_imgboard_imgs mci_img ON mci.clubimgboard_pk = mci_img.clubimgboard_pk
+        WHERE mci.club_pk = #{club_pk} and mci.clubimgboard_pk=#{clubimgboard_pk};
+    </select>
+
+    <!-- 앨범 댓글 -->
+
+	<insert id="insertImgComment">
+		INSERT INTO ms_club_imgboard_comment(club_user_pk,clubimgboard_pk,content)
+        VALUES (#{club_user_pk},#{clubimgboard_pk},#{content})
+	</insert>
+
+    <select id="selectImgCommentAll" resultType="map">
+        SELECT * FROM ms_club_imgboard_comment
+        JOIN ms_user ON ms_user.USER_PK = ms_club_imgboard_comment.club_user_pk
+        WHERE clubimgboard_pk = #{clubimgboard_pk}
+    </select>
+
+    <update id="updateImgComment">
+		UPDATE ms_club_imgboard_comment SET content = #{content}
+		WHERE imgcomment_pk = #{imgcomment_pk}		
+	</update>
+    
+    <delete id="deleteImgComment">
+		DELETE FROM ms_club_imgboard_comment WHERE imgcomment_pk = #{imgcomment_pk}
+	</delete>
 </mapper>
