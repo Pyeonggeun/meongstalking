@@ -18,6 +18,9 @@
     a {
         text-decoration-line: none;
     }
+    ::-webkit-scrollbar { 
+        display: none; 
+    }
 
 </style>
 
@@ -52,20 +55,20 @@
                     </div>
 
                     <div class="row rounded py-2 mb-3 mx-1 bg-light opacity-90" style="background-color: gainsboro;">
-                        <div class="col-6" style="font-size: 0.85em;"><i class="bi bi-coin" style="font-size: 1.15em;"></i> 포인트</div>
-                        <div class="col-6" style="font-size: 0.85em;"><i class="bi bi-ticket-perforated" style="font-size: 1.15em;"></i> 쿠폰</div>
+                        <div class="col-6" style="font-size: 0.85em; color:#555c65;"><i class="bi bi-coin" style="font-size: 1.15em; color:dimgray"></i> 포인트</div>
+                        <div class="col-6" style="font-size: 0.85em; color:dimgray"><i class="bi bi-ticket-perforated" style="font-size: 1.15em; color:#555c65;"></i> 쿠폰</div>
                     </div>
 
                     <div class="row mx-1">
                         <div class="col border rounded mb-3">
                             <div class="row py-2">
-                                <div class="col text-start" style="font-size: 0.85em;">펀딩</div><div class="col fw-bold text-end" th:text="${count.countOrder}"></div>
-                                <div class="col text-start" style="font-size: 0.85em;">찜</div><div class="col fw-bold text-end" th:text="${count.countWish}"></div>
+                                <div class="col text-start" style="font-size: 0.85em; color:dimgray">펀딩</div><div class="col fw-bold text-end" th:text="${count.countOrder}"></div>
+                                <div class="col text-start" style="font-size: 0.85em; color:dimgray">찜</div><div class="col fw-bold text-end" th:text="${count.countWish}"></div>
                             </div>
 
-                            <div class="row py-1 bg-light opacity-90" style="background-color: gainsboro;">
-                                <div class="col" style="font-size: 0.83em"><i class="bi bi-credit-card"></i> 결제정보관리</div>
-                                <div class="col fw-bold text-end" style="font-size: 0.8em;">카드등록 > </div>
+                            <div class="row py-2 bg-light opacity-90" style="background-color: gainsboro;">
+                                <div class="col" style="font-size: 0.83em; color:dimgray"><i class="bi bi-credit-card"></i> 결제정보관리</div>
+                                <div class="col fw-bold text-end" style="font-size: 0.8em; color:dimgray">카드등록 > </div>
                             </div>
 
                         </div>
@@ -73,11 +76,11 @@
 
                     <div class="row mt-3"><div class="col fw-bold" style="font-size: 1em;">내가 찜한 목록</div></div>
                     <div class="row mb-3">
-                        <div class="col py-2 px-2">
+                        <div class="col py-1 px-2">
                             <div class="container overflow-x-auto" style="white-space: nowrap;">    
                                 <th:block th:each="wish : ${wish}">
                                     <a th:href="@{./productDetailPage(id = ${wish.wish.product_pk})}">
-                                        <div class="row py-2" style="display: flex">
+                                        <div class="row py-1" style="display: flex">
                                             <div class="col mx-1">
                                                 <div class="row"><div class="col d-grid"><img th:src="@{'/uploadFiles/'+${wish.product.title_image}}" alt="등록된 이미지가 없습니다" style="height: 10em; width: 16em;"></div></div>
                                                 <div class="row" style="width: 15em;"><div class="col" style="overflow-x: hidden; color: black;" th:text="${wish.product.product_name}" ></div></div>
@@ -91,11 +94,11 @@
 
                     <div class="row mt-3"><div class="col fw-bold" style="font-size: 1em;">내가 구매한 목록</div></div>
                     <div class="row mb-3">
-                        <div class="col py-2 px-2">
+                        <div class="col py-1 px-2">
                             <div class="container overflow-x-auto" style="white-space: nowrap;">
                                 <th:block th:each="order : ${order}">
                                     <a th:href="@{./purchaseProductManagePage(id = ${order.order.order_pk})}">
-                                        <div class="row py-2" style="display: flex">
+                                        <div class="row py-1" style="display: flex">
                                             <div class="col mx-1">
                                                 <div class="row"><div class="col d-grid"><img th:src="@{'/uploadFiles/'+${order.product.title_image}}" alt="등록된 이미지가 없습니다" style="height: 10em; width: 16em;"></div></div>
                                                 <div class="row" style="width: 15em;"><div class="col" style="overflow-x: hidden; color: black;" th:text="${order.product.product_name}"></div></div>
@@ -110,7 +113,7 @@
 
 
                     <div class="row">
-                        <div class="col">
+                        <div class="col" style="color:#555c65;">
                             <div class="row"><div class="col my-2 fw-bold" style="font-size: 1em;">고객센터</div></div>
                             <div class="row border-bottom pb-2"><div class="col" style="font-size: 0.85em;"> <i class="bi bi-chat-text" style="font-size: 1.1em;"></i> 1:1 채팅 상담</div> <div class="col-2 text-end" style="font-size:1em;"> > </div></div>
                             <div class="row border-bottom py-2"><div class="col" style="font-size: 0.85em;"> <i class="bi bi-journal-bookmark" style="font-size: 1.1em;"></i> 도움말 센터</div><div class="col-2 text-end" style="font-size:1em;"> > </div></div>
