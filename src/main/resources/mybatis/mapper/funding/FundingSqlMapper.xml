@@ -28,7 +28,9 @@
 </insert>
 
 <select id="fundingListCall" resultType="com.psychopath.dogstalking.funding.dto.FundingProductDto">
-    select * from ms_funding_product order by product_pk desc
+    select * from ms_funding_product 
+    where finish_date &gt; now()
+    order by product_pk desc
 </select>
 
 <select id="fundingListCallForPk" resultType="com.psychopath.dogstalking.funding.dto.FundingProductDto">
@@ -74,7 +76,7 @@
 
 <select id="selectCheering" resultType="com.psychopath.dogstalking.funding.dto.FundingCheeringDto">
 select * from ms_funding_cheering mfc 
-where product_pk = #{product_pk}
+where product_pk = #{product_pk} order by created_at DESC 
 </select>
 
 <select id="countFinishDay" resultType="int">
@@ -98,16 +100,22 @@ where product_pk = #{product_pk}
     )
 </insert>
 
-<select id="wishListByPk" resultType="com.psychopath.dogstalking.funding.dto.FundingWishlistDto">
-select * from ms_funding_review
-where user_pk = #{user_pk}
-</select>
-
 <delete id="deleteWish">
     DELETE FROM ms_funding_wishlist
     where product_pk= #{product_pk}
     AND user_pk= #{user_pk}
 </delete>
+
+
+<select id="countWish" resultType="int">
+    select IFNULL(count(*),0) from ms_funding_wishlist mfw 
+    where user_pk = #{user_pk}
+</select>
+
+<select id="selectWishList" resultType="com.psychopath.dogstalking.funding.dto.FundingWishlistDto">
+    select * from ms_funding_wishlist mfw 
+    where user_pk = #{user_pk}
+</select>
 
 
 <select id="selectNewsForDetail" resultType="String">
@@ -127,12 +135,12 @@ where user_pk = #{user_pk}
 </select>
 
 <select id="countPercentByPk" resultType="int">
-SELECT
-    IFNULL(
-            TRUNCATE(((SELECT sum(quantity) FROM ms_funding_order mfo WHERE product_pk = #{product_pk}) * price) / (SELECT amount FROM ms_funding_product mfp WHERE product_pk = #{product_pk}) * 100, 0),0
-        ) AS result
-FROM ms_funding_product mfp
-WHERE mfp.product_pk = #{product_pk}
+    SELECT
+        IFNULL(
+                TRUNCATE(((SELECT sum(quantity) FROM ms_funding_order mfo WHERE product_pk = #{product_pk}) * price) / (SELECT amount FROM ms_funding_product mfp WHERE product_pk = #{product_pk}) * 100, 0),0
+            ) AS result
+    FROM ms_funding_product mfp
+    WHERE mfp.product_pk = #{product_pk}
 </select>
 
 <insert id="insertOrder">
@@ -169,25 +177,9 @@ WHERE mfp.product_pk = #{product_pk}
     where user_pk = #{user_pk}
 </select>
 
-<select id="selectWishList" resultType="com.psychopath.dogstalking.funding.dto.FundingWishlistDto">
-    select * from ms_funding_wishlist mfw 
-    where user_pk = #{user_pk}
-</select>
-
 <select id="countOrder" resultType="int">
     select IFNULL(count(*),0) from ms_funding_order mfo 
     where user_pk = #{user_pk}
-</select>
-
-<select id="countWish" resultType="int">
-    select IFNULL(count(*),0) from ms_funding_wishlist mfw 
-    where user_pk = #{user_pk}
-</select>
-
-<select id="countForWish" resultType="int">
-    select IFNULL(count(*),0) from ms_funding_wishlist mfw 
-    WHERE user_pk = #{user_pk}
-    AND product_pk = #{product_pk}
 </select>
 
 <select id="countPurchase" resultType="int">
@@ -234,7 +226,7 @@ WHERE mfp.product_pk = #{product_pk}
     where product_pk in(
         select product_pk  from ms_funding_product mfp 
         where user_pk = #{user_pk})
-    and mfo.created_at &gt;= CURRENT_TIMESTAMP - INTERVAL 1 DAY;
+    and mfo.created_at &gt;= CURRENT_TIMESTAMP - INTERVAL 7 DAY;
 </select>
 
 <select id="selectCheeringStatsDay" resultType="int">

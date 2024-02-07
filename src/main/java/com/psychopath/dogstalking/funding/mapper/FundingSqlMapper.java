@@ -39,10 +39,8 @@ public interface FundingSqlMapper {
     //상품의 총 구매횟수 가져오기
     public int countPurchase(int product_pk);
     //상품 찜하기 
-    public void insertWish(FundingWishlistDto paraWishDto);
-    public void deleteWish(FundingWishlistDto paraWishDto);
-    public int countForWish(FundingWishlistDto paraWishDtos);
-
+    // public void insertWish(FundingWishlistDto paraWishDto);
+    // public void deleteWish(FundingWishlistDto paraWishDto);
 
     // 개별상품 페이지 위해 상품정보 가져오기 
     public FundingProductDto selectProductInfo(int pk);

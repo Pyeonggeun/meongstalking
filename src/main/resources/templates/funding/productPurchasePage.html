@@ -40,6 +40,22 @@
             justify-content: center;
         }
 
+        input[type="radio"] {
+            appearance: none; /* 기본 스타일 제거 */
+            width: 1.05em;
+            height: 1.05em;
+            border: 0.1em solid #ccc;
+            border-radius: 50%;
+            outline: none;
+            cursor: pointer;
+            }
+
+            input[type="radio"]:checked {
+            background-color: mediumspringgreen;
+            border: 0.1em solid white;
+            box-shadow: 0 0 0 0.1em mediumspringgreen;
+            }
+
     </style>
 
 
@@ -68,7 +84,7 @@
                 <form action="productPurchaseProcess" method="post">
                     <input name="product_pk" type="hidden" th:value="${product.detail.product_pk}">     
                         <div class="row mb-1"><div class="col" style="font-size: 1.25em;">
-                            <lable for="justbutton"><input type="radio" id="justbutton"  th:text=" ${product.detail.price}"> <span style="font-size: 0.8em;">원</span></lable>
+                            <lable for="justbutton"><input type="radio" id="justbutton"  th:text=" ${product.detail.price}">  <span style="font-size: 0.8em;">원</span></lable>
                         </div></div>
                         <div class="row"><div class="col" style="font-size: 0.8em;" th:text="${product.detail.product_name}"></div></div>
 

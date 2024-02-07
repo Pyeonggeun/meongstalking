@@ -38,32 +38,41 @@
             </div>
         </div>
 
-        <!-- <c:forEach items="${qwer.articleImageDtoList}" var="articleImageDto">
-		<img src="/uploadFiles/${articleImageDto.location}"><br>
-	</c:forEach> -->
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            <div th:each="board : ${freeBoardList}">
-                <div class="card">
-                    <!-- <img class="card-img-top" th:src="@{'/uploadFiles/'+${board.articleImageDto.location}}" alt="사진"> -->
-                    <img class="card-img-top" th:src="@{'/uploadFiles/'+${qwer.clubimgboard_pk}}/${board.articleImageDto.location}" alt="사진" />
-
-                    <div class="card-body">
-                        <h5 class="card-title" th:text="${board.clubimgboard_pk}"></h5>
-                        <p class="card-text" th:text="${board.created_at}"></p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- <div th:each="photo, iterStat : ${photos}" class="col">
-                <div class="card">
-                    <img th:src="${photo.imageUrl}" class="card-img-top" alt="사진" />
-                    <div class="card-body">
-                        <h5 class="card-title" th:text="${photo.title}"></h5>
-                        <p class="card-text" th:text="${photo.description}"></p>
-                    </div>
-                </div>
-            </div> -->
+        <div class="row mt-4" style="color: #f45600;">
+            <div class="col fw-bold fs-4">동호회 사진첩</div>
         </div>
+
+
+        <div class="row row-cols-1 row-cols-3 mt-1">
+            <div class="col border border-white px-0" th:each="board : ${freeBoardList}">
+                <div class="row">
+                    <div class="col" style="position: relative;">
+                        <img style="height: 7.5em;" class="img-fluid" th:src="@{'/uploadFiles/'+${board.location}}" alt="사진">                    
+                        <div style="position: absolute; right: 1.2em; bottom: 0.3em; font-size: 0.8em;">
+                            <span class="text-black badge bg-white">
+                                <i class="text-black bi bi-heart"></i>
+                                1
+                                <i class="text-black bi bi-chat-left"></i>
+                                2
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- <div class="card">
+                    <div style="position: relative; overflow: hidden; padding-top: 100%;">
+                        <img class="card-img-top" th:src="@{'/uploadFiles/'+${board.location}}" alt="사진" style="position: absolute; top: 0; left: 0; width: 100%; height: auto;">
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text" th:text="${#dates.format(board.created_at, 'yyyy-MM-dd')}" style="font-size: small; position: absolute; bottom: 0; right: 0;"></p>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+        
+        
         <div class="position-fixed bottom-0 end-0 m-3">
             <a href="./photoAlbumWritePage" class="btn btn-secondary rounded-circle p-3">
                 <i class="bi bi-pencil"></i>

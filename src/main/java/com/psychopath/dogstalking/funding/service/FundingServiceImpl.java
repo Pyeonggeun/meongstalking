@@ -44,12 +44,15 @@ public class FundingServiceImpl {
             int f_day= fundingSqlMapper.countFinishDay(eleproductDto.getProduct_pk());
             //목표대비 매출액 퍼센트
             int percent = fundingSqlMapper.countPercentByPk(eleproductDto.getProduct_pk());
+            //총매출
+            int t_sales = fundingSqlMapper.totalSales(eleproductDto.getProduct_pk());
 
             Map<String,Object> productMap = new HashMap<>();                           
             productMap.put("list",eleproductDto);
             productMap.put("user",userinfo);
             productMap.put("f_day",f_day);
             productMap.put("percent",percent);
+            productMap.put("t_sales",t_sales);
     
             fundingList.add(productMap);                   
         }
@@ -166,16 +169,12 @@ public class FundingServiceImpl {
     }
 
     //찜하기
-    public void insertWish(FundingWishlistDto paraWishDto){
-        fundingSqlMapper.insertWish(paraWishDto);
-    }
-    public void deleteWish(FundingWishlistDto paraWishDto){
-        fundingSqlMapper.deleteWish(paraWishDto);
-    }
-
-    public int countForWish(FundingWishlistDto paraWishDto){
-        return fundingSqlMapper.countForWish(paraWishDto);
-    }
+    // public void insertWish(FundingWishlistDto paraWishDto){
+    //     fundingSqlMapper.insertWish(paraWishDto);
+    // }
+    // public void deleteWish(FundingWishlistDto paraWishDto){
+    //     fundingSqlMapper.deleteWish(paraWishDto);
+    // }
 
     //결제정보 집어넣기
     public void insertOrder(FundingOrderDto fundingOrderDto){
@@ -221,7 +220,6 @@ public class FundingServiceImpl {
     public int selectOrderCount(int order_pk){
         return fundingSqlMapper.selectOrderCount(order_pk);
     }
-
 
     //판매회원 위한 간략한 통계구하기
     public Map<String,Object> selectStatistics(int user_pk){

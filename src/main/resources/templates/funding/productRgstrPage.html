@@ -16,6 +16,26 @@
             imageInput.click();
         }
 
+        function titleCount(text,length){
+        var limit = length;
+        var str = text.value.length;
+        if(str>limit){
+            text.value = text.value.substring(0,limit);
+            text.focus();
+        }
+        document.getElementById("titleReCount").innerHTML = text.value.length + " / " + limit;
+        }
+
+        function explainCount(text,length){
+        var limit = length;
+        var str = text.value.length;
+        if(str>limit){
+            text.value = text.value.substring(0,limit);
+            text.focus();
+        }
+        document.getElementById("explainReCount").innerHTML = text.value.length + " / " + limit;
+        }
+
         function formSubmit(){
             const rgstrProduct = document.getElementById("rgstrProduct");
 
@@ -99,9 +119,13 @@
         .box-dashed {
                 border-width: 0.15em;
                 border-style: dashed;
-                width: 100%;    
+                width: 98%;    
                 color: gray;    
             }
+
+        #inputAmount,#inputPrice {
+            outline: none;
+        }
     </style>
     
     
@@ -125,8 +149,8 @@
                         <div class="row mb-4"><div class="col" style="font-size: 0.95em;">펀딩 상품을 공개하는 데 필요한 내용을 작성해 주세요. 내용 그대로 신청이 들어갑니다</div></div>
                         
                         <div class="row border py-2 mx-1 mb-2">
-                            <div class="col pt-1 me-1" style="font-size: 1.5em; max-width: 1em;"><i class="bi bi-journal-richtext"></i></div>
-                            <div class="col ps-3"> 
+                            <div class="col pt-1 me-1" style="font-size: 1.6em; max-width: 1em;"><i class="bi bi-journal-richtext"></i></div>
+                            <div class="col ps-4"> 
                                 <div class="row pb-1"><div class="col" style="font-size: 0.8em;">펀딩을 하는 회원님들은 전부 챙겨본다는</div></div>
                                 <div class="row"><div class="col fw-bold" style="font-size: 1em;">필수 가이드 모음집</div></div>
                             </div>
@@ -139,19 +163,21 @@
 
                             <div class="row mb-2"><div class="col">
                                 <div class="row mb-2">
-                                    <div class="col mx-2 rounded py-2" style= "background-color: gainsboro;">
-                                        <div class="row mb-1"><div class="col"style="font-size: 0.85em;"><i class="bi bi-check"></i> 제목 작성 팁</div></div>
-                                        <div class="row"><div class="col" style="font-size: 0.75em;">중요한 키워드는 눈에 잘 띄도록 앞부분에 적어주세요. 제목이 너무 길 경우 화면에서 잘려보일 수 있습니다. 가장 중요한 내용을 앞세워 후원회원님들의 호기심을 자극해보세요.</div></div>
+                                    <div class="col mx-3 rounded py-2" style= "background-color: #e9ecef; color: #555c65;">
+                                        <div class="row mb-1"><div class="col"style="font-size: 0.9em;"><i class="bi bi-check"></i> 제목 작성 팁</div></div>
+                                        <div class="row"><div class="col" style="font-size: 0.8em;">중요한 키워드는 눈에 잘 띄도록 앞부분에 적어주세요. 제목이 너무 길 경우 화면에서 잘려보일 수 있습니다. 가장 중요한 내용을 앞세워 후원회원님들의 호기심을 자극해보세요.</div></div>
                                     </div>
                             </div>
-                                <div class="row"><div class="col" style="font-size: 1em;">상품 제목 <span style="font-size: 0.5em"></span></sapn></div></div>
-                                <div class="row"><div class="col"><input class="form-control" id="inputTitle" type="text" name="product_name"></div></div>
+                                <div class="row"><div class="col" style="font-size: 1.05em;">상품 제목 <span style="font-size: 0.5em"></span></sapn></div></div>
+                                <div class="row"><div class="col"><input class="form-control" onkeyup="titleCount(this,150)" id="inputTitle" type="text" name="product_name"></div></div>
+                                <div class="row"><div class="col"><div style="text-align: right; font-size: 0.75em;"><span id="titleReCount">0 / 150</span></div></div></div>
                             </div></div>  
 
                             <div class="row mb-4"><div class="col">
-                                <div class="row"><div class="col" style="font-size: 1em;">상품 요약 설명 <span style="font-size: 0.5em"></span></sapn></div></div>
+                                <div class="row"><div class="col" style="font-size: 1.05em;">상품 요약 설명 <span style="font-size: 0.5em"></span></sapn></div></div>
                                 <div class="row mb-1"><div class="col" style="font-size: 0.7em; color: gray;"> 대표이미지와 함께 보이는 글입니다. 쉽고 간결하게 소개해 주세요 </div></div>
-                                <div class="row mx-1"><textarea name="simple_explain" id="inputExplain" class="form-control"></textarea></div>
+                                <div class="row mx-1"><textarea name="simple_explain" id="inputExplain" onkeyup="explainCount(this,450)" class="form-control"></textarea></div>
+                                <div class="row"><div class="col"><div style="text-align: right; font-size: 0.75em;"><span id="explainReCount">0 / 450</span></div></div></div>
                             </div></div>
                                 
                             <div class="row"><div class="col" style="padding: 0.4em;"></div></div>  
@@ -161,7 +187,7 @@
                                 <div class="col">
 
                                     <div class="row mb-2">
-                                        <div class="col" style="font-size: 1em;">대표이미지 <span style="font-size: 0.7em;"><i class="bi bi-question-circle"></i></span></div>
+                                        <div class="col" style="font-size: 1.05em;">대표이미지 <span style="font-size: 0.7em;"><i class="bi bi-question-circle"></i></span></div>
                                         <div class="imagePlusBox pt-1" onclick=imageBoxClickHandler1()>
                                             <div class="box-dashed rounded px-1 py-3 text-center">
                                                 <div class="row"><div class="col"> <i class="bi bi-card-image" style="font-size: 2.5em; color: gray;"></i> </div></div> 
@@ -172,8 +198,8 @@
                                     </div>
 
                                     <div class="row">
-                                        <div class="col mx-2 rounded" style="background-color: gainsboro;">
-                                            <div class="row"><div class="col" style="font-size: 0.9em;"> 대표 이미지 등록 가이드</div></div>
+                                        <div class="col py-2 mx-3 rounded" style="background-color: #e9ecef; color: #555c65;">
+                                            <div class="row pb-1"><div class="col" style="font-size: 0.9em;">* 대표 이미지 등록 가이드</div></div>
                                             <div class="row"><div class="col" style="font-size: 0.8em;">JPG, JPEG,PNG파일만 등록가능합니다</div></div>
                                             <div class="row"><div class="col" style="font-size: 0.8em;">펀딩 상품리스트 화면과 SNS등 여러 화면에서 노출 될 사진입니다. 사진을 미리 편집해서 등록해주시기 바랍니다.</div></div>
                                         </div>
@@ -185,7 +211,7 @@
                             <div class="row mb-3">
                                 <div class="col">
                                     <div class="row mb-2">
-                                        <div class="col" style="font-size: 1em;">상세이미지 <span style="font-size: 0.7em;"><i class="bi bi-question-circle"></i></span></div>
+                                        <div class="col" style="font-size: 1.05em;">상세이미지 <span style="font-size: 0.7em;"><i class="bi bi-question-circle"></i></span></div>
                                         <div class="imagePlusBox pt-1" onclick=imageBoxClickHandler2()>
                                             <div class="box-dashed rounded px-1 py-3 text-center">
                                                 <div class="row"><div class="col"> <i class="bi bi-card-image" style="font-size: 2.5em; color: gray;"></i> </div></div> 
@@ -195,8 +221,8 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col mx-2 rounded" style="background-color: gainsboro;">
-                                            <div class="row pb-1"><div class="col" style="font-size: 0.9em;"> 상세 이미지 등록 가이드</div></div>
+                                        <div class="col py-2 mx-3 rounded" style="background-color: #e9ecef; clolo:#555c65;">
+                                            <div class="row pb-1"><div class="col" style="font-size: 0.9em;">* 상세 이미지 등록 가이드</div></div>
                                             <div class="row pb-1"><div class="col" style="font-size: 0.8em;">JPG, JPEG,PNG파일만 등록가능합니다</div></div>
                                             <div class="row pb-1"><div class="col" style="font-size: 0.8em;">한장의 사진에 모든 정보가 담겨야 합니다. 미리 편집해서 등록해주시기 바랍니다.</div></div>
                                         </div>
@@ -204,11 +230,11 @@
                                 </div>
                             </div>
                             <div class="row"><div class="col" style="padding: 0.4em;"></div></div>  
-                            <div class="row"><div class="col ms-1"> 기간 설정</div></div>
+                            <div class="row"><div class="col ms-1" style="font-size: 1.05em;"> 기간 설정</div></div>
 
                             <div class="row mb-3">
-                                <div class="col mx-2 rounded" style="background-color: gainsboro;">
-                                    <div class="row py-1"><div class="col fw-bold" style="font-size: 0.9em;"> 시작일 종료일 설정 가이드</div></div>
+                                <div class="col py-2 mx-3 rounded" style="background-color: #e9ecef; color:#555c65;">
+                                    <div class="row py-1"><div class="col" style="font-size: 0.9em;"> * 시작일 종료일 설정 가이드</div></div>
                                     <div class="row pb-1"><div class="col" style="font-size: 0.8em;"> 심사에는 통상 일주일의 기간이 소요됩니다.</div></div>
                                     <div class="row pb-1"><div class="col" style="font-size: 0.8em;"> 신청일로부터 일주일 후를 기준으로 시작일을 설정해하는 것을 권장합니다.</div></div>
                                     <div class="row pb-1"><div class="col" style="font-size: 0.8em;"> 종료일은 오픈일 + 최대 60일 안에서 지정하는 것을 권장합니다.</div></div>
@@ -216,7 +242,7 @@
                             </div>    
                             
                             <div class="row mb-2"><div class="col">
-                                <div class="row mb-1"><div class="col">시작일 설정</div></div>
+                                <div class="row mb-1"><div class="col"  style="font-size: 1.05em;">시작일 설정</div></div>
                                 <div class="row"><div class="col"><input type="datetime-local" class="form-control" id="inputStart" name="start_date"></div></div>
                             </div></div>
 
@@ -224,16 +250,16 @@
 
 
                             <div class="row mb-4"><div class="col">
-                                <div class="row mb-1"><div class="col">종료일 설정</div></div>
+                                <div class="row mb-1"><div class="col"  style="font-size: 1.05em;">종료일 설정</div></div>
                                 <div class="row"><div class="col"><input type="datetime-local" class="form-control" id="inputFinish" name="finish_date"></div></div>
                             </div></div>
                             
                             <div class="row my-2">
                                 <div class="col">
-                                    <div class="row"><div class="col">상품금액 설정</div></div>  
+                                    <div class="row"><div class="col"  style="font-size: 1.05em;">상품금액 설정</div></div>  
                                     <div class="row mt-1 mb-2">
-                                        <div class="col mx-2 py-2 border rounded">
-                                            <div class="row pb-2"><div class="col" >상품 설계 가이드 및 주의사항</div></div>
+                                        <div class="col mx-3 py-3 border rounded">
+                                            <div class="row pb-2"><div class="col" style="color: dimgray;" >상품 설계 가이드 및 주의사항</div></div>
                                             <div class="row pb-1"><div class="col-3" style="font-size: 0.85em; color: gray;">옵션조건</div><div class="col" style="font-size: 0.85em;">사이즈, 색상 등의 옵션 설정이 필요하면 추가하세요</div></div>        
                                             <div class="row pb-2"><div class="col-3" style="font-size: 0.85em; color: gray;">주의사항</div><div class="col" style="font-size: 0.85em;">자사몰 및 다른 채널에서 판매된 적 있는 리워드는 단독 리워드로 제공할 수 없어요.</div></div>        
                                             <div class="row"><div class="col" style="font-size: 0.85em; color: gray;"><i class="bi bi-question-circle"></i> 리워드 금액은 얼마가 적당한가요?</div></div>        
@@ -249,13 +275,14 @@
 
                             <div class="row">
                                 <div class="col">
-                                    <div class="row"><div class="col">목표금액 설정</div></div>    
+                                    <div class="row"><div class="col" style="font-size: 1.05em;">목표금액 설정</div></div>    
                                     <div class="row"><div class="col"><span style="font-size: 0.8em; color: gray;">최소 50만 원 이상 ~ 최대 5000만 원 미만으로 설정해주세요</span></div></div>    
                                     <div class="row mx-1 my-2 py-1 border rounded"><div class="col d-grid"><input type="number" id="inputAmount" class="border border-0" name="amount"></div><div class="col-2 border-start ps-0 text-center">원</div></div>
                                 </div>
                             </div> 
 
-                            <div class="row my-2"><div class="col-3 px-0 ps-2 text-center"><a href="./prepareRgstrPage" class="btn border-0 rounded text-white" style="background-color: salmon; font-size: 0.85em;">뒤로가기</a></div> <div class="col d-grid"><input type="button" onclick="formSubmit()" value="제출하기" class="rounded" style="background-color: white;"> </div></div>
+                            <div class="row my-3"><div class="col-3 px-0 ps-2 text-center"><a href="./prepareRgstrPage" class="btn border-0 rounded text-white" style="background-color: salmon; font-size: 0.85em;">뒤로가기</a></div> <div class="col d-grid"><input type="button" onclick="formSubmit()" value="제출하기" class="rounded" style="background-color: white;"> </div></div>
+                            <div class="row" style="padding: 2em;"></div> 
                         </form>
 
                         <div class="row"><div class="col" style="padding: 0.3em;"></div></div>  

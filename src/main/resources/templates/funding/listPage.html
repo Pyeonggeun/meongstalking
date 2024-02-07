@@ -7,7 +7,12 @@
 
     <style>
         a {
-            text-decoration-line: none;
+            text-decoration-line: none !important;
+            color: black !important;
+        }
+
+        #productBox{
+            box-shadow: 0.25em 0.25em 0.25em 0.25em rgb(211, 211, 211);
         }
     </style>
     
@@ -16,93 +21,65 @@
 </head>
 
 <body>
-    
     <!--새로 시작-->
-    <div class="container img-fluid px-0">
-        <div class="row mx-0">
-            <div class="col mx-0">
+    <div class="container img-fluid">
+        <div class="row">
+            <div class="col">
 
 
                 <div class ="row"><div class="col pt-2 py-0 text-center fw-bold" style="font-size: 1.25em;">meongstalking funding</div></div>
-                <div class="row pt-3">
-                    <div class="col-9"><input type="text" class="form-control" placeholder="다양한 상품을 찾아보세요"></div>
-                    <div class="col-2 px-0 fw-bold text-end">
-                        <div class="row px-0 text-center">
-                            <div class="col-6 px-0">
-                                <a href="./fundingUserMyPage" class="me-2">
-                                    <div class="row px-0"><div class="col px-0"><i class="bi bi-file-person icon-link-hover px-0" style="font-size: 1.25em; color:black"></i></div></div>
-                                    <div class="row px-0"><span class="px-0 text-black" style="font-size: 0.55em;">메인홈</span></div>
-                                </a>
-                            </div>
-                            <div class="col-6 px-0"><a href="./prepareRgstrPage" class="me-2"><div class="row px-0"><div class="col px-0"><i class="bi bi-plus-square icon-link-hover px-0" style="font-size: 1.25em; color:black"></i></div></div><div class="row px-0"><span class="px-0 text-black" style="font-size: 0.55em;">펀딩등록</span></div></a></div>
-                        </div>
-                    </div>
-                   
-                </div>
                 
-                <div class="row py-2 mb-2">   
-                    <div class="col mx-1 border border-2 rounded" style="max-width:6em; height: 5em;"></div>
-                    <div class="col mx-1 border border-2 rounded" style="max-width:6em; height: 5em;"></div>
-                    <div class="col mx-1 border border-2 rounded" style="max-width:6em; height: 5em;"></div>
-                    <div class="col mx-1 border border-2 rounded" style="max-width:6em; height: 5em;"></div>
+                <div class="row pt-3">
+                    <div class="col-10 pt-2"><input type="text" class="form-control" placeholder="다양한 상품을 찾아보세요"></div>
+                    <div class="col fw-bold text-center">
+                                <a href="./fundingUserMyPage">
+                                    <div class="row"><div class="col"><i class="bi bi-file-person icon-link-hover" style="font-size: 1.25em; color:black"></i></div></div>
+                                    <div class="row"><div class="col"><span class="text-black py-0" style="font-size: 0.55em;">메인홈</span></div></div>
+                                </a>
+                    </div>
                 </div>
-
-
-
-                <div class="row px-0">
-                    <div class="col px-0">
+                    
+                <div class="row my-4">
+                    <div class="col">
 
                         <th:block th:each="list : ${list}">
-                                    <div class="row mx-0 mb-3">
-                                            <div class="col mx-0">
-                                                <div class="row">
-                                                    <a class="btn px-0 mx-0 py-0 my-0" th:href="@{./productDetailPage(id = ${list.list.product_pk})}"> 
-                                                        <div class="col">
-                                                            <div class="row px-0"><div class="col pe-0 text-start" th:text="${list.user.userid}" style="font-size: 0.86em;"></div><div class="col text-end"><i class="bi bi-three-dots-vertical"></i></div></div>
-                                                            <div class="row px-0"><div class="col d-grid px-0"> <img class="img-fluid" th:src="@{'/uploadFiles/'+${list.list.title_image}}" alt="nothing" style="max-width: 100%;"></div></div>
-                                                            <div class="row px-0" style="background-color:darkolivegreen"><div class="col ps-1 text-start fw-bold" style="font-size: 0.82em;" th:text="|펀딩종료일까지 ${list.f_day}일|">   </div><div class="col-1 px-0 fw-bold"> > </div></div>
-                                                        </div>
-                                                    </a>        
+                            <div class="row mx-3 mb-4 d-grid">
+                                <a class="px-0" th:href="@{./productDetailPage(id = ${list.list.product_pk})}">
+                                    <div id="productBox" class="col border border-0 rounded">
+
+                                        <div class="row">
+                                            <div class="col d-grid" style="position: relative;">
+                                                <img class="img-fluid rounded-top" th:src="@{'/uploadFiles/'+${list.list.title_image}}" alt="nothing" style="max-width: 100%;">
+                                                <div style="position: absolute; top: 6%; right: 6%;"><i class="bi bi-heart text-white" style="font-size: 1.15em;"></i>
                                                 </div>
-                                                
-                                                    <div class="row"> 
-                                                            <div class="col-1 px-0 text-center"> <a th:href="@{./insertWishlistProcess(id=${list.list.product_pk})}"><i class="bi bi-heart" style="color: black;"></i></a></div>   
-                                                            <div class="col-1 px-0 text-center"> <a th:href="@{./deleteWishlistProcess(id=${list.list.product_pk})}"><i class="bi bi-heart-fill" style="color:black;"></i></a></div>
-                                                        
-                                                            <div class="col ps-1 text-start"><i class="bi bi-clipboard-data fw-bold" style="font-size: 1.05em;"></i> <span style="font-size: 0.8em;">펀딩률 </span><span th:text="|${list.percent}%|"></span></div>
-                                                    </div>
-                                                <div class="row"><div class="col mt-1 text-start fw-bold" th:text=${list.list.product_name} style="font-size: 0.87em;"></div></div>
-                                                <div class="row"><div class="col text-start" th:text=${list.list.simple_explain} style="font-size: 0.85em;"></div></div>
-                                            </div> 
-                                    </div>        
+                                            </div>
+                                        </div>
+                                        <div class="row mx-1">
+                                            <div class="col">
+                                                <div class="row py-1"><div class="col"><span class="fw-bold" th:text="${list.percent}" style="font-size: 1.15em;"></span ><span class="fw-bold" style="font-size: 1.1em;">% 달성 중이에요</span></div></div>
+                                                <div class="row pb-1"><div class="col" th:text=${list.list.simple_explain} style="font-size: 0.95em; color:dimgray"></div></div>
+                                                <div class="row"><div class="col" th:text="${list.user.userid}" style="font-size: 0.85em; color: darkgray"></div></div>
+                                                <div class="row pb-2">
+                                                    <div class="col"><div class="badge text-wrap" style="background-color: rgba(204, 204, 204, 0.924)"><span th:text="|${list.f_day}일 남음|"></span></div> <div class="badge text-wrap" style="background-color: rgba(204, 204, 204, 0.924)"><span th:text="|${list.t_sales}원 |"></span></div></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </a>    
+                            </div>
+                        
                         </th:block>
-                    </div>    
-                </div>        
+                        
+                    </div>
+                </div>
+                
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <!--컨테이너 끝-->
             </div>
         </div>
     </div>
-    
-    
-
-
-
-
-
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
