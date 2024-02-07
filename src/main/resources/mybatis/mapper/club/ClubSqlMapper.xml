@@ -17,9 +17,14 @@
     </select>
 
     <select id="selectImgFreeBoardAll" resultType="map">
-        SELECT * FROM ms_club_imgboard
+        <!-- SELECT * FROM ms_club_imgboard
         JOIN ms_club_imgboard_imgs ON ms_club_imgboard.clubimgboard_pk = ms_club_imgboard_imgs.clubimgboard_pk
-        WHERE ms_club_imgboard.club_pk=#{club_pk};
+        WHERE ms_club_imgboard.club_pk=#{club_pk}; -->
+        SELECT mci.*, mci_img.*
+        FROM ms_club_imgboard mci
+        JOIN ms_club_imgboard_imgs mci_img ON mci.clubimgboard_pk = mci_img.clubimgboard_pk
+        WHERE mci.club_pk = #{club_pk}
+        GROUP BY mci.clubimgboard_pk;
     </select>
 
     <!-- 댓글 -->

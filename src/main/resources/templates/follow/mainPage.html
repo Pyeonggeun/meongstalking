@@ -547,6 +547,10 @@
                 'FILL' 1
             }
 
+            .custom-tooltip {
+                z-index: 3000;
+            }
+
             /* .heart-icon {
                 font-variation-settings:
                 'FILL' 1
@@ -781,7 +785,8 @@
 
         <div class="container-fluid">
             <div class="row">
-                <div id="topBanner" class="col"></div>
+                <div id="topBanner" class="col">
+                </div>
             </div>
             <div class="row">
                 <div class="col px-0">
@@ -966,8 +971,8 @@
                                 </span>
                                 <img class="img-fluid d-block mx-auto" th:src="@{/public/image/follow/prop.png}" style="position: absolute; width: 10rem; height: 3rem; bottom: 0; left: 28%;">
                                 <div class="d-grid align-items-center" style="position: absolute; width: 9rem; height: 10rem; top: 10%; left: 28%; border-radius: 50%; background: linear-gradient(to bottom, #faecc7, #b9f1e2, #aac7f1, #ecd4fd, #fad0f8); box-shadow: 1px 0 0 1px #636363, 2px 0 0 1px #636363, 3px 0 0 1px #636363, 4px 0 0 1px #636363, 5px 0 0 1px #636363; animation: scale 3s linear infinite;">
-                                    <!-- <img class="img-fluid d-block mx-auto" th:src="@{/public/image/commons/list1.jpeg}" style="width: 90%; height: 90%; border-radius: 50%;"> -->
-                                    <img class="img-fluid d-block mx-auto bg-black" th:src="@{/public/image/follow/question.png}" style="width: 90%; height: 90%; border-radius: 50%;">
+                                    <img class="img-fluid d-block mx-auto" th:src="@{/public/image/commons/list1.jpeg}" style="width: 90%; height: 90%; border-radius: 50%;">
+                                    <!-- <img class="img-fluid d-block mx-auto bg-black" th:src="@{/public/image/follow/question.png}" style="width: 90%; height: 90%; border-radius: 50%;"> -->
                                 </div>
                             </div>
                         </div>
@@ -988,7 +993,8 @@
                             <div class="col">
                                 <div class="row">
                                     <div class="col text-center fw-bold" style="font-size: 1.1rem;">
-                                        ? ? ? kg
+                                        <!-- ? ? ? kg -->
+                                        50 kg
                                     </div>
                                 </div>
                                 <div class="row">
@@ -1001,7 +1007,8 @@
                             <div class="col-3">
                                 <div class="row">
                                     <div class="col text-center fw-bold" style="font-size: 1.1rem;">
-                                        ? ?
+                                        <!-- ? ? -->
+                                        👱🏻‍♀️
                                     </div>
                                 </div>
                                 <div class="row">
@@ -1014,7 +1021,8 @@
                             <div class="col">
                                 <div class="row">
                                     <div class="col text-center fw-bold" style="font-size: 1.1rem;">
-                                        ? ? ? cm
+                                        <!-- ? ? ? cm -->
+                                        163 cm
                                     </div>
                                 </div>
                                 <div class="row">
@@ -1031,7 +1039,8 @@
                             <div class="col">
                                 <div class="row">
                                     <div class="col text-center fw-bold" style="font-size: 1.1rem;">
-                                        ? ? ? ?
+                                        <!-- ? ? ? ? -->
+                                        ISTJ
                                     </div>
                                 </div>
                                 <div class="row">
@@ -1044,7 +1053,8 @@
                             <div class="col">
                                 <div class="row">
                                     <div class="col text-center fw-bold" style="font-size: 1.1rem;">
-                                        ? ? 형
+                                        <!-- ? ? 형 -->
+                                        B 형
                                     </div>
                                 </div>
                                 <div class="row">
@@ -1057,7 +1067,8 @@
                             <div class="col">
                                 <div class="row">
                                     <div class="col text-center fw-bold" style="font-size: 1.1rem;">
-                                        ? ?
+                                        <!-- ? ? -->
+                                        N
                                     </div>
                                 </div>
                                 <div class="row">
@@ -1070,7 +1081,8 @@
                             <div class="col">
                                 <div class="row">
                                     <div class="col text-center fw-bold" style="font-size: 1.1rem;">
-                                        ? ?
+                                        <!-- ? ? -->
+                                        N
                                     </div>
                                 </div>
                                 <div class="row">
@@ -1087,7 +1099,8 @@
                             <div class="col">
                                 <div class="row">
                                     <div class="col text-center fw-bold" style="font-size: 1.1rem;">
-                                        ? ? ? ? ?
+                                        <!-- ? ? ? ? ? -->
+                                        집에서 뒹굴거리기
                                     </div>
                                 </div>
                                 <div class="row">
@@ -1099,7 +1112,8 @@
                             <div class="col">
                                 <div class="row">
                                     <div class="col text-center fw-bold" style="font-size: 1.1rem;">
-                                        ? ? ? ? ?
+                                        <!-- ? ? ? ? ? -->
+                                        게이
                                     </div>
                                 </div>
                                 <div class="row">
@@ -1135,7 +1149,7 @@
                             </div>
                         </div>
                         <div class="row mt-3">
-                            <div class="col rounded" style="height: 20rem; background: #fbf9ff;">
+                            <div class="col rounded" style="height: 22rem; background: #fbf9ff;">
                                 <div class="row mt-2">
                                     <div class="col text-center fw-bold" style="font-size: 1.2rem;">
                                         체취도감&nbsp;&nbsp;<span style="font-size: 0.75rem;">5 / 10</span>
@@ -1145,27 +1159,158 @@
                                     <div class="col">
                                         <div class="row row-cols-4">
 
-                                            <div class="col px-1 mt-3">
-                                                <div class="rounded d-grid align-content-center" style="position: relative; aspect-ratio: 1/1; background: linear-gradient(135deg, #7d7b7b, #595858); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" data-bs-title="<p class='mb-0'>총 수집된 횟수 | 3회</p><p class='mb-0'>관심표현 갯수 | 10개</p>">
-                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #899593, #4D5655); border: 2px solid #343434;">
-                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #9B9396;">No.123</span>
-                                                        <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -7%; font-size: 2rem; color: #68645D; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                            <div class="col px-1 mt-3" style="position: relative;">
+                                                <!-- <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div> -->
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #ce3030, #fdf180); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #fad88e, #f54747); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                                        <!-- <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col px-1 mt-3" style="position: relative;">
+                                                <!-- <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div> -->
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #2da59f, #4990b9); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #8eb4fa, #40d8bf); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.123</span>
+                                                        <!-- <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col px-1 mt-3" style="position: relative;">
+                                                <!-- <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div> -->
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #bbbbbb, #575757); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #808080, #d4d4d4); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                                        <!-- <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col px-1 mt-3" style="position: relative;" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="<p class='mb-0'>총 수집된 횟수: 15회</p><p class='mb-0'>관심표현 개수: 10개</p>" data-bs-custom-class="custom-tooltip">
+                                                <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div>
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #ce3030, #fdf180); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #fad88e, #f54747); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                                        <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
                                                             lock
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <!-- <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="<em>Tooltip</em> <u>with</u> <b>HTML</b>">
-                                                    Tooltip with HTML
-                                                </button> -->
                                             </div>
 
-                                            <div class="col px-1 mt-3">
-                                                <div class="rounded d-grid align-content-center" style="position: relative; aspect-ratio: 1/1; background: linear-gradient(135deg, #9e3f3f, #902929); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
-                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #a85f50, #964636); border: 2px solid #343434;">
-                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                            <div class="col px-1 mt-3" style="position: relative;" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="<p class='mb-0'>총 수집된 횟수: 15회</p><p class='mb-0'>관심표현 개수: 10개</p>" data-bs-custom-class="custom-tooltip">
+                                                <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div>
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #2da59f, #4990b9); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #8eb4fa, #40d8bf); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.123</span>
+                                                        <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <div class="col px-1 mt-3" style="position: relative;" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="<p class='mb-0'>총 수집된 횟수: 15회</p><p class='mb-0'>관심표현 개수: 10개</p>" data-bs-custom-class="custom-tooltip">
+                                                <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div>
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #bbbbbb, #575757); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #808080, #d4d4d4); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                                        <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col px-1 mt-3" style="position: relative;">
+                                                <!-- <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div> -->
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #bbbbbb, #575757); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #808080, #d4d4d4); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                                        <!-- <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col px-1 mt-3" style="position: relative;">
+                                                <!-- <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div> -->
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #bbbbbb, #575757); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #808080, #d4d4d4); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                                        <!-- <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col px-1 mt-3" style="position: relative;">
+                                                <!-- <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div> -->
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #bbbbbb, #575757); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #808080, #d4d4d4); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                                        <!-- <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col px-1 mt-3" style="position: relative;">
+                                                <!-- <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div> -->
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #bbbbbb, #575757); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #808080, #d4d4d4); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                                        <!-- <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- <div class="col px-1 mt-3" style="position: relative;">
+                                                <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div>
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #b94949, #a52d2d); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #e76e6e, #f54747); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                                        <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col px-1 mt-3" style="position: relative;">
+                                                <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div>
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #49b9b3, #2da59f); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #fad88e, #3dc9b1); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.123</span>
+                                                        <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col px-1 mt-3" style="position: relative;">
+                                                <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div>
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #bbbbbb, #575757); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #bbbbbb, #808080); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                                        <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div> -->
 
                                         </div>
                                     </div>
@@ -1413,14 +1558,15 @@
 
         </div>
 
-        <!-- <script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+        <script>
             const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
             const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-        </script> -->
+        </script>
 
-        <!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script> -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     </body>
     
 </html>
