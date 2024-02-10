@@ -17,5 +17,53 @@
         SELECT * FROM ms_mFollow_coin_category
         where coin_category_pk = #{coin_category_pk}
     </select>
+    <select id="selectUserDtoInfo" resultType="com.psychopath.dogstalking.dto.UserDto">
+        SELECT * FROM ms_user
+        where user_pk = #{user_pk}
+    </select>
+    <insert id="insertOrderCoinDto">
+        INSERT into ms_mFollow_order_coin(user_pk, coin_category_pk)
+        values(#{user_pk}, #{coin_category_pk})
+    </insert>
 
+    <select id="selectMyCoinCount" resultType="int">
+        SELECT 
+	        IFNULL( 
+                (
+                    SELECT IFNULL(sum(moc.payCount * (mcc.coin_count+ mcc.bonus_coin)), 0)  from ms_mFollow_coin_category mcc
+                    inner join (
+                        SELECT coin_category_pk, count(*) as payCount from ms_mFollow_order_coin
+                    where user_pk = #{user_pk}
+                    GROUP by coin_category_pk) moc on mcc.coin_category_pk = moc.coin_category_pk
+                )
+                -
+                (
+                    select
+                        SUM(
+                            CASE 
+                                WHEN mi.item_category = 1 THEN 
+                                    COALESCE((mi.price * POW(2, (moi.sum_quantity+1)-1)) - mi.price, 0)
+                                WHEN mi.item_category = 2 THEN 
+                                    COALESCE(mi.price * moi.sum_quantity, 0)
+                            END
+                        ) AS total_sum
+                    from ms_mFollow_item mi
+                    inner join (SELECT item_pk, sum(quantity) as sum_quantity   from  ms_mFollow_order_item
+                    where user_pk = #{user_pk}
+                    GROUP by item_pk) moi on mi.item_pk = moi.item_pk
+                )
+            ,0)
+    </select>
+    <insert id="insertOrderItemDto">
+        INSERT into ms_mFollow_order_item(user_pk, item_pk, quantity)
+        values(#{user_pk}, #{item_pk}, #{quantity})
+    </insert>
+    <select id="selectMyItemCount" resultType="int">
+        SELECT IFNULL((SELECT sum(quantity) from ms_mFollow_order_item
+        where user_pk = #{user_pk}
+        and item_pk = #{item_pk})-(SELECT count(*) from ms_mFollow_use_item
+        where user_pk = #{user_pk}
+        and item_pk = #{item_pk}),0) as count
+    </select>
+    
 </mapper>

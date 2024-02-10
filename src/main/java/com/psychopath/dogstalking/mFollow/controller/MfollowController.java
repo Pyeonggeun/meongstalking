@@ -11,5 +11,14 @@ public class MfollowController {
     public String testModal(){
         return "/mFollow/testModal";
     }
+    @RequestMapping("payRequestPage")
+    public String payRequestPage(){
+        return "/mFollow/payRequestPage";
+    }
+
+    @RequestMapping("requestResultPage")
+    public String requestResultPage(){
+        return "/mFollow/requestResultPage";
+    }
     
 }

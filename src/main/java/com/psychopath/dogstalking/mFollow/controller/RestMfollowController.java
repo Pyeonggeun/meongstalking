@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.psychopath.dogstalking.dto.RestResponseDto;
+import com.psychopath.dogstalking.dto.UserDto;
 import com.psychopath.dogstalking.mFollow.dto.CoinCategoryDto;
 import com.psychopath.dogstalking.mFollow.dto.ItemShopDto;
+import com.psychopath.dogstalking.mFollow.dto.OrderCoinDto;
+import com.psychopath.dogstalking.mFollow.dto.OrderItemDto;
 import com.psychopath.dogstalking.mFollow.service.MfollowServiceImpl;
 
 @RestController
@@ -33,10 +36,10 @@ public class RestMfollowController {
     }
 
     @RequestMapping("loadShopItemList")
-    public RestResponseDto loadShopItemList(){
+    public RestResponseDto loadShopItemList(int user_pk){
         RestResponseDto responseDto = new RestResponseDto();
 
-        List<Map<String,Object>> list = mFollowService.getShopItemList();
+        List<Map<String,Object>> list = mFollowService.getShopItemList(user_pk);
 
         responseDto.setResult("success");
         responseDto.setData(list);
@@ -65,5 +68,37 @@ public class RestMfollowController {
         responseDto.setData(coinCategoryDto);
 
         return responseDto;
+    }
+    @RequestMapping("getUserDto")
+    public RestResponseDto getUserDto(int user_pk){
+        RestResponseDto responseDto = new RestResponseDto();
+
+        UserDto userDto = mFollowService.getUserInfo(user_pk);
+
+        responseDto.setResult("success");
+        responseDto.setData(userDto);
+
+        return responseDto;
+    }
+    @RequestMapping("insertOrderCoin")
+    public void insertOrderCoin(OrderCoinDto orderCoinDto){
+    
+        mFollowService.insertOrderCoin(orderCoinDto);
+    }
+    @RequestMapping("getMyCoin")
+    public RestResponseDto getMyCoin(int user_pk){
+        RestResponseDto responseDto = new RestResponseDto();
+
+        int coinCount = mFollowService.getMyCoinCount(user_pk);
+
+        responseDto.setResult("success");
+        responseDto.setData(coinCount);
+
+        return responseDto;
+    }
+    @RequestMapping("insertOrderItem")
+    public void insertOrderItem(OrderItemDto orderItmeDto){
+    
+        mFollowService.inserItemInfo(orderItmeDto);
     }
 }
