@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.psychopath.dogstalking.dto.UserDto;
-import com.psychopath.dogstalking.funding.dto.FundingCheeringDto;
 import com.psychopath.dogstalking.funding.dto.FundingNewsDto;
 import com.psychopath.dogstalking.funding.dto.FundingOrderDto;
 import com.psychopath.dogstalking.funding.dto.FundingProductDto;
@@ -40,12 +39,6 @@ public class FundingController {
     public String listPage(Model model, HttpSession session,FundingWishlistDto paraWishDto){
         List<Map<String,Object>> fundingList = fundingService.fundingListCall();
         model.addAttribute("list", fundingList);
-
-        // UserDto sessionUser  = (UserDto)session.getAttribute("sessionUser");
-        // paraWishDto.setUser_pk(sessionUser.getUser_pk()); 
-        // paraWishDto.setProduct_pk(product_pk);
-        int wishCount = fundingService.countForWish(paraWishDto);
-        model.addAttribute("wishCount",wishCount);
 
         return "funding/listPage";
     }
@@ -203,50 +196,50 @@ public class FundingController {
         return"funding/cheeringPage";
     }
 
-    @RequestMapping("insertCheering")
-    public String insertCheering(HttpSession session, @RequestParam(value="cheeringImage", required = false) MultipartFile cheeringImage, @RequestParam("product_pk") String product_pk,FundingCheeringDto paraCheeringDto){
+    // @RequestMapping("insertCheering")
+    // public String insertCheering(HttpSession session, @RequestParam(value="cheeringImage", required = false) MultipartFile cheeringImage, @RequestParam("product_pk") String product_pk,FundingCheeringDto paraCheeringDto){
 
-        int product_pkInt = Integer.parseInt(product_pk);
+    //     int product_pkInt = Integer.parseInt(product_pk);
 
-        if(cheeringImage == null || cheeringImage.isEmpty()){
-        }
-        else{
-            String rootPath = "C:/uploadFiles/";
+    //     if(cheeringImage == null || cheeringImage.isEmpty()){
+    //     }
+    //     else{
+    //         String rootPath = "C:/uploadFiles/";
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd/");
-            String todayPath = sdf.format(new Date());
+    //         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd/");
+    //         String todayPath = sdf.format(new Date());
 
-            File todayFolderForCreate = new File(rootPath + todayPath);
+    //         File todayFolderForCreate = new File(rootPath + todayPath);
 
-            if(!todayFolderForCreate.exists()){
-                todayFolderForCreate.mkdirs();
-            }
+    //         if(!todayFolderForCreate.exists()){
+    //             todayFolderForCreate.mkdirs();
+    //         }
 
-            String originaFileName = cheeringImage.getOriginalFilename();
-            System.out.println(originaFileName);
+    //         String originaFileName = cheeringImage.getOriginalFilename();
+    //         System.out.println(originaFileName);
 
-            String uuid = UUID.randomUUID().toString();
-            long currentTime = System.currentTimeMillis();
-            String fileName = uuid + "_" + currentTime;
+    //         String uuid = UUID.randomUUID().toString();
+    //         long currentTime = System.currentTimeMillis();
+    //         String fileName = uuid + "_" + currentTime;
 
-            String ext = originaFileName.substring(originaFileName.lastIndexOf("."));
-            fileName += ext;
+    //         String ext = originaFileName.substring(originaFileName.lastIndexOf("."));
+    //         fileName += ext;
 
-            try{
-                cheeringImage.transferTo(new File(rootPath+todayPath+fileName));
-            }catch(Exception e){
-                e.printStackTrace();
-            }
+    //         try{
+    //             cheeringImage.transferTo(new File(rootPath+todayPath+fileName));
+    //         }catch(Exception e){
+    //             e.printStackTrace();
+    //         }
 
-            paraCheeringDto.setCheering_image(todayPath + fileName);
-        }
+    //         paraCheeringDto.setCheering_image(todayPath + fileName);
+    //     }
         
-        UserDto userInfo = (UserDto)session.getAttribute("sessionUser");
-        paraCheeringDto.setUser_pk(userInfo.getUser_pk());
-        paraCheeringDto.setProduct_pk(product_pkInt);
-        fundingService.insertCheering(paraCheeringDto);
-        return "redirect:./cheeringPage?id="+ product_pk;
-    }
+    //     UserDto userInfo = (UserDto)session.getAttribute("sessionUser");
+    //     paraCheeringDto.setUser_pk(userInfo.getUser_pk());
+    //     paraCheeringDto.setProduct_pk(product_pkInt);
+    //     fundingService.insertCheering(paraCheeringDto);
+    //     return "redirect:./cheeringPage?id="+ product_pk;
+    // }
 
     @RequestMapping("productRgstrCompletePage")
     public String productRgstrCompletePage(){
@@ -286,7 +279,6 @@ public class FundingController {
         System.out.println("product_pk"+product_pk);
         model.addAttribute("product",productMap);
 
-
         return "funding/productControlPage";
     }
 
@@ -299,8 +291,6 @@ public class FundingController {
         model.addAttribute("review", reviewList);
         return "funding/productDetailPage";
     }
-
-    
 
     //상품 구매 페이지
     @RequestMapping("productPurchasePage")
@@ -368,26 +358,26 @@ public class FundingController {
         return "funding/productPaymentCompletePage";
     }
 
-    //찜하기
-    @RequestMapping("insertWishlistProcess")
-    public String insertWishlistProcess(HttpSession session,@RequestParam("id")int product_pk,FundingWishlistDto paraWishDto){
-        UserDto sessionUser = (UserDto)session.getAttribute("sessionUser");
-        paraWishDto.setUser_pk(sessionUser.getUser_pk());
-        paraWishDto.setProduct_pk(product_pk);
-        fundingService.insertWish(paraWishDto);
+    // //찜하기
+    // @RequestMapping("insertWishlistProcess")
+    // public String insertWishlistProcess(HttpSession session,@RequestParam("id")int product_pk,FundingWishlistDto paraWishDto){
+    //     UserDto sessionUser = (UserDto)session.getAttribute("sessionUser");
+    //     paraWishDto.setUser_pk(sessionUser.getUser_pk());
+    //     paraWishDto.setProduct_pk(product_pk);
+    //     fundingService.insertWish(paraWishDto);
 
-        return "redirect:./listPage";
-    }
+    //     return "redirect:./listPage";
+    // }
 
-    @RequestMapping("deleteWishlistProcess")
-    public String deleteWishlistProcess(HttpSession session,@RequestParam("id")int product_pk,FundingWishlistDto paraWishDto){
-        UserDto sessionUser = (UserDto)session.getAttribute("sessionUser");
-        paraWishDto.setUser_pk(sessionUser.getUser_pk());
-        paraWishDto.setProduct_pk(product_pk);
-        fundingService.deleteWish(paraWishDto);
+    // @RequestMapping("deleteWishlistProcess")
+    // public String deleteWishlistProcess(HttpSession session,@RequestParam("id")int product_pk,FundingWishlistDto paraWishDto){
+    //     UserDto sessionUser = (UserDto)session.getAttribute("sessionUser");
+    //     paraWishDto.setUser_pk(sessionUser.getUser_pk());
+    //     paraWishDto.setProduct_pk(product_pk);
+    //     fundingService.deleteWish(paraWishDto);
 
-        return "redirect:./listPage";
-    }
+    //     return "redirect:./listPage";
+    // }
 
     //일반회원 마이페이지에서 구매 상품 관련 활동 눌렀을 때
     @RequestMapping("purchaseProductManagePage")

@@ -10,16 +10,203 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
+    <style>
+        .small {
+            font-size: 0.8em;
+            /* 원하는 크기로 조정 */
+        }
+    </style>
+
     <script>
+        var offcanvasElementList = [].slice.call(document.querySelectorAll('.offcanvas'))
+        var offcanvasList = offcanvasElementList.map(function (offcanvasEl) {
+            return new bootstrap.Offcanvas(offcanvasEl)
+        })
+
         function goBack() {
             window.history.back();
         }
+//        
+
     </script>
+
+
+    <script th:inline="javascript">
+        const articleId = /*[[${clubimgboard_pk}]]*/ null;
+        var myId = /*[[${session.sessionUser.user_pk}]]*/ null;
+    </script>
+
+
+    <script>
+        let articleIds = null;
+        if (articleId != null) {
+            articleIds = articleId;
+        }
+
+        function openOffcanvas(event, clubimgboard_pk) {
+
+            event.preventDefault();
+            var offcanvasBottom = new bootstrap.Offcanvas(document.getElementById('offcanvasBottom'));
+            offcanvasBottom.show();
+
+            //console.log('clubimgboard_pk:', clubimgboard_pk);
+            articleIds = clubimgboard_pk;
+            reloadCommentList();
+        }
+
+        function writeImgComment() {
+            // if (myId == null) {
+            //     if (confirm("로그인 후 이용 가능합니다. 로그인 페이지로 이동하시겠습니까?")) {
+            //         location.href = "../user/loginPage";
+            //     }
+            //     return;
+            // }
+
+            var inputComment = document.getElementById("inputComment");
+            var commentValue = inputComment.value;
+
+            // console.log("commentValue: " + commentValue);
+            console.log("articleIds: " + articleIds);
+
+            var url = "./writeImgComment";
+
+            fetch(url, {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "content=" + commentValue + "&clubimgboard_pk=" + articleIds
+            })
+                .then(response => response.json())
+                .then(response => {
+                    inputComment.value = "";
+                    reloadCommentList();
+                })
+                .catch(error => {
+                    console.error("Error writing comment:", error);
+                });
+        }
+
+        function showCommentUpdateForm(targetElement, commentId) {
+            const updateCommentWrapper = document.querySelector("#templete .updateCommentWrapper").cloneNode(true);
+
+            const commentWrapper = targetElement.closest(".commentWrapper");
+
+            const commentText = commentWrapper.querySelector(".commentText");
+
+            const text = commentText.innerText;
+            commentText.innerHTML = "";
+
+            updateCommentWrapper.querySelector(".inputComment").value = text;
+
+            const updateCommentButton = updateCommentWrapper.querySelector(".updateCommentButton");
+            updateCommentButton.setAttribute("onclick", "updateImgComment(this, " + commentId + ")");
+
+            commentText.appendChild(updateCommentWrapper);
+        }
+
+        function updateImgComment(targetElement, commentId) {
+            const updateCommentWrapper = targetElement.closest(".updateCommentWrapper");
+            const inputComment = updateCommentWrapper.querySelector(".inputComment");
+
+            const content = inputComment.value;
+
+            const url = "./updateImgComment";
+            const option = {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "imgcomment_pk=" + commentId + "&content=" + content
+            };
+
+            fetch(url, option)
+                .then(response => response.json())
+                .then(response => {
+                    reloadCommentList();
+                });
+
+        }
+
+        function deleteComment(commentId) {
+            const url = "./deleteImgComment?comment_id=" + commentId;
+            fetch(url)
+                .then(response => response.json())
+                .then(response => {
+                    reloadCommentList();
+                });
+        }
+
+        function reloadCommentList() {
+
+            const url = "./getImgCommentList?clubimgboard_pk=" + articleIds;
+            fetch(url)
+                //.then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(response => {
+                    if (response && Array.isArray(response.data)) {
+                        let commentListBox = document.getElementById("commentListBox");
+                        if (commentListBox) {
+                            commentListBox.innerHTML = "";
+                            //let commentListBox = document.getElementById("commentListBox");
+                            //const commentWrapper = document.querySelector("#templete .commentWrapper");
+                            for (e of response.data) {
+                                const commentWrapper = document.querySelector("#templete .commentWrapper").cloneNode(true);
+
+
+                                const commentNickname = commentWrapper.querySelector(".commentNickname");
+                                commentNickname.innerText = e.name;
+
+                                const commentDate = commentWrapper.querySelector(".commentDate");
+                                const date = new Date(e.created_at);
+                                commentDate.innerText = date.getFullYear() + "." + (date.getMonth() + 1) + "." + date.getDate();
+
+                                const commentText = commentWrapper.querySelector(".commentText");
+                                commentText.innerText = e.content;
+
+                                const commentUpdate = commentWrapper.querySelector(".commentUpdate");
+                                const commentDelete = commentWrapper.querySelector(".commentDelete");
+
+                                commentUpdate.setAttribute("onclick", "showCommentUpdateForm(this, " + e.imgcomment_pk + ")");
+                                commentDelete.setAttribute("onclick", "deleteComment(" + e.imgcomment_pk + ")");
+
+                                if (myId == null || myId != e.user_pk) {
+                                    commentUpdate.remove();
+                                    commentDelete.remove();
+                                }
+
+
+                                commentListBox.appendChild(commentWrapper);
+                            }
+                        } else {
+                            console.error("commentWrapper is null or undefined");
+                        }
+                    } else {
+                        console.error("Invalid response data:", response);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching comment list:", error);
+                });
+        }
+        window.addEventListener("DOMContentLoaded", () => {
+            reloadCommentList();
+        });
+
+
+    </script>
+
+
 </head>
 
 <body>
     <div class="container">
-        <div class="row px-0">
+        <div class="row">
             <div class="col-2 my-2 ms-1">
                 <button class="btn" onclick="goBack()">
                     <i class="bi bi-arrow-left"></i>
@@ -28,33 +215,118 @@
             <div th:text="${clubTF.clubname}" class="col d-flex align-items-center px-0">
             </div>
         </div>
-        <div class="row scrollable-menu">
+        <div class="row scrollable-menu px-0">
             <div class="col justify-content-between fw-bold">
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">게시판</span>
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./photoAlbumPage'">사진첩</span>
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubMemberPage'">멤버</span>
+
             </div>
         </div>
 
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            <!-- 반복문으로 동적으로 카드 생성 -->
-            <!-- <div th:each="photo, iterStat : ${photos}" class="col">
-                <div class="card">
-                    <img th:src="${photo.imageUrl}" class="card-img-top" alt="사진" />
-                    <div class="card-body">
-                        <h5 class="card-title" th:text="${photo.title}"></h5>
-                        <p class="card-text" th:text="${photo.description}"></p>
+        <div class="row mt-4" style="color: #f45600;">
+            <div class="col fw-bold fs-4">동호회 사진첩</div>
+        </div>
+        <!-- th:href="@{'./photoAlbumReadPage?clubimgboard_pk=' + ${board.clubimgboard_pk}}"  -->
+
+
+        <div class="row row-cols-1 row-cols-3 mt-1">
+            <div class="col border border-white px-0" th:each="board : ${freeBoardList}">
+                <div class="row">
+                    <div class="col" style="position: relative;">
+                        <div th:text="${board.clubimgboard_pk}"></div>
+                        <a href="#" th:attr="onclick='openOffcanvas(event, \'' + ${board.clubimgboard_pk} + '\')'"
+                            aria-controls="offcanvasBottom">
+                            <img style="height: 7.5em;" class="img-fluid" th:src="@{'/uploadFiles/'+${board.location}}"
+                                alt="사진">
+                            <div style="position: absolute; right: 1.2em; bottom: 0.3em; font-size: 0.8em;">
+                                <span class="text-black badge bg-white">
+                                    <i class="text-black bi bi-heart"></i>
+                                    1
+                                    <i class="text-black bi bi-chat-left"></i>
+                                    2
+                                </span>
+                            </div>
+                        </a>
                     </div>
                 </div>
-            </div> -->
+            </div>
         </div>
+        <div class="offcanvas offcanvas-bottom position-fixed" tabindex="-1" id="offcanvasBottom"
+            aria-labelledby="offcanvasBottomLabel" style="width: 100%; max-width: 600px; height: auto;">
+            <div class="row offcanvas-header">
+                <div class="col">
+                    Likes 10 • Comments 5
+                </div>
+                <div class="col-2 text-end">
+                    <button type="button" class="btn-close text-end" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+                </div>
+            </div>
+
+            <div class="offcanvas-body">
+                <!-- <div class="row">
+                    <p class="text-muted">댓글리스트.</p>
+                </div> -->
+                <div id="commentListBox" class="row">
+                </div>
+            </div>
+            <div class="offcanvas-bottom" style=" padding: 10px;">
+                <div class="row align-items-center">
+                    <div class="col-8">
+                        <textarea id="inputComment" class="form-control" placeholder="댓글을 입력하세요"></textarea>
+                    </div>
+                    <div class="col d-grid">
+                        <button onclick="writeImgComment()" class="btn btn-secondary comment-btn">전송</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template -->
+        <div id="templete" class="d-none">
+            <div class="commentWrapper">
+                <div class="row">
+                    <div class="col pt-1 text-center">
+                        <img th:src="@{/public/image/dog_img.png}" class="img-fluid rounded-circle profile-image"
+                            style="width: 7em">
+                    </div>
+                    <div class="col-10">
+                        <div class="row">
+                            <div class="col commentNickname fw-bold">닉네임 나오는 곳</div>
+                            <div class="col-3 text-end commentDate text-secondary">2023.11.03</div>
+                        </div>
+                        <div class="row">
+                            <div class="commentText col">댓글 내용 블라블라....</div>
+                            <div class="col-2 commentUpdate text-secondary small text-center">수정</div>
+                            <div class="col-2 commentDelete text-secondary small text-center">삭제</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row updateCommentWrapper">
+                <div class="col">
+                    <div class="row">
+                        <div class="col">
+                            <input type="text" class="inputComment form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col updateCommentButton">저장</div>
+                        <div onclick="reloadCommentList()" class="col">취소</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <div class="position-fixed bottom-0 end-0 m-3">
             <a href="./photoAlbumWritePage" class="btn btn-secondary rounded-circle p-3">
                 <i class="bi bi-pencil"></i>
             </a>
         </div>
-
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

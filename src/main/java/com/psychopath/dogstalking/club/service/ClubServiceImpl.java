@@ -7,12 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.psychopath.dogstalking.club.dto.ClubArticleImageDto;
+import com.psychopath.dogstalking.club.dto.ClubArticleImgDto;
 import com.psychopath.dogstalking.club.dto.ClubDto;
 import com.psychopath.dogstalking.club.dto.ClubFreeBoardDto;
+import com.psychopath.dogstalking.club.dto.ClubImgBoardDto;
 import com.psychopath.dogstalking.club.dto.ClubStatusLogDto;
 import com.psychopath.dogstalking.club.dto.ClubUserDto;
 import com.psychopath.dogstalking.club.dto.ClubUserRanklogDto;
 import com.psychopath.dogstalking.club.dto.CommentDto;
+import com.psychopath.dogstalking.club.dto.ImgCommentDto;
 import com.psychopath.dogstalking.club.mapper.ClubSqlMapper;
 
 @Service
@@ -29,20 +32,15 @@ public class ClubServiceImpl {
     public List<Map<String, Object>> selectFreeBoardAll(int pk) {
 		return clubSqlMapper.selectFreeBoardAll(pk);
 	}
+
+	public List<Map<String, Object>> selectImgFreeBoardAll(int pk) {
+		return clubSqlMapper.selectImgFreeBoardAll(pk);
+	}
     
 	//게시판
 	public void writeArticle(ClubFreeBoardDto clubFreeBoardDto) {
-		
-		//int articlePk = clubSqlMapper.createArticlePk();
-		//, List<ClubArticleImageDto> clubArticleImageDto
-
-		//clubFreeBoardDto.setClubfreeboard_pk(articlePk);
+	
 		clubSqlMapper.insertFreeBoard(clubFreeBoardDto);
-		/* 
-		for(ArticleImageDto articleImageDto : articleImageDtoList) {
-			articleImageDto.setArticle_id(articlePk);
-			guestBookSqlMapper.insertImage(articleImageDto);
-		}*/
 	}
 
 	// 댓글
@@ -148,5 +146,47 @@ public class ClubServiceImpl {
 
 	public Integer selectClubCategoryPk(int club_user_pk){
 		return clubSqlMapper.selectClubCategoryPk(club_user_pk);
+	}
+
+	public void writeImgArticle(ClubImgBoardDto clubImgBoardDto, List<ClubArticleImgDto> articleImageDtoList) {
+		
+		int articlePk = clubSqlMapper.createArticlePk();
+
+		clubImgBoardDto.setClubimgboard_pk(articlePk);
+		clubSqlMapper.insertClubImgFreeBoard(clubImgBoardDto);
+		
+		for(ClubArticleImgDto articleImageDto : articleImageDtoList) {
+			articleImageDto.setClubimgboard_pk(articlePk);
+			clubSqlMapper.insertClubImgFreeBoardImage(articleImageDto);
+		}
+	}
+
+	public Map<String, Object> selectLatestPost(int club_pk){
+		return clubSqlMapper.selectLatestPost(club_pk);	
+	}
+
+	public List<Map<String, Object>> selectLatestAlbum(int club_pk){
+		return clubSqlMapper.selectLatestAlbum(club_pk);	
+	}
+	
+	public List<Map<String, Object>> selectAlbumFreeBoard(int club_pk, int clubimgboard_pk){
+		return clubSqlMapper.selectAlbumFreeBoard(club_pk,clubimgboard_pk);	
+	}
+	
+	// 앨범 댓글
+	public void writeImgComment(ImgCommentDto commentDto) {
+		clubSqlMapper.insertImgComment(commentDto);
+	}
+	
+	public List<Map<String, Object>> getImgCommentList(int articleId){
+		return clubSqlMapper.selectImgCommentAll(articleId);	
+	}
+
+	public void updateImgComment(ImgCommentDto commentDto) {
+		clubSqlMapper.updateImgComment(commentDto);
+	}
+
+	public void deleteImgComment(int commentId) {
+		clubSqlMapper.deleteImgComment(commentId);
 	}
 }

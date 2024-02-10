@@ -10,16 +10,141 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
+    <style>
+        .upload-btn-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .btn {
+            border: 2px solid gray;
+            color: gray;
+            background-color: white;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .upload-btn-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+        }
+
+        .upload-btn-wrapper .btn {
+            border: none;
+            outline: none;
+            font-size: 16px;
+            font-weight: normal;
+        }
+
+        .upload-btn-wrapper .btn:hover {
+            cursor: pointer;
+        }
+
+        .upload-btn-wrapper .btn:active {
+            background-color: #8cc665;
+            color: white;
+        }
+
+        .thumbnail {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .thumbnail.selected {
+            border: 2px solid #8cc665;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .scrollable-menu {
+            overflow-y: auto;
+            max-height: 200px;
+        }
+    </style>
+
     <script>
         function goBack() {
             window.history.back();
         }
+
+        function handleFileSelect(input) {
+            var files = input.files;
+            var preview = document.getElementById('image-preview');
+
+            while (preview.firstChild) {
+                preview.removeChild(preview.firstChild);
+            }
+
+            for (var i = 0; i < files.length; i++) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    var img = document.createElement('img');
+                    img.className = 'thumbnail';
+                    img.src = e.target.result;
+                    img.onclick = function () {
+                        selectImage(this);
+                    };
+                    preview.appendChild(img);
+                };
+
+                reader.readAsDataURL(files[i]);
+            }
+        }
+
+        function selectImage(selectedImage) {
+            var thumbnails = document.getElementsByClassName('thumbnail');
+            for (var i = 0; i < thumbnails.length; i++) {
+                thumbnails[i].classList.remove('selected');
+            }
+            selectedImage.classList.add('selected');
+        }
+
+        function setTaepyoImage() {
+            var selectedThumbnail = document.querySelector('.thumbnail.selected');
+            if (selectedThumbnail) {
+                var form = document.createElement('form');
+                form.action = '/registerImagePage';
+                form.method = 'post';
+                form.enctype = 'multipart/form-data';
+
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'imageSrc';
+                input.value = selectedThumbnail.src;
+
+                var inputImg = document.createElement('input');
+                inputImg.type = 'hidden';
+                inputImg.name = 'clubImgBoardDto.img';  
+                inputImg.value = selectedThumbnail.src;
+
+                form.appendChild(input);
+                form.appendChild(inputImg);
+
+                document.body.appendChild(form);
+
+                form.submit();
+            } else {
+                alert("먼저 이미지를 선택하세요.");
+            }
+        }
+
     </script>
 </head>
 
 <body>
     <div class="container">
-        <div class="row px-0">
+        <div class="row">
             <div class="col-2 my-2 ms-1">
                 <button class="btn" onclick="goBack()">
                     <i class="bi bi-arrow-left"></i>
@@ -28,7 +153,7 @@
             <div th:text="${clubTF.clubname}" class="col d-flex align-items-center px-0">
             </div>
         </div>
-        <div class="row scrollable-menu">
+        <div class="row scrollable-menu px-0">
             <div class="col justify-content-between fw-bold">
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">게시판</span>
@@ -36,8 +161,41 @@
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubMemberPage'">멤버</span>
             </div>
         </div>
-        <h1>이미지 등록 페이지</h1>
+        <div class="row p-3 my-3" style="border-bottom: 5px solid #ececec;">
+            <span class="small-text" style="color: black;">
+                이미지 등록하기 <br>
+                <span style="color: #fd6303;"> * 이미지를 선택하여 대표 이미지로 등록해주세요.</span>
+            </span>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div id="image-preview"></div>
+                <!-- <form action="./registerImagePage" method="post" enctype="multipart/form-data">
+                    <div class="upload-btn-wrapper">
+                        <button class="btn text-center">
+                            <i class="bi bi-plus" style="font-size: 2em; font-weight: bold;"></i>
+                        </button>
+                        <input type="file" name="myfile" multiple onchange="handleFileSelect(this)" />
+                    </div>
+                    <button type="submit" class="btn mt-3 d-flex align-items-center">등록하기</button>
+                </form> -->
+                <form th:action="@{./registerImagePage}" method="post" enctype="multipart/form-data">
+                    <div class="upload-btn-wrapper">
+                        <button class="btn text-center">
+                            <i class="bi bi-plus" style="font-size: 2em; font-weight: bold;"></i>
+                        </button>
+                        <input type="file" name="imageFiles" multiple onchange="handleFileSelect(this)" />
+                    </div>
+                    <button type="submit" class="btn mt-3 d-flex align-items-center">등록하기</button>
+                </form>
 
+                <div id="image-preview">
+                    <img th:each="imageDto : ${session.articleImageDtoList}" th:src="${imageDto.location}"
+                        class="thumbnail" th:onclick="selectImage(this)" />
+                </div>
+
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

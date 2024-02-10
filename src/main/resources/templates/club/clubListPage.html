@@ -142,45 +142,124 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-2 mt-3 px-0 mb-3">
+            <div class="col-2 my-2 ms-1">
                 <button class="btn" onclick="goBack()">
                     <i class="bi bi-arrow-left"></i>
                 </button>
             </div>
-            <div th:text="${showclubpk.name}" class="col d-flex align-items-center px-0"></div>
+            <div th:text="${showclubpk.name}" class="col d-flex align-items-center px-0">
+            </div>
             <div th:if="${checkMember == 1}" class="col-1 d-flex align-items-center me-4">
                 <span style="cursor: pointer;" onclick="location.href='./clubLeaderPage'"><i
                         class="bi bi-gear"></i></span>
             </div>
         </div>
-
-        <div class="row scrollable-menu">
+        <div class="row scrollable-menu px-0">
             <div class="col justify-content-between fw-bold">
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">게시판</span>
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./photoAlbumPage'">사진첩</span>
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubMemberPage'">멤버</span>
+
             </div>
         </div>
 
+
         <div class="row border-bottom border-2 border-gray">
             <div class="col-md-4  px-0">
-                <img class="img-fluid" th:src="@{'/uploadFiles/'+${showclubpk.img}}"
-                        alt="등록된 이미지가 없습니다">
+                <img class="img-fluid" th:src="@{'/uploadFiles/'+${showclubpk.img}}" alt="등록된 이미지가 없습니다">
             </div>
         </div>
 
         <div class="row border-bottom border-5 border-gray">
             <div class="col my-3">
-                <p th:text="${showclubpk.name}" class="bold-text"></p>
-                <p th:utext="${showclubpk.content}"></p>
+                <p th:text="${showclubpk.name}" class="fw-bold fs-5" style="color: #30c000;"></p>
+                <p class="text-secondary" style="font-size: 0.9em;" th:utext="${showclubpk.content}"></p>
             </div>
         </div>
 
-        <div class="row p-3">
-            <p><strong>사진첩</strong></p>
-            우왕 사진들
+        <div class="row py-3 border-bottom border-5 border-gray">
+            <div class="col">
+                <div class="row">
+                    <div class="col fw-bold">사진첩</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col" style="overflow: auto;">
+                        <div class="row" style="width: 230%;">
+                            <div th:each="image : ${latestAlbum}" class="col px-1">
+                                <!-- <img style="height: 7.5em;" class="img-fluid" th:src="@{'/uploadFiles/'+${board.location}}" alt="사진">                     -->
+                                <img th:src="@{'/uploadFiles/'+${image.location}}" style="height: 7em;"
+                                    class="img-fluid" />
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <div th:if="${latestPost.name}!=null" class="row py-3 border-bottom border-5 border-gray">
+            <div class="col">
+                <div class="row">
+                    <div class="col fw-bold">최근 방명록</div>
+                </div>
+                <div class="row">
+                    <!-- 리스트 박스 -->
+                    <div class="col">
+
+                        <div class="row pt-3 px-1">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col-7">
+                                        <img src="/public/image/dog_img.png" class="img-fluid rounded-circle"
+                                            style="width: 2em; height: 2em;">
+                                        <span class="fw-bold" style="color: #f45600;"
+                                            th:text="${latestPost.name}">닉네임1</span>
+
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col" style="color: #200909;" th:text="${latestPost.content}"></div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col d-grid">
+                                        <a href="./freeBoardPage" class="text-black btn btn-secondary"
+                                            style="background-color: #d5e9ff;">더보기</a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row py-3">
+            <div class="col">
+                <div class="row">
+                    <div class="col fw-bold">멤버</div>
+                </div>
+                <div class="row p-1 pt-3" th:each="member : ${memberlist}">
+                    <div class="col">
+                        <div class="row align-items-center">
+                            <div class="col-2">
+                                <img th:src="@{/public/image/dog_img.png}" class="img-fluid rounded-circle profile-image">
+                            </div>
+                            
+                            <div class="col">
+                                <span th:text="${member.name}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+
 
         <div th:if="${ApplyStatus != 2}" class="row">
             <div th:if="${ApplyStatus == 1} or ${ApplyStatus == 3}" class="col">

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        .scrollable-menu {
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        /* 추가된 스타일 */
+        .scrollable-menu .col {
+            display: flex;
+            flex-wrap: nowrap;
+        }
+
+        .scrollable-menu span {
+            border-bottom: 2px solid transparent;
+            padding-bottom: 2px;
+            transition: border-color 0.3s;
+        }
+
+        .scrollable-menu span:hover {
+            border-color: #000;
+            /* Change the color to your desired underline color */
+        }
+
+        .imtext {
+            position: absolute;
+            top: 120px;
+            left: 13px;
+            z-index: 1;
+            color: rgb(190, 190, 190);
+            font-size: 0.7em;
+            width: auto;
+            font-weight: bold;
+        }
+
+        .custom-border {
+            border-right: 1.5px solid rgb(190, 190, 190);
+            height: 100vh;
+        }
+
+        .custom-list {
+            border-radius: 10px;
+            /* 리스트 주변의 둥근 모서리 설정 */
+        }
+
+        .custom-span {
+            color: black;
+            font-size: 0.7em;
+            display: inline-block;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%; /* Adjusted width to fill the container */
+            max-width: 400px; /* Adjusted maximum width for responsiveness */
+        }
+
+        input[type="text"],
+        textarea,
+        input[type="file"],
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        textarea {
+            height: 100px;
+        }
+
+        input[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+        function loadSignupModal() {
+            const modal = bootstrap.Modal.getOrCreateInstance("#loadSignupModal");
+            modal.show();
+        }
+    </script>
+</head>
+
+<body>
+    <th:block th:replace="~{club/clubTopNavi.html :: topNavi}"></th:block>
+    <h1>게시글</h1>
+
+	제목: ${albumBoardList.freeboardArticleDto.title }<br>
+	작성자: ${albumBoardList.userDto.nickname }<br>
+	조회수: ${albumBoardList.freeboardArticleDto.read_count }<br>
+	내용: <br>
+	${albumBoardList.freeboardArticleDto.content }<br> 
+	
+	<br><br>
+	
+	<c:forEach items="${qwer.articleImageDtoList}" var="articleImageDto">
+		<img src="/uploadFiles/${articleImageDto.location}"><br>
+	</c:forEach>
+	
+	<br>
+
+	<i id="heartBox" onclick="toggleLike()" class="bi bi-heart text-danger"></i><span id="totalCountBox">5</span>
+	
+	<br>
+	
+	<a href="./mainPage">목록으로</a>
+
+	<div class="container">
+		<!-- 댓글 입력 창 -->
+		<div class="row">
+			<div class="col-8">
+				<textarea id="inputComment" class="form-control"></textarea>
+			</div>
+			<div class="col d-grid">
+				<button onclick="writeComment()" class="btn btn-primary">입력</button>
+			</div>
+		</div>
+		<!-- 댓글 리스트 -->
+		<div class="row">
+			<div class="col fw-bold fs-5 mt-3 mb-2">댓글 리스트</div>
+		</div>
+		<div class="row">
+			<div id="commentListBox" class="col"></div>
+		</div> 
+	</div>
+
+	<pre>
+	</pre>
+
+
+	<div id="templete" class="d-none">
+		<div class="commentWrapper row border-top">
+			<div class="col">
+				<div class="row">
+					<div class="commentNickname col-2 fw-bold">닉네임 나오는 곳</div>
+					<div class="commentDate col-3 text-secondary">2023.11.03</div>
+				</div>
+				<div class="row">
+					<div class="commentText col-8">댓글 내용 블라블라....</div>
+					<div class="commentUpdate col text-secondary">수정</div>
+					<div class="commentDelete col text-secondary">삭제</div>
+				</div>
+			</div>
+		</div>	
+	
+	
+		<div class="row updateCommentWrapper">
+			<div class="col-6">
+				<input type="text" class="inputComment form-control">
+			</div>
+			<div class="col updateCommentButton">저장</div>
+			<div onclick="reloadCommentList()" class="col">취소</div>
+		</div>
+	
+	</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

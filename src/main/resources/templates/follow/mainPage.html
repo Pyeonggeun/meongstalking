@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
         <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
         <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a277eb582a644847f86de6196a42745f"></script>
 
         <style>
@@ -93,6 +94,10 @@
                 z-index: 9999;
                 width: 100%;
                 height: 32rem;
+            }
+
+            .modal-body::-webkit-scrollbar {
+                display: none;
             }
 
             .myLocationMarkerBox {
@@ -525,6 +530,32 @@
                 }
             }
 
+            @keyframes scale {
+                50% {
+                    width: 10rem;
+                    transform: translateX(-0.5rem);
+                }
+            }
+            
+            .label-icon {
+                font-variation-settings:
+                'FILL' 1
+            }
+
+            .lock-icon {
+                font-variation-settings:
+                'FILL' 1
+            }
+
+            .custom-tooltip {
+                z-index: 3000;
+            }
+
+            /* .heart-icon {
+                font-variation-settings:
+                'FILL' 1
+            } */
+
         </style>
 
         <script>
@@ -612,6 +643,11 @@
                 // asdf 마저 채우기
                 showMyCollectionModal();
             }
+
+            function openDetailCollection() {
+                // asdf 마저 채우기
+                showDetailCollectionModal();
+            }
             
             function showAndHideAlertModal() {
                 const modal = bootstrap.Modal.getOrCreateInstance("#alertModal");
@@ -624,6 +660,11 @@
 
             function showMyCollectionModal() {
                 const modal = bootstrap.Modal.getOrCreateInstance("#myCollectionModal");
+                modal.show();
+            }
+
+            function showDetailCollectionModal() {
+                const modal = bootstrap.Modal.getOrCreateInstance("#detailCollectionModal");
                 modal.show();
             }
 
@@ -744,7 +785,8 @@
 
         <div class="container-fluid">
             <div class="row">
-                <div id="topBanner" class="col"></div>
+                <div id="topBanner" class="col">
+                </div>
             </div>
             <div class="row">
                 <div class="col px-0">
@@ -827,16 +869,75 @@
         <div id="myCollectionModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 3000; background: linear-gradient(-45deg, #422C52, #ad93c2);">
             <div class="modal-dialog modal-fullscreen">
                 <div class="modal-content mx-auto" style="width: 95%;">
-                    <div class="modal-body">
+                    <div class="modal-body pb-5">
                         <div class="row">
                             <div class="col">
                                 <div class="row">
-                                    <div class="col text-center fw-bold" style="font-size: 1.5rem; text-decoration: #6F3C95 0.2rem underline; text-underline-offset: 1rem;">
+                                    <div class="col text-center fw-bold" style="font-size: 1.5rem; text-decoration: #6F3C95 0.2rem underline; text-underline-offset: 0.7rem;">
                                         &nbsp;&nbsp;내 컬렉션&nbsp;&nbsp;
+                                    </div>
+                                </div>
+                                <div class="row mt-3 px-3">
+                                    <div class="col rounded-pill border" style="font-size: 1.2rem; background: linear-gradient(to top, #f3d0fa 0%, #b387d4 100%);">
+                                        💛 즐겨찾기
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div id="collectionBookmarkBox" class="row row-cols-3 px-2">
+
+                                            <div onclick="openDetailCollection()" class="collectionSSRWrapper col px-1 mt-4">
+                                                <div class="rounded d-flex align-items-center" style="aspect-ratio: 3/4; position: relative; background: linear-gradient(-45deg, #faecc7, #b9f1e2, #aac7f1, #ecd4fd, #fad0f8); box-shadow: 1px 1px 3px 1px black;">
+                                                    <img class="collectionImage img-fluid d-block mx-auto rounded" th:src="@{/public/image/commons/list2.jpeg}" style="aspect-ratio: 3/4; object-fit: cover; width: 90%;">
+                                                    <img class="collectionQuestionImage img-fluid d-block mx-auto rounded bg-black" th:src="@{/public/image/follow/question.png}" style="position: absolute; aspect-ratio: 3/4; object-fit: contain; width: 90%; left: 5%;">
+                                                    <div class="rounded-bottom" style="position: absolute; background: linear-gradient(to left, rgb(255, 255, 255, 0.8) 0%, rgb(255, 255, 255, 0.4) 100%); width: 90%; height: 1.5rem; bottom: 5%; right: 5%;">
+                                                        <div class="progress border rounded-pill mt-1 me-1 float-end" style="width: 90%; height: 70%; background: linear-gradient(to top, #3f3f3e 0%, #91908f 50%);">
+                                                            <div class="collectionProgress progress-bar rounded-pill" style="background: linear-gradient(to top, #d4a115 0%, #fddb1b 50%);">
+                                                                <span class="collectionProgressContent fw-bold" style="text-shadow: 1px 1px black; position: absolute; right: 35%;">0 / 20</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="text-white fw-bold" style="position: absolute; top: 0; left: 2%; text-shadow: 1px 1px black;">
+                                                            <span style="font-size: 0.7rem;">Lv</span><span class="collectionLevel">2</span>
+                                                        </div>
+                                                    </div>
+                                                    <div style="position: absolute; width: 3rem; height: 3rem; top: -6%; left: -2%;">
+                                                        <span class="material-symbols-rounded label-icon" style="transform: rotate(90deg); font-size: 3rem; background: linear-gradient(-135deg, #faecc7, #aac7f1, #fad0f8); background-clip: text; -webkit-text-fill-color: transparent; -webkit-text-stroke: 1px rgb(160, 160, 160);">
+                                                            label
+                                                        </span>
+                                                        <img class="img-fluid" th:src="@{/public/image/follow/SSR.png}" style="position: absolute; width: 1.5rem; height: 1rem; bottom: 15%; left: 24.5%; opacity: 0.4;">
+                                                        <span class="text-white fw-bold" style="position: absolute; top: 11%; left: 24.5%; -webkit-text-stroke: 1px rgb(160, 160, 160); background: linear-gradient(to top, #b387d4, #fff, #719ee2); background-clip: text; -webkit-text-fill-color: transparent;">SSR</span>
+                                                    </div>
+                                                    <div class="rounded text-center d-grid align-items-center" style="position: absolute; width: 1.7rem; height: 1.7rem; top: 2%; right: 2%; background: #D96161; border: 1.5px solid #9b3b3b;">
+                                                        <span class="material-symbols-rounded heart-icon" style="font-size: 1.1rem; color: #fff; text-shadow: 1px 1px black;">
+                                                            favorite
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 px-3">
+                                    <select class="rounded-pill py-1 border" style="font-size: 1.2rem; background: linear-gradient(to top, #f3d0fa 0%, #b387d4 100%);">
+                                        <option>💛 A-Z</option>
+                                        <option>💛 Z-A</option>
+                                        <option>💛 SSR-★</option>
+                                        <option>💛 ★-SSR</option>
+                                    </select>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div id="collectionBox" class="row row-cols-3 px-2">
+
+
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <!-- <div id="sortingButton"></div> -->
                         <div class="actionCircleCloseOut" data-bs-dismiss="modal" style="position: fixed;">
                             <div class="actionCircleCloseIn">
                                 <span class="material-symbols-outlined close_icon">
@@ -849,7 +950,623 @@
             </div>
         </div>
 
+        <div id="detailCollectionModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="z-index: 3000; background: linear-gradient(-45deg, #422C52, #ad93c2);">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content mx-auto" style="width: 95%;">
+                    <div class="modal-body py-1">
+                        <div class="row">
+                            <div class="col rounded" style="position: relative; height: 13rem; background: linear-gradient(-45deg, #faecc7, #b9f1e2, #aac7f1, #ecd4fd, #fad0f8);">
+                                <span class="rounded-pill px-2 border" style="position: absolute; top: 4%; left: 2%; background: linear-gradient(to bottom, #eca381, #fad1c7);" data-bs-dismiss="modal">돌아가기 &#8617;</span>
+                                <span class="material-symbols-rounded heart-icon" style="position: absolute; font-size: 2rem; top: 4%; right: 3%; color: #fff;">
+                                    favorite
+                                </span>
+                                <span class="material-symbols-outlined" style="position: absolute; font-size: 2.3rem; top: 24%; right: 2.3%; color: #fff;">
+                                    open_with
+                                </span>
+                                <span class="material-symbols-outlined" style="position: absolute; font-size: 2.3rem; top: 48%; right: 2.3%; color: #fff;">
+                                    lightbulb
+                                </span>
+                                <span class="material-symbols-outlined" style="position: absolute; font-size: 2.3rem; top: 72%; right: 2.3%; color: #fff;">
+                                    mail
+                                </span>
+                                <img class="img-fluid d-block mx-auto" th:src="@{/public/image/follow/prop.png}" style="position: absolute; width: 10rem; height: 3rem; bottom: 0; left: 28%;">
+                                <div class="d-grid align-items-center" style="position: absolute; width: 9rem; height: 10rem; top: 10%; left: 28%; border-radius: 50%; background: linear-gradient(to bottom, #faecc7, #b9f1e2, #aac7f1, #ecd4fd, #fad0f8); box-shadow: 1px 0 0 1px #636363, 2px 0 0 1px #636363, 3px 0 0 1px #636363, 4px 0 0 1px #636363, 5px 0 0 1px #636363; animation: scale 3s linear infinite;">
+                                    <img class="img-fluid d-block mx-auto" th:src="@{/public/image/commons/list1.jpeg}" style="width: 90%; height: 90%; border-radius: 50%;">
+                                    <!-- <img class="img-fluid d-block mx-auto bg-black" th:src="@{/public/image/follow/question.png}" style="width: 90%; height: 90%; border-radius: 50%;"> -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rounded-pill bg-white border border-2 text-secondary text-center" style="position: absolute; width: 90%; height: 2rem; top: 12.5rem; left: 5%; font-size: 1.4rem;">? ? ?</div>
+                        <div class="row justify-content-center" style="margin-top: 2rem;">
+                            <div class="col-6">
+                                <div class="progress rounded-pill bg-black border" style="height: 0.7rem;">
+                                    <div class="progress-bar rounded-pill bg-warning" style="width: 50%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                <span>24</span> / <span>80</span>&nbsp;&nbsp;&nbsp;Lv <span>3</span>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-center fw-bold" style="font-size: 1.1rem;">
+                                        <!-- ? ? ? kg -->
+                                        50 kg
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-body-tertiary text-center" style="font-size: 0.9rem;">
+                                        몸무게
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 2rem;"></div>
+                            <div class="col-3">
+                                <div class="row">
+                                    <div class="col text-center fw-bold" style="font-size: 1.1rem;">
+                                        <!-- ? ? -->
+                                        👱🏻‍♀️
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-body-tertiary text-center" style="font-size: 0.9rem;">
+                                        성별
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 2rem;"></div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-center fw-bold" style="font-size: 1.1rem;">
+                                        <!-- ? ? ? cm -->
+                                        163 cm
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-body-tertiary text-center" style="font-size: 0.9rem;">
+                                        키
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <hr class="border-2 text-body-tertiary">
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-center fw-bold" style="font-size: 1.1rem;">
+                                        <!-- ? ? ? ? -->
+                                        ISTJ
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-body-tertiary text-center" style="font-size: 0.9rem;">
+                                        MBTI
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 2rem;"></div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-center fw-bold" style="font-size: 1.1rem;">
+                                        <!-- ? ? 형 -->
+                                        B 형
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-body-tertiary text-center" style="font-size: 0.9rem;">
+                                        혈액형
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 2rem;"></div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-center fw-bold" style="font-size: 1.1rem;">
+                                        <!-- ? ? -->
+                                        N
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-body-tertiary text-center" style="font-size: 0.9rem;">
+                                        음주여부
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 2rem;"></div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-center fw-bold" style="font-size: 1.1rem;">
+                                        <!-- ? ? -->
+                                        N
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-body-tertiary text-center" style="font-size: 0.9rem;">
+                                        흡연여부
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <hr class="border-2 text-body-tertiary">
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-center fw-bold" style="font-size: 1.1rem;">
+                                        <!-- ? ? ? ? ? -->
+                                        집에서 뒹굴거리기
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-body-tertiary text-center" style="font-size: 0.9rem;">
+                                        취미
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-center fw-bold" style="font-size: 1.1rem;">
+                                        <!-- ? ? ? ? ? -->
+                                        게이
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-body-tertiary text-center" style="font-size: 0.9rem;">
+                                        성적지향
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-center text-body-tertiary" style="font-size: 0.8rem;">
+                                        <p class="mb-0" style="height: 1rem;">첫 온도 36.5℃</p>
+                                        <p class="mb-0" style="height: 1rem;">&dtrif;</p>
+                                    </div>
+                                    <div class="col-3 fw-bold text-end" style="font-size: 1.1rem; color: #719ee2;">
+                                        37.5℃
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="progress">
+                                            <div class="progress-bar rounded" style="background: #719ee2; width: 37.5%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-1">
+                                    <div class="col text-body-tertiary text-center" style="font-size: 0.9rem;">
+                                        인스타 활동온도
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col rounded" style="height: 22rem; background: #fbf9ff;">
+                                <div class="row mt-2">
+                                    <div class="col text-center fw-bold" style="font-size: 1.2rem;">
+                                        체취도감&nbsp;&nbsp;<span style="font-size: 0.75rem;">5 / 10</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="row row-cols-4">
+
+                                            <div class="col px-1 mt-3" style="position: relative;">
+                                                <!-- <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div> -->
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #ce3030, #fdf180); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #fad88e, #f54747); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                                        <!-- <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col px-1 mt-3" style="position: relative;">
+                                                <!-- <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div> -->
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #2da59f, #4990b9); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #8eb4fa, #40d8bf); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.123</span>
+                                                        <!-- <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col px-1 mt-3" style="position: relative;">
+                                                <!-- <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div> -->
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #bbbbbb, #575757); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #808080, #d4d4d4); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                                        <!-- <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col px-1 mt-3" style="position: relative;" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="<p class='mb-0'>총 수집된 횟수: 15회</p><p class='mb-0'>관심표현 개수: 10개</p>" data-bs-custom-class="custom-tooltip">
+                                                <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div>
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #ce3030, #fdf180); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #fad88e, #f54747); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                                        <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col px-1 mt-3" style="position: relative;" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="<p class='mb-0'>총 수집된 횟수: 15회</p><p class='mb-0'>관심표현 개수: 10개</p>" data-bs-custom-class="custom-tooltip">
+                                                <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div>
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #2da59f, #4990b9); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #8eb4fa, #40d8bf); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.123</span>
+                                                        <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col px-1 mt-3" style="position: relative;" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="<p class='mb-0'>총 수집된 횟수: 15회</p><p class='mb-0'>관심표현 개수: 10개</p>" data-bs-custom-class="custom-tooltip">
+                                                <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div>
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #bbbbbb, #575757); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #808080, #d4d4d4); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                                        <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col px-1 mt-3" style="position: relative;">
+                                                <!-- <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div> -->
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #bbbbbb, #575757); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #808080, #d4d4d4); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                                        <!-- <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col px-1 mt-3" style="position: relative;">
+                                                <!-- <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div> -->
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #bbbbbb, #575757); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #808080, #d4d4d4); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                                        <!-- <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col px-1 mt-3" style="position: relative;">
+                                                <!-- <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div> -->
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #bbbbbb, #575757); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #808080, #d4d4d4); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                                        <!-- <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col px-1 mt-3" style="position: relative;">
+                                                <!-- <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div> -->
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #bbbbbb, #575757); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #808080, #d4d4d4); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                                        <!-- <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- <div class="col px-1 mt-3" style="position: relative;">
+                                                <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div>
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #b94949, #a52d2d); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #e76e6e, #f54747); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                                        <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col px-1 mt-3" style="position: relative;">
+                                                <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div>
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #49b9b3, #2da59f); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #fad88e, #3dc9b1); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.123</span>
+                                                        <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col px-1 mt-3" style="position: relative;">
+                                                <div class="rounded" style="position: absolute; height: 100%; aspect-ratio: 1/1; background: rgb(0, 0, 0, 0.6);"></div>
+                                                <div class="rounded d-grid align-content-center" style="aspect-ratio: 1/1; background: linear-gradient(135deg, #bbbbbb, #575757); border: 2px solid #343434; box-shadow: 1px 1px 3px 1px black;">
+                                                    <div class="rounded d-grid mx-auto text-center align-content-center" style="width: 90%; aspect-ratio: 1/1; background: linear-gradient(135deg, #bbbbbb, #808080); border: 2px solid #343434;">
+                                                        <span class="fw-bold" style="font-size: 1.1rem; color: #ededed;">No.48</span>
+                                                        <span class="material-symbols-outlined lock-icon" style="position: absolute; top: -7%; left: -3%; font-size: 2rem; color: #686868; text-shadow: 1px 1px 3px black, -1px -1px black; transform: rotate(15deg);">
+                                                            lock
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div> -->
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="templete" class="d-none">
+
+            <div class="collectionSSRWrapper col px-1 mt-4">
+                <div class="rounded d-flex align-items-center" style="aspect-ratio: 3/4; position: relative; background: linear-gradient(-45deg, #faecc7, #b9f1e2, #aac7f1, #ecd4fd, #fad0f8); box-shadow: 1px 1px 3px 1px black;">
+                    <img class="collectionImage img-fluid d-block mx-auto rounded" th:src="@{/public/image/commons/list2.jpeg}" style="aspect-ratio: 3/4; object-fit: cover; width: 90%;">
+                    <img class="collectionQuestionImage img-fluid d-block mx-auto rounded bg-black" th:src="@{/public/image/follow/question.png}" style="position: absolute; aspect-ratio: 3/4; object-fit: contain; width: 90%; left: 5%;">
+                    <div class="rounded-bottom" style="position: absolute; background: linear-gradient(to left, rgb(255, 255, 255, 0.8) 0%, rgb(255, 255, 255, 0.4) 100%); width: 90%; height: 1.5rem; bottom: 5%; right: 5%;">
+                        <div class="progress border rounded-pill mt-1 me-1 float-end" style="width: 90%; height: 70%; background: linear-gradient(to top, #3f3f3e 0%, #91908f 50%);">
+                            <div class="collectionProgress progress-bar rounded-pill" style="background: linear-gradient(to top, #d4a115 0%, #fddb1b 50%);">
+                                <span class="collectionProgressContent fw-bold" style="text-shadow: 1px 1px black; position: absolute; right: 35%;">0 / 20</span>
+                            </div>
+                        </div>
+                        <div class="text-white fw-bold" style="position: absolute; top: 0; left: 2%; text-shadow: 1px 1px black;">
+                            <span style="font-size: 0.7rem;">Lv</span><span class="collectionLevel">2</span>
+                        </div>
+                    </div>
+                    <div style="position: absolute; width: 3rem; height: 3rem; top: -6%; left: -2%;">
+                        <span class="material-symbols-rounded label-icon" style="transform: rotate(90deg); font-size: 3rem; background: linear-gradient(-135deg, #faecc7, #aac7f1, #fad0f8); background-clip: text; -webkit-text-fill-color: transparent; -webkit-text-stroke: 1px rgb(160, 160, 160);">
+                            label
+                        </span>
+                        <img class="img-fluid" th:src="@{/public/image/follow/SSR.png}" style="position: absolute; width: 1.5rem; height: 1rem; bottom: 15%; left: 24.5%; opacity: 0.4;">
+                        <span class="text-white fw-bold" style="position: absolute; top: 11%; left: 24.5%; -webkit-text-stroke: 1px rgb(160, 160, 160); background: linear-gradient(to top, #b387d4, #fff, #719ee2); background-clip: text; -webkit-text-fill-color: transparent;">SSR</span>
+                    </div>
+                    <div class="rounded text-center d-grid align-items-center" style="position: absolute; width: 1.7rem; height: 1.7rem; top: 2%; right: 2%; background: #D96161; border: 1.5px solid #9b3b3b;">
+                        <span class="material-symbols-rounded heart-icon" style="font-size: 1.1rem; color: #fff; text-shadow: 1px 1px black;">
+                            favorite
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collectionSRWrapper col px-1 mt-4">
+                <div class="rounded d-flex align-items-center" style="aspect-ratio: 3/4; position: relative; background: linear-gradient(-45deg, #cc483f, #eca381, #fad1c7, #e05252, #cc483f); box-shadow: 1px 1px 3px 1px black;">
+                    <img class="collectionImage img-fluid d-block mx-auto rounded" th:src="@{/public/image/commons/list3.jpeg}" style="aspect-ratio: 3/4; object-fit: cover; width: 90%;">
+                    <img class="collectionQuestionImage img-fluid d-block mx-auto rounded bg-black" th:src="@{/public/image/follow/question.png}" style="position: absolute; aspect-ratio: 3/4; object-fit: contain; width: 90%; left: 5%;">
+                    <div class="rounded-bottom" style="position: absolute; background: linear-gradient(to left, rgb(255, 255, 255, 0.8) 0%, rgb(255, 255, 255, 0.4) 100%); width: 90%; height: 1.5rem; bottom: 5%; right: 5%;">
+                        <div class="progress border rounded-pill mt-1 me-1 float-end" style="width: 90%; height: 70%; background: linear-gradient(to top, #3f3f3e 0%, #91908f 50%);">
+                            <div class="collectionProgress progress-bar rounded-pill" style="background: linear-gradient(to top, #d4a115 0%, #fddb1b 50%);">
+                                <span class="collectionProgressContent fw-bold" style="text-shadow: 1px 1px black; position: absolute; right: 35%;">0 / 2</span>
+                            </div>
+                        </div>
+                        <div class="text-white fw-bold" style="position: absolute; top: 0; left: 2%; text-shadow: 1px 1px black;">
+                            <span style="font-size: 0.7rem;">Lv</span><span class="collectionLevel">2</span>
+                        </div>
+                    </div>
+                    <div style="position: absolute; width: 3rem; height: 3rem; top: -6%; left: -2%;">
+                        <span class="material-symbols-rounded label-icon" style="transform: rotate(90deg); font-size: 3rem; background: linear-gradient(-135deg, #fad1c7, #eca381, #cc483f); background-clip: text; -webkit-text-fill-color: transparent; -webkit-text-stroke: 1px rgb(160, 160, 160);">
+                            label
+                        </span>
+                        <img class="img-fluid" th:src="@{/public/image/follow/SR.png}" style="position: absolute; width: 1.5rem; height: 1rem; bottom: 15%; left: 24.5%; opacity: 0.4;">
+                        <span class="text-white fw-bold" style="position: absolute; top: 11%; left: 30%; -webkit-text-stroke: .2px black; background: linear-gradient(to top, #cc483f, #fff, #e05252); background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.2rem;">SR</span>
+                    </div>
+                    <div class="rounded text-center d-grid align-items-center" style="position: absolute; width: 1.7rem; height: 1.7rem; top: 2%; right: 2%; background: #D96161; border: 1.5px solid #9b3b3b;">
+                        <span class="material-symbols-rounded heart-icon" style="font-size: 1.1rem; color: #fff; text-shadow: 1px 1px black;">
+                            favorite
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="collectionSWrapper col px-1 mt-4">
+                <div class="rounded d-flex align-items-center" style="aspect-ratio: 3/4; position: relative; background: linear-gradient(-45deg, #ab3fcc, #ec81de, #fac7f1, #bf52e0, #ab3fcc); box-shadow: 1px 1px 3px 1px black;">
+                    <img class="collectionImage img-fluid d-block mx-auto rounded" th:src="@{/public/image/commons/list1.jpeg}" style="aspect-ratio: 3/4; object-fit: cover; width: 90%;">
+                    <img class="collectionQuestionImage img-fluid d-block mx-auto rounded bg-black" th:src="@{/public/image/follow/question.png}" style="position: absolute; aspect-ratio: 3/4; object-fit: contain; width: 90%; left: 5%;">
+                    <div class="rounded-bottom" style="position: absolute; background: linear-gradient(to left, rgb(255, 255, 255, 0.8) 0%, rgb(255, 255, 255, 0.4) 100%); width: 90%; height: 1.5rem; bottom: 5%; right: 5%;">
+                        <div class="progress border rounded-pill mt-1 me-1 float-end" style="width: 90%; height: 70%; background: linear-gradient(to top, #3f3f3e 0%, #91908f 50%);">
+                            <div class="collectionProgress progress-bar rounded-pill" style="background: linear-gradient(to top, #d4a115 0%, #fddb1b 50%);">
+                                <span class="collectionProgressContent fw-bold" style="text-shadow: 1px 1px black; position: absolute; right: 35%;">61 / 87</span>
+                            </div>
+                        </div>
+                        <div class="text-white fw-bold" style="position: absolute; top: 0; left: 2%; text-shadow: 1px 1px black;">
+                            <span style="font-size: 0.7rem;">Lv</span><span class="collectionLevel">2</span>
+                        </div>
+                    </div>
+                    <div style="position: absolute; width: 3rem; height: 3rem; top: -6%; left: -2%;">
+                        <span class="material-symbols-rounded label-icon" style="transform: rotate(90deg); font-size: 3rem; background: linear-gradient(-135deg, #fac7f1, #ec81de, #ab3fcc); background-clip: text; -webkit-text-fill-color: transparent; -webkit-text-stroke: 1px rgb(160, 160, 160);">
+                            label
+                        </span>
+                        <img class="img-fluid" th:src="@{/public/image/follow/S.png}" style="position: absolute; width: 1.5rem; height: 1rem; bottom: 15%; left: 24.5%; opacity: 0.4;">
+                        <span class="text-white fw-bold" style="position: absolute; top: 8%; left: 38%; -webkit-text-stroke: .2px black; background: linear-gradient(to top, #ab3fcc, #fff, #bf52e0); background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.4rem;">S</span>
+                    </div>
+                    <div class="rounded text-center d-grid align-items-center" style="position: absolute; width: 1.7rem; height: 1.7rem; top: 2%; right: 2%; background: #D96161; border: 1.5px solid #9b3b3b;">
+                        <span class="material-symbols-rounded heart-icon" style="font-size: 1.1rem; color: #fff; text-shadow: 1px 1px black;">
+                            favorite
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collectionOnestarWrapper col px-1 mt-4">
+                <div class="rounded d-flex align-items-center" style="aspect-ratio: 3/4; position: relative; border: 1px solid black; box-shadow: 1px 1px 3px 1px black;">
+                    <img class="collectionImage img-fluid d-block mx-auto rounded" th:src="@{/public/image/commons/list1.jpeg}" style="aspect-ratio: 3/4; object-fit: contain; width: 90%;">
+                    <img class="collectionQuestionImage img-fluid d-block mx-auto rounded bg-black" th:src="@{/public/image/follow/question.png}" style="position: absolute; aspect-ratio: 3/4; object-fit: contain; width: 90%; left: 5%;">
+                    <div class="rounded-bottom" style="position: absolute; background: linear-gradient(to left, rgb(255, 255, 255, 0.8) 0%, rgb(255, 255, 255, 0.4) 100%); width: 90%; height: 1.5rem; bottom: 5%; right: 5%;">
+                        <div class="progress border rounded-pill mt-1 me-1 float-end" style="width: 90%; height: 70%; background: linear-gradient(to top, #3f3f3e 0%, #91908f 50%);">
+                            <div class="collectionProgress progress-bar rounded-pill" style="background: linear-gradient(to top, #d4a115 0%, #fddb1b 50%);">
+                                <span class="collectionProgressContent fw-bold" style="text-shadow: 1px 1px black; position: absolute; right: 35%;">61 / 87</span>
+                            </div>
+                        </div>
+                        <div class="text-white fw-bold" style="position: absolute; top: 0; left: 2%; text-shadow: 1px 1px black;">
+                            <span style="font-size: 0.7rem;">Lv</span><span class="collectionLevel">2</span>
+                        </div>
+                    </div>
+                    <div style="position: absolute; width: 3rem; height: 3rem; top: -6%; left: -2%;">
+                        <span class="material-symbols-rounded label-icon" style="transform: rotate(90deg); font-size: 3rem; color: #fff; text-shadow: 1px 1px black, -1px -1px black;">
+                            label
+                        </span>
+                        <img class="img-fluid" th:src="@{/public/image/follow/iron.png}" style="position: absolute; width: 1.5rem; height: 1rem; bottom: 15%; left: 24.5%; opacity: 0.4;">
+                        <span class="text-white fw-bold" style="position: absolute; top: 18%; left: 26%; -webkit-text-stroke: .2px black; background: linear-gradient(to top, #2b2b2b, #fff, #757575); background-clip: text; -webkit-text-fill-color: transparent; font-size: 1rem;">★1</span>
+                    </div>
+                    <div class="rounded text-center d-grid align-items-center" style="position: absolute; width: 1.7rem; height: 1.7rem; top: 2%; right: 2%; background: #D96161; border: 1.5px solid #9b3b3b;">
+                        <span class="material-symbols-rounded heart-icon" style="font-size: 1.1rem; color: #fff; text-shadow: 1px 1px black;">
+                            favorite
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collectionTwostarWrapper col px-1 mt-4">
+                <div class="rounded d-flex align-items-center" style="aspect-ratio: 3/4; position: relative; background: linear-gradient(to bottom, #faebd4, #dfbe99, #ddb578, #c7964d); box-shadow: 1px 1px 3px 1px black;">
+                    <img class="collectionImage img-fluid d-block mx-auto rounded" th:src="@{/public/image/commons/commonsDogImg3.png}" style="aspect-ratio: 3/4; object-fit: cover; width: 90%;">
+                    <img class="collectionQuestionImage img-fluid d-block mx-auto rounded bg-black" th:src="@{/public/image/follow/question.png}" style="position: absolute; aspect-ratio: 3/4; object-fit: contain; width: 90%; left: 5%;">
+                    <div class="rounded-bottom" style="position: absolute; background: linear-gradient(to left, rgb(255, 255, 255, 0.8) 0%, rgb(255, 255, 255, 0.4) 100%); width: 90%; height: 1.5rem; bottom: 5%; right: 5%;">
+                        <div class="progress border rounded-pill mt-1 me-1 float-end" style="width: 90%; height: 70%; background: linear-gradient(to top, #3f3f3e 0%, #91908f 50%);">
+                            <div class="collectionProgress progress-bar rounded-pill" style="background: linear-gradient(to top, #d4a115 0%, #fddb1b 50%);">
+                                <span class="collectionProgressContent fw-bold" style="text-shadow: 1px 1px black; position: absolute; right: 35%;">61 / 87</span>
+                            </div>
+                        </div>
+                        <div class="text-white fw-bold" style="position: absolute; top: 0; left: 2%; text-shadow: 1px 1px black;">
+                            <span style="font-size: 0.7rem;">Lv</span><span class="collectionLevel">2</span>
+                        </div>
+                    </div>
+                    <div style="position: absolute; width: 3rem; height: 3rem; top: -6%; left: -2%;">
+                        <span class="material-symbols-rounded label-icon" style="transform: rotate(90deg); font-size: 3rem; background: linear-gradient(-135deg, #faebd4, #dfbe99, #c7964d); background-clip: text; -webkit-text-fill-color: transparent; -webkit-text-stroke: 1px rgb(160, 160, 160);">
+                            label
+                        </span>
+                        <img class="img-fluid" th:src="@{/public/image/follow/bronz.png}" style="position: absolute; width: 1.5rem; height: 1rem; bottom: 15%; left: 24.5%; opacity: 0.4;">
+                        <span class="text-white fw-bold" style="position: absolute; top: 18%; left: 26%; -webkit-text-stroke: .2px black; background: linear-gradient(to top, #c7964d, #fff, #ddb578); background-clip: text; -webkit-text-fill-color: transparent; font-size: 1rem;">★2</span>
+                    </div>
+                    <div class="rounded text-center d-grid align-items-center" style="position: absolute; width: 1.7rem; height: 1.7rem; top: 2%; right: 2%; background: #D96161; border: 1.5px solid #9b3b3b;">
+                        <span class="material-symbols-rounded heart-icon" style="font-size: 1.1rem; color: #fff; text-shadow: 1px 1px black;">
+                            favorite
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collectionThreestarWrapper col px-1 mt-4">
+                <div class="rounded d-flex align-items-center" style="aspect-ratio: 3/4; position: relative; background: linear-gradient(to bottom, #e7e7e7, #c0c0c0, #bbbbbb, #7c7c7c); box-shadow: 1px 1px 3px 1px black;">
+                    <img class="collectionImage img-fluid d-block mx-auto rounded" th:src="@{/public/image/commons/commonsDogImg2.png}" style="aspect-ratio: 3/4; object-fit: cover; width: 90%;">
+                    <img class="collectionQuestionImage img-fluid d-block mx-auto rounded bg-black" th:src="@{/public/image/follow/question.png}" style="position: absolute; aspect-ratio: 3/4; object-fit: contain; width: 90%; left: 5%;">
+                    <div class="rounded-bottom" style="position: absolute; background: linear-gradient(to left, rgb(255, 255, 255, 0.8) 0%, rgb(255, 255, 255, 0.4) 100%); width: 90%; height: 1.5rem; bottom: 5%; right: 5%;">
+                        <div class="progress border rounded-pill mt-1 me-1 float-end" style="width: 90%; height: 70%; background: linear-gradient(to top, #3f3f3e 0%, #91908f 50%);">
+                            <div class="collectionProgress progress-bar rounded-pill" style="background: linear-gradient(to top, #d4a115 0%, #fddb1b 50%);">
+                                <span class="collectionProgressContent fw-bold" style="text-shadow: 1px 1px black; position: absolute; right: 35%;">61 / 87</span>
+                            </div>
+                        </div>
+                        <div class="text-white fw-bold" style="position: absolute; top: 0; left: 2%; text-shadow: 1px 1px black;">
+                            <span style="font-size: 0.7rem;">Lv</span><span class="collectionLevel">2</span>
+                        </div>
+                    </div>
+                    <div style="position: absolute; width: 3rem; height: 3rem; top: -6%; left: -2%;">
+                        <span class="material-symbols-rounded label-icon" style="transform: rotate(90deg); font-size: 3rem; background: linear-gradient(-135deg, #e7e7e7, #c0c0c0, #7c7c7c); background-clip: text; -webkit-text-fill-color: transparent; -webkit-text-stroke: 1px rgb(160, 160, 160);">
+                            label
+                        </span>
+                        <img class="img-fluid" th:src="@{/public/image/follow/silver.png}" style="position: absolute; width: 1.5rem; height: 1rem; bottom: 15%; left: 24.5%; opacity: 0.4;">
+                        <span class="text-white fw-bold" style="position: absolute; top: 18%; left: 26%; -webkit-text-stroke: .2px black; background: linear-gradient(to top, #7c7c7c, #fff, #bbbbbb); background-clip: text; -webkit-text-fill-color: transparent; font-size: 1rem;">★3</span>
+                    </div>
+                    <div class="rounded text-center d-grid align-items-center" style="position: absolute; width: 1.7rem; height: 1.7rem; top: 2%; right: 2%; background: #D96161; border: 1.5px solid #9b3b3b;">
+                        <span class="material-symbols-rounded heart-icon" style="font-size: 1.1rem; color: #fff; text-shadow: 1px 1px black;">
+                            favorite
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collectionFourstarWrapper col px-1 mt-4">
+                <div class="rounded d-flex align-items-center" style="aspect-ratio: 3/4; position: relative; background: linear-gradient(to bottom, #faf9d4, #fdfb8e, #fff460, #f5eb5c); box-shadow: 1px 1px 3px 1px black;">
+                    <img class="collectionImage img-fluid d-block mx-auto rounded" th:src="@{/public/image/commons/dog1.jpeg}" style="aspect-ratio: 3/4; object-fit: cover; width: 90%;">
+                    <img class="collectionQuestionImage img-fluid d-block mx-auto rounded bg-black" th:src="@{/public/image/follow/question.png}" style="position: absolute; aspect-ratio: 3/4; object-fit: contain; width: 90%; left: 5%;">
+                    <div class="rounded-bottom" style="position: absolute; background: linear-gradient(to left, rgb(255, 255, 255, 0.8) 0%, rgb(255, 255, 255, 0.4) 100%); width: 90%; height: 1.5rem; bottom: 5%; right: 5%;">
+                        <div class="progress border rounded-pill mt-1 me-1 float-end" style="width: 90%; height: 70%; background: linear-gradient(to top, #3f3f3e 0%, #91908f 50%);">
+                            <div class="collectionProgress progress-bar rounded-pill" style="background: linear-gradient(to top, #d4a115 0%, #fddb1b 50%);">
+                                <span class="collectionProgressContent fw-bold" style="text-shadow: 1px 1px black; position: absolute; right: 35%;">61 / 87</span>
+                            </div>
+                        </div>
+                        <div class="text-white fw-bold" style="position: absolute; top: 0; left: 2%; text-shadow: 1px 1px black;">
+                            <span style="font-size: 0.7rem;">Lv</span><span class="collectionLevel">2</span>
+                        </div>
+                    </div>
+                    <div style="position: absolute; width: 3rem; height: 3rem; top: -6%; left: -2%;">
+                        <span class="material-symbols-rounded label-icon" style="transform: rotate(90deg); font-size: 3rem; background: linear-gradient(-135deg, #faebd4, #fdfb8e, #f5eb5c); background-clip: text; -webkit-text-fill-color: transparent; -webkit-text-stroke: 1px rgb(160, 160, 160);">
+                            label
+                        </span>
+                        <img class="img-fluid" th:src="@{/public/image/follow/gold.png}" style="position: absolute; width: 1.5rem; height: 1rem; bottom: 15%; left: 24.5%; opacity: 0.4;">
+                        <span class="text-white fw-bold" style="position: absolute; top: 18%; left: 26%; -webkit-text-stroke: .2px black; background: linear-gradient(to top, #f5eb5c, #fff, #fff460); background-clip: text; -webkit-text-fill-color: transparent; font-size: 1rem;">★4</span>
+                    </div>
+                    <div class="rounded text-center d-grid align-items-center" style="position: absolute; width: 1.7rem; height: 1.7rem; top: 2%; right: 2%; background: #D96161; border: 1.5px solid #9b3b3b;">
+                        <span class="material-symbols-rounded heart-icon" style="font-size: 1.1rem; color: #fff; text-shadow: 1px 1px black;">
+                            favorite
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collectionFivestarWrapper col px-1 mt-4">
+                <div class="collectionImage rounded d-flex align-items-center" style="aspect-ratio: 3/4; position: relative; background: linear-gradient(to bottom, #d4f5fa, #90e9ec, #71dbdb, #44dbd4); box-shadow: 1px 1px 3px 1px black;">
+                    <img class="img-fluid d-block mx-auto rounded" th:src="@{/public/image/commons/dog4.jpeg}" style="aspect-ratio: 3/4; object-fit: cover; width: 90%;">
+                    <img class="collectionQuestionImage img-fluid d-block mx-auto rounded bg-black" th:src="@{/public/image/follow/question.png}" style="position: absolute; aspect-ratio: 3/4; object-fit: contain; width: 90%; left: 5%;">
+                    <div class="rounded-bottom" style="position: absolute; background: linear-gradient(to left, rgb(255, 255, 255, 0.8) 0%, rgb(255, 255, 255, 0.4) 100%); width: 90%; height: 1.5rem; bottom: 5%; right: 5%;">
+                        <div class="progress border rounded-pill mt-1 me-1 float-end" style="width: 90%; height: 70%; background: linear-gradient(to top, #3f3f3e 0%, #91908f 50%);">
+                            <div class="collectionProgress progress-bar rounded-pill" style="background: linear-gradient(to top, #d4a115 0%, #fddb1b 50%);">
+                                <span class="collectionProgressContent fw-bold" style="text-shadow: 1px 1px black; position: absolute; right: 35%;">61 / 87</span>
+                            </div>
+                        </div>
+                        <div class="text-white fw-bold" style="position: absolute; top: 0; left: 2%; text-shadow: 1px 1px black;">
+                            <span style="font-size: 0.7rem;">Lv</span><span class="collectionLevel">2</span>
+                        </div>
+                    </div>
+                    <div style="position: absolute; width: 3rem; height: 3rem; top: -6%; left: -2%;">
+                        <span class="material-symbols-rounded label-icon" style="transform: rotate(90deg); font-size: 3rem; background: linear-gradient(-135deg, #faebd4, #8ef9fd, #90e9ec); background-clip: text; -webkit-text-fill-color: transparent; -webkit-text-stroke: 1px rgb(160, 160, 160);">
+                            label
+                        </span>
+                        <img class="img-fluid" th:src="@{/public/image/follow/dia.png}" style="position: absolute; width: 1.5rem; height: 1rem; bottom: 15%; left: 24.5%; opacity: 0.4;">
+                        <span class="text-white fw-bold" style="position: absolute; top: 18%; left: 26%; -webkit-text-stroke: .2px black; background: linear-gradient(to top, #44dbd4, #fff, #71dbdb); background-clip: text; -webkit-text-fill-color: transparent; font-size: 1rem;">★5</span>
+                    </div>
+                    <div class="rounded text-center d-grid align-items-center" style="position: absolute; width: 1.7rem; height: 1.7rem; top: 2%; right: 2%; background: #D96161; border: 1.5px solid #9b3b3b;">
+                        <span class="material-symbols-rounded heart-icon" style="font-size: 1.1rem; color: #fff; text-shadow: 1px 1px black;">
+                            favorite
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+        <script>
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+        </script>
+
     </body>
     
 </html>
