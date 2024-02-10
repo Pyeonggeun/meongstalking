@@ -11,7 +11,6 @@
         getMyCoin(user_pk);
     }
 
-    IMP.init('imp06248571');
 
     function showShopModal(){
         const itemModal = bootstrap.Modal.getOrCreateInstance("#itemModal");
@@ -23,7 +22,7 @@
         itemModal.hide();
     }
     function getMyCoin(user_pk){
-        const url = "./getMyCoin";
+        const url = "/mFollow/getMyCoin";
         fetch(url, {
             method: "post",
             headers: {
@@ -267,5 +266,5 @@
     
     window.addEventListener("DOMContentLoaded", () =>{
         loadCoinProductList();
-        // getUrlKey();
+        getUrlKey();
     });
