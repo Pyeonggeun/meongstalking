@@ -29,146 +29,163 @@ public class RestFollowController {
     @Autowired
     private FollowServiceImpl followService;
 
-    // @RequestMapping("getUserPk")
-    // public RestResponseDto getUserPk(HttpSession session) {
+    @RequestMapping("getMyUserPk")
+    public RestResponseDto getMyUserPk(HttpSession session) {
 
-    //     RestResponseDto restResponseDto = new RestResponseDto();
-    //     UserDto userDto = (UserDto)session.getAttribute("sessionUser");
+        RestResponseDto restResponseDto = new RestResponseDto();
+        UserDto userDto = (UserDto)session.getAttribute("sessionUser");
         
-    //     restResponseDto.setData(userDto.getUser_pk());
-    //     restResponseDto.setResult("success");
+        restResponseDto.setData(userDto.getUser_pk());
+        restResponseDto.setResult("success");
         
-    //     return restResponseDto;
-    // }
-
-    // @RequestMapping("isFirstTimeMark")
-    // public RestResponseDto isFirstTimeMark(int user_pk) {
-
-    //     RestResponseDto restResponseDto = new RestResponseDto();
-        
-    //     restResponseDto.setData(followService.isFirstTimeMark(user_pk));
-    //     restResponseDto.setResult("success");
-        
-    //     return restResponseDto;
-    // }
+        return restResponseDto;
+    }
     
-    // @RequestMapping("insertMoreInfo")
-    // public RestResponseDto insertMoreInfo(UserMoreDto params) {
+    @RequestMapping("getMyTrackMarkers")
+    public RestResponseDto getMyTrackMarkers(int user_pk, int trackMarkerDateValidity) {
 
-    //     RestResponseDto restResponseDto = new RestResponseDto();
-
-    //     followService.insertMoreInfo(params);
-
-    //     restResponseDto.setResult("success");
+        RestResponseDto restResponseDto = new RestResponseDto();
         
-    //     return restResponseDto;
-    // }
-
-    // @RequestMapping("checkWriteMarkDistance")
-    // public RestResponseDto checkWriteMarkDistance(
-    //     int user_pk, int markingRadius, int markingDate, double latitude, double longitude) {
-
-    //     RestResponseDto restResponseDto = new RestResponseDto();
-
-    //     restResponseDto.setData(
-    //         followService.checkWriteMarkDistance(user_pk, markingRadius, markingDate, latitude, longitude));
-    //     restResponseDto.setResult("success");
+        restResponseDto.setData(followService.getMyTrackMarkers(user_pk, trackMarkerDateValidity));
+        restResponseDto.setResult("success");
         
-    //     return restResponseDto;
-    // }
+        return restResponseDto;
+    }
 
-    // @RequestMapping("checkWriteMarkCount")
-    // public RestResponseDto checkWriteMarkCount(int user_pk) {
+    @RequestMapping("getTracingTrackMarkers")
+    public RestResponseDto getTracingTrackMarkers(int user_pk, int trackMarkerDateValidity) {
 
-    //     RestResponseDto restResponseDto = new RestResponseDto();
+        RestResponseDto restResponseDto = new RestResponseDto();
         
-    //     restResponseDto.setData(followService.checkWriteMarkCount(user_pk));
-    //     restResponseDto.setResult("success");
+        restResponseDto.setData(followService.getTracingTrackMarkers(user_pk, trackMarkerDateValidity));
+        restResponseDto.setResult("success");
         
-    //     return restResponseDto;
-    // }
+        return restResponseDto;
+    }
 
-    // @RequestMapping("saveWriteMarkInfo")
-    // public RestResponseDto saveWriteMarkInfo(LogDto params, MultipartFile imageFile) {
+    @RequestMapping("isFirstTimeLeavingTrackMark")
+    public RestResponseDto isFirstTimeLeavingTrackMark(int user_pk) {
 
-    //     System.out.println("실서버 에러 체크1 : ");
-
-
-    //     RestResponseDto restResponseDto = new RestResponseDto();
-    //     System.out.println(imageFile);
-    //     if(imageFile != null) {
-    //         String rootPath = "/uploadFiles/";
-
-    //         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-    //         String todayPath = sdf.format(new Date());
-
-    //         File todayFolderForCreate = new File(rootPath + todayPath);
-
-    //         if(!todayFolderForCreate.exists()) {
-    //             todayFolderForCreate.mkdirs();
-    //         }
-
-    //         String originalFileName = imageFile.getOriginalFilename();
-
-    //         String uuid = UUID.randomUUID().toString();
-    //         long currentTime = System.currentTimeMillis();
-    //         String fileName = uuid + "_" + currentTime;
-
-    //         String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
-    //         fileName += ext;
-
-    //         try {
-    //             imageFile.transferTo(new File(rootPath + todayPath + fileName));
-    //         } catch (Exception e) {
-    //             // TODO: handle exception
-    //             e.printStackTrace();
-    //         }
-
-    //         params.setImage_link(todayPath + fileName);
-    //     }
+        RestResponseDto restResponseDto = new RestResponseDto();
         
-    //     followService.insetWriteMarkInfo(params);
-
-    //     restResponseDto.setResult("success");
+        restResponseDto.setData(followService.isFirstTimeLeavingTrackMark(user_pk));
+        restResponseDto.setResult("success");
         
+        return restResponseDto;
+    }
+    
+    @RequestMapping("insertMoreInfo")
+    public RestResponseDto insertMoreInfo(UserMoreDto params) {
 
-    //     System.out.println("실서버 에러 체크2 : ");
+        RestResponseDto restResponseDto = new RestResponseDto();
 
-    //     return restResponseDto;
-    // }
+        followService.insertMoreInfo(params);
 
-    // @RequestMapping("getJustBeforeIMarked")
-    // public RestResponseDto getJustBeforeIMarked(int user_pk) {
-
-    //     RestResponseDto restResponseDto = new RestResponseDto();
+        restResponseDto.setResult("success");
         
-    //     restResponseDto.setData(followService.getJustBeforeIMarked(user_pk));
-    //     restResponseDto.setResult("success");
+        return restResponseDto;
+    }
+
+    @RequestMapping("getCurrentMyTrackMarkerCount")
+    public RestResponseDto getCurrentMyTrackMarkerCount(int user_pk) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
         
-    //     return restResponseDto;
-    // }
-
-    // @RequestMapping("getScanResult")
-    // public RestResponseDto getScanResult(int user_pk, double latitude, double longitude) {
-
-    //     RestResponseDto restResponseDto = new RestResponseDto();
-
-    //     restResponseDto.setData(followService.getScanResult(user_pk, latitude, longitude));
-    //     restResponseDto.setResult("success");
-    //     return restResponseDto;
-    // }
-
-    // @RequestMapping("insertCollectionInfo")
-    // public RestResponseDto insertCollectionInfo(CollectionDto params) {
-
-    //     RestResponseDto restResponseDto = new RestResponseDto();
-
-    //     followService.insertCollectionInfo(params);
+        restResponseDto.setData(followService.getCurrentMyTrackMarkerCount(user_pk));
+        restResponseDto.setResult("success");
         
-    //     restResponseDto.setResult("success");
+        return restResponseDto;
+    }
+
+    @RequestMapping("isEnoughDistanceFromMyTrackMarker")
+    public RestResponseDto isEnoughDistanceFromMyTrackMarker(
+        int user_pk, double latitude, double longitude, int trackMarkerEffectiveDistance, int trackMarkerDateValidity) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+
+        restResponseDto.setData(
+            followService.isEnoughDistanceFromMyTrackMarker(user_pk, latitude, longitude, trackMarkerEffectiveDistance, trackMarkerDateValidity));
+        restResponseDto.setResult("success");
         
-    //     return restResponseDto;
-    // }
+        return restResponseDto;
+    }
+    
+    @RequestMapping("insertWriteTrackMarkInfo")
+    public RestResponseDto insertWriteTrackMarkInfo(LogDto params, MultipartFile imageFile) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        if(imageFile != null) {
+            String rootPath = "/uploadFiles/";
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+            String todayPath = sdf.format(new Date());
+
+            File todayFolderForCreate = new File(rootPath + todayPath);
+
+            if(!todayFolderForCreate.exists()) {
+                todayFolderForCreate.mkdirs();
+            }
+
+            String originalFileName = imageFile.getOriginalFilename();
+
+            String uuid = UUID.randomUUID().toString();
+            long currentTime = System.currentTimeMillis();
+            String fileName = uuid + "_" + currentTime;
+
+            String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
+            fileName += ext;
+
+            try {
+                imageFile.transferTo(new File(rootPath + todayPath + fileName));
+            } catch (Exception e) {
+                // TODO: handle exception
+                e.printStackTrace();
+            }
+
+            params.setImage_link(todayPath + fileName);
+        }
+        
+        followService.insertWriteTrackMarkInfo(params);
+
+        restResponseDto.setResult("success");
+
+        return restResponseDto;
+    }
+
+    @RequestMapping("getScanningTrackMarkers")
+    public RestResponseDto getScanningTrackMarkers(int user_pk, double latitude, double longitude,
+    int trackMarkerDateValidity, int scanMarkerEffectiveDistance, int scanMarkerUpTo) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+
+        restResponseDto.setData(followService.getScanningTrackMarkers(user_pk, latitude, longitude, trackMarkerDateValidity, scanMarkerEffectiveDistance, scanMarkerUpTo));
+        restResponseDto.setResult("success");
+        return restResponseDto;
+    }
+    
+    @RequestMapping("insertCollectionInfo")
+    public RestResponseDto insertCollectionInfo(CollectionDto params) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+
+        followService.insertCollectionInfo(params);
+        
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
+    @RequestMapping("getCurrentCollectTrackMarkerCount")
+    public RestResponseDto getCurrentCollectTrackMarkerCount(int user_pk) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(followService.getCurrentCollectTrackMarkerCount(user_pk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
 
     // @RequestMapping("getCollectionPersonList")
     // public RestResponseDto getCollectionPersonList(int user_pk) {
@@ -226,17 +243,6 @@ public class RestFollowController {
     //     followService.insertTrackLikeLogInfo(params);
 
     //     restResponseDto.setData(params);
-    //     restResponseDto.setResult("success");
-        
-    //     return restResponseDto;
-    // }
-
-    // @RequestMapping("getTrackingList")
-    // public RestResponseDto getTrackingList(int user_pk) {
-
-    //     RestResponseDto restResponseDto = new RestResponseDto();
-        
-    //     restResponseDto.setData(followService.getTrackingList(user_pk));
     //     restResponseDto.setResult("success");
         
     //     return restResponseDto;
