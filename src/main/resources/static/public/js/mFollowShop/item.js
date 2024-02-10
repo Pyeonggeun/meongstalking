@@ -1,10 +1,10 @@
-    function getUrlKey() {
-        const urlParams = new URLSearchParams(location.search);
-        if(urlParams.get("resultPay")!=null){
-            showShopModal();
-            getMyCoin();
-        }
-    }
+    // function getUrlKey() {
+    //     const urlParams = new URLSearchParams(location.search);
+    //     if(urlParams.get("resultPay")!=null){
+    //         // showShopModal();
+    //         // getMyCoin();
+    //     }
+    // }
 
 
     function showShopModal(){
@@ -262,5 +262,5 @@
     
     window.addEventListener("DOMContentLoaded", () =>{
         loadCoinProductList();
-        getUrlKey();
+        // getUrlKey();
     });

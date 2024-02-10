@@ -39,14 +39,14 @@
                 -
                 (
                     select
-                        SUM(
+                        IFNULL(SUM(
                             CASE 
                                 WHEN mi.item_category = 1 THEN 
                                     COALESCE((mi.price * POW(2, (moi.sum_quantity+1)-1)) - mi.price, 0)
                                 WHEN mi.item_category = 2 THEN 
                                     COALESCE(mi.price * moi.sum_quantity, 0)
                             END
-                        ) AS total_sum
+                        ),0) AS total_sum
                     from ms_mFollow_item mi
                     inner join (SELECT item_pk, sum(quantity) as sum_quantity   from  ms_mFollow_order_item
                     where user_pk = #{user_pk}
