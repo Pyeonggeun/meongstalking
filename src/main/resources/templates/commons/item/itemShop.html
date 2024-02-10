@@ -8,7 +8,7 @@
                 const key = urlParams.get("user_pk");
                 user_pk = key;
                 if(urlParams.get("resultPay")!=null){
-                    showModal();
+                    showShopModal();
                     getMyCoin(user_pk);
                 }
                 
@@ -17,7 +17,7 @@
 
             IMP.init('imp06248571');
 
-            function showModal(){
+            function showShopModal(){
                 const itemModal = bootstrap.Modal.getOrCreateInstance("#itemModal");
                 loadShopItemList(user_pk);
                 itemModal.show();
@@ -408,17 +408,7 @@
       -webkit-appearance: none;
     }
 
-        </style>
-
-    </head>
-    <body>
-    <div  class="container-fluid">
-       <div class="row">
-            <div class="col">
-                <button onclick="showModal()">ddddd</button>
-            </div>
-       </div>
-    </div>
+    </style>
 
     <div id="itemModal" class="modal" tabindex="-1">
         <div class="modal-dialog">
