@@ -9,7 +9,8 @@
 
     function showShopModal(){
         const itemModal = bootstrap.Modal.getOrCreateInstance("#itemModal");
-        loadShopItemList(user_pk);
+        loadShopItemList();
+        getMyCoin();
         itemModal.show();
     }
     function closeShopModal(){
@@ -194,7 +195,7 @@
         })
         .then(response => {
             loadShopItemList();
-            getMyCoin(user_pk);
+            getMyCoin();
             closeItemOrderBox();
         });
         
