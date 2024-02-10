@@ -1,14 +1,9 @@
-    let user_pk = null;
     function getUrlKey() {
         const urlParams = new URLSearchParams(location.search);
-        const key = urlParams.get("user_pk");
-        user_pk = key;
         if(urlParams.get("resultPay")!=null){
             showShopModal();
-            getMyCoin(user_pk);
+            getMyCoin();
         }
-        
-        getMyCoin(user_pk);
     }
 
 
@@ -21,7 +16,7 @@
         const itemModal = bootstrap.Modal.getOrCreateInstance("#itemModal");
         itemModal.hide();
     }
-    function getMyCoin(user_pk){
+    function getMyCoin(){
         const url = "/mFollow/getMyCoin";
         fetch(url, {
             method: "post",

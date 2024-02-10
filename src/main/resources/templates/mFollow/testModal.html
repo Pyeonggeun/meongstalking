@@ -12,17 +12,12 @@
 
         
         <script>
-            let user_pk = null;
             function getUrlKey() {
                 const urlParams = new URLSearchParams(location.search);
-                const key = urlParams.get("user_pk");
-                user_pk = key;
                 if(urlParams.get("resultPay")!=null){
                     showModal();
-                    getMyCoin(user_pk);
+                    getMyCoin();
                 }
-                
-                getMyCoin(user_pk);
             }
 
             IMP.init('imp06248571');
@@ -36,8 +31,8 @@
                 const itemModal = bootstrap.Modal.getOrCreateInstance("#itemModal");
                 itemModal.hide();
             }
-            function getMyCoin(user_pk){
-                const url = "./getMyCoin";
+            function getMyCoin(){
+                const url = "/mFollow/getMyCoin";
                 fetch(url, {
                     method: "post",
                     headers: {
