@@ -1,0 +1,132 @@
+
+.shackMove {
+    z-index: 100;
+    -webkit-animation: shackMove-move 1s ease-in-out infinite;
+}
+@-webkit-keyframes shackMove-move {
+    50% { 
+        -webkit-transform: rotate(-10deg); 
+    }
+}
+.updownMove {
+    z-index: 100;
+    -webkit-animation: updownMove-move 1s ease-in-out infinite;
+}
+@-webkit-keyframes updownMove-move {
+    50% { 
+        -webkit-transform: translateY(-1em); 
+    }
+}
+.leftRightMove {
+    z-index: 100;
+    -webkit-animation: leftRightMove-move 1s ease-in-out infinite;
+}
+@-webkit-keyframes leftRightMove-move {
+    50% { 
+        -webkit-transform: translateX(0.5em); 
+    }
+}
+
+#steam-container {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 15em;
+    height: 10em;
+    background: url('/public/image/mFollow/ornerPeople.png') center/contain no-repeat;
+    z-index: 2;
+    margin-top: 2em;
+}
+
+
+@keyframes steamAnimation {
+0% {
+opacity: 0.8;
+transform: translateY(0) scale(1);
+}
+100% {
+opacity: 0;
+transform: translateY(-3em) scale(2);
+}
+}
+
+.steam {
+position: absolute;
+background: url('/public/image/mFollow/smoke2.png') center/cover no-repeat;
+width: 2.5em;
+height: 2.5em;
+border-radius: 50%;
+animation: steamAnimation 1.5s linear infinite;
+transform-origin: center bottom;
+z-index: 3;
+}
+.label{
+background: url('/public/image/mFollow/label.jpg') center/cover no-repeat;
+}
+.wood{
+background: url('/public/image/mFollow/wood.jpeg') center/cover no-repeat;
+height: 22em;
+
+}
+.pattern{
+position: relative;
+background: url('/public/image/mFollow/pattern.png') center/cover no-repeat;
+z-index: 1;
+height: 12em;
+}
+.food{
+position: absolute;
+background: url('/public/image/mFollow/food.png') center/cover no-repeat;
+background-size: contain;
+height: 12em;
+width: 30em;
+z-index: 5;
+}
+.none-scrollbar {
+scrollbar-width: none; /* Firefox */
+}
+.itemBox{
+width: 180%;
+}
+.itemBox .col{
+width: 20%;
+}
+
+.rotated_gradient_box {
+filter: hue-rotate(340deg);
+border: 0.2em solid transparent;
+background-image: linear-gradient(#f7d180, #dea006), linear-gradient(to left,#d6c46c,#aa8936);
+background-clip: content-box, border-box;
+background-origin: border-box;
+animation: huerotate 3s infinite linear;
+
+}
+
+@keyframes huerotate    {
+0%{
+    filter: hue-rotate(340deg);
+}
+50% {
+    filter: hue-rotate(360deg);
+}
+}
+#itemShopMainImg{
+background: url('/public/image/mFollow/itemShop.png') center/contain no-repeat;
+height: 37em;
+}
+.itemBackground{
+background: url('/public/image/mFollow/itmBackground1.png') center/cover no-repeat;
+}
+.sizeUP{
+animation: zoom 3s infinite linear;
+}
+@keyframes zoom {
+50%{
+    opacity: 0.8;
+    transform: scale(1.1);    
+}
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+-webkit-appearance: none;
+}
