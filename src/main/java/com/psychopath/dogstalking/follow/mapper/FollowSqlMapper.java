@@ -15,22 +15,27 @@ import com.psychopath.dogstalking.follow.dto.UserMoreDto;
 @Mapper
 public interface FollowSqlMapper {
 
-    // public int isFirstTimeMark(int user_pk);
+    public List<Map<String, Object>> getMyTrackMarkers(int user_pk, int trackMarkerDateValidity);
+    public List<Map<String, Object>> getTracingTrackMarkers(int user_pk, int trackMarkerDateValidity);
+
+    public int isFirstTimeLeavingTrackMark(int user_pk);
 
     public void insertMoreInfo(UserMoreDto userMoreDto);
 
-    // public List<LogDto> checkWriteMarkDistance(
-    //     @RequestParam("user_pk") int user_pk, @RequestParam("markingRadius") int markingRadius,
-    //     @RequestParam("markingDate") int markingDate, @RequestParam("latitude") double latitude, @RequestParam("longitude") double longitude);
-    // public int checkWriteMarkCount(int user_pk);
+    public int getCurrentMyTrackMarkerCount(int user_pk);
+    public int isEnoughDistanceFromMyTrackMarker(
+        @RequestParam("user_pk") int user_pk,  @RequestParam("latitude") double latitude, @RequestParam("longitude") double longitude,
+        @RequestParam("trackMarkerEffectiveDistance") int trackMarkerEffectiveDistance, @RequestParam("trackMarkerDateValidity") int trackMarkerDateValidity);
+    
+    public void insertWriteTrackMarkInfo(LogDto logDto);
 
-    public void insetWriteMarkInfo(LogDto logDto);
-    // public LogDto getJustBeforeIMarked(int user_pk);
+    public List<Map<String, Object>> getScanningTrackMarkers(@RequestParam("user_pk") int user_pk,
+        @RequestParam("latitude") double latitude, @RequestParam("longitude") double longitude, @RequestParam("trackMarkerDateValidity") int trackMarkerDateValidity,
+        @RequestParam("scanMarkerEffectiveDistance") int scanMarkerEffectiveDistance, @RequestParam("scanMarkerUpTo") int scanMarkerUpTo);
 
-    // public List<Map<String, Object>> getScanResult(@RequestParam("user_pk") int user_pk,
-    //     @RequestParam("latitude") double latitude, @RequestParam("longitude") double longitude);
+    public void insertCollectionInfo(CollectionDto collectionDto);
 
-    // public void insertCollectionInfo(CollectionDto collectionDto);
+    public int getCurrentCollectTrackMarkerCount(int user_pk);
     // public List<Map<String, Object>> getCollectionPersonList(int user_pk);
 
     // public List<Map<String, Object>> getTrackLikeList(int user_pk);
@@ -39,7 +44,6 @@ public interface FollowSqlMapper {
     // public int isTracing(@RequestParam("user_pk") int user_pk, @RequestParam("log_pk") int log_pk);
 
     // public void insertTrackLikeLogInfo(LikeLogDto likeLogDto);
-    // public List<Map<String, Object>> getTrackingList(int user_pk);
 
     // public int isLike(LikeDto likeDto);
     // public void insertLike(LikeDto likeDto);

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.psychopath.dogstalking.follow.dto.CollectionDto;
 import com.psychopath.dogstalking.follow.dto.LikeDto;
@@ -19,46 +20,57 @@ public class FollowServiceImpl {
     @Autowired
     private FollowSqlMapper followSqlMapper;
 
-    // public boolean isFirstTimeMark(int user_pk) {
+    public List<Map<String, Object>> getMyTrackMarkers(int user_pk, int trackMarkerDateValidity) {
 
-    //     return followSqlMapper.isFirstTimeMark(user_pk) > 0 ? false : true;
-    // }
+        return followSqlMapper.getMyTrackMarkers(user_pk, trackMarkerDateValidity);
+    }
+
+    public List<Map<String, Object>> getTracingTrackMarkers(int user_pk, int trackMarkerDateValidity) {
+
+        return followSqlMapper.getTracingTrackMarkers(user_pk, trackMarkerDateValidity);
+    }
+
+    public boolean isFirstTimeLeavingTrackMark(int user_pk) {
+
+        return followSqlMapper.isFirstTimeLeavingTrackMark(user_pk) <= 0 ? true : false;
+    }
 
     public void insertMoreInfo(UserMoreDto userMoreDto) {
 
         followSqlMapper.insertMoreInfo(userMoreDto);
     }
 
-    // public List<LogDto> checkWriteMarkDistance(
-    //     int user_pk, int markingRadius, int markingDate, double latitude, double longitude) {
+    public int getCurrentMyTrackMarkerCount(int user_pk) {
 
-    //     return followSqlMapper.checkWriteMarkDistance(user_pk, markingRadius, markingDate, latitude, longitude);
-    // }
-
-    // public int checkWriteMarkCount(int user_pk) {
-
-    //     return followSqlMapper.checkWriteMarkCount(user_pk);
-    // }
-
-    public void insetWriteMarkInfo(LogDto logDto) {
-
-        followSqlMapper.insetWriteMarkInfo(logDto);
+        return followSqlMapper.getCurrentMyTrackMarkerCount(user_pk);
     }
 
-    // public LogDto getJustBeforeIMarked(int user_pk) {
+    public boolean isEnoughDistanceFromMyTrackMarker(
+        int user_pk, double latitude, double longitude, int trackMarkerEffectiveDistance, int trackMarkerDateValidity) {
 
-    //     return followSqlMapper.getJustBeforeIMarked(user_pk);
-    // }
+        return followSqlMapper.isEnoughDistanceFromMyTrackMarker(user_pk, latitude, longitude, trackMarkerEffectiveDistance, trackMarkerDateValidity) <= 0 ? true : false;
+    }
 
-    // public List<Map<String, Object>> getScanResult(int user_pk, double latitude, double longitude) {
+    public void insertWriteTrackMarkInfo(LogDto logDto) {
 
-    //     return followSqlMapper.getScanResult(user_pk, latitude, longitude);
-    // }
+        followSqlMapper.insertWriteTrackMarkInfo(logDto);
+    }
 
-    // public void insertCollectionInfo(CollectionDto collectionDto) {
+    public List<Map<String, Object>> getScanningTrackMarkers(int user_pk, double latitude, double longitude,
+        int trackMarkerDateValidity, int scanMarkerEffectiveDistance, int scanMarkerUpTo) {
 
-    //     followSqlMapper.insertCollectionInfo(collectionDto);
-    // }
+        return followSqlMapper.getScanningTrackMarkers(user_pk, latitude, longitude, trackMarkerDateValidity, scanMarkerEffectiveDistance, scanMarkerUpTo);
+    }
+
+    public void insertCollectionInfo(CollectionDto collectionDto) {
+
+        followSqlMapper.insertCollectionInfo(collectionDto);
+    }
+
+    public int getCurrentCollectTrackMarkerCount(int user_pk) {
+
+        return followSqlMapper.getCurrentCollectTrackMarkerCount(user_pk);
+    }
 
     // public List<Map<String, Object>> getCollectionPersonList(int user_pk) {
 
@@ -83,11 +95,6 @@ public class FollowServiceImpl {
     // public void insertTrackLikeLogInfo(LikeLogDto likeLogDto) {
 
     //     followSqlMapper.insertTrackLikeLogInfo(likeLogDto);
-    // }
-
-    // public List<Map<String, Object>> getTrackingList(int user_pk) {
-
-    //     return followSqlMapper.getTrackingList(user_pk);
     // }
 
     // public void toggleLike(LikeDto likeDto) {

@@ -9,69 +9,114 @@
         ) values(#{user_pk}, #{height}, #{weight}, #{blood_type}, #{mbti_type}, #{hobby}, #{drinking}, #{smoking}, #{preference})
     </insert>
 
-    <insert id="insetWriteMarkInfo">
+    <insert id="insertWriteTrackMarkInfo">
         insert into ms_follow_log(user_pk, image_link, content, latitude, longitude)
         values(#{user_pk}, #{image_link}, #{content}, #{latitude}, #{longitude})
     </insert>
 
-    <!-- <insert id="insertCollectionInfo">
+    <insert id="insertCollectionInfo">
         insert into ms_follow_collection(user_pk, log_pk) values(#{user_pk}, #{log_pk});
     </insert>
 
-    <insert id="insertTrackLikeLogInfo">
-        insert into ms_follow_like_log(
-            user_pk, log_pk, latitude, longitude
-        ) values(#{user_pk}, #{log_pk}, #{latitude}, #{longitude});
-    </insert>
+    <select id="getMyTrackMarkers" resultType="map">
+        SELECT mfl.latitude, mfl.longitude FROM ms_follow_log mfl
+        where mfl.user_pk = #{user_pk}
+        <![CDATA[
+            and date(now()) - date(mfl.created_date) <= #{trackMarkerDateValidity}
+        ]]>
+    </select>
 
-    <insert id="insertLike">
-        insert into ms_follow_like(user_collector_pk, user_writer_pk) values(#{user_collector_pk}, #{user_writer_pk})
-    </insert>
+    <select id="getTracingTrackMarkers" resultType="map">
+        SELECT mfll.log_pk, mfll.latitude, mfll.longitude, t2.*,
+            (DATE_FORMAT((DATE_ADD(mfl.created_date, INTERVAL #{trackMarkerDateValidity} day)), '%Y/%m/%d %H시 %i분')) as time_limit
+        FROM ms_follow_like_log mfll
+        inner join ms_follow_log mfl on mfll.log_pk = mfl.log_pk
+        inner join (
+            SELECT t1.*, (
+                CASE
+                    <![CDATA[
+                        when (t1.rnum / t1.max_count) > 0.25 then 'oneStar'
+                        when (t1.rnum / t1.max_count) > 0.15 then 'twoStar'
+                        when (t1.rnum / t1.max_count) > 0.11 then 'threeStar'
+                        when (t1.rnum / t1.max_count) > 0.07 then 'fourStar'
+                        when (t1.rnum / t1.max_count) > 0.054 then 'fiveStar'
+                        when (t1.rnum / t1.max_count) > 0.005 then 'S'
+                        when (t1.rnum / t1.max_count) > 0.001 then 'SR'
+                        else 'SSR'
+                    ]]>
+                END
+            ) as star_rating
+            from (
+                SELECT mfum.*, ROW_NUMBER() over (order by (
+                    (
+                        SELECT COUNT(*) FROM ms_follow_collection mfc
+                        inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
+                        where mfl.user_pk = mfum.user_pk
+                        GROUP BY mfl.user_pk
+                    ) * 0.8 + (
+                        SELECT COUNT(*) FROM ms_follow_comment mfc
+                        inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
+                        where mfl.user_pk = mfum.user_pk
+                        GROUP BY mfl.user_pk
+                    ) * 0.1 + (
+                        SELECT COUNT(*) FROM ms_follow_like mfl
+                        where user_writer_pk = mfum.user_pk
+                        GROUP BY mfl.user_writer_pk		
+                    ) * 0.1
+                )) as rnum, (
+                    SELECT COUNT(*) FROM ms_follow_user_more
+                ) as max_count
+                FROM ms_follow_user_more mfum
+            )t1
+        )t2 on t2.user_pk = mfl.user_pk
+        where mfll.user_pk = #{user_pk}
+        and mfll.log_pk not in(
+            SELECT log_pk FROM ms_follow_collection
+            where user_pk = #{user_pk}
+        )
+        <![CDATA[
+            and date(now()) - date(mfl.created_date) <= #{trackMarkerDateValidity}
+        ]]>
+    </select>
 
-    <select id="isFirstTimeMark" resultType="int">
+    <select id="isFirstTimeLeavingTrackMark" resultType="int">
         SELECT COUNT(*) FROM ms_follow_user_more
         where user_pk = #{user_pk}
     </select>
 
-    <select id="checkWriteMarkDistance" resultType="com.psychopath.dogstalking.follow.dto.LogDto">
-        SELECT * FROM ms_follow_log mfl
-        where mfl.user_pk = #{user_pk}
-        <![CDATA[
-            and date(now()) - date(mfl.created_date) <= #{markingDate}
-            and (
-                SELECT get_distance(
-                    #{latitude}, #{longitude}, mfl.latitude, mfl.longitude
-                ) AS distance
-            ) <= #{markingRadius}
-        ]]>
-    </select>
-
-    <select id="checkWriteMarkCount" resultType="int">
+    <select id="getCurrentMyTrackMarkerCount" resultType="int">
         SELECT COUNT(*) FROM ms_follow_log
         where user_pk = #{user_pk}
         and date(created_date) = date(now())
     </select>
 
-    <select id="getJustBeforeIMarked" resultType="com.psychopath.dogstalking.follow.dto.LogDto">
-        SELECT * FROM ms_follow_log
-        where user_pk = #{user_pk}
-        order by created_date desc
-        limit 1
+    <select id="isEnoughDistanceFromMyTrackMarker" resultType="int">
+        SELECT COUNT(*) FROM ms_follow_log mfl
+        where mfl.user_pk = #{user_pk}
+        <![CDATA[
+            and date(now()) - date(mfl.created_date) <= #{trackMarkerDateValidity}
+            and (
+                SELECT get_distance(
+                    #{latitude}, #{longitude}, mfl.latitude, mfl.longitude
+                ) AS distance
+            ) <= #{trackMarkerEffectiveDistance}
+        ]]>
     </select>
 
-    <select id="getScanResult" resultType="map">
+    <select id="getScanningTrackMarkers" resultType="map">
         SELECT t6.* FROM (
             SELECT t1.log_pk, t1.image_link, t1.content, t1.latitude, t1.longitude, t1.created_date,
                 t3.*, IFNULL(t5.cnt, 0) as cnt, IFNULL(t5.open_rating, 1) as open_rating,
-                t1.is_track, t1.is_like, mmpi.profile_photo, mmpi.nick_name FROM (
+                t1.is_trace, t1.is_like, mmpi.profile_photo, mmpi.nick_name FROM (
                 SELECT * FROM (
-                    SELECT log_pk, user_pk, image_link, content, latitude, longitude, created_date, is_track, is_like
+                    SELECT log_pk, user_pk, image_link, content, latitude, longitude, created_date, is_trace, is_like
                     FROM (
                         SELECT mfl.*,
                             ROW_NUMBER() OVER (PARTITION BY get_distance(#{latitude}, #{longitude}, mfl.latitude, mfl.longitude) ORDER BY RAND()) as row_num, (
                                 CASE 
-                                    when log_pk in (
-                                        SELECT mfll.log_pk FROM ms_follow_like_log mfll
+                                    when mfl.user_pk in (
+                                        SELECT mfl2.user_pk FROM ms_follow_like_log mfll
+                                        inner join ms_follow_log mfl2 on mfll.log_pk = mfl2.log_pk
                                         where mfll.user_pk = #{user_pk}
                                         and mfll.log_pk not in (
                                             SELECT mfc.log_pk FROM ms_follow_collection mfc
@@ -80,7 +125,7 @@
                                     )
                                     then 'Y' else 'N'
                                 END
-                            ) as is_track, (
+                            ) as is_trace, (
                                 CASE 
                                     when user_pk in (
                                         SELECT mfl.user_writer_pk FROM ms_follow_like mfl
@@ -95,7 +140,7 @@
                 )t0
                 where t0.user_pk != #{user_pk}
                 <![CDATA[
-                    and date(now()) - date(t0.created_date) <= 7
+                    and date(now()) - date(t0.created_date) <= #{trackMarkerDateValidity}
                 ]]>
                 and t0.user_pk NOT IN (
                     SELECT block_user_pk FROM ms_mstar_block mmb
@@ -110,7 +155,7 @@
                         SELECT get_distance(
                             #{latitude}, #{longitude}, t0.latitude, t0.longitude
                         ) AS distance
-                    ) <= 250
+                    ) <= #{scanMarkerEffectiveDistance}
                 ]]>
                 and t0.log_pk NOT IN (
                     SELECT log_pk FROM ms_follow_collection mfc
@@ -121,14 +166,14 @@
                 SELECT t2.*, (
                     CASE
                         <![CDATA[
-                            when (t2.rnum / t2.max_count) > 0.36 then 'oneStar'
-                            when (t2.rnum / t2.max_count) > 0.25 then 'twoStar'
-                            when (t2.rnum / t2.max_count) > 0.15 then 'threeStar'
-                            when (t2.rnum / t2.max_count) > 0.11 then 'fourStar'
-                            when (t2.rnum / t2.max_count) > 0.07 then 'fiveStar'
-                            when (t2.rnum / t2.max_count) > 0.054 then 'S'
-                            when (t2.rnum / t2.max_count) > 0.005 then 'SR'
-                            when (t2.rnum / t2.max_count) > 0.001 then 'SSR'
+                            when (t2.rnum / t2.max_count) > 0.25 then 'oneStar'
+                            when (t2.rnum / t2.max_count) > 0.15 then 'twoStar'
+                            when (t2.rnum / t2.max_count) > 0.11 then 'threeStar'
+                            when (t2.rnum / t2.max_count) > 0.07 then 'fourStar'
+                            when (t2.rnum / t2.max_count) > 0.054 then 'fiveStar'
+                            when (t2.rnum / t2.max_count) > 0.005 then 'S'
+                            when (t2.rnum / t2.max_count) > 0.001 then 'SR'
+                            else 'SSR'
                         ]]>
                     END
                 ) as star_rating
@@ -182,9 +227,27 @@
             on t1.user_pk = t5.user_pk
             inner join ms_mstar_profile_info mmpi on t1.user_pk = mmpi.user_pk
         )t6
-        order by t6.is_track desc, RAND()
-        LIMIT 5
+        order by t6.is_trace desc, RAND()
+        LIMIT #{scanMarkerUpTo}
     </select>
+
+    <select id="getCurrentCollectTrackMarkerCount" resultType="int">
+        SELECT COUNT(*) FROM ms_follow_collection
+        where user_pk = #{user_pk}
+        and date(created_date) = date(now())
+    </select>
+
+    <!-- 
+
+    <insert id="insertTrackLikeLogInfo">
+        insert into ms_follow_like_log(
+            user_pk, log_pk, latitude, longitude
+        ) values(#{user_pk}, #{log_pk}, #{latitude}, #{longitude});
+    </insert>
+
+    <insert id="insertLike">
+        insert into ms_follow_like(user_collector_pk, user_writer_pk) values(#{user_collector_pk}, #{user_writer_pk})
+    </insert>
 
     <select id="getCollectionPersonList" resultType="map">
         SELECT t1.*, t3.star_rating, mmpi.profile_photo, (
@@ -285,14 +348,14 @@
                 SELECT t2.*, (
                     CASE
                         <![CDATA[
-                            when (t2.rnum / t2.max_count) > 0.36 then 'oneStar'
-                            when (t2.rnum / t2.max_count) > 0.25 then 'twoStar'
-                            when (t2.rnum / t2.max_count) > 0.15 then 'threeStar'
-                            when (t2.rnum / t2.max_count) > 0.11 then 'fourStar'
-                            when (t2.rnum / t2.max_count) > 0.07 then 'fiveStar'
-                            when (t2.rnum / t2.max_count) > 0.054 then 'S'
-                            when (t2.rnum / t2.max_count) > 0.005 then 'SR'
-                            when (t2.rnum / t2.max_count) > 0.001 then 'SSR'
+                            when (t2.rnum / t2.max_count) >= 0.36 then 'oneStar'
+                            when (t2.rnum / t2.max_count) >= 0.25 then 'twoStar'
+                            when (t2.rnum / t2.max_count) >= 0.15 then 'threeStar'
+                            when (t2.rnum / t2.max_count) >= 0.11 then 'fourStar'
+                            when (t2.rnum / t2.max_count) >= 0.07 then 'fiveStar'
+                            when (t2.rnum / t2.max_count) >= 0.054 then 'S'
+                            when (t2.rnum / t2.max_count) >= 0.005 then 'SR'
+                            when (t2.rnum / t2.max_count) >= 0.001 then 'SSR'
                         ]]>
                     END
                 ) as star_rating
@@ -368,22 +431,6 @@
             )
         )t1
         where t1.rnum = 1
-    </select>
-
-    <select id="getTrackingList" resultType="map">
-        SELECT mfll.*, mfum.user_more_pk,
-            (DATE_FORMAT((DATE_ADD(mfl.created_date, INTERVAL 7 day)), '%Y/%m/%d %H시 %i분')) as time_limit
-        FROM ms_follow_like_log mfll
-        inner join ms_follow_log mfl on mfll.log_pk = mfl.log_pk
-        inner join ms_follow_user_more mfum on mfl.user_pk = mfum.user_pk
-        where mfll.user_pk = #{user_pk}
-        and mfll.log_pk not in(
-            SELECT log_pk FROM ms_follow_collection
-            where user_pk = #{user_pk}
-        )
-        <![CDATA[
-            and date(now()) - date(mfl.created_date) <= 7
-        ]]>
     </select>
 
     <select id="isTracing" resultType="int">
