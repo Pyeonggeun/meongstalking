@@ -18,6 +18,12 @@ public class FollowController {
 
         return "follow/mainPage";
     }
+
+    @RequestMapping("functionPage")
+    public String functionPage() {
+
+        return "follow/functionPage";
+    }
     
     @RequestMapping("testPage")
     public String testPage() {

@@ -12,7 +12,6 @@ import com.psychopath.dogstalking.dto.UserDto;
 import com.psychopath.dogstalking.follow.dto.LogDto;
 import com.psychopath.dogstalking.follow.dto.UserMoreDto;
 import com.psychopath.dogstalking.follow.mapper.FollowSqlMapper;
-import com.psychopath.dogstalking.mstar.mapper.MstarSqlMapper;
 
 @Service
 public class FollowSimulator {
@@ -109,7 +108,7 @@ public class FollowSimulator {
             logDto.setLatitude(randomLatitude);
             logDto.setLongitude(randomLongitude);
 
-            followSqlMapper.insetWriteMarkInfo(logDto);
+            followSqlMapper.insertWriteTrackMarkInfo(logDto);
         }
 
 
