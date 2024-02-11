@@ -65,5 +65,209 @@
         where user_pk = #{user_pk}
         and item_pk = #{item_pk}),0) as count
     </select>
+    <select id="selectBeforeAchCount" resultType="int">
+        SELECT ach_count FROM ms_mFollow_ach_level
+        where achievement_pk = #{achievement_pk}
+        and ach_level = (#{ach_level}-1)
+    </select>
+    <select id="selectAchievementList" resultType="com.psychopath.dogstalking.mFollow.dto.AchievementDto">
+        SELECT * FROM ms_mFollow_achievement
+    </select>
+    <select id="selectAchievementCategoryName" resultType="String">
+        SELECT name from ms_mFollow_ach_category
+        where ach_catogory_pk = #{ach_catogory_pk}
+    </select>
+    <select id="selectOneAchievementInfo" resultType="com.psychopath.dogstalking.mFollow.dto.AchievementResultDto">
+        SELECT
+            IFNULL(ach_level, 5) AS ach_level,
+            IFNULL(ach_count, 100) AS ach_count,
+            (SELECT COUNT(*) FROM ms_follow_log WHERE user_pk = #{user_pk}) AS my_count
+        FROM ms_mFollow_ach_level
+        WHERE achievement_pk = #{achievement_pk}
+        <![CDATA[
+        AND (IF(IFNULL(ach_count, 101) > ((
+            SELECT COUNT(*) FROM ms_follow_log WHERE user_pk = #{user_pk}
+            )), 100, IFNULL(ach_count, 100)) >= 100 OR ach_count IS NULL)
+        GROUP BY achievement_pk
+        ]]>
+    </select>
+    <select id="selectTwoAchievementInfo" resultType="com.psychopath.dogstalking.mFollow.dto.AchievementResultDto">
+        SELECT
+            IFNULL(ach_level, 5) AS ach_level,
+            IFNULL(ach_count, 70) AS ach_count,
+            (SELECT count(DISTINCT(user_pk)) from ms_follow_log
+		    where log_pk in (
+                SELECT log_pk from ms_follow_collection
+                where user_pk = #{user_pk})) AS my_count
+        FROM ms_mFollow_ach_level
+        WHERE achievement_pk = #{achievement_pk}
+        <![CDATA[
+        AND (IF(IFNULL(ach_count, 71) > (SELECT count(DISTINCT(user_pk)) from ms_follow_log
+                where log_pk in (
+                    SELECT log_pk from ms_follow_collection
+                    where user_pk = #{user_pk})), 70, IFNULL(ach_count, 70)) >= 70 OR ach_count IS NULL)
+        GROUP BY achievement_pk
+        ]]>
+    </select>
+    <select id="selectThreeAchievementInfo" resultType="com.psychopath.dogstalking.mFollow.dto.AchievementResultDto">
+        SELECT
+            IFNULL(ach_level, 5) AS ach_level,
+            IFNULL(ach_count, 100) AS ach_count,
+            (SELECT MAX(total_count)
+            FROM (
+                SELECT COUNT(*) AS total_count
+                FROM ms_follow_log
+                WHERE log_pk IN (
+                    SELECT log_pk
+                    FROM ms_follow_collection
+                    WHERE user_pk = #{user_pk}
+                )
+            GROUP BY user_pk
+            ) AS subquery) AS my_count
+        FROM ms_mFollow_ach_level
+        WHERE achievement_pk = #{achievement_pk}
+        <![CDATA[
+        AND (IF(IFNULL(ach_count, 101) > (SELECT count(DISTINCT(user_pk)) from ms_follow_log
+                where log_pk in (
+                  SELECT MAX(total_count)
+                    FROM (
+                    SELECT COUNT(*) AS total_count
+                    FROM ms_follow_log
+                    WHERE log_pk IN (
+                        SELECT log_pk
+                        FROM ms_follow_collection
+                        WHERE user_pk = #{user_pk}
+                    )
+                    GROUP BY user_pk
+                ) AS subquery)), 100, IFNULL(ach_count, 100)) >= 100 OR ach_count IS NULL)
+        GROUP BY achievement_pk
+        ]]>
+    </select>
+    <select id="selectFourAchievementInfo" resultType="com.psychopath.dogstalking.mFollow.dto.AchievementResultDto">
+        SELECT
+            IFNULL(ach_level, 5) AS ach_level,
+            IFNULL(ach_count, 50) AS ach_count,
+            (SELECT count(*) from ms_follow_like
+            where user_writer_pk = #{user_pk}) AS my_count
+        FROM ms_mFollow_ach_level
+        WHERE achievement_pk = #{achievement_pk}
+        <![CDATA[
+        AND (IF(IFNULL(ach_count, 51) > ((
+            SELECT count(*) from ms_follow_like
+            where user_writer_pk = #{user_pk}
+        )), 50, IFNULL(ach_count, 50)) >= 50 OR ach_count IS NULL)
+        GROUP BY achievement_pk
+        ]]>
+    </select>
+    <select id="selectFiveAchievementInfo" resultType="com.psychopath.dogstalking.mFollow.dto.AchievementResultDto">
+        SELECT
+            IFNULL(ach_level, 5) AS ach_level,
+            IFNULL(ach_count, 50) AS ach_count,
+            (SELECT count(*) from ms_follow_like
+            where user_collector_pk = #{user_pk}) AS my_count
+        FROM ms_mFollow_ach_level
+        WHERE achievement_pk = #{achievement_pk}
+        <![CDATA[
+        AND (IF(IFNULL(ach_count, 51) > ((
+            SELECT count(*) from ms_follow_like
+            where user_collector_pk = #{user_pk}
+        )), 50, IFNULL(ach_count, 50)) >= 50 OR ach_count IS NULL)
+        GROUP BY achievement_pk
+        ]]>
+    </select>
+    <select id="selectSixAchievementInfo" resultType="com.psychopath.dogstalking.mFollow.dto.AchievementResultDto">
+        SELECT
+            IFNULL(ach_level, 5) AS ach_level,
+            IFNULL(ach_count, 100) AS ach_count,
+            (SELECT count(*) from ms_follow_like_log
+            where log_pk in(SELECT log_pk from ms_follow_log
+                        where user_pk = #{user_pk})) AS my_count
+        FROM ms_mFollow_ach_level
+        WHERE achievement_pk = #{achievement_pk}
+        <![CDATA[
+        AND (IF(IFNULL(ach_count, 101) > ((
+            SELECT count(*) from ms_follow_like_log
+            where log_pk in(SELECT log_pk from ms_follow_log
+            where user_pk = #{user_pk})
+        )), 100, IFNULL(ach_count, 100)) >= 100 OR ach_count IS NULL)
+        GROUP BY achievement_pk
+        ]]>
+    </select>
+    <select id="selectSevenAchievementInfo" resultType="com.psychopath.dogstalking.mFollow.dto.AchievementResultDto">
+        SELECT
+            IFNULL(ach_level, 5) AS ach_level,
+            IFNULL(ach_count, 100) AS ach_count,
+            (SELECT count(*) from ms_follow_like_log
+            where user_pk = #{user_pk}) AS my_count
+        FROM ms_mFollow_ach_level
+        WHERE achievement_pk = #{achievement_pk}
+        <![CDATA[
+        AND (IF(IFNULL(ach_count, 101) > ((
+            SELECT count(*) from ms_follow_like_log
+            where user_pk = #{user_pk}
+        )), 100, IFNULL(ach_count, 100)) >= 100 OR ach_count IS NULL)
+        GROUP BY achievement_pk
+        ]]>
+    </select>
+    <select id="selectEightAchievementInfo" resultType="com.psychopath.dogstalking.mFollow.dto.AchievementResultDto">
+        SELECT IFNULL(ach_level, 5) AS ach_level,
+       IFNULL(ach_count, 500000) AS ach_count,
+       (SELECT IFNULL(sum(moc.payCount * (mcc.coin_count+ mcc.bonus_coin)), 0)  from ms_mFollow_coin_category mcc
+                    inner join (
+                        SELECT coin_category_pk, count(*) as payCount from ms_mFollow_order_coin
+                    where user_pk = #{user_pk}
+                    GROUP by coin_category_pk) moc on mcc.coin_category_pk = moc.coin_category_pk) AS my_count
+        FROM ms_mFollow_ach_level
+        WHERE achievement_pk = #{achievement_pk}
+        <![CDATA[
+        AND (IF(IFNULL(ach_count, 500001) > ((
+            SELECT IFNULL(sum(moc.payCount * (mcc.coin_count+ mcc.bonus_coin)), 0)  from ms_mFollow_coin_category mcc
+                            inner join (
+                                SELECT coin_category_pk, count(*) as payCount from ms_mFollow_order_coin
+                            where user_pk = #{user_pk}
+                            GROUP by coin_category_pk) moc on mcc.coin_category_pk = moc.coin_category_pk
+        )), 500000, IFNULL(ach_count, 500000)) >= 500000 OR ach_count IS NULL)
+        GROUP BY achievement_pk;
+        ]]>                 
+    </select>
+    <select id="selectNineAchievementInfo" resultType="com.psychopath.dogstalking.mFollow.dto.AchievementResultDto">
+        SELECT
+            IFNULL(ach_level, 5) AS ach_level,
+            IFNULL(ach_count, 500000) AS ach_count,
+            (select
+            IFNULL(SUM(
+                CASE 
+                    WHEN mi.item_category = 1 THEN 
+                        COALESCE((mi.price * POW(2, (moi.sum_quantity+1)-1)) - mi.price, 0)
+                    WHEN mi.item_category = 2 THEN 
+                        COALESCE(mi.price * moi.sum_quantity, 0)
+                END
+            ),0) AS total_sum
+            from ms_mFollow_item mi
+            inner join (SELECT item_pk, sum(quantity) as sum_quantity   from  ms_mFollow_order_item
+            where user_pk = #{user_pk}
+            GROUP by item_pk) moi on mi.item_pk = moi.item_pk) AS my_count
+        FROM ms_mFollow_ach_level
+        WHERE achievement_pk = #{achievement_pk}
+        <![CDATA[
+        AND (IF(IFNULL(ach_count, 500001) > ((
+            select
+            IFNULL(SUM(
+                CASE 
+                    WHEN mi.item_category = 1 THEN 
+                        COALESCE((mi.price * POW(2, (moi.sum_quantity+1)-1)) - mi.price, 0)
+                    WHEN mi.item_category = 2 THEN 
+                        COALESCE(mi.price * moi.sum_quantity, 0)
+                END
+            ),0) AS total_sum
+        from ms_mFollow_item mi
+        inner join (SELECT item_pk, sum(quantity) as sum_quantity   from  ms_mFollow_order_item
+        where user_pk = #{user_pk}
+        GROUP by item_pk) moi on mi.item_pk = moi.item_pk
+        )), 500000, IFNULL(ach_count, 500000)) >= 500000 OR ach_count IS NULL)
+        GROUP BY achievement_pk
+        ]]>   
+    </select>
+    
     
 </mapper>

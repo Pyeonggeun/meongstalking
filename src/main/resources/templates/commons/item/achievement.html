@@ -1,0 +1,57 @@
+<div id="achievementModal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header py-2">
+          <div class="row">
+            <div class="col">
+                전체 업적
+            </div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="font-size: small;"></button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div id="achievementListBox" class="col">
+
+                </div>
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary py-1" data-bs-dismiss="modal">닫기</button>
+        <button type="button" class="btn btn-primary py-1">칭호 선택</button>
+    </div>
+    </div>
+  </div>
+  <div id="achievementListTemplete" class="d-none">
+        <div class="row mt-3 px-1 achievementListWrapper">
+            <div class="col-3 text-center">
+                <img class="img-fluid tier rounded" src="" alt="" style="height: 4em;">
+            </div>
+            <div class="col align-self-center">
+                <div class="row" style="border-bottom: 0.2em solid rgb(100, 97, 92);">
+                    <div class="col-auto ps-0 fw-bold ach_name">
+                        
+                    </div>
+                    <div class="col ps-0 align-self-end ach_level" style="font-size: 0.8em;">
+                        
+                    </div>
+                    <div class="col-auto text-end align-self-end ach_category text-secondary" style="font-size: 0.8em;">
+                        
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col text-secondary ach_aim" style="font-size: 0.8em;">
+                        
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col px-0">
+                        <div class="progress  position-relative" role="progressbar" aria-label="Info striped example" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="background-color: rgb(170, 167, 151);">
+                            <div class="ach_percent progress-bar progress-bar-striped bg-warning"></div>
+                            <div class="col position-absolute ach_count fw-bold" style="left: 45%;"></div>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </div>
+  </div>

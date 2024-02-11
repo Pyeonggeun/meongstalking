@@ -1,0 +1,66 @@
+.shackMove {
+    z-index: 100;
+    -webkit-animation: shackMove-move 1s ease-in-out infinite;
+}
+@-webkit-keyframes shackMove-move {
+    50% { 
+        -webkit-transform: rotate(-10deg); 
+    }
+}
+.updownMove {
+    z-index: 100;
+    -webkit-animation: updownMove-move 1s ease-in-out infinite;
+}
+@-webkit-keyframes updownMove-move {
+    50% { 
+        -webkit-transform: translateY(-1em); 
+    }
+}
+.leftRightMove {
+    z-index: 100;
+    -webkit-animation: leftRightMove-move 1s ease-in-out infinite;
+}
+@-webkit-keyframes leftRightMove-move {
+    50% { 
+        -webkit-transform: translateX(0.5em); 
+    }
+}
+
+
+@keyframes huerotate    {
+0%{
+    filter: hue-rotate(340deg);
+}
+50% {
+    filter: hue-rotate(360deg);
+}
+}
+.sizeUP{
+animation: zoom 3s infinite linear;
+}
+@keyframes zoom {
+50%{
+    opacity: 0.8;
+    transform: scale(1.1);    
+}
+}
+.tier1{
+border: 0.2em solid rgb(86, 86, 86);
+background: linear-gradient(to bottom, #c6c6c6 ,#515151)    
+}
+.tier2{
+border: 0.2em solid rgb(124, 92, 29);
+background: linear-gradient(to bottom,  #c6c6c6, #be8933)    
+}
+.tier3{
+border: 0.2em solid rgb(222, 212, 128);
+background: linear-gradient(to bottom,  #c6c6c6 , #f0ebc0)    
+}
+.tier4{
+border: 0.2em solid rgb(127, 73, 145);
+background: linear-gradient(to bottom,  #c6c6c6 , #dcb2fa)    
+}
+.tier5{
+border: 0.2em solid rgb(152, 44, 55);
+background: linear-gradient(to bottom,  #c6c6c6 , #f07979)    
+}

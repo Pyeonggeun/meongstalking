@@ -101,4 +101,15 @@ public class RestMfollowController {
     
         mFollowService.inserItemInfo(orderItmeDto);
     }
+    @RequestMapping("loadMyAchievementList")
+    public RestResponseDto loadMyAchievementList(int user_pk){
+        RestResponseDto responseDto = new RestResponseDto();
+
+        List<Map<String,Object>> list = mFollowService.getAchievementList(user_pk);
+
+        responseDto.setResult("success");
+        responseDto.setData(list);
+
+        return responseDto;
+    }
 }
