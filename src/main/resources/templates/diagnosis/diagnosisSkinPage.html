@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+
+<body>
+    <div class="container" style="background-color: #e2e2e2; height: 100vh;">
+
+        <div class="row justify-content-center align-items-center" style="background-color: #ffffff;">
+            <div class="col text-center py-3" style="font-weight: bold; border-bottom: 2px solid #bcbcbc;">종합 건강체크</div>
+        </div>
+
+        <form id="selectForm">
+            <div class="mb-3 question" id="question1">
+                <div class="text-center pt-5">
+                    <img src="../public/image/diagnosis/skin.png" alt="There are no registered images"
+                        style="max-width: 50px; max-height: 50px;">
+                    <h5 style="font-weight: bold; margin-bottom: 10px;">피부</h5><br>
+                </div>
+
+                <div class="row text-center">
+                    <div class="form-label text-center"
+                        style="font-weight: bold; text-align: center; font-size: 1.0em;">증상의 지속기간이 길 수록 단순한 증상이 아닌 질병일
+                        확률이 커집니다.<br>아래 항목에서 선택해주세요.</div>
+                </div>
+                <div class="row p-3">
+                    <div class="form-label" style="font-size: 1.1em; font-family: 'Your Korean Font';">
+                        1. <span style="font-weight: bold;">필수 </span>지속시기
+                    </div>
+                </div>
+
+                <div class="row ms-3">
+                    <div class="form-check" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question1" id="q1a" value="a1">
+                        <label class="form-check-label" for="q1a">1일 이내</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question1" id="q1b" value="a2">
+                        <label class="form-check-label" for="q1b">3일 이내</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question1" id="q1c" value="a3">
+                        <label class="form-check-label" for="q1c">1주일 미만</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question1" id="q1d" value="a4">
+                        <label class="form-check-label" for="q1d">1주일 이상</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <button type="button" class="btn btn-primary nextBtn" data-next="question3"
+                        style="background-color: #007bff; color: #ffffff; border: none; padding: 15px 0; width: 100%; border-radius: 5px; cursor: pointer; position: fixed; bottom: 0;">다음</button>
+                </div>
+            </div>
+
+            <!-- <div class="mb-3 question" id="question2" style="display: none; ">
+                <div class="text-center pt-5">
+                    <img src="../public/image/diagnosis/skin.png" alt="There are no registered images"
+                        style="max-width: 50px; max-height: 50px;">
+                    <h5 style="font-weight: bold; margin-bottom: 10px;">피부</h5><br>
+                </div>
+                <div class="row text-center">
+                    <div class="form-label text-center"
+                        style="font-weight: bold; text-align: center; font-size: 1.0em;">평소와 다른 반려견의 식사 행동에 대해서<br>아래 항목
+                        중 선택해 주세요.</div>
+                </div>
+                <div class="row p-3">
+                    <div class="form-label" style="font-size: 1.1em; font-family: 'Your Korean Font';">
+                        2. <span style="font-weight: bold;">필수 </span>음수량
+                    </div>
+                </div>
+                <div class="row ms-3">
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question2" id="q2a" value="b1">
+                        <label class="form-check-label" for="q2a">양치질을 아파하는 것 같아요.</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question2" id="q2b" value="b2">
+                        <label class="form-check-label" for="q2b">이빨 색이 누렇게 보여요.</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question2" id="q2c" value="b3">
+                        <label class="form-check-label" for="q2c">갈수록 입냄새가 심해져요.</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question2" id="q2d" value="b4">
+                        <label class="form-check-label" for="q2d">사료나 간식을 흘리면서 먹어요.</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question2" id="q2e" value="b5">
+                        <label class="form-check-label" for="q2e">없어요.</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <button type="button" class="btn btn-primary nextBtn" data-next="question3"
+                        style="background-color: #007bff; color: #ffffff; border: none; padding: 15px 0; width: 100%; border-radius: 5px; cursor: pointer; position: fixed; bottom: 0;">다음</button>
+                </div>
+            </div> -->
+
+            <div class="mb-3 question" id="question3" style="display: none; ">
+                <div class="text-center pt-5">
+                    <img src="../public/image/diagnosis/skin.png" alt="There are no registered images"
+                        style="max-width: 50px; max-height: 50px;">
+                    <h5 style="font-weight: bold; margin-bottom: 10px;">피부</h5><br>
+                </div>
+                <div class="row text-center">
+                    <div class="form-label text-center"
+                        style="font-weight: bold; text-align: center; font-size: 1.0em;">반려견에겐 피부와 털 관련 문제가 가장 많이
+                        <br>발생합니다. 아래 항목에서 선택해 주세요.
+                    </div>
+                </div>
+                <div class="row p-3">
+                    <div class="form-label" style="font-size: 1.1em; font-family: 'Your Korean Font';">
+                        2. <span style="font-weight: bold;">피부 </span>
+                    </div>
+                </div>
+                <div class="row ms-3">
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question3" id="q3a" value="c1">
+                        <label class="form-check-label" for="q3a">
+                            피부에 붉은 반점</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question3" id="q3b" value="c2">
+                        <label class="form-check-label" for="q3b">
+                            뾰루지</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question3" id="q3c" value="c3">
+                        <label class="form-check-label" for="q3c">
+                            피부에 딱지</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question3" id="q3d" value="c4">
+                        <label class="form-check-label" for="q3d">
+                            검은 반점</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question3" id="q3e" value="c5">
+                        <label class="form-check-label" for="q3e">종기</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question3" id="q3f" value="c6">
+                        <label class="form-check-label" for="q3f">없어요.</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <button type="button" class="btn btn-primary nextBtn" data-next="question4"
+                        style="background-color: #007bff; color: #ffffff; border: none; padding: 15px 0; width: 100%; border-radius: 5px; cursor: pointer; position: fixed; bottom: 0;">다음</button>
+                </div>
+
+                <!-- <div class="row">
+                    <button type="button" class="btn btn-primary nextBtn" data-next="question3"
+                        style="background-color: #007bff; color: #ffffff; border: none; padding: 15px 0; width: 100%; border-radius: 5px; cursor: pointer; position: fixed; bottom: 0;">다음</button>
+                </div> -->
+            </div>
+
+            <div class="mb-3 question" id="question4" style="display: none; ">
+                <div class="text-center pt-5">
+                    <img src="../public/image/diagnosis/skin.png" alt="There are no registered images"
+                        style="max-width: 50px; max-height: 50px;">
+                    <h5 style="font-weight: bold; margin-bottom: 10px;">피부</h5><br>
+                </div>
+                <div class="row text-center">
+                    <div class="form-label text-center"
+                        style="font-weight: bold; text-align: center; font-size: 1.0em;">반려견에겐 피부와 털 관련 문제가 가장 많이
+                        <br>발생합니다. 아래 항목에서 선택해 주세요.
+                    </div>
+                </div>
+                <div class="row p-3">
+                    <div class="form-label" style="font-size: 1.1em; font-family: 'Your Korean Font';">
+                        3. <span style="font-weight: bold;">털</span>
+                    </div>
+                </div>
+                <div class="row p-3 ms-1">
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question4" id="q4a" value="d1">
+                        <label class="form-check-label" for="q4a">
+                            털 빠짐</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question4" id="q4b" value="d2">
+                        <label class="form-check-label" for="q4b">
+                            털 윤기 사라짐</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question4" id="q4c" value="d3">
+                        <label class="form-check-label" for="q4c">
+                            없어요.</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <button type="submit" class="btn btn-primary"
+                        style="background-color: #007bff; color: #ffffff; border: none; padding: 15px 0; width: 100%; border-radius: 5px; cursor: pointer; position: fixed; bottom: 0;">제출</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('selectForm');
+            const questions = form.querySelectorAll('.question');
+
+            form.addEventListener('click', function (event) {
+                if (event.target.classList.contains('nextBtn')) {
+                    const currentQuestion = event.target.closest('.question');
+                    const nextQuestionId = event.target.getAttribute('data-next');
+                    const nextQuestion = form.querySelector(`#${nextQuestionId}`);
+
+                    const selectedOption = currentQuestion.querySelector('input:checked');
+
+                    if (selectedOption) {
+                        currentQuestion.style.display = 'none';
+                        nextQuestion.style.display = 'block';
+
+                        if (nextQuestionId === 'question4') {
+                            document.querySelector('button[type="submit"]').style.display = 'block';
+                        }
+                    } else {
+                        alert('문항을 선택해주세요.');
+                    }
+                }
+
+                if (event.target.type === 'submit') {
+                    event.preventDefault();
+
+                    const selectedValue1 = form.querySelector('input[name="question1"]:checked').value;
+                    const selectedValue3 = form.querySelector('input[name="question3"]:checked').value;
+                    const selectedValue4 = form.querySelector('input[name="question4"]:checked').value;
+
+                    let href = "./diagnosisSkinResultPage?c1=" + selectedValue1 + "&d1=" + selectedValue4;
+                    window.location.href = href;
+                }
+            });
+        });
+
+    </script>
+
+
+</body>
+
+</html>
