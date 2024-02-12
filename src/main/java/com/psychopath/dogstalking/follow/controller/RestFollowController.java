@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.psychopath.dogstalking.dto.RestResponseDto;
 import com.psychopath.dogstalking.dto.UserDto;
 import com.psychopath.dogstalking.follow.dto.CollectionDto;
+import com.psychopath.dogstalking.follow.dto.CommentDto;
 import com.psychopath.dogstalking.follow.dto.LikeDto;
 import com.psychopath.dogstalking.follow.dto.LikeLogDto;
 import com.psychopath.dogstalking.follow.dto.LogDto;
@@ -116,9 +117,9 @@ public class RestFollowController {
         RestResponseDto restResponseDto = new RestResponseDto();
         
         if(imageFile != null) {
-            String rootPath = "/uploadFiles/";
+            String rootPath = "C:/uploadFiles/";
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/");
             String todayPath = sdf.format(new Date());
 
             File todayFolderForCreate = new File(rootPath + todayPath);
@@ -187,88 +188,134 @@ public class RestFollowController {
         return restResponseDto;
     }
 
-    // @RequestMapping("getCollectionPersonList")
-    // public RestResponseDto getCollectionPersonList(int user_pk) {
+    @RequestMapping("getLikeList")
+    public RestResponseDto getLikeList(int user_pk, int trackMarkerDateValidity) {
 
-    //     RestResponseDto restResponseDto = new RestResponseDto();
+        RestResponseDto restResponseDto = new RestResponseDto();
 
-    //     restResponseDto.setData(followService.getCollectionPersonList(user_pk));
-    //     restResponseDto.setResult("success");
+        restResponseDto.setData(followService.getLikeList(user_pk, trackMarkerDateValidity));
+        restResponseDto.setResult("success");
         
-    //     return restResponseDto;
-    // }
+        return restResponseDto;
+    }
 
-    // @RequestMapping("getTrackLikeList")
-    // public RestResponseDto getTrackLikeList(int user_pk) {
+    @RequestMapping("getClosestTrackMarker")
+    public RestResponseDto getClosestTrackMarker(int user_pk, int user_writer_pk, double latitude, double longitude, int trackMarkerDateValidity) {
 
-    //     RestResponseDto restResponseDto = new RestResponseDto();
-
-    //     restResponseDto.setData(followService.getTrackLikeList(user_pk));
-    //     restResponseDto.setResult("success");
+        RestResponseDto restResponseDto = new RestResponseDto();
         
-    //     return restResponseDto;
-    // }
-
-    // @RequestMapping("getClosestMarkLatLng")
-    // public RestResponseDto getClosestMarkLatLng(int user_pk, int user_writer_pk, double latitude, double longitude) {
-
-    //     RestResponseDto restResponseDto = new RestResponseDto();
+        restResponseDto.setData(followService.getClosestTrackMarker(user_pk, user_writer_pk, latitude, longitude, trackMarkerDateValidity));
+        restResponseDto.setResult("success");
         
-    //     restResponseDto.setData(followService.getClosestMarkLatLng(user_pk, user_writer_pk, latitude, longitude));
-    //     restResponseDto.setResult("success");
+        return restResponseDto;
+    }
+
+    @RequestMapping("insertLikeLogInfo")
+    public RestResponseDto insertLikeLogInfo(LikeLogDto params, double markLat, double markLng) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+
+        double d2r = Math.PI / 180;
+        double r2d = 180 / Math.PI;
+        double earth_rad = 6378000;
+
+        double r = new Random().nextInt(1000) + new Random().nextDouble();
+        double rlat = (r / earth_rad) * r2d;
+        double rlng = rlat / Math.cos(markLat * d2r);
+
+        double theta = Math.PI * (new Random().nextInt(2) + new Random().nextDouble());
+        double y = markLng + (rlng * Math.cos(theta));
+        double x = markLat + (rlat * Math.sin(theta));
+
+        params.setLatitude(x);
+        params.setLongitude(y);
         
-    //     return restResponseDto;
-    // }
+        followService.insertLikeLogInfo(params);
 
-    // @RequestMapping("insertTrackLikeLogInfo")
-    // public RestResponseDto insertTrackLikeLogInfo(LikeLogDto params, double markLat, double markLng) {
-
-    //     RestResponseDto restResponseDto = new RestResponseDto();
-
-    //     double d2r = Math.PI / 180;
-    //     double r2d = 180 / Math.PI;
-    //     double earth_rad = 6378000;
-
-    //     double r = new Random().nextInt(1000) + new Random().nextDouble();
-    //     double rlat = (r / earth_rad) * r2d;
-    //     double rlng = rlat / Math.cos(markLat * d2r);
-
-    //     double theta = Math.PI * (new Random().nextInt(2) + new Random().nextDouble());
-    //     double y = markLng + (rlng * Math.cos(theta));
-    //     double x = markLat + (rlat * Math.sin(theta));
-
-    //     params.setLatitude(x);
-    //     params.setLongitude(y);
+        restResponseDto.setResult("success");
         
-    //     followService.insertTrackLikeLogInfo(params);
+        return restResponseDto;
+    }
 
-    //     restResponseDto.setData(params);
-    //     restResponseDto.setResult("success");
+    @RequestMapping("isLike")
+    public RestResponseDto isLike(LikeDto params) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+
+        restResponseDto.setData(followService.isLike(params));
+        restResponseDto.setResult("success");
         
-    //     return restResponseDto;
-    // }
+        return restResponseDto;
+    }
 
-    // @RequestMapping("isTracing")
-    // public RestResponseDto isTracing(int user_pk, int log_pk) {
+    @RequestMapping("insertLike")
+    public RestResponseDto insertLike(LikeDto params) {
 
-    //     RestResponseDto restResponseDto = new RestResponseDto();
+        RestResponseDto restResponseDto = new RestResponseDto();
+
+        followService.insertLike(params);
+
+        restResponseDto.setResult("success");
         
-    //     restResponseDto.setData(followService.isTracing(user_pk, log_pk));
-    //     restResponseDto.setResult("success");
+        return restResponseDto;
+    }
+
+    @RequestMapping("deleteLike")
+    public RestResponseDto deleteLike(LikeDto params) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+
+        followService.deleteLike(params);
+
+        restResponseDto.setResult("success");
         
-    //     return restResponseDto;
-    // }
+        return restResponseDto;
+    }
 
-    // @RequestMapping("toggleLike")
-    // public RestResponseDto toggleLike(LikeDto params) {
+    @RequestMapping("insertComment")
+    public RestResponseDto insertComment(CommentDto params) {
 
-    //     RestResponseDto restResponseDto = new RestResponseDto();
+        RestResponseDto restResponseDto = new RestResponseDto();
 
-    //     followService.toggleLike(params);
-    //     restResponseDto.setResult("success");
+        followService.insertComment(params);
         
-    //     return restResponseDto;
-    // }
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
+    @RequestMapping("getCollectionList")
+    public RestResponseDto getCollectionList(int user_pk) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+
+        restResponseDto.setData(followService.getCollectionList(user_pk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
+    @RequestMapping("getCollectionLogList")
+    public RestResponseDto getCollectionLogList(int user_pk, int user_writer_pk, int trackMarkerDateValidity) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(followService.getCollectionLogList(user_pk, user_writer_pk, trackMarkerDateValidity));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
+    @RequestMapping("getCommentList")
+    public RestResponseDto getCommentList(int log_pk) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+
+        restResponseDto.setData(followService.getCommentList(log_pk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
 
     @RequestMapping("a")
     public RestResponseDto a() {
