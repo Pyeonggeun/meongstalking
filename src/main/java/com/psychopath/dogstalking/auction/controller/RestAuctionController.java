@@ -280,6 +280,31 @@ public class RestAuctionController {
 	}    
 
 
+    @RequestMapping("getMyGoodsBidHistory")
+    public RestResponseDto getMyGoodsBidHistory(int userPk) {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(auctionService.getMyGoddsBidHistory(userPk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+	}    
+
+    @RequestMapping("getMyBidList")
+    public RestResponseDto getMyBidList(int userPk, int goodsPk) {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        BidDto bidDto = new BidDto();
+        bidDto.setGoods_pk(goodsPk);
+        bidDto.setUser_pk(userPk);
+
+        restResponseDto.setData(auctionService.getMyBidList(bidDto));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+	}    
+
+
 
     public RestResponseDto template() {
         RestResponseDto restResponseDto = new RestResponseDto();
