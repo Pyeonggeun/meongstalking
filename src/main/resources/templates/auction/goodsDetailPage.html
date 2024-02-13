@@ -33,6 +33,9 @@
                 const categoryName = document.getElementById("category-name");
                 categoryName.innerText = e.auctionCategoryDto.name;
 
+                const goodsImage = document.getElementById("goods-image");
+                goodsImage.setAttribute("src", "/uploadFiles/"+ e.auctionGoodsDto.image_link +"");
+
                 const startingPrice = document.getElementById("starting-price");
                 startingPrice.innerText = "KRW " + e.auctionGoodsDto.starting_price;
                 startingPrice.value = e.auctionGoodsDto.starting_price;
@@ -197,11 +200,13 @@
                         chatMessageCol.classList.add("text-end");
                         if(lastUserPk == null || lastUserPk != e.chatDto.user_pk){
                             userName.style.display = "none";
-                            profileImage.style.display = "none";
-                            chatMessageWrapper.style.paddingTop = "0.5em";
+                            profileImage.style.visibility="hidden";
+                            profileImage.style.height="0em";
+                            chatMessageWrapper.style.paddingTop = "1.5em";
                         }else{
                             userName.style.display = "none";
-                            profileImage.style.display = "none";
+                            profileImage.style.visibility="hidden";
+                            profileImage.style.height="0em";
                             chatMessageWrapper.style.paddingTop = "0.3em";
                         }
 
@@ -211,7 +216,8 @@
                             chatMessageWrapper.style.paddingTop = "0.5em";
                         }else{
                             userName.style.display = "none";
-                            profileImage.style.display = "none";
+                            profileImage.style.visibility="hidden";
+                            profileImage.style.height="0em";
                             chatMessageWrapper.style.paddingTop = "0.3em";
                         }
 
@@ -348,11 +354,13 @@
                         currentPrice.innerText = "KRW " + startingPrice;
                         modalCurrentPrice.innerText = "KRW " + startingPrice;
                         modalBidButton.innerText = "KRW " + totalPrice + " 입찰하기";
+                        modalBidButton.setAttribute("onclick", "registerBid()");
                     }else{
                         totalPrice = highestBidPrice + askPrice;
                         currentPrice.innerText = "KRW " + highestBidPrice;
                         modalCurrentPrice.innerText = "KRW " + highestBidPrice;
                         modalBidButton.innerText = "KRW " + totalPrice + " 입찰하기";
+                        modalBidButton.setAttribute("onclick", "registerBid()");
                     }
                 }else{
                     if(highestBidPrice == 0){
@@ -384,7 +392,7 @@
                     bidder.innerText = name;
 
                     const bidPrice = bidHistoryWrapper.querySelector(".modal-bid-price");
-                    bidPrice.innerText = e.bidDto.bid_price;
+                    bidPrice.innerText = "KRW " + e.bidDto.bid_price;
 
                     const bidDate = bidHistoryWrapper.querySelector(".modal-bid-date");
                     const bidTime = bidHistoryWrapper.querySelector(".modal-bid-time");
@@ -589,7 +597,7 @@
         #image-opacity{
             height: 100%; 
             width: 100%; 
-            background-color: rgba(68, 68, 68, 0.5);
+            background-color: rgba(68, 68, 68, 0.6);
             z-index: 2; 
             position: absolute; 
             top: 0; 
@@ -767,7 +775,7 @@
         }
 
         .profile-image-box{
-            width: 2.2em; 
+            width : 2.2em; 
             display: flex; 
             align-items: center; 
             justify-content: center;
@@ -992,7 +1000,7 @@
         }
 
         #modal-close{
-            font-size:1em;
+            font-size: 1.2em;
             position: absolute;
             top: 50%;
             right: 0em;
@@ -1070,7 +1078,7 @@
     <div class="container-fluid">
 
         <!--백그라운드 이미지, opacity-->
-        <img id="goods-image" th:src="@{/public/image/trade/dogimage.png}">
+        <img id="goods-image">
         <div id="image-opacity"></div>
     
          <!--상단 바 = 좋아요, 뒤로가기-->
@@ -1245,7 +1253,7 @@
                 
                 <div class="modal-body" style="padding-left: 1.5em; padding-right: 1.5em; padding-top: 0em; overflow-y: auto;">
 
-                    <div class="row" style="height: 3em;">
+                    <div class="row" style="height: 3.5em;">
                         <div class="col" style="position: relative;">
                             <div id="modal-title" class="fw-bold"></div>
                             <div id="modal-close" onclick="closeModal()"><i class="fa-solid fa-x"></i></div>
@@ -1256,10 +1264,12 @@
                         <div class="col">
                             <div class="row">
                                 <div class="col-5" style="display: flex; justify-content: center;">
-                                    <div style="width: 70%;"><img class="img-fluid" th:src="@{/public/image/trade/dogimage.png}" style="border-style: solid; border-color: #777777; border-width: 0.05em;"></div>
+                                    <div style="width: 8em; max-height: 10em; overflow: hidden; position: relative; border-style: solid; border-color: #777777; border-width: 0.03em; border-radius: 1em;">
+                                        <div style="width: 100%; max-height: initial; margin-top: -50%;"><img class="img-fluid" th:src="@{/public/image/trade/dogimage.png}"></div>    
+                                    </div>
                                 </div>
                                 <div class="col-7">
-                                    <div class="row" style="height: 0.1em;"></div>
+                                    <div class="row" style="height: 0.5em;"></div>
                                     <div class="row">
                                         <div class="col">
                                             <div style="font-size: 0.9em; font-weight: bold; color: #111111;">미스김</div>

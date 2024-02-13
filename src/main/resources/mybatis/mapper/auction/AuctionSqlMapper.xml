@@ -122,4 +122,35 @@
         ]]>
     </select>
 
+    <select id="getMyBidGoodsList" resultType="com.psychopath.dogstalking.auction.dto.AuctionGoodsDto">
+        select * from ms_auction_goods
+        where pk in 
+        (
+            select DISTINCT pk from ms_auction_bid
+            where user_pk = #{user_pk}
+        )
+    </select>
+
+    <select id="getMyHighestBidByGoods" resultType="com.psychopath.dogstalking.auction.dto.BidDto">
+        select * from ms_auction_bid
+        where goods_pk = #{goods_pk}
+        and user_pk = #{user_pk}
+        order by created_at desc
+        Limit 1
+    </select>
+
+    <select id="getHighestBidByGoods" resultType="com.psychopath.dogstalking.auction.dto.BidDto">
+        select * from ms_auction_bid
+        where goods_pk = #{goods_pk}
+        order by created_at desc
+        Limit 1
+    </select>
+
+    <select id="getMyBidList" resultType="com.psychopath.dogstalking.auction.dto.BidDto">
+        select * from ms_auction_bid
+        where goods_pk = #{goods_pk}
+        and user_pk = #{user_pk}
+        order by created_at desc
+    </select>
+
 </mapper>

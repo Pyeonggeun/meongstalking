@@ -59,6 +59,17 @@ public class AuctionController {
         return "/auction/registerLogPage";
     }
 
+    @RequestMapping("myPage")
+    public String myPage(){
+
+        return "/auction/myPage";
+    }
+
+    @RequestMapping("myBidHistoryPage")
+    public String myBidHistoryPage(){
+
+        return "/auction/myBidHistoryPage";
+    }
 
 
     @RequestMapping("test")

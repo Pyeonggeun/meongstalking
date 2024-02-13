@@ -1,0 +1,714 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>메인페이지</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://kit.fontawesome.com/784384f602.js" crossorigin="anonymous"></script>
+
+
+    <script>
+
+        function reloadMyGoodsBidHistory(){
+
+            const sessionUserPk = document.getElementById("sessionUserPk").value;
+
+
+            const url = "./getMyGoodsBidHistory?userPk=" + sessionUserPk;
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                
+                const bidHistoryList = document.getElementById("bidHistoryList");
+                bidHistoryList.innerHTML = "";
+
+                for(e of response.data){
+                    if (selectedCategoryId === 'all' ||
+                        (selectedCategoryId === 'inProgress' && e.isAuctionEnd === false) ||
+                        (selectedCategoryId === 'ended' && e.isAuctionEnd === true && !e.isSuccessfulBid) ||
+                        (selectedCategoryId === 'completed' && e.isAuctionEnd === true && e.isSuccessfulBid)
+                    ){
+                        const bidHistoryWrapper = document.querySelector("#template .bidHistoryWrapper").cloneNode(true);
+
+                        const goodsMoreIcon = bidHistoryWrapper.querySelector(".goodsMore-icon");
+                        goodsMoreIcon.setAttribute("data-value", e.auctionGoodsDto.pk);
+
+                        const bidHistoryButton = bidHistoryWrapper.querySelector(".bid-history-button");
+                        bidHistoryButton.setAttribute("data-value", e.auctionGoodsDto.pk);
+
+                        const goodsTitle = bidHistoryWrapper.querySelector(".goods-title");
+                        goodsTitle.innerText = e.auctionGoodsDto.title;
+
+                        const goodsImage = bidHistoryWrapper.querySelector(".goods-image");
+                        goodsImage.setAttribute("src", "/uploadFiles/"+ e.auctionGoodsDto.image_link +"");
+
+                        const commencementDateArray = e.auctionGoodsDto.commencement_date;
+
+                        const commencementDateYear = commencementDateArray[0];
+                        const commencementDateMonth = ('0' + commencementDateArray[1]).slice(-2); // 2자리 숫자로 포맷팅
+                        const commencementDateDays = ('0' + commencementDateArray[2]).slice(-2); // 2자리 숫자로 포맷팅
+                        const commencementDateHour = ('0' + commencementDateArray[3]).slice(-2); // 2자리 숫자로 포맷팅
+                        const commencementDateMinutes = ('0' + commencementDateArray[4]).slice(-2); // 2자리 숫자로 포맷팅
+
+                        const commencementDateFormatted = `${commencementDateYear}.${commencementDateMonth}.${commencementDateDays} ${commencementDateHour}:${commencementDateMinutes}`;
+
+                        const goodsStartDate = bidHistoryWrapper.querySelector(".goods-startDate");
+                        goodsStartDate.innerText = "경매일 | " + commencementDateFormatted;
+
+                        const bidPrice = bidHistoryWrapper.querySelector(".bid-price");
+                        bidPrice.innerText = "KRW " + e.myHighestBid.bid_price;
+
+                        const bidDateArray = e.myHighestBid.created_at;
+
+                        const bidDateYear = bidDateArray[0];
+                        const bidDateMonth = ('0' + bidDateArray[1]).slice(-2); // 2자리 숫자로 포맷팅
+                        const bidDateDays = ('0' + bidDateArray[2]).slice(-2); // 2자리 숫자로 포맷팅
+                        const bidDateHour = ('0' + bidDateArray[3]).slice(-2); // 2자리 숫자로 포맷팅
+                        const bidDateMinutes = ('0' + bidDateArray[4]).slice(-2); // 2자리 숫자로 포맷팅
+
+                        const bidDateFormatted = `${bidDateYear}.${bidDateMonth}.${bidDateDays} ${bidDateHour}:${bidDateMinutes}`;
+
+                        const bidDate = bidHistoryWrapper.querySelector(".bid-date");
+                        bidDate.innerText = bidDateFormatted;
+
+                        const highestbidPrice = bidHistoryWrapper.querySelector(".highestbid-price");
+                        highestbidPrice.innerText = "KRW " + e.highestBid.bid_price;
+
+
+                        const bidState = bidHistoryWrapper.querySelector(".bid-state");
+
+                        if(e.isAuctionEnd == false){
+                            bidState.innerText = "경매중";
+
+                            const goodsMoreIcon = bidHistoryWrapper.querySelector(".goodsMore-icon");
+                            goodsMoreIcon.classList.remove("d-none");
+
+                            const highestbidPriceText = bidHistoryWrapper.querySelector(".highestbid-price-text");
+                            highestbidPriceText.innerText = "최고가";
+
+                        }else{
+                            if(e.isSuccessfulBid == false){
+                                bidState.innerText = "경매종료";
+                            }else{
+                                bidState.innerText = "낙찰완료";
+                                
+                                const paymentRow = bidHistoryWrapper.querySelector(".payment-row");
+                                paymentRow.classList.remove("d-none");
+                            }
+                        }
+
+                        bidHistoryList.appendChild(bidHistoryWrapper);
+
+                    }
+
+                }
+            });
+        }
+
+
+
+        let selectedCategoryId = 'all';
+
+        function toggleCategoryClasses(selectedCategory) {
+            const categories = document.querySelectorAll('.category');
+            selectedCategoryId = selectedCategory;
+
+            categories.forEach(function(category) {
+                if (category.id == selectedCategory) {
+                    category.classList.remove('category-text-non');
+                    category.classList.add('category-text');
+                } else {
+                    category.classList.remove('category-text');
+                    category.classList.add('category-text-non');
+                }
+            });
+            
+            reloadMyGoodsBidHistory();
+        }
+
+
+        function navigateToGoodsDetailPage(goodsIcon){
+            const goodsPk = goodsIcon.getAttribute("data-value");
+            const goodsDetailtUrl = "/auction/goodsDetailPage?goodsPk=" + goodsPk;
+            window.location.href = goodsDetailtUrl;
+
+
+        }
+
+        function showModal(bidHistory){
+
+            const goodsPk = bidHistory.getAttribute("data-value");
+            const sessionUserPk = document.getElementById("sessionUserPk").value;
+
+            const url = "./getMyBidList?userPk=" + sessionUserPk + "&goodsPk=" + goodsPk;
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                
+                const bidHistoryList = document.getElementById("myBidHistoryListBox");
+                bidHistoryList.innerHTML = "";
+
+                for(e of response.data){
+
+                    const bidHistoryWrapper = document.querySelector("#template .myBidHistoryWrapper").cloneNode(true);
+
+                    const bidder = bidHistoryWrapper.querySelector(".modal-bidder");
+                    bidder.innerText = e.userDto.name;
+
+                    const bidPrice = bidHistoryWrapper.querySelector(".modal-bid-price");
+                    bidPrice.innerText = "KRW " + e.bidDto.bid_price;
+
+                    const bidDate = bidHistoryWrapper.querySelector(".modal-bid-date");
+                    const bidTime = bidHistoryWrapper.querySelector(".modal-bid-time");
+
+                    const createdAtArray = e.bidDto.created_at;
+
+                    const createdAtYear = createdAtArray[0];
+                    const createdAtMonth = createdAtArray[1];
+                    const createdAtDays = createdAtArray[2];
+                    const createdAtHour = createdAtArray[3];
+                    const createdAtMinutes = createdAtArray[4];
+                    const createdAtSeconds = createdAtArray[5];
+
+                    const createdDateFormatted = `${createdAtYear}-${createdAtMonth}-${createdAtDays}`;
+                    const createdTimeFormatted = `${createdAtHour}:${createdAtMinutes}:${createdAtSeconds}`;
+
+                    bidDate.innerText = createdDateFormatted;
+                    bidTime.innerText = createdTimeFormatted;
+
+                    bidHistoryList.appendChild(bidHistoryWrapper);
+                }
+
+
+                const bidModal = bootstrap.Modal.getOrCreateInstance("#bidModal");
+
+                bidModal.show();
+
+            });
+        }
+
+        function closeModal(){
+            const bidModal = bootstrap.Modal.getOrCreateInstance("#bidModal");
+
+            bidModal.hide();
+        }
+
+
+
+        window.addEventListener("DOMContentLoaded", () => {
+            
+            reloadMyGoodsBidHistory();
+        });  
+
+    </script>
+
+
+
+
+    <style>
+        .container-padding{
+            background-color: #f5f5f5;
+            padding-left: 1em;
+            padding-right: 1em;
+            padding-top: 0.5em;
+        }
+
+        body{
+            background-color: #f5f5f5;
+        }
+
+
+
+        .box-row{
+            margin-left: 0; 
+            margin-right: 0; 
+            padding-left: 1em; 
+            padding-right: 1em;
+            padding-top: 1em;
+            padding-bottom: 1em;
+            border-radius: 1em;
+            border-style: solid;
+            border-width: 0.1em;
+            border-color: rgba(17, 17, 17, 0.2);
+            position: relative;
+            background-color: white;
+        }
+
+        .bidHistoryWrapper{
+            margin-left: 0; 
+            margin-right: 0; 
+            margin-bottom: 1em;
+            padding-top: 1em;
+            padding-bottom: 1em;
+            border-radius: 1em;
+            border-style: solid;
+            border-width: 0.1em;
+            border-color: rgba(17, 17, 17, 0.2);
+            position: relative;
+            background-color: white;
+        }
+
+        .searchbar-row{
+            height: 3.5em;
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+        }
+
+        .search-box{
+            background-color: white;
+            height: 2.5em;
+            width: 90%;
+            border-radius: 0.5em;
+            border-width: 0;
+            position: absolute;
+            top: 50%;
+            left: 1em;
+            transform: translate(0, -50%);
+
+        }
+
+        .search-icon{
+            font-size: 1.2em;
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            transform: translate(0, -50%); 
+        }
+
+        .search-text{
+            font-size: 0.8em;
+            color: #777777;
+            position: absolute;
+            top: 50%;
+            left: 22%;
+            transform: translate(0, -50%);  
+        }
+
+        .more-icon-box{
+            height: 2.5em;
+            width: 2.5em;
+            border-radius: 0.5em;
+            background-color: white;
+            position: absolute;
+            top: 50%;
+            right: 1em;
+            transform: translate(0, -50%);
+        }
+
+        .more-icon{
+            font-size: 1.2em;
+            color: #777777;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);            
+        }
+
+
+        .category-text{
+            margin-right: 1em;
+            height: 3em;
+            padding: 1em;
+            background-color: #111111;
+            font-size: 0.8em;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1em;
+            font-weight: bold;
+        }
+
+        .category-text-non{
+            margin-right: 1em;
+            height: 3em;
+            padding: 1em;
+            background-color: white;
+            font-size: 0.8em;
+            color: #777777;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1em;
+            font-weight: bold;
+            border-style: solid;
+            border-width: 0.1em;
+            border-color: rgba(17, 17, 17, 0.2);
+        }
+
+        .goods-startDate{
+            font-size: 0.8em;
+            color: #777777;
+            font-weight: bold;
+            padding-top: 0.5em;
+        }
+
+        .goods-title{
+            font-size: 1em;
+            color: #111111;
+            font-weight: bold;
+        }
+
+        .goods-image-box{
+            width: 7em; 
+            height: 8em; 
+            overflow: hidden; 
+            border-radius: 1em;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translate(0, -50%);
+        }
+
+        .goods-image{
+            width: 100%; 
+            height: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .info-box{
+            height: 8em;
+            position: relative;
+        }
+
+        .bid-price-text{
+            position: absolute;
+            bottom: 45%;
+            left: 40%;
+            font-size: 0.81em;
+            color: #777777;
+            font-weight: bold;
+
+        }
+        
+        .bid-price{
+            position: absolute;
+            bottom: 45%;
+            right: 0;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .highestbid-price-text{
+            position: absolute;
+            bottom: 25%;
+            left: 40%;
+            font-size: 0.8em;
+            color: #777777;
+            font-weight: bold;
+
+        }
+
+        .highestbid-price{
+            position: absolute;
+            bottom: 25%;
+            right: 0;
+            font-size: 0.8em;
+            color: #FA075B;
+            font-weight: bold;
+        }
+
+        .bid-date-text{
+            position: absolute;
+            bottom: 5%;
+            left: 40%;
+            font-size: 0.8em;
+            color: #777777;
+            font-weight: bold;
+
+        }
+
+        .bid-date{
+            position: absolute;
+            bottom: 5%;
+            right: 0;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .bid-state{
+            position: absolute;
+            top: 5%;
+            left: 40%;
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        .bid-history-button{
+            width: 100%; 
+            height: 3em; 
+            border-radius: 0.5em;
+            border-color: #E2E2E2;
+            border-width: 0.1em;
+            border-style: solid; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            font-size: 1em;
+            color: #111111;
+            font-weight: bold;
+        }
+
+        .payment-button{
+            width: 100%; 
+            height: 3em; 
+            border-radius: 0.5em;
+            border-width: 0em;
+            border-style: solid; 
+            background-color: #111111;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            font-size: 1em;
+            color: #E2E2E2;
+            font-weight: bold;
+        }
+
+        .goodsMore-icon{
+            font-size: 1.2em;
+            color: #777777;
+            position: absolute;
+            top: calc(50% - 1em);
+            right: 1em;
+        }
+
+        #modal-close{
+            font-size:1em;
+            position: absolute;
+            top: 50%;
+            right: 0em;
+            transform: translate(-50%, -50%);
+        }
+
+        .modal-bidder{
+            position: absolute;
+            top: 50%;
+            left: 5%;
+            transform: translate(0, -50%);
+            font-size: 0.8em;
+            color: #777777;
+            font-weight: bold;
+        }
+        .modal-bid-price{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.8em;
+            color: #111111;
+            font-weight: bold;
+        }
+        .modal-bid-date{
+            position: absolute;
+            top: 50%;
+            right: 5%;
+            transform: translate(0, -100%);
+            font-size: 0.7em;
+            color: #777777;
+            font-weight: bold;
+        }
+        .modal-bid-time{
+            position: absolute;
+            top: 50%;
+            right: 5%;
+            transform: translate(0, 0%);
+            font-size: 0.7em;
+            color: #777777;
+            font-weight: bold;
+        }
+
+        #bidHistoryListBox{
+            height: 13em; 
+            overflow-y: scroll;
+            
+        }
+
+        #bidHistoryListBox::-webkit-scrollbar{
+            display: none;
+        }
+
+
+    </style>
+
+</head>
+
+
+
+
+
+<body>
+
+    <div class="container-fluid">
+        <div class="row" style="height: 3.5em;  padding-top: 1em; padding-bottom: 0.5em; display: flex; align-items: center;">
+            <div class="col" style="padding-left: 1em; padding-right: 1em; display: flex;">
+                <div id="back-icon" class="fw-bold" style="margin-right: 1em; font-size: 1.2em;"><i class="fa-solid fa-angle-left" style="color: #111111;"></i></div>
+                <div style="color: #111111; font-weight: bold; font-size: 1.2em;">응찰 내역</div>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="container-fluid" style="position: sticky; top: 0; background-color: #f5f5f5; z-index: 2;">
+
+        <div class="row" style="height: 3.5em; padding-top: 0.5em; padding-bottom: 0.5em;">
+            <div class="col" style="display: flex; align-items: center; padding-left: 1em; padding-right: 1em;">
+                <div id="all" class="category category-text" onclick="toggleCategoryClasses(this.id)">전체</div>
+                <div id="inProgress" class="category category-text-non" onclick="toggleCategoryClasses(this.id)">경매중</div>
+                <div id="ended" class="category category-text-non" onclick="toggleCategoryClasses(this.id)">경매종료</div>
+                <div id="completed" class="category category-text-non" onclick="toggleCategoryClasses(this.id)">낙찰완료</div>
+            </div>
+        </div>
+
+
+        <div class="row searchbar-row">
+            <div class="col" style="position: relative;">
+                <input class="search-box" type="text">
+                <div class="search-icon"><i class="fa-solid fa-magnifying-glass" style="color: #777777;"></i></div>
+                <div class="search-text fw-bold">검색어를 입력해 주세요.</div>
+            </div>
+            <div class="col-2" style="position: relative;">
+                <div class="more-icon-box">
+                    <div class="more-icon"><i class="bi bi-three-dots"></i></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="container-fluid container-padding">
+
+        <div class="row">
+            <div class="col">
+
+                <div class="row">
+                    <div id="bidHistoryList" class="col">
+
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+    <div id="template" class="d-none">
+
+        <!--입찰 내역 리스트-->
+        <div class="row bidHistoryWrapper">
+            <div class="col">
+                <div class="row" style="padding-bottom: 1em; position: relative;">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col">
+                                <div class="goods-title"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="goods-startDate"></div>
+                            </div>
+                        </div>
+                        <div class="goodsMore-icon d-none" onclick="navigateToGoodsDetailPage(this)"><i class="fa-solid fa-angle-right"></i></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col" style="display: flex; justify-content: center;">
+                        <div style="width: 100%; border-bottom-color: #f5f5f5; border-bottom-style: solid; border-bottom-width: 0.1em;"></div>
+                    </div>
+                </div>
+
+                <div class="row" style="padding-top: 1em;">
+                    <div class="col">
+                        <div class="info-box">
+                            <div class="goods-image-box">
+                                <img class="goods-image img-fluid" th:src="@{/public/image/trade/dogimage.png}">
+                            </div>
+                            <div class="bid-price-text">응찰가</div>
+                            <div class="highestbid-price-text">낙찰가</div>
+                            <div class="bid-date-text">응찰일</div>
+                            <div class="bid-price"></div>
+                            <div class="highestbid-price"></div>
+                            <div class="bid-date"></div>
+                            <div class="bid-state"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="padding-top: 1em;">
+                    <div class="col">
+                        <div class="bid-history-button" onclick="showModal(this)">응찰내역</div>
+                    </div>
+                </div>
+
+                <div class="row payment-row d-none" style="padding-top: 1em;">
+                    <div class="col">
+                        <div class="payment-button">결제하기</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <!--입찰 내역-->
+        <div class="row myBidHistoryWrapper" style="height: 3em; padding-bottom: 1em;">
+            <div class="col" style="position: relative;">
+                <div class="modal-bidder"></div>
+                <div class="modal-bid-price"></div>
+                <div class="modal-bid-date"></div>
+                <div class="modal-bid-time"></div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- 모달창-->
+    <div id="bidModal" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" style="height: 100vh; position: fixed; top: 0; left: 0; border-radius: 0; border: none;">
+                
+                <div class="modal-body" style="padding-left: 1.5em; padding-right: 1.5em; padding-top: 0em; overflow-y: auto;">
+
+                    <div class="row" style="height: 3.5em; padding-top: 1em; padding-bottom: 1em; display: flex; align-items: center;">
+                        <div class="col" style="padding-left: 1em; padding-right: 1em; display: flex; position: relative;">
+                            <div style="color: #111111; font-weight: bold; font-size: 1.2em;">응찰 내역</div>
+                            <div style="margin-right: 1em; font-size: 1.2em; position: absolute; right: 0; top: 50%; transform: translate(0, -50%);" onclick="closeModal()"><i class="fa-solid fa-x"></i></div>
+                        </div>
+                    </div>
+
+
+                    <div class="row" style="height: 1em;"></div>
+
+                    <div id="modal-bidList-row" class="row">
+                        <div id="myBidHistoryListBox" class="col">
+                            
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <input id="sessionUserPk" type="hidden" th:value="${session.sessionUser.user_pk}">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+
+</html>
