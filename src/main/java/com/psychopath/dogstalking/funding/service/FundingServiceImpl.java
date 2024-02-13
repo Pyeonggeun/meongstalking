@@ -274,4 +274,8 @@ public class FundingServiceImpl {
         return fundingSqlMapper.countNewsByPk(product_pk);
     }
 
+    public List<Map<String, Object>> selectFundingMainList(){
+        return fundingSqlMapper.selectFundingMainList();
+    }
+
 }

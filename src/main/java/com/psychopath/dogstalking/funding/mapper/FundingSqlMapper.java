@@ -1,5 +1,7 @@
 package com.psychopath.dogstalking.funding.mapper;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.psychopath.dogstalking.dto.UserDto;
@@ -101,5 +103,8 @@ public interface FundingSqlMapper {
 
     //응원 페이지에서 보일 물건별 응원수 카운트
     public int countCheeringByPk(int product_pk);
+
+    //mainpage 펀딩 리스트
+    public List<Map<String,Object>> selectFundingMainList();
 
 }
