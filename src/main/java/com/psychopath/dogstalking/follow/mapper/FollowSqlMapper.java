@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.psychopath.dogstalking.follow.dto.CollectionDto;
+import com.psychopath.dogstalking.follow.dto.CommentDto;
 import com.psychopath.dogstalking.follow.dto.LikeDto;
 import com.psychopath.dogstalking.follow.dto.LikeLogDto;
 import com.psychopath.dogstalking.follow.dto.LogDto;
@@ -34,19 +35,24 @@ public interface FollowSqlMapper {
         @RequestParam("scanMarkerEffectiveDistance") int scanMarkerEffectiveDistance, @RequestParam("scanMarkerUpTo") int scanMarkerUpTo);
 
     public void insertCollectionInfo(CollectionDto collectionDto);
+    public void insertComment(CommentDto commentDto);
 
     public int getCurrentCollectTrackMarkerCount(int user_pk);
-    // public List<Map<String, Object>> getCollectionPersonList(int user_pk);
 
-    // public List<Map<String, Object>> getTrackLikeList(int user_pk);
-    // public Map<String, Object> getClosestMarkLatLng(@RequestParam("user_pk") int user_pk, @RequestParam("user_writer_pk") int user_writer_pk,
-    //     @RequestParam("latitude") double latitude, @RequestParam("longitude") double longitude);
-    // public int isTracing(@RequestParam("user_pk") int user_pk, @RequestParam("log_pk") int log_pk);
+    public List<Map<String, Object>> getLikeList(@RequestParam("user_pk") int user_pk, @RequestParam("trackMarkerDateValidity") int trackMarkerDateValidity);
 
-    // public void insertTrackLikeLogInfo(LikeLogDto likeLogDto);
+    public Map<String, Object> getClosestTrackMarker(@RequestParam("user_pk") int user_pk, @RequestParam("user_writer_pk") int user_writer_pk,
+        @RequestParam("latitude") double latitude, @RequestParam("longitude") double longitude, @RequestParam("trackMarkerDateValidity") int trackMarkerDateValidity);
+        
+    public void insertLikeLogInfo(LikeLogDto likeLogDto);
 
-    // public int isLike(LikeDto likeDto);
-    // public void insertLike(LikeDto likeDto);
-    // public void deleteLike(LikeDto likeDto);
+    public int isLike(LikeDto likeDto);
+    public void insertLike(LikeDto likeDto);
+    public void deleteLike(LikeDto likeDto);
+
+    public List<Map<String, Object>> getCollectionList(int user_pk);
+    public List<Map<String, Object>> getCollectionLogList(@RequestParam("user_pk") int user_pk,
+        @RequestParam("user_writer_pk") int user_writer_pk, @RequestParam("trackMarkerDateValidity") int trackMarkerDateValidity);
+    public List<Map<String, Object>> getCommentList(int log_pk);
 
 }

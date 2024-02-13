@@ -60,4 +60,15 @@ public interface AuctionSqlMapper {
     public List<ChatDto> getAppendChatList(ChatDto chatDto);
 
 
+    // 내가 입찰한 상품 리스트
+    public List<AuctionGoodsDto> getMyBidGoodsList(int user_pk);
+
+    // 나의 가장 높은 입찰 내역
+    public BidDto getMyHighestBidByGoods(BidDto bidDto);
+
+    // 상품의 가장 높은 입찰내역
+    public BidDto getHighestBidByGoods(BidDto bidDto);
+
+    // 나의 입찰 내역
+    public List<BidDto> getMyBidList(BidDto bidDto);
 }
