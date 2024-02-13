@@ -9,22 +9,82 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
         crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <script>
+        function formSubmit(){
+            const rgstrUserInfo = document.getElementById("rgstrUserInfo");
+
+            const userid = document.getElementById("userid");
+            const useridRegex = /^.{5,}$/;
+            if(!useridRegex.test(userid.value)){
+                alert("다섯 글자 이상으로 아이디를 구성하셔야 합니다.");
+                userid.focus();
+                return;
+            }
+
+            const userpw = document.getElementById("userpw");
+            const userpwRegex = /^(?=.*[a-zA-Z])(?=.*[0-9]).*$/;
+            if(!userpwRegex.test(userpw.value)){
+                alert("비밀번호는 영문과 숫자조합으로 구성하셔야 합니다.");
+                userpw.focus();
+                return;
+            }
+
+            var checkGenger = false;
+            console.log("checkGenger1="+checkGenger);
+            console.log("rgstrUserInfo.gender="+rgstrUserInfo.gender);
+            for(var i = 0; i < rgstrUserInfo.gender.length; i++){
+                if(rgstrUserInfo.gender[i].checked == true){
+                    checkGenger = true;
+                }
+            }
+            console.log("checkGenger2="+checkGenger);
+            if(checkGenger == false){
+                alert("성별을 선택하셔야 합니다")
+                return false;
+            }
+
+            const phone = document.getElementById("phone");
+            const phoneRegex = /^\d{11}$/;
+            if (!phoneRegex.test(phone.value)) {
+            alert("휴대폰 번호는 숫자 11자리를 입력해야 합니다.");
+            phone.focus();
+            return;
+}
+
+            const birthdate = document.getElementById("birthdate");
+            if (birthdate.value === "") {
+                alert("생년월일을 입력하셔야 합니다.");
+                return;
+            }
+            rgstrUserInfo.submit();
+        }
+
+    </script>
+
+
     <style>
         body {
             background-color: #f8f9fa;
         }
 
-        .container {
-            max-width: 400px;
-            margin: 50px auto;
+        ::placeholder{
+            font-weight: normal;
+        }
+        .form-control{
+            font-size: 0.75em;
+        }
+
+        .packCol {
+            width: 100%;
+            padding-left: 1.25em;
+            padding-right: 1.25em;
             background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 0.33em;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 1.25em;
         }
 
         .form-label {
@@ -35,81 +95,146 @@
             background-color: #007bff;
             color: white;
         }
+
+        .starMark{
+            color: orangered;
+        }
+
+        .explainCol{
+            font-size: 0.75em;
+            color: dimgray;
+            margin-bottom: 0.25em;
+        }
+
+        @font-face {
+                font-family: 'omyu_pretty';
+                src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
+                font-weight: normal;
+                font-style: normal;
+            }
+
+        #titleCol{
+            font-family: 'omyu_pretty';
+            font-size: 2em;
+        }
+
+        input[type="radio"] {
+            appearance: none; /* 기본 스타일 제거 */
+            width: 1.05em;
+            height: 1.05em;
+            border: 0.1em solid #ccc;
+            border-radius: 50%;
+            outline: none;
+            cursor: pointer;
+            margin-right: 0.5em;
+            vertical-align: middle;
+            }
+
+            input[type="radio"]:checked {
+            background-color:     skyblue;
+            border: 0.1em solid white;
+            box-shadow: 0 0 0 0.2em skyblue;
+            }
+
     </style>
 </head>
 
 <body>
 
-    <div class="container">
-        <h2 class="text-center mb-4">회원가입</h2>
-        <form action="./registerProcess" method="post">
-            <div class="row">
-                <div class="col text-center my-3">
-                    <label for="fileInput">
-                        <img th:src="@{/public/image/dog_img.png}" class="img-fluid rounded-circle" id="imagePreview" style="cursor: pointer; width: 100px; height: 100px;">
+    <div class="container img-fluid">
+        <div class="row">
+            <div class="col packCol">
+    <!-- container와 전체 감싸는 row col-->
 
-                    </label>
-                    <input type="file" id="fileInput" class="form-control" style="display: none;" onchange="previewImage()">
-                </div>
-            </div>
-            
+            <div class="row"><div class="col" style="padding: 2em;"></div></div>
+            <div class="row"><div id="titleCol" class="col text-center">멍스토킹 회원가입</div></div>
 
-            <div class="form-group">
-                <label for="userid" class="form-label">아이디</label>
-                <input type="text" class="form-control" id="userid" name="userid" required>
-            </div>
+            <form action="./registerProcess" id="rgstrUserInfo" method="post">
 
-            <div class="form-group">
-                <label for="userpw" class="form-label">비밀번호</label>
-                <input type="password" class="form-control" id="userpw" name="userpw" required>
-            </div>
 
-            <div class="form-group">
-                <label for="name" class="form-label">이름</label>
-                <input type="text" class="form-control" id="name" name="name" required>
-            </div>
-
-            <div class="form-group">
-                <label for="gender" class="col form-label">성별</label>
-                <div class="col">
-                    <div class="row">
-                        <div class="col-1 mx-2">
-                            <input name="gender" type="radio" value="M">
-                        </div>
-                        <div class="col-3">
-                            <span class="fw-bold text-secondary " style="font-size: 0.7em;">남</span>
-                        </div>
-                        <div class="col-1 mx-2">
-                            <input name="gender" type="radio" value="F">
-                        </div>
-                        <div class="col">
-                            <span class="fw-bold text-secondary " style="font-size: 0.7em;">여</span>
-                        </div>
+                <div class="row">
+                    <div class="col text-center my-3">
+                        <label for="fileInput">
+                            <img th:src="@{/public/image/dog_img.png}" class="img-fluid rounded-circle" id="imagePreview" style="height: 6em;">
+                        </label>
+                        <input type="file" id="fileInput" class="form-control" style="display: none;" onchange="previewImage()">
                     </div>
                 </div>
-            </div>
+                
 
-            <div class="form-group">
-                <label for="email" class="form-label">이메일</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-            </div>
+                <div class="form-group">
+                    <label for="userid" class="form-label">아이디<span class="starMark"> *</span></label>
+                    <div class="row"><div class="col explainCol">아이디는 사이트 이용시 타 회원에게 노출됩니다.</div></div>
+                    <input type="text" class="form-control" id="userid" name="userid" placeholder="다섯글자 이상으로 구성하셔야 합니다" required>
+                </div>
 
-            <div class="form-group">
-                <label for="phone" class="form-label">전화번호</label>
-                <input type="tel" class="form-control" id="phone" name="phone" required>
-            </div>
+                <div class="form-group">
+                    <label for="userpw" class="form-label">비밀번호<span class="starMark"> *</span></label>
+                    <div class="row"><div class="col explainCol">영문과 숫자를 조합해주세요.</div></div>
+                    <input type="password" class="form-control" id="userpw" name="userpw" required>
+                </div>
 
-            <div class="form-group">
-                <label for="birthdate" class="form-label">생년월일</label>
-                <input type="date" class="form-control" id="birthdate" name="birthdate" required>
-            </div>
+                <div class="form-group">
+                    <label for="name" class="form-label">이름<span class="starMark"> *</span></label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="김멍스" required>
+                </div>
 
-            <div class="d-grid">
-                <button type="submit" class="btn btn-secondary">가입하기</button>
+                <div class="form-group">
+                    <label for="gender" class="col form-label">성별<span class="starMark"> *</span></label>
+                    <div class="col">
+                        <div class="row">
+                        <div class="col-1 mx-2">
+                            <input name="gender" type="radio" value="M" id="genderM">
+                        </div>
+                        <div class="col-3">
+                            <span class="fw-bold text-secondary " style="font-size: 0.85em;">남</span>
+                        </div>
+                        <div class="col-1 mx-2">
+                            <input name="gender" type="radio" value="F" id="genderF">
+                        </div>
+                        <div class="col">
+                            <span class="fw-bold text-secondary " style="font-size: 0.85em;">여</span>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">이메일<span class="starMark"> *</span></label>
+                    <div class="row"><div class="col explainCol"> @ 뒤 포털사이트 주소까지 정확하게 입력해주시기 바랍니다</div></div>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="example@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone" class="form-label">휴대폰 번호<span class="starMark"> *</span></label>
+                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="01012345678" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="birthdate" class="form-label">생년월일<span class="starMark"> *</span></label>
+                    <div class="row"><div class="col explainCol">입력창을 누르면 달력으로 이동합니다.</div></div>
+                    <input type="date" class="form-control" id="birthdate" name="birthdate" placeholder="yyyyMMdd" required>
+                </div>
+
+                <div class="row"><div class="col" style="padding: 0.5em;"></div></div>
+
+
+                <div class="d-grid">
+                    <button type="button" onclick="formSubmit()" class="btn btn-secondary fw-bold">가입하기</button>
+                </div>
+            </form>
+
+            <div class="row"><div class="col" style="padding: 1.5em;"></div></div>
+
+
+    <!-- container와 전체 감싸는 row col 끝-->
             </div>
-        </form>
+        </div>
     </div>
 
+
+
+    <script src="/public/js/commons/lockLikeMobile.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
