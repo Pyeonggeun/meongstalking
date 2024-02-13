@@ -8,6 +8,7 @@ import lombok.Data;
 public class FundingProductDto {
     private int product_pk;
     private int user_pk;
+    private String product_component;
     private String product_name;
     private String simple_explain;
     private String title_image;

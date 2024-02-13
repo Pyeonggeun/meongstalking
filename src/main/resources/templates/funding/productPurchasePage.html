@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>펀딩 상품 구매 진행 페이지</title>
+    <title>펀딩 프로젝트 후원(구매) 진행 페이지</title>
     
     <script>
     
@@ -31,10 +31,25 @@
         document.querySelector("input[name='quantity']").value = quantity;
         }
 
-    
+        //유효성 검사
+        function nextSubmit(){
+            const purchase = document.getElementById("purchase") 
+
+            const inputQuantity = document.getElementById("inputQuantity");
+                if (parseInt(inputQuantity.value) <= 0 || inputQuantity.value === "") {
+                    alert("후원을 원하시는 수량만큼 입력해주세요.");
+                    inputQuantity.focus();
+                    return;
+                }
+                purchase.submit()   
+        }
     </script>
 
     <style>
+    body{
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
         .mipbox{
             display: flex;
             justify-content: center;
@@ -42,12 +57,14 @@
 
         input[type="radio"] {
             appearance: none; /* 기본 스타일 제거 */
-            width: 1.05em;
-            height: 1.05em;
+            width: 1.03em;
+            height: 1.03em;
             border: 0.1em solid #ccc;
             border-radius: 50%;
             outline: none;
             cursor: pointer;
+            margin-right: 0.5em;
+            vertical-align: middle;
             }
 
             input[type="radio"]:checked {
@@ -61,10 +78,13 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-
     <!-- 새로 만든-->
     <div class="container img-fluid"> 
         <div class="row">
@@ -81,20 +101,18 @@
                 <div class="row mb-3"><div class="col text-center" style="font-size: 0.7em;">펀딩 상품 확인 진행중 입니다.</div></div>
 
                 <div class="row py-2 mb-2"><div class="col fw-bold" style="font-size: 1em;">펀딩 상품 정보 확인</div></div>
-                <form action="productPurchaseProcess" method="post">
+                <form action="productPurchaseProcess" id="purchase" method="post">
                     <input name="product_pk" type="hidden" th:value="${product.detail.product_pk}">     
                         <div class="row mb-1"><div class="col" style="font-size: 1.25em;">
-                            <lable for="justbutton"><input type="radio" id="justbutton"  th:text=" ${product.detail.price}">  <span style="font-size: 0.8em;">원</span></lable>
+                            <lable for="justbutton"><input type="radio" id="justbutton"  th:text="${product.detail.price}">  <span style="font-size: 0.8em;">원</span></lable>
                         </div></div>
-                        <div class="row"><div class="col" style="font-size: 0.8em;" th:text="${product.detail.product_name}"></div></div>
+                        <div class="row"><div class="col" style="font-size: 0.8em;" th:text="${product.detail.product_component}"></div></div>
 
-
-                        
                         <div class="row mt-3">
                             <div class="mipbox px-0">
                                 <div class="col-7 ps-0" style="font-size: 0.7em; color: gray;">구매를 원하시는 수량만큼 입력해주세요</div>
                                 <button type="button" style="font-size: 1.55em;"  class="btn px-0 py-0 me-2" onclick="decreaseQuantity()"><i class="bi bi-dash-square"></i></button>
-                                <input class=form-control type="number" name="quantity" placeholder="수량 입력" style="text-align:center; width: 4em; height: 2.25em;"> 
+                                <input class=form-control type="number" id="inputQuantity" name="quantity" placeholder="수량 입력" style="text-align:center; width: 4em; height: 2.25em;"> 
                                 <button type="button" style="font-size: 1.55em;" class="btn px-0 py-0 ms-2" onclick="increaseQuantity()"><i class="bi bi-plus-square"></i></button>
                             </div>
                         </div>
@@ -105,7 +123,7 @@
                     <div class="row mb-2"><div class="col" style="font-size: 0.82em;"> 정확한 배송일자는 상품별 새소식을 참고해주세요</div></div>
                     <div class="row py-2 mx-1 mb-3 border rounded"><div class="col pe-0" style="font-size: 0.85em; color: gray;">선택해야 하는 옵션이 존재하지 않습니다.</div><div class="col-2 px-0 text-center"> <i class="bi bi-caret-right" style="font-size: 1em; color: gray;"></i></div></div>
                     <div class="row mb-2" style="background-color: gainsboro;"><div class="col"></div></div>
-                        <div class="row"><div class="col-3 px-0 mx-1 fw-bold text-center"><a th:href="@{./productDetailPage(id = ${product.detail.product_pk})}" class="btn text-white fw-bold rounded" style="font-size: 1em; background-color: lightcoral;">뒤로가기</a></div> <div class="col text-center d-grid" style="font-size: 1em;"><input class="border border-black rounded py-1" type="submit" style="background-color: white; border-color:black;" value="다음페이지 이동"></div></div>
+                        <div class="row"><div class="col-3 px-0 mx-1 fw-bold text-center"><a th:href="@{./productDetailPage(id = ${product.detail.product_pk})}" class="btn text-white fw-bold rounded" style="font-size: 1em; background-color: lightcoral;">뒤로가기</a></div> <div class="col text-center d-grid" style="font-size: 1em;"><input class="border border-black rounded py-1" type="submit" onclick="nextSubmit()" style="background-color: white; border-color:black;" value="다음페이지 이동"></div></div>
                 </form>
                 <div class="row py-1"><div class="col text-center" style="font-size: 0.8em; color: gray;">다음 페이지에서 결제가 진행됩니다.</div></div>
 
@@ -117,7 +135,7 @@
 
 
 
-
+    <script src="/public/js/commons/lockLikeMobile.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 
