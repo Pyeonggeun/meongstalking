@@ -303,7 +303,7 @@ select
     where product_pk = #{product_pk}
 </select>
 
-    <select id="selectFundingMainList" result="map">
+    <select id="selectFundingMainList" resultType="map">
         <![CDATA[
         SELECT *
         FROM ms_funding_product
