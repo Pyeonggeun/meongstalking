@@ -538,8 +538,35 @@
         where profile_info_pk  = #{profile_info_pk}
     </select>
     
-    
 
+    <select id="selectUnReadNotificationList" resultType="com.psychopath.dogstalking.mstar.dto.NotificationDto">
+        SELECT * FROM ms_mstar_notification
+        where user_pk = #{user_pk}
+        and read_status = 'N'
+        ORDER by created_at DESC
+    </select>
+    <select id="selectReadNotificationList" resultType="com.psychopath.dogstalking.mstar.dto.NotificationDto">
+        SELECT * FROM ms_mstar_notification
+        where user_pk = #{user_pk}
+        and read_status = 'Y'
+        ORDER by created_at DESC
+    </select>
+    <select id="selectUnReadNotify" resultType="int">
+        SELECT count(*) FROM ms_mstar_notification
+        where user_pk = #{user_pk}
+        and read_status = 'N'
+    </select>
+    <update id="updateNotificationStatus">
+        UPDATE ms_mstar_notification
+        SET read_status = 'Y'
+        where user_pk = #{user_pk}
+    </update>
+    <select id="selectUnReadDirect" resultType="int">
+        SELECT count(*) from ms_mstar_direct
+        where rcv_user_pk in (SELECT profile_info_pk from ms_mstar_profile_info
+        where user_pk = #{user_pk})
+        and read_status ='N'
+    </select>
     
     
     

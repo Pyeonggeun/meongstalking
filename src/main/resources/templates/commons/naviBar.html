@@ -1,0 +1,187 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+<div class="row border-bottom px-3 ">
+    <div class="col">
+        <div class="row">
+            <div class="col py-1">
+                <div class="row">
+                    <div class="col-2"></div>
+                    <div class="col text-center">
+                        <img class="img-fluid" src="/public/image/mstar/logo1.png" alt="" style="height: 1.7em;">
+                    </div>
+                    <div class="col-3 text-end align-self-center" style="font-size: 1.1em;">
+                        <i th:onclick="|location.href='@{/mstar/directListPage(user_pk=${session.sessionUser.user_pk})}'|" class="fa-regular fa-paper-plane"><i id="unReadDirect" class="fa-solid fa-circle position-absolute text-danger d-none" style="font-size: 0.3em; left: 75%;"></i></span></i>&nbsp;&nbsp;
+                        <i th:onclick="'showNotifyModal('+${session.sessionUser.user_pk}+')'" class="fa-sharp fa-regular fa-bell position-relative"><i id="unReadNotify" class="fa-solid fa-circle position-absolute text-danger d-none" style="font-size: 0.3em; left: 75%;"></i></span></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row bg-white fixed-bottom border-top" style="width: auto;">
+    <div class="col py-2">
+        <div class="row">
+            <div class="col text-center" style="font-size: 4vw; cursor: pointer;">
+                <div class="row">
+                    <div class="col menu-trigger text-body-tertiary">
+                        <i class="fa-solid fa-bars"></i>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col text-secondary">
+                        메뉴
+                    </div>
+                </div>
+            </div>
+            <div class="col text-center ps-0" style="font-size: 4vw;">
+                <div class="row">
+                    <div class="col text-body-tertiary">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col text-secondary">
+                        먹거리
+                    </div>
+                </div>
+            </div>
+            <div class="col text-center ps-0" style="font-size: 4vw;">
+                <div class="row">
+                    <div class="col text-body-tertiary">
+                        <span class="material-symbols-rounded">
+                            distance
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col text-secondary">
+                        멍냥닥터
+                    </div>
+                </div>
+            </div>
+            <div class="col text-center ps-0" style="font-size: 4vw;">
+                <div class="row">
+                    <div class="col text-body-tertiary">
+                        <i class="fa-solid fa-comment-dots"></i>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col text-secondary">
+                        커뮤니티
+                    </div>
+                </div>
+            </div>
+            <div class="col text-center ps-0" style="font-size: 4vw;">
+                <div class="row">
+                    <div class="col text-body-tertiary">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col text-secondary">
+                        멍스타
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="notifyModal" class="modal" tabindex="-1">
+<div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
+    <div class="modal-content">
+        <div class="row mt-1 border-bottom" style="font-size: 1.3em;">
+            <div class="col-2"></div>
+            <div class="col text-center align-self-center">
+                알림
+            </div>
+            <div onclick="closeNotifyModal()" class="col-2 align-self-center">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+        </div>
+        <div class="modal-body py-0">
+            <div class="row">
+                <div class="col fw-bold" style="font-size: 1.2em;">
+                    신규 알림
+                </div>
+            </div>
+            <div class="row">
+                <div id="unReadNotifyListBox" class="col">
+                    
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col fw-bold" style="font-size: 1.2em;">
+                    이전 알림
+                </div>
+            </div>
+            <div class="row">
+                <div id="readNotifyListBox" class="col">
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<div id="unReadNotifyListTemplete" class="d-none">
+<div class="row py-2 border-bottom unReadNotifyListWrapper">
+    <div class="col-3 align-self-center">
+        <div class="row justify-content-center">
+            <div class="col-auto unReadIcon">
+                <img class="img-fluid rounded unReadImg" src="" alt="" style="height: 4em;">
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="row">
+            <div class="col fw-bold unReadTitle">
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col  text-secondary unReadMessage" style="font-size: 0.9em; line-height: 1.1em;">
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-secondary unReadCreated" style="font-size: 0.7em;">
+                
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div id="readNotifyListTemplete" class="d-none">
+<div class="row py-2 border-bottom readNotifyListWrapper">
+    <div class="col-3 text-center align-self-center">
+        <div class="row">
+            <div class="col readIcon">
+                <img class="img-fluid rounded readImg" src="" alt="" style="height: 4em;">
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="row">
+            <div class="col fw-bold readTitle">
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col  text-secondary readMessage" style="font-size: 0.9em; line-height: 1.1em;">
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-secondary readCreated" style="font-size: 0.7em;">
+                
+            </div>
+        </div>
+    </div>
+</div>
+</div>

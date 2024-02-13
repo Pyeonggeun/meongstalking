@@ -64,7 +64,7 @@ public class MstarController {
         return "mstar/userScrapArticleListPage";
     }
     @RequestMapping("directListPage")
-    public String directListPage(int profile_info_pk){
+    public String directListPage(int user_pk){
 
         return "mstar/directListPage";
     }
@@ -79,6 +79,11 @@ public class MstarController {
     public String modalTextPage(){
 
         return "mstar/modalTextPage";
+    }
+
+    @RequestMapping("testNavi")
+    public String testNavi(){
+        return "mstar/testNavi";
     }
 
 }

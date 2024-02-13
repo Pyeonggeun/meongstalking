@@ -16,6 +16,7 @@ import com.psychopath.dogstalking.mstar.dto.CmtLikeDto;
 import com.psychopath.dogstalking.mstar.dto.CommentDto;
 import com.psychopath.dogstalking.mstar.dto.DirectDto;
 import com.psychopath.dogstalking.mstar.dto.FollowDto;
+import com.psychopath.dogstalking.mstar.dto.NotificationDto;
 import com.psychopath.dogstalking.mstar.dto.ProfileInfoDto;
 import com.psychopath.dogstalking.mstar.dto.StorageDto;
 import com.psychopath.dogstalking.mstar.dto.StoryDto;
@@ -198,4 +199,12 @@ public interface MstarSqlMapper{
     public void insertDirectChat(DirectDto directDto);                                                          
 
     public List<StoryDto> selectMyAllStoryList(int profile_info_pk);
+
+    public List<NotificationDto> selectUnReadNotificationList(int user_pk);
+    public List<NotificationDto> selectReadNotificationList(int user_pk);
+    public int selectUnReadNotify(int user_pk);
+    public int selectUnReadDirect(int user_pk);
+    
+    public void updateNotificationStatus(int user_pk);
+    
 }

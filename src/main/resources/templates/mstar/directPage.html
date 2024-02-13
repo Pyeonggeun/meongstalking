@@ -104,7 +104,9 @@
                 const chat = directChat.value;
 
                 const url = "./insertDirect";
-
+                console.log(profile_info_pk)
+                console.log(another_info_pk)
+                console.log(chat)
                 fetch(url, {
                      method: "post",
                      headers: {
@@ -259,8 +261,6 @@
                                     const readStatus = sendChatWrapper.querySelector(".readStatus");
                                     readStatus.classList.remove("d-none");
                                 }
-                                
-                                
 
                                 directListBox.appendChild(sendChatWrapper);
                             }else{
