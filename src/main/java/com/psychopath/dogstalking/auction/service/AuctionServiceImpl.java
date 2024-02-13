@@ -237,6 +237,66 @@ public class AuctionServiceImpl {
     }
 
 
+    public List<Map<String, Object>> getMyGoddsBidHistory(int userPk){
+        List<AuctionGoodsDto> goodsList = auctionMapper.getMyBidGoodsList(userPk);
+        List<Map<String, Object>> list = new ArrayList<>();
+
+        for(AuctionGoodsDto e : goodsList){
+            Map<String, Object> map = new HashMap<>();
+
+            boolean isAuctionEnd = false;
+            boolean isSuccessfulBid  = false;
+
+            BidDto bidDto = new BidDto();
+            bidDto.setUser_pk(userPk);
+            bidDto.setGoods_pk(e.getPk());
+
+            BidDto myHighestBidDto = auctionMapper.getMyHighestBidByGoods(bidDto);            
+            BidDto highestBidDto = auctionMapper.getHighestBidByGoods(bidDto);            
+
+            LocalDateTime expiryDate = e.getExpiry_date();
+            LocalDateTime now = LocalDateTime.now();
+            Duration duration = Duration.between(now, expiryDate);
+
+            if(duration.isNegative()){
+                isAuctionEnd = true;
+
+                if(myHighestBidDto.getPk() == highestBidDto.getPk()){
+                    isSuccessfulBid = true;
+                }
+            }
+
+            map.put("auctionGoodsDto", e);
+            map.put("myHighestBid", myHighestBidDto);
+            map.put("highestBid", highestBidDto);
+            map.put("isAuctionEnd", isAuctionEnd);
+            map.put("isSuccessfulBid", isSuccessfulBid);
+
+            list.add(map);
+        }
+
+        return list;
+    }
+
+    public List<Map<String, Object>> getMyBidList(BidDto bidDto){
+
+        List<BidDto> bidList = auctionMapper.getMyBidList(bidDto);
+        List<Map<String, Object>> list = new ArrayList<>();
+
+        for(BidDto e : bidList){
+            Map<String, Object> map = new HashMap<>();
+
+            UserDto userDto = auctionMapper.getUserInfoByPk(e.getUser_pk());
+
+            map.put("userDto", userDto);
+            map.put("bidDto", e);
+
+            list.add(map);
+        }
+
+        return list;
+    }
+
 
 
 }

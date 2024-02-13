@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>메인페이지</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://kit.fontawesome.com/784384f602.js" crossorigin="anonymous"></script>
+
+
+    <style>
+        .container-fluid{
+            background-color: #f5f5f5;
+            padding-left: 1em;
+            padding-right: 1em;
+        }
+
+        body{
+            background-color: #f5f5f5;
+        }
+
+
+        .profile-image{
+            position: absolute;
+            top: 50%;
+            left: 0%;
+            transform: translate(0, -50%);
+            width: 2.8em;
+            height: 2.8em;
+            border-radius: 100%;
+            border-color: #f5f5f5;
+            border-style: solid;
+            border-width: 0.01sem;
+        }
+
+        .user-name{
+            color: #111111;
+            position: absolute;
+            top: 40%;
+            left: 35%;
+            transform: translate(0, -50%);
+            font-size: 0.8em;
+        }
+
+        .user-id{
+            color: #111111;
+            position: absolute;
+            top: 60%;
+            left: 35%;
+            transform: translate(0, -50%);
+            font-size: 0.8em;
+        }
+
+        .box-row{
+            margin-left: 0; 
+            margin-right: 0; 
+            padding-left: 0.6em; 
+            padding-right: 0.6em;
+            border-radius: 1em;
+            position: relative;
+        }
+
+
+        .sales-line{
+            height: 0.2em;
+            width: 50%;
+            border-radius: 1em;
+            position: absolute; 
+            top: 50%; 
+            transform: translate(0, -50%);
+        }
+
+        .saleshistory-box-row{
+            background-color: white;
+            height: 8em;
+        }
+
+        .bidhistory-box-row{
+            background-color: white;
+            height: 8em;
+        }
+
+        .paymenthistory-box-row{
+            background-color: white;
+            height: 8em;
+        }
+
+        .box-title{
+            position: absolute;
+            bottom: 10%;
+            left: 5%;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .arrow-icon{
+            position: absolute;
+            top: 50%;
+            right: 5%;
+            transform: translate(0, -50%);
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .box-title2{
+            position: absolute;
+            bottom: 35%;
+            left: 5%;
+            font-size: 1em;
+            font-weight: bold;
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        .paw-image{
+            width: 2em;
+            height: 2em;
+            position: absolute;
+            top: 10%;
+        }
+
+        .goods-image-box{
+            width: 100%; 
+            height: 11em; 
+            overflow: hidden; 
+            position: relative; 
+            border-radius: 1em;
+        }
+
+        .goods-image{
+            width: 100%; 
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .goods-image-opacity{
+            background-color: rgba(68, 68, 68, 0.6);
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0%;
+            z-index: 2;
+        }
+
+        .goods-title{
+            position: absolute;
+            top: 75%;
+            left: 5%;
+            max-width: 95%;
+            transform: translate(0, -50%);
+            font-size: 0.7em;
+            color: #f5f5f5;
+        }
+
+        .goods-startDate{
+            position: absolute;
+            top: 90%;
+            left: 5%;
+            transform: translate(0, -50%);
+            font-size: 0.7em;
+            color: #f5f5f5;
+        }
+
+        .goods-state-circle{
+            position: absolute;
+            top: 35%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 5em;
+            height: 5em;
+            border-radius: 100%;
+            border-style: solid;
+            border-color: white;
+            border-width: 0.1em;
+        }
+
+        .goods-state-text{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 0.6em;
+        }
+
+    </style>
+
+</head>
+
+
+
+
+
+<body>
+
+    <div class="container-fluid">
+
+        <div class="row" style="height: 2em;"></div>
+
+        <div class="row box-row" style="background-color: white; padding-bottom: 2em;">
+            <div class="col">
+                <div class="row" style="position: relative; height: 6em;">
+                    <div class="col">
+                        <div style="position: absolute; top: 50%; left: 0; transform: translate(0, -50%); height: 100%; width: 50%;">
+                            <img class="profile-image img-fluid" th:src="@{/public/image/trade/puppy1.jpg}">
+                            <div class="user-name fw-bold">미스 김</div>
+                            <div class="user-id">hello3054</div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="row" style="position: relative;">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col">
+                                <div style="color: #111111; font-size: 1.5em;">Sales</div>
+                            </div>
+                            <div class="col">
+                                <div style="color: #C0C0C0; font-size: 1.5em;">Wishlist</div>
+                            </div>
+                        </div>
+                        <div class="row" style="height: 2em; position: relative;">
+                            <div class="col">
+                                <div class="sales-line" style="left: 0%;; background-color: #111111;"></div>
+                                <div class="sales-line" style="left: 50%; background-color: #C0C0C0;"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="row" style="height: 11em;">
+                                    <div class="col" style="padding-left: 0.05em; padding-right: 0.05em;">
+                                        <div class="goods-image-box">
+                                            <img class="goods-image img-fluid" th:src="@{/public/image/trade/dogimage.png}">
+                                            <div class="goods-image-opacity">
+                                                <div class="goods-title">그레이 하운드 오리털 패딩</div>
+                                                <div class="goods-startDate">2024-06-02 16:00</div>
+                                                <div class="goods-state-circle">
+                                                    <div class="goods-state-text">판매완료</div>
+                                                </div>
+                                            </div> 
+                                        </div>
+                                    </div>
+                                    <div class="col" style="padding-left: 0.05em; padding-right: 0.05em;">
+                                        <div class="goods-image-box">
+                                            <img class="goods-image img-fluid" th:src="@{/public/image/trade/dog.jpg}">
+                                            <div class="goods-image-opacity">
+                                                <div class="goods-title">그레이 하운드 오리털 패딩</div>
+                                                <div class="goods-startDate">2024-06-02 16:00</div>
+                                                <div class="goods-state-circle">
+                                                    <div class="goods-state-text">판매완료</div>
+                                                </div>
+                                            </div> 
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" style="height: 11em; margin-top: 0.1em;">
+                                    <div class="col" style="padding-left: 0.05em; padding-right: 0.05em;">
+                                        <div class="goods-image-box">
+                                            <img class="goods-image img-fluid" th:src="@{/public/image/trade/puppy1.jpg}">
+                                            <div class="goods-image-opacity" style="background-color: rgba(68, 68, 68, 0.2);">
+                                                <div class="goods-title">그레이 하운드 오리털 패딩</div>
+                                                <div class="goods-startDate">2024-06-02 16:00</div>
+                                            </div> 
+                                        </div>
+                                    </div>
+                                    <div class="col" style="padding-left: 0.05em; padding-right: 0.05em;">
+                                        <div class="goods-image-box">
+                                            <img class="goods-image img-fluid" th:src="@{/public/image/trade/dogimage.png}">
+                                            <div class="goods-image-opacity" style="background-color: rgba(68, 68, 68, 0.2);">
+                                                <div class="goods-title">그레이 하운드 오리털 패딩sdfsfdsf</div>
+                                                <div class="goods-startDate">2024-06-02 16:00</div>
+                                            </div> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <div class="row" style="height: 2em;"></div>
+        <div class="row box-row saleshistory-box-row">
+            <div class="col">
+                <img class="paw-image" style="left: 5%;" th:src = "@{/public/image/trade/dogpawblack.png}">
+                <div class="box-title2">My Sales</div>
+                <div class="box-title">판매 내역</div>
+                <div class="arrow-icon"><i class="fa-solid fa-angle-right"></i></div>
+            </div>
+        </div>
+        <div class="row box-row bidhistory-box-row" style="margin-top: 0.5em;">
+            <div class="col">
+                <img class="paw-image" style="left: 5%;" th:src = "@{/public/image/trade/dogpawblack.png}">
+                <img class="paw-image" style="left: 15%; transform: rotate(30deg);" th:src = "@{/public/image/trade/dogpawblack.png}">
+                <div class="box-title2">My Bid</div>
+                <div class="box-title">응찰 내역</div>
+                <div class="arrow-icon"><i class="fa-solid fa-angle-right"></i></div>
+            </div>
+        </div>
+        <div class="row box-row paymenthistory-box-row" style="margin-top: 0.5em;">
+            <div class="col">
+                <img class="paw-image" style="left: 5%;" th:src = "@{/public/image/trade/dogpawblack.png}">
+                <img class="paw-image" style="left: 15%; transform: rotate(30deg);" th:src = "@{/public/image/trade/dogpawblack.png}">
+                <img class="paw-image" style="left: 25%; transform: rotate(60deg);" th:src = "@{/public/image/trade/dogpawblack.png}">
+                <div class="box-title2">My Payment</div>
+                <div class="box-title">결제 내역</div>
+                <div class="arrow-icon"><i class="fa-solid fa-angle-right"></i></div>
+            </div>
+        </div>
+        <div class="row" style="height: 2em;"></div>
+
+
+    </div>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+
+</html>

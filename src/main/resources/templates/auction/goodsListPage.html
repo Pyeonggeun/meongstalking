@@ -88,10 +88,13 @@
                         time.setAttribute("data-value", e.auctionGoodsDto.expiry_date);
 
                         const price = goodsWrapper.querySelector(".goods-price");
-                        price.innerText = e.auctionGoodsDto.starting_price + "원";
+                        price.innerText = "KRW " + e.auctionGoodsDto.starting_price;
 
                         const name = goodsWrapper.querySelector(".name");
                         name.innerText = e.userDto.name;
+
+                        const userId = goodsWrapper.querySelector(".user-id");
+                        userId.innerText = e.userDto.userid
 
                         const goodsBox = goodsWrapper.querySelector(".goods-box");
                         goodsBox.setAttribute("data-value", e.auctionGoodsDto.pk);
@@ -140,22 +143,24 @@
                         const now = new Date();
 
                         const remainingTime = expiryDate - now;
-
                         if (remainingTime > 24 * 60 * 60 * 1000) {
                             // 24시간 이상 남은 경우
                             const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
                             const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                            timeText.innerText = `${days}일 ${hours}시간 남음`;
+                            const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+                            const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+                            timeText.innerText = `${days}일 ${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
                         } else if (remainingTime > 60 * 60 * 1000) {
                             // 24시간 이하, 1시간 이상 남은 경우
                             const hours = Math.floor(remainingTime / (1000 * 60 * 60));
                             const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
-                            timeText.innerText = `${hours}시간 ${minutes}분 남음`;
+                            const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+                            timeText.innerText = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
                         } else {
                             // 1시간 이하 남은 경우
                             const minutes = Math.floor(remainingTime / (1000 * 60));
                             const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
-                            timeText.innerText = `${minutes}분 ${seconds}초 남음`;
+                            timeText.innerText = `00:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
                         }
                     }
 
@@ -192,15 +197,23 @@
 
     <style>
         body{
-            background-color: #151515;
+            background-color: #f5f5f5;
         }
+
+        .container-fluid{
+            background-color: #f5f5f5;
+            padding-left: 1em;
+            padding-right: 1em;
+        }
+        
         .searchbar-row{
-            height: 4em;
+            height: 5em;
             padding-top: 1em;
+            padding-bottom: 1em;
         }
 
         .search-box{
-            background-color: #212121;
+            background-color: white;
             height: 3em;
             width: 90%;
             border-radius: 0.5em;
@@ -233,7 +246,7 @@
             height: 3em;
             width: 3em;
             border-radius: 0.5em;
-            background-color: #212121;
+            background-color: white;
             position: absolute;
             top: 50%;
             right: 1em;
@@ -242,7 +255,7 @@
 
         .more-icon{
             font-size: 1.2em;
-            color: white;
+            color: #777777;
             position: absolute;
             top: 50%;
             left: 50%;
@@ -250,7 +263,7 @@
         }
 
         .category-text{
-            color: white;
+            color: #111111;
             font-size: 1.1em;
             margin-right: 2em;
 
@@ -259,7 +272,7 @@
         .selected{
             border-bottom-style: solid; 
             border-bottom-width: 1; 
-            border-bottom-color: white; 
+            border-bottom-color: #111111; 
             padding-bottom: 0.2em;
         }
 
@@ -281,37 +294,55 @@
             position: relative;
             padding-left: 0;
             padding-right: 0;
+            width: 100%;
+            height: 23em;
         }
 
-
+        .goods-image-cropping{
+            border-radius: 1em;
+            width: 100%;
+            height: 23em;
+            overflow: hidden;
+            position: relative;
+            border-style: solid;
+            border-color: white;
+            border-width: 0.5em;
+        }
 
         .goods-image{
-            border-radius: 1em;
-            border-style: solid;
-            border-color: black;
-            border-width: 0.3em;
             width: 100%;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .goods-image-opacity{
+            background-color: rgba(68, 68, 68, 0.3);
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0%;
+            z-index: 2;
         }
 
         .time-box{
-            height: 2.3em;
-            width: 9em;
-            border-radius: 1em;
+            height: 1.6em;
+            width: 7em;
+            border-radius: 0.5em;
             position: absolute;
-            top: 6%;
-            left: 6%;
-            background-color: rgba(21, 21, 21, 0.3);
-            
+            top: 10%;
+            left: 22%;
+            transform: translate(0, -50%);
+            z-index: 3;
         }
 
         .time-text{
-            width: 100%;
             font-size: 0.8em;
             color: white;
             position: absolute;
             top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            left: 0%;
+            transform: translate(0, -50%);
         }
 
         .wishlist-icon-box{
@@ -319,9 +350,11 @@
             width: 2.3em;
             border-radius: 100%;
             position: absolute;
-            top: 6%;
+            top: 10%;
             right: 6%;
-            background-color: rgba(21, 21, 21, 0.3);
+            transform: translate(0, -50%);
+            background-color: rgba(17, 17, 17, 0.5);
+            z-index: 3;
         }
 
         .wishlist-icon{
@@ -337,73 +370,92 @@
             width: 88%;
             border-radius: 1em;
             position: absolute;
-            bottom: 5%;
+            bottom: 6%;
             left: 50%;
             transform: translate(-50%, 0);
-            background-color: rgba(21, 21, 21, 0.3);
+            background-color: rgba(17, 17, 17, 0.5);
+            z-index: 3;
 
-        }
-
-        .info-box1{
-            position: absolute;
-            top: 5%;
-            left: 5%;
-            width: 95%;
-            height: 2.5em;
         }
 
         .goods-title{
-            position: absolute;
-            top: 50%;
-            left: 0%;
-            transform: translate(0, -50%);
-            color: white;
+            color: #111111;
             font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .user-id{
+            position: absolute;
+            top: 62%;
+            left: 25%;
+            transform: translate(0, -50%);
+            color: #C0C0C0;
+            font-size: 0.8em;
         }
 
         .goods-price{
-            position: absolute;
-            top: 50%;
-            right: 5%;
-            transform: translate(0, -50%);
-            color: white;
+            color: #111111;
             font-size: 0.9em;
+            font-weight: bold;
         }
 
         .profile-image{
-            width: 2em;
-            height: 2em;
+            width: 2.8em;
+            height: 2.8em;
             border-radius: 100%;
-            border-color: #777777;
+            border-color: #444444;
             border-style: solid;
             border-width: 0.1em;
             position: absolute;
             top: 50%;
-            left: 0%;
+            left: 6%;
             transform: translate(0, -50%);
         }
 
         .name{
-            font-size: 0.9em;
-            color: #E2E2E2;
+            font-size: 0.8em;
+            color: #111111;
             position: absolute;
-            top: 50%;
-            left: 40%;
+            top: 38%;
+            left: 25%;
             transform: translate(0, -50%);
-        }
-
-        .info-box2{
-            position: absolute;
-            bottom: 5%;
-            left: 5%;
-            width: 30%;
-            height: 2.5em;
+            color: white;
         }
 
         .goodsWrapper{
             padding-left: 1em; 
             padding-right: 1em; 
             padding-top: 1.5em;
+        }
+
+        .live-box{
+            position: absolute;
+            top: 10%;
+            left: 6%;
+            transform: translate(0, -50%);
+            border-radius: 0.5em;
+            width: 2.6em;
+            height: 1.6em;
+            z-index: 3;
+            background-color: rgba(250, 7, 91, 0.8);
+        }
+        
+        .live-text{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 0.8em;
+        }
+
+        .goods-info-box{
+            background-color: white; 
+            border-radius: 1em; 
+            padding-bottom: 0.5em; 
+            padding-top: 4em; 
+            position: absolute; 
+            top: -4em;
         }
 
     </style>
@@ -430,7 +482,7 @@
             </div>
         </div>
 
-        <div class="row" style="padding-top: 1em;">
+        <div class="row">
             <div class="col overflow-x-auto">
                 <div class="row" style="display: flex;">
                     <div class="col overflow-x-auto">
@@ -462,23 +514,50 @@
         <div class="category-text fw-bold" onclick="reloadGoodsList(this)"></div>
 
         <!--상품 리스트-->
-        <div class="row goodsWrapper">
-            <div class="col goods-box" onclick="navigateToGoodsDetailPage(this)">
-                <img class="goods-image img-fluid">   
-                <div class="time-box text-center">
-                    <div class="time-text fw-bold"></div>
-                </div>
-                <div class="wishlist-icon-box">
-                    <div class="wishlist-icon"><i class="fa-solid fa-heart" style="color: #ffffff;"></i></div>
-                </div>
-                <div class="info-box">
-                    <div class="info-box1">
-                        <div class="goods-title fw-bold"></div>
-                        <div class="goods-price fw-bold"></div>
+        <div class="row goodsWrapper" style="padding-bottom: 6em;">
+            <div class="col">
+                <div class="row">
+                    <div class="col goods-box" onclick="navigateToGoodsDetailPage(this)">
+                        <div class="goods-image-cropping">
+                            <img class="goods-image img-fluid">   
+                            <div class="goods-image-opacity"></div> 
+                        </div>
+                        <div class="live-box">
+                            <div class="live-text">Live</div>
+                        </div>  
+                        <div class="time-box text-center">
+                            <div class="time-text"></div>
+                        </div>
+                        <div class="wishlist-icon-box">
+                            <div class="wishlist-icon"><i class="fa-solid fa-heart" style="color: #ffffff;"></i></div>
+                        </div>
+                        <div class="info-box">
+                            <img class="profile-image" th:src="@{/public/image/trade/puppy1.jpg}">
+                            <div class="name"></div>
+                            <div class="user-id">hello3054</div>                            
+                        </div>
                     </div>
-                    <div class="info-box2">
-                        <img class="profile-image" th:src="@{/public/image/trade/puppy1.jpg}">
-                        <div class="name fw-bold"></div>
+                </div>
+                <div class="row" style="position: relative;">
+                    <div class="col goods-info-box">
+                        <div class="row" style="padding-top: 0.5em;">
+                            <div class="col">
+                                <div class="goods-title"></div>
+                            </div>
+                        </div>
+                        <div class="row" style="padding-top: 0.2em;">
+                            <div class="col">
+                                <div class="goods-price"></div>
+                            </div>
+                        </div>
+                        <div class="row" style="padding-top: 0.5em; padding-bottom: 0.2em;">
+                            <div class="col" style="display: flex; align-items: center; justify-content: end;">
+                                <div style="color: #444444; font-size: 0.9em;"><i class="fa-solid fa-heart"></i></div>
+                                <div class="fw-bold" style="padding-left: 0.5em; color: #444444; font-size: 0.9em;">13</div>
+                                <div style="padding-left: 2em; display: flex; align-items: center; font-size: 0.9em;"><img style="width: 1em; height: 1em;" th:src = "@{/public/image/trade/dogpawblack.png}"></div>
+                                <div class="fw-bold" style="padding-left: 0.5em; color: #444444; font-size: 0.9em;">15</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
