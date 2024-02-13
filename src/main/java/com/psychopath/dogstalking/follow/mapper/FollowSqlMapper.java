@@ -11,7 +11,9 @@ import com.psychopath.dogstalking.follow.dto.CommentDto;
 import com.psychopath.dogstalking.follow.dto.LikeDto;
 import com.psychopath.dogstalking.follow.dto.LikeLogDto;
 import com.psychopath.dogstalking.follow.dto.LogDto;
+import com.psychopath.dogstalking.follow.dto.UseItemDto;
 import com.psychopath.dogstalking.follow.dto.UserMoreDto;
+import com.psychopath.dogstalking.mFollow.dto.UserItemDto;
 
 @Mapper
 public interface FollowSqlMapper {
@@ -54,5 +56,13 @@ public interface FollowSqlMapper {
     public List<Map<String, Object>> getCollectionLogList(@RequestParam("user_pk") int user_pk,
         @RequestParam("user_writer_pk") int user_writer_pk, @RequestParam("trackMarkerDateValidity") int trackMarkerDateValidity);
     public List<Map<String, Object>> getCommentList(int log_pk);
+
+    public List<Map<String, Object>> getPermanentItemLv(int user_pk);
+    public int getPlusTrackMarker(@RequestParam("user_pk") int user_pk, @RequestParam("user_writer_pk") int user_writer_pk);
+
+    public int getItemCount(@RequestParam("user_pk") int user_pk, @RequestParam("item_pk") int item_pk);
+    public void insertUserItemInfo(UseItemDto useItemDto);
+
+    public void sendMessage();
 
 }

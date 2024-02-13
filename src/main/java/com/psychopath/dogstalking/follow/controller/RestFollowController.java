@@ -18,6 +18,7 @@ import com.psychopath.dogstalking.follow.dto.CommentDto;
 import com.psychopath.dogstalking.follow.dto.LikeDto;
 import com.psychopath.dogstalking.follow.dto.LikeLogDto;
 import com.psychopath.dogstalking.follow.dto.LogDto;
+import com.psychopath.dogstalking.follow.dto.UseItemDto;
 import com.psychopath.dogstalking.follow.dto.UserMoreDto;
 import com.psychopath.dogstalking.follow.service.FollowServiceImpl;
 
@@ -312,6 +313,63 @@ public class RestFollowController {
         RestResponseDto restResponseDto = new RestResponseDto();
 
         restResponseDto.setData(followService.getCommentList(log_pk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
+    @RequestMapping("getPlusTrackMarker")
+    public RestResponseDto getPlusTrackMarker(int user_pk, int user_writer_pk) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(followService.getPlusTrackMarker(user_pk, user_writer_pk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
+    @RequestMapping("getPermanentItemLv")
+    public RestResponseDto getPermanentItemLv(int user_pk) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(followService.getPermanentItemLv(user_pk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
+    @RequestMapping("getItemCount")
+    public RestResponseDto getItemCount(int user_pk, int item_pk) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+
+        restResponseDto.setData(followService.getItemCount(user_pk, item_pk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
+    @RequestMapping("insertUserItemInfo")
+    public RestResponseDto insertUserItemInfo(UseItemDto params) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+
+        followService.insertUserItemInfo(params);
+        
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
+    @RequestMapping("sendMessage")
+    public RestResponseDto sendMessage() {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+
+        followService.sendMessage();
+        
         restResponseDto.setResult("success");
         
         return restResponseDto;

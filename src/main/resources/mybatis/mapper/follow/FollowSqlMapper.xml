@@ -32,6 +32,14 @@
         insert into ms_follow_like(user_collector_pk, user_writer_pk) values(#{user_collector_pk}, #{user_writer_pk})
     </insert>
 
+    <insert id="insertUserItemInfo">
+        insert into ms_follow_use_item(user_pk, item_pk) values(#{user_pk}, #{item_pk})
+    </insert>
+
+    <insert id="sendMessage">
+        insert into ms_mstar_notification(user_pk, title, message, link_path, notify_img) values(#{user_pk}, #{title} , #{message}, #{link_path}, #{notify_img})
+    </insert>
+
     <select id="getMyTrackMarkers" resultType="map">
         SELECT mfl.latitude, mfl.longitude FROM ms_follow_log mfl
         where mfl.user_pk = #{user_pk}
@@ -49,33 +57,30 @@
             SELECT t1.*, (
                 CASE
                     <![CDATA[
-                        when (t1.rnum / t1.max_count) > 0.25 then 'oneStar'
-                        when (t1.rnum / t1.max_count) > 0.15 then 'twoStar'
-                        when (t1.rnum / t1.max_count) > 0.11 then 'threeStar'
-                        when (t1.rnum / t1.max_count) > 0.07 then 'fourStar'
-                        when (t1.rnum / t1.max_count) > 0.054 then 'fiveStar'
-                        when (t1.rnum / t1.max_count) > 0.005 then 'S'
-                        when (t1.rnum / t1.max_count) > 0.001 then 'SR'
+                        when (t1.rnum / t1.max_count) <= 0.36 then 'oneStar'
+                        when (t1.rnum / t1.max_count) <= 0.61 then 'twoStar'
+                        when (t1.rnum / t1.max_count) <= 0.76 then 'threeStar'
+                        when (t1.rnum / t1.max_count) <= 0.87 then 'fourStar'
+                        when (t1.rnum / t1.max_count) <= 0.94 then 'fiveStar'
+                        when (t1.rnum / t1.max_count) <= 0.994 then 'S'
+                        when (t1.rnum / t1.max_count) <= 0.999 then 'SR'
                         else 'SSR'
                     ]]>
                 END
             ) as star_rating
             from (
-                SELECT mfum.*, ROW_NUMBER() over (order by (
+                SELECT mfum.*, RANK() over (order by (
                     (
                         SELECT COUNT(*) FROM ms_follow_collection mfc
                         inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
                         where mfl.user_pk = mfum.user_pk
-                        GROUP BY mfl.user_pk
                     ) * 0.8 + (
                         SELECT COUNT(*) FROM ms_follow_comment mfc
                         inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
                         where mfl.user_pk = mfum.user_pk
-                        GROUP BY mfl.user_pk
                     ) * 0.1 + (
                         SELECT COUNT(*) FROM ms_follow_like mfl
                         where user_writer_pk = mfum.user_pk
-                        GROUP BY mfl.user_writer_pk		
                     ) * 0.1
                 )) as rnum, (
                     SELECT COUNT(*) FROM ms_follow_user_more
@@ -180,33 +185,30 @@
                 SELECT t2.*, (
                     CASE
                         <![CDATA[
-                            when (t2.rnum / t2.max_count) > 0.25 then 'oneStar'
-                            when (t2.rnum / t2.max_count) > 0.15 then 'twoStar'
-                            when (t2.rnum / t2.max_count) > 0.11 then 'threeStar'
-                            when (t2.rnum / t2.max_count) > 0.07 then 'fourStar'
-                            when (t2.rnum / t2.max_count) > 0.054 then 'fiveStar'
-                            when (t2.rnum / t2.max_count) > 0.005 then 'S'
-                            when (t2.rnum / t2.max_count) > 0.001 then 'SR'
+                            when (t2.rnum / t2.max_count) <= 0.36 then 'oneStar'
+                            when (t2.rnum / t2.max_count) <= 0.61 then 'twoStar'
+                            when (t2.rnum / t2.max_count) <= 0.76 then 'threeStar'
+                            when (t2.rnum / t2.max_count) <= 0.87 then 'fourStar'
+                            when (t2.rnum / t2.max_count) <= 0.94 then 'fiveStar'
+                            when (t2.rnum / t2.max_count) <= 0.994 then 'S'
+                            when (t2.rnum / t2.max_count) <= 0.999 then 'SR'
                             else 'SSR'
                         ]]>
                     END
                 ) as star_rating
                 from (
-                    SELECT mfum.*, ROW_NUMBER() over (order by (
+                    SELECT mfum.*, RANK() over (order by (
                         (
                             SELECT COUNT(*) FROM ms_follow_collection mfc
                             inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
                             where mfl.user_pk = mfum.user_pk
-                            GROUP BY mfl.user_pk
                         ) * 0.8 + (
                             SELECT COUNT(*) FROM ms_follow_comment mfc
                             inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
                             where mfl.user_pk = mfum.user_pk
-                            GROUP BY mfl.user_pk
                         ) * 0.1 + (
                             SELECT COUNT(*) FROM ms_follow_like mfl
                             where user_writer_pk = mfum.user_pk
-                            GROUP BY mfl.user_writer_pk		
                         ) * 0.1
                     )) as rnum, (
                         SELECT COUNT(*) FROM ms_follow_user_more
@@ -309,33 +311,30 @@
                 SELECT t2.*, (
                     CASE
                         <![CDATA[
-                            when (t2.rnum / t2.max_count) > 0.25 then 'oneStar'
-                            when (t2.rnum / t2.max_count) > 0.15 then 'twoStar'
-                            when (t2.rnum / t2.max_count) > 0.11 then 'threeStar'
-                            when (t2.rnum / t2.max_count) > 0.07 then 'fourStar'
-                            when (t2.rnum / t2.max_count) > 0.054 then 'fiveStar'
-                            when (t2.rnum / t2.max_count) > 0.005 then 'S'
-                            when (t2.rnum / t2.max_count) > 0.001 then 'SR'
+                            when (t2.rnum / t2.max_count) <= 0.36 then 'oneStar'
+                            when (t2.rnum / t2.max_count) <= 0.61 then 'twoStar'
+                            when (t2.rnum / t2.max_count) <= 0.76 then 'threeStar'
+                            when (t2.rnum / t2.max_count) <= 0.87 then 'fourStar'
+                            when (t2.rnum / t2.max_count) <= 0.94 then 'fiveStar'
+                            when (t2.rnum / t2.max_count) <= 0.994 then 'S'
+                            when (t2.rnum / t2.max_count) <= 0.999 then 'SR'
                             else 'SSR'
                         ]]>
                     END
                 ) as star_rating
                 from (
-                    SELECT mfum.*, ROW_NUMBER() over (order by (
+                    SELECT mfum.*, RANK() over (order by (
                         (
                             SELECT COUNT(*) FROM ms_follow_collection mfc
                             inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
                             where mfl.user_pk = mfum.user_pk
-                            GROUP BY mfl.user_pk
                         ) * 0.8 + (
                             SELECT COUNT(*) FROM ms_follow_comment mfc
                             inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
                             where mfl.user_pk = mfum.user_pk
-                            GROUP BY mfl.user_pk
                         ) * 0.1 + (
                             SELECT COUNT(*) FROM ms_follow_like mfl
                             where user_writer_pk = mfum.user_pk
-                            GROUP BY mfl.user_writer_pk		
                         ) * 0.1
                     )) as rnum, (
                         SELECT COUNT(*) FROM ms_follow_user_more
@@ -446,7 +445,10 @@
                 )
                 then 'Y' else 'N'
             END
-        ) as is_like FROM (
+        ) as is_like, (
+            SELECT COUNT(*) from ms_follow_like mfl2
+            where mfl2.user_collector_pk = #{user_pk}
+        ) as like_cnt FROM (
             SELECT mfl.user_pk, count(*) as collect_count, (
                 CASE
                     <![CDATA[
@@ -471,33 +473,30 @@
             SELECT t2.user_pk, (
                 CASE
                     <![CDATA[
-                        when (t2.rnum / t2.max_count) > 0.25 then 'oneStar'
-                        when (t2.rnum / t2.max_count) > 0.15 then 'twoStar'
-                        when (t2.rnum / t2.max_count) > 0.11 then 'threeStar'
-                        when (t2.rnum / t2.max_count) > 0.07 then 'fourStar'
-                        when (t2.rnum / t2.max_count) > 0.054 then 'fiveStar'
-                        when (t2.rnum / t2.max_count) > 0.005 then 'S'
-                        when (t2.rnum / t2.max_count) > 0.001 then 'SR'
+                        when (t2.rnum / t2.max_count) <= 0.36 then 'oneStar'
+                        when (t2.rnum / t2.max_count) <= 0.61 then 'twoStar'
+                        when (t2.rnum / t2.max_count) <= 0.76 then 'threeStar'
+                        when (t2.rnum / t2.max_count) <= 0.87 then 'fourStar'
+                        when (t2.rnum / t2.max_count) <= 0.94 then 'fiveStar'
+                        when (t2.rnum / t2.max_count) <= 0.994 then 'S'
+                        when (t2.rnum / t2.max_count) <= 0.999 then 'SR'
                         else 'SSR'
                     ]]>
                 END
             ) as star_rating
             from (
-                SELECT mfum.*, ROW_NUMBER() over (order by (
+                SELECT mfum.*, RANK() over (order by (
                     (
                         SELECT COUNT(*) FROM ms_follow_collection mfc
                         inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
                         where mfl.user_pk = mfum.user_pk
-                        GROUP BY mfl.user_pk
                     ) * 0.8 + (
                         SELECT COUNT(*) FROM ms_follow_comment mfc
                         inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
                         where mfl.user_pk = mfum.user_pk
-                        GROUP BY mfl.user_pk
                     ) * 0.1 + (
                         SELECT COUNT(*) FROM ms_follow_like mfl
                         where user_writer_pk = mfum.user_pk
-                        GROUP BY mfl.user_writer_pk		
                     ) * 0.1
                 )) as rnum, (
                     SELECT COUNT(*) FROM ms_follow_user_more
@@ -595,6 +594,40 @@
     <select id="getCommentList" resultType="map">
         SELECT * FROM ms_follow_comment mfc
         where mfc.log_pk = #{log_pk}
+    </select>
+
+    <select id="getPermanentItemLv" resultType="map">
+        SELECT mmfi.item_pk, (
+            SELECT COUNT(mmfoi.quantity) FROM ms_mFollow_order_item mmfoi
+            where mmfoi.item_pk = mmfi.item_pk
+            and mmfoi.user_pk = #{user_pk}
+        ) as item_cnt FROM ms_mFollow_item mmfi
+        where mmfi.item_category = 1
+    </select>
+
+    <select id="getPlusTrackMarker" resultType="int">
+        SELECT mfl.log_pk FROM ms_follow_log mfl
+        where mfl.user_pk = #{user_writer_pk}
+        and mfl.log_pk not in(
+            SELECT mfc.log_pk FROM ms_follow_collection mfc
+            where mfc.user_pk = #{user_pk}
+        )
+        order by RAND()
+        LIMIT 1
+    </select>
+
+    <select id="getItemCount" resultType="int">
+        SELECT (
+            SELECT COUNT(mmfoi.quantity) FROM ms_mFollow_order_item mmfoi
+            where mmfoi.user_pk = #{user_pk}
+            AND mmfoi.item_pk = #{item_pk}
+        )
+        -
+        (
+            SELECT COUNT(*) FROM ms_follow_use_item mfui
+            WHERE mfui.user_pk = #{user_pk}
+            AND mfui.item_pk = #{item_pk}
+        ) as item_cnt
     </select>
 
     <!-- <select id="" resultType=""></select> -->

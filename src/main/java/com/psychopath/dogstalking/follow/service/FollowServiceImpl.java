@@ -11,6 +11,7 @@ import com.psychopath.dogstalking.follow.dto.CommentDto;
 import com.psychopath.dogstalking.follow.dto.LikeDto;
 import com.psychopath.dogstalking.follow.dto.LikeLogDto;
 import com.psychopath.dogstalking.follow.dto.LogDto;
+import com.psychopath.dogstalking.follow.dto.UseItemDto;
 import com.psychopath.dogstalking.follow.dto.UserMoreDto;
 import com.psychopath.dogstalking.follow.mapper.FollowSqlMapper;
 
@@ -120,6 +121,31 @@ public class FollowServiceImpl {
     public List<Map<String, Object>> getCommentList(int log_pk) {
 
         return followSqlMapper.getCommentList(log_pk);
+    }
+
+    public int getPlusTrackMarker(int user_pk, int user_writer_pk) {
+
+        return followSqlMapper.getPlusTrackMarker(user_pk, user_writer_pk);
+    }
+
+    public List<Map<String, Object>> getPermanentItemLv(int user_pk) {
+
+        return followSqlMapper.getPermanentItemLv(user_pk);
+    }
+
+    public int getItemCount(int user_pk, int item_pk) {
+
+        return followSqlMapper.getItemCount(user_pk, item_pk);
+    }
+    
+    public void insertUserItemInfo(UseItemDto useItemDto) {
+
+        followSqlMapper.insertUserItemInfo(useItemDto);
+    }
+
+    public void sendMessage() {
+
+        followSqlMapper.sendMessage();
     }
 
 }
