@@ -1,280 +1,340 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        
-        <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-        <script>
-            function showHomeBar(){
-                const menuBar = document.querySelector("#menuBar");
-                menuBar.classList.remove("d-none");
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-                const menuIcon = document.querySelector("#menuIcon");
-                menuIcon.classList.remove("fa-solid", "fa-bars");
-                menuIcon.classList.add("bi", "bi-x-lg");
-                
-                const homeBar = document.querySelector("#homeBar");
-                homeBar.removeAttribute("onclick");
-                homeBar.setAttribute("onclick", "closeHomeBar()");
-            }
-            function closeHomeBar(){
-                const menuBar = document.querySelector("#menuBar");
-                menuBar.classList.add("d-none");
+    <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
+    <script src="/public/js/commons/lockLikeMobile.js"></script>
 
-                const menuIcon = document.querySelector("#menuIcon");
-                menuIcon.classList.add("fa-solid", "fa-bars");
-                menuIcon.classList.remove("bi", "bi-x-lg");
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
 
-                const homeBar = document.querySelector("#homeBar");
-                homeBar.removeAttribute("onclick");
-                homeBar.setAttribute("onclick", "showHomeBar()");
-            
-            }
-            
-        </script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
+    <script>
+        function showHomeBar() {
+            const menuBar = document.querySelector("#menuBar");
+            menuBar.classList.remove("d-none");
 
-        <style>
+            const menuIcon = document.querySelector("#menuIcon");
+            menuIcon.classList.remove("fa-solid", "fa-bars");
+            menuIcon.classList.add("bi", "bi-x-lg");
 
-            @font-face {
-                font-family: 'omyu_pretty';
-                src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
-                font-weight: normal;
-                font-style: normal;
-            }
+            const homeBar = document.querySelector("#homeBar");
+            homeBar.removeAttribute("onclick");
+            homeBar.setAttribute("onclick", "closeHomeBar()");
+        }
+        function closeHomeBar() {
+            const menuBar = document.querySelector("#menuBar");
+            menuBar.classList.add("d-none");
 
-            body {
-                font-family: 'omyu_pretty';
-                min-width: 320px;
-            }
-           .bg-img{
-                 background-image: url(/public/image/commons/img.jpg);
-                 background-repeat: no-repeat;
-                 background-size: cover;
-           }
-        </style>
-        
-    </head>
+            const menuIcon = document.querySelector("#menuIcon");
+            menuIcon.classList.add("fa-solid", "fa-bars");
+            menuIcon.classList.remove("bi", "bi-x-lg");
 
-    <body>
-        <div class="container-fluid">
-            <div  class="row bg-img">
-                <div class="col">
-                    <div class="row">
-                        <div class="col px-4 py-2">
+            const homeBar = document.querySelector("#homeBar");
+            homeBar.removeAttribute("onclick");
+            homeBar.setAttribute("onclick", "showHomeBar()");
+
+        }
+
+    </script>
+
+    <style>
+        @font-face {
+            font-family: 'omyu_pretty';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'omyu_pretty';
+            min-width: 320px;
+        }
+
+        .bg-img {
+            background-image: url(/public/image/commons/img.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row bg-img">
+            <div class="col">
+                <div class="row">
+                    <div class="col px-4 py-2">
+                        <div class="row">
+                            <div class="col-2">
+                                <img th:onclick="|location.href='@{../mstar/profilePage(user_pk=${session.sessionUser.user_pk})}'|"
+                                    class="img-fluid rounded-circle float-start" th:src="${path}"
+                                    style="aspect-ratio: 1/1; cursor: pointer;">
+                            </div>
+                            <div class="col-1"></div>
+                            <div class="col text-center fw-bold align-self-center">
+                                멍's토킹
+                            </div>
+                            <div class="col-3 text-end align-self-center">
+                                <i class="fa-solid fa-bars"></i>&nbsp;&nbsp;
+                                <i class="bi bi-bell-fill"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col ">
+                        <div class="row">
+                            <div class="col fs-3 fw-bold">
+                                미우
+                            </div>
                             <div class="row">
-                                <div class="col-2">
-                                    <img th:onclick="|location.href='@{../mstar/profilePage(user_pk=${session.sessionUser.user_pk})}'|" class="img-fluid rounded-circle float-start" th:src="${path}" style="aspect-ratio: 1/1; cursor: pointer;">
+                                <div class="col text-secondary">
+                                    강아지 애정표현 이렇게 해보세요!
                                 </div>
-                                <div class="col-1"></div>
-                                <div class="col text-center fw-bold align-self-center">
-                                    멍's토킹
-                                </div>
-                                <div class="col-3 text-end align-self-center">
-                                    <i class="fa-solid fa-bars"></i>&nbsp;&nbsp;
-                                    <i class="bi bi-bell-fill"></i>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col">
+                                    보러가기<i class="bi bi-chevron-right text-secondary" style="font-size: small;"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row mt-3">
-                        <div class="col ">
-                            <div class="row">
-                                <div class="col fs-3 fw-bold">
-                                    미우
-                                </div>
-                                <div class="row">
-                                    <div class="col text-secondary">
-                                        강아지 애정표현 이렇게 해보세요!
+                    <div class="col-5 position-absolute start-50 ps-3">
+                        <img class="img-fluid rounded-circle" src="/public/image/commons/miu.jpeg" alt=""
+                            style="aspect-ratio: 1/1; height: 8em; z-index: -2;">
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-1"></div>
+                    <div class="col rounded-start pe-0 position-relative" style="background-color: white;">
+                        <input class="form-control  border-white pe-0" type="text" placeholder="검색어를 입력하세요."
+                            style="z-index: 3;">
+                    </div>
+                    <div class="col-1 ps-0 rounded-end pt-2" style="background-color: white;">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <div class="col-1"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3 py-2">
+            <div class="col text-center pt-3">
+                <div class="row">
+                    <div class="col">
+                        <a href="#">
+                            <i class="fa-solid fa-store"></i></a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        마켓
+                    </div>
+                </div>
+            </div>
+            <div class="col text-center pt-3">
+                <div class="row">
+                    <div class="col">
+                        <a href="#" style="color: rgb(0, 193, 0);">
+                            <i class="fa-solid fa-shoe-prints"></i></a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        산책
+                    </div>
+                </div>
+            </div>
+            <div class="col text-center pt-3">
+                <div class="row">
+                    <div class="col">
+                        <a href="#" style="color: rgb(216, 0, 126);">
+                            <i class="fa-solid fa-book"></i></a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        육아노트
+                    </div>
+                </div>
+            </div>
+
+            <div class="col text-center pt-3">
+                <div class="row">
+                    <div class="col">
+                        <a href="#" style="color: rgb(255, 175, 3);">
+                            <i class="fa-brands fa-quora"></i></a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        Q&A
+                    </div>
+                </div>
+            </div>
+            <div class="col text-center pt-3">
+                <div class="row">
+                    <div class="col">
+                        <a href="../diagnosis/diagnosisMainPage" style="color: rgb(88, 0, 253);">
+                            <i class="fa-solid fa-stethoscope"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        간편진단
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${selectFreeboardMainPage}" class="row mt-4 ps-3">
+            <a href="/club/freeBoardPage">
+                <div class="col">
+                    <div class="row fw-bold fs-5">지금 핫한 트렌디톡</div>
+                    <div class="row mt-2" th:each="freeboard : ${selectFreeboardMainPage}">
+                        <span class="col-auto text-secondary">동호회 게시판</span>
+                        <div class="col"
+                            th:utext="${#strings.length(freeboard.content) > 20 ? #strings.substring(freeboard.content, 0, 20) + '...' : freeboard.content}">
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="row p-3">
+            <div class="col">
+                <div class="row fw-bold fs-5">
+                    멍's토킹 추천 프랜드
+                </div>
+                <div class="row mt-2" style="white-space: nowrap; overflow-x: auto;">
+                    <div class="col">
+                        <div th:each="mstarUser : ${selectMstarUserMainPage}">
+                            <a th:href="@{'../mstar/profilePage?user_pk=' + ${mstarUser.user_pk}}">
+                                <div style="border: 1px solid #e5e5e5; border-radius: 10px;">
+                                    <div class="row p-3 me-3">
+                                        <div class="col-auto">
+
+                                            <img style="height: 3em; border-radius: 50%;"
+                                                th:src="@{${mstarUser.profile_photo}}">
+                                        </div>
+                                        <div class="col px-3">
+                                            <div class="row fs-bold" th:text="${mstarUser.nick_name}"></div>
+                                            <div class="row" th:if="${mstarUser.status_message != null}">
+                                                <div class="col">
+                                                    <div th:text="${mstarUser.status_message}"></div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="row mt-3">
-                                    <div class="col">
-                                        보러가기<i class="bi bi-chevron-right text-secondary" style="font-size: small;"></i>
-                                    </div>
-                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row p-3">
+            <div class="col">
+                <div class="row fw-bold fs-5">
+                    이벤트 참여하자!
+                </div>
+                <div class="row">
+                    <div id="carouselExampleIndicators" class="carousel slide">
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
+                                class="active" aria-current="true" aria-label="Slide 1"></button>
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
+                                aria-label="Slide 2"></button>
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
+                                aria-label="Slide 3"></button>
+                        </div>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="/public/image/commons/store1.png" class="d-block img-fluid" alt="...">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="/public/image/commons/store2.png" class="d-block img-fluid" alt="...">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="/public/image/commons/store3.png" class="d-block img-fluid" alt="...">
                             </div>
                         </div>
-                        <div class="col-5 position-absolute start-50 ps-3">
-                            <img class="img-fluid rounded-circle" src="/public/image/commons/miu.jpeg" alt="" style="aspect-ratio: 1/1; height: 8em; z-index: -2;">
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-1"></div>
-                        <div class="col rounded-start pe-0 position-relative" style="background-color: white;">
-                            <input class="form-control  border-white pe-0" type="text" placeholder="검색어를 입력하세요." style="z-index: 3;">
-                        </div>
-                        <div class="col-1 ps-0 rounded-end pt-2" style="background-color: white;">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </div>
-                        <div class="col-1"></div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
                     </div>
                 </div>
             </div>
-            <div class="row mt-3">
-                <div class="col text-center">
-                    <div class="row">
-                        <div class="col">
-                            <img src="../../3img/1.png" alt="" style="height: 2em;">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            산책
-                        </div>
-                    </div>
+
+        </div>
+
+        <div class="row p-3">
+            <div class="col">
+                <div class="row fw-bold fs-5">
+                    멍's 펀딩
                 </div>
-                <div class="col text-center">
-                    <div class="row">
-                        <div class="col">
-                            <img src="../../3img/2.png" alt="" style="height: 2em;">
-                        </div>
+                <div class="row">
+
+                    <div class="col-auto px-1 align-self-center">
+                        <a th:href="@{'../funding/listPage'}">
+                            <div
+                                style="width: 10em; height: 10em; background-color: rgba(241, 220, 136, 0.798); 
+            border-top-right-radius: 50%; border-bottom-right-radius: 50%; border-top-left-radius: 35%; border-bottom-left-radius: 35%; 
+            display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 12px; color: rgb(46, 46, 46); overflow: hidden; margin-right: auto;">
+                                →<br>
+                                지금 인기있는 펀딩을<br>
+                                추천드려요!
+                            </div>
+                        </a>
                     </div>
-                    <div class="row">
-                        <div class="col">
-                            일지
-                        </div>
-                    </div>
-                </div>
-                <div class="col text-center">
-                    <div class="row">
-                        <div class="col">
-                            <img src="../../3img/3.png" alt="" style="height: 2em;">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            급여량
-                        </div>
-                    </div>
-                </div>
-                <div class="col text-center">
-                    <div class="row">
-                        <div class="col">
-                            <img src="../../3img/4.png" alt="" style="height: 2em;">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            몸무게
-                        </div>
-                    </div>
-                </div>
-                <div class="col text-center">
-                    <div class="row">
-                        <div class="col">
-                            <img src="../../3img/5.png" alt="" style="height: 2em;">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            병원정보
+
+
+                    <div class="col p-3" style="white-space: nowrap; overflow-x: auto;">
+                        <div th:each="funding : ${selectFundingMainList}"
+                            style="display: inline-block; margin-right: 10px;">
+                            <div class="row">
+                                <a th:href="@{'../funding/productDetailPage?id=' + ${funding.product_pk}}">
+                                    <img style="height: 7.5em;" class="img-fluid"
+                                        th:src="@{'/uploadFiles/' + ${funding.title_image}}" alt="펀딩 이미지">
+                                </a>
+                            </div>
+                            <div class="row py-2 ps-1">
+                                <div th:text="${funding.product_name}"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row mt-4">
-                <div class="col fw-bold fs-5">
-                    지금 핫한 트렌디톡
-                </div>
-            </div>
-            <div class="row mt-2">
-                <div class="col">
-                    <span class="text-secondary">자유 게시판</span> 중성화 수술 휴유증
-                </div>
-            </div>
-            <div class="row mt-2">
-                <div class="col">
-                    <span class="text-secondary">육아 Q&A</span> 산책 교육 꼭 시켜야할까요??
-                </div>
-            </div>
-            <div class="row mt-2">
-                <div class="col">
-                    <span class="text-secondary">자유게시판</span> 애기가 목욕을 너무 좋아해요....
-                </div>
-            </div>
-            <div class="row mt-2">
-                <div class="col">
-                    <span class="text-secondary">육아 Q&A</span> 겨울에 발바닥 보습제 추천해주세요!!
-                </div>
-            </div>
-            <div class="row mt-4">
-                <div class="col fw-bold fs-5">
-                    멍's토킹 꿀팁 매거진
-                </div>
-            </div>
-            <div class="row  mt-2 ms-2 text-center" style="font-size: small;"> 
-                <div class="col-2 rounded-pill mx-2" style="background-color: rgb(228, 227, 227);">
-                    전체
-                </div>
-                <div class="col rounded-pill mx-2" style="background-color: rgb(228, 227, 227);">
-                    멍테스트
-                </div>
-                <div class="col rounded-pill mx-2" style="background-color: rgb(228, 227, 227);">
-                    꿀플레이스
-                </div>
-                <div class="col rounded-pill mx-2" style="background-color: rgb(228, 227, 227);">
-                    케어가이드
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col">
-                    <div class="row">
-                        <div class="col">
-                            <img class="img-fluid rounded" src="/public/image/commons/dog2.avif" alt="" style="aspect-ratio: 1/1;">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col" style="font-size: small;">
-                            <span class="text-secondary">톡톡</span> 울 애기 다이어트 제대로 시키는 방법
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="row">
-                        <div class="col">
-                            <img class="img-fluid rounded" src="/public/image/commons/list1.jpeg" alt="" style="aspect-ratio: 1/1;">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col" style="font-size: small;">
-                            <span class="text-secondary">톡톡</span> 만져주면 뒷발을 움직이는 이유!!
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <div class="row">
-                        <div class="col">
-                            <img class="img-fluid rounded" src="/public/image/commons/dog3.jpeg" alt="" style="aspect-ratio: 1/1;">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col" style="font-size: small;">
-                            <span class="text-secondary">톡톡</span> 
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="row">
-                        <div class="col">
-                            <img class="img-fluid rounded" src="/public/image/commons/dog4.jpeg" alt="" style="aspect-ratio: 1/1;">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col" style="font-size: small;">
-                            <span class="text-secondary">톡톡</span> 만져주면 뒷발을 움직이는 이유!!
-                        </div>
-                    </div>
-                </div>
-            </div>
+
             <div class="row bg-white sticky-bottom border-top" style="width: auto;">
                 <div class="col py-2">
-                    <div id="menuBar" class="row d-none" >
+                    <div id="menuBar" class="row d-none">
                         <div onclick="" class="col text-center" style="font-size: 4vw; cursor: pointer;">
                             <div class="row">
                                 <div class="col">
@@ -319,7 +379,7 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                   펫시터
+                                    펫시터
                                 </div>
                             </div>
                         </div>
@@ -337,7 +397,8 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div id="homeBar" onclick="showHomeBar()" class="col text-center" style="font-size: 4vw; cursor: pointer;">
+                        <div id="homeBar" onclick="showHomeBar()" class="col text-center"
+                            style="font-size: 4vw; cursor: pointer;">
                             <div class="row">
                                 <div class="col menu-trigger text-black">
                                     <i id="menuIcon" class="fa-solid fa-bars"></i>
@@ -404,10 +465,112 @@
 
 
 
-        
 
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    </body>
+        <!-- <div class="row mt-4">
+            <div class="col fw-bold fs-5">
+                지금 핫한 트렌디톡
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col">
+                <span class="text-secondary">자유 게시판</span> 중성화 수술 휴유증
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col">
+                <span class="text-secondary">육아 Q&A</span> 산책 교육 꼭 시켜야할까요??
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col">
+                <span class="text-secondary">자유게시판</span> 애기가 목욕을 너무 좋아해요....
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col">
+                <span class="text-secondary">육아 Q&A</span> 겨울에 발바닥 보습제 추천해주세요!!
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col fw-bold fs-5">
+                멍's토킹 꿀팁 매거진
+            </div>
+        </div> -->
+        <!-- <div class="row  mt-2 ms-2 text-center" style="font-size: small;">
+            <div class="col-2 rounded-pill mx-2" style="background-color: rgb(228, 227, 227);">
+                전체
+            </div>
+            <div class="col rounded-pill mx-2" style="background-color: rgb(228, 227, 227);">
+                멍테스트
+            </div>
+            <div class="col rounded-pill mx-2" style="background-color: rgb(228, 227, 227);">
+                꿀플레이스
+            </div>
+            <div class="col rounded-pill mx-2" style="background-color: rgb(228, 227, 227);">
+                케어가이드
+            </div>
+        </div> 
+        <div class="row mt-3">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <img class="img-fluid rounded" src="/public/image/commons/dog2.avif" alt=""
+                            style="aspect-ratio: 1/1;">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col" style="font-size: small;">
+                        <span class="text-secondary">톡톡</span> 울 애기 다이어트 제대로 시키는 방법
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <img class="img-fluid rounded" src="/public/image/commons/list1.jpeg" alt=""
+                            style="aspect-ratio: 1/1;">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col" style="font-size: small;">
+                        <span class="text-secondary">톡톡</span> 만져주면 뒷발을 움직이는 이유!!
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <img class="img-fluid rounded" src="/public/image/commons/dog3.jpeg" alt=""
+                            style="aspect-ratio: 1/1;">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col" style="font-size: small;">
+                        <span class="text-secondary">톡톡</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <img class="img-fluid rounded" src="/public/image/commons/dog4.jpeg" alt=""
+                            style="aspect-ratio: 1/1;">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col" style="font-size: small;">
+                        <span class="text-secondary">톡톡</span> 만져주면 뒷발을 움직이는 이유!!
+                    </div>
+                </div>
+            </div>
+        </div>-->
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+</body>
 
 </html>

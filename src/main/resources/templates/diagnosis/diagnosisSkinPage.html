@@ -234,11 +234,11 @@
                 if (event.target.type === 'submit') {
                     event.preventDefault();
 
-                    const selectedValue1 = form.querySelector('input[name="question1"]:checked').value;
-                    const selectedValue3 = form.querySelector('input[name="question3"]:checked').value;
-                    const selectedValue4 = form.querySelector('input[name="question4"]:checked').value;
+                    const a1 = form.querySelector('input[name="question1"]:checked').value;
+                    const c1 = form.querySelector('input[name="question3"]:checked').value;
+                    const d1 = form.querySelector('input[name="question4"]:checked').value;
 
-                    let href = "./diagnosisSkinResultPage?c1=" + selectedValue1 + "&d1=" + selectedValue4;
+                    let href = "./diagnosisSkinResultPage?c1=" + c1 + "&d1=" + d1;
                     window.location.href = href;
                 }
             });

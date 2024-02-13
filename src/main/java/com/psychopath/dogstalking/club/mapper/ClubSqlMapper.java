@@ -98,5 +98,8 @@ public interface ClubSqlMapper {
     public List<Map<String, Object>> selectImgCommentAll(int article_id);
     public void updateImgComment(ImgCommentDto commentDto);
     public void deleteImgComment(int id);
+
+    //메인페이지
+    public List<Map<String, Object>> selectFreeboardMainPage(int club_pk);
     
 }

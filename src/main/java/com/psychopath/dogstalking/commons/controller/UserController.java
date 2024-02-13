@@ -1,5 +1,8 @@
 package com.psychopath.dogstalking.commons.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,9 +12,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.psychopath.dogstalking.club.service.ClubServiceImpl;
 import com.psychopath.dogstalking.commons.service.UserServiceImpl;
 import com.psychopath.dogstalking.dto.KakaoUserDto;
 import com.psychopath.dogstalking.dto.UserDto;
+import com.psychopath.dogstalking.funding.service.FundingServiceImpl;
+import com.psychopath.dogstalking.mstar.service.MstarServiceImpl;
+import com.psychopath.dogstalking.trade.service.TradeServiceImpl;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -21,6 +28,19 @@ public class UserController {
 
 	@Autowired
 	private UserServiceImpl userService;
+
+	@Autowired
+	private FundingServiceImpl fundingService;
+
+	@Autowired
+	private ClubServiceImpl clubService;
+
+	@Autowired
+	private TradeServiceImpl tradeService;
+
+	@Autowired
+	private MstarServiceImpl mstarService;
+
 
 	@RequestMapping("loginPage")
 	public String loginPage() {
@@ -67,8 +87,20 @@ public class UserController {
 		}
 
 		String path = userService.getProfilePhotoPath(user_pk).getProfile_photo();
-		System.out.println();
+		//.out.println();
 		model.addAttribute("path", path);
+
+		List<Map<String, Object>> selectFundingMainList = fundingService.selectFundingMainList();
+        model.addAttribute("selectFundingMainList", selectFundingMainList);
+		
+		int pk=userDto.getUser_pk();
+		int club_pk=clubService.selectClubPK(pk);
+		
+		List<Map<String, Object>> selectFreeboardMainPage = clubService.selectFreeboardMainPage(club_pk);
+		model.addAttribute("selectFreeboardMainPage", selectFreeboardMainPage);
+
+		List<Map<String, Object>> selectMstarUserMainPage = userService.selectMstarUserMainPage();
+		model.addAttribute("selectMstarUserMainPage", selectMstarUserMainPage);
 
 		return "commons/mainPage";
 	}

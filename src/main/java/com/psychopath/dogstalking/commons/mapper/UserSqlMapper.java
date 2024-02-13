@@ -1,5 +1,6 @@
 package com.psychopath.dogstalking.commons.mapper;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -23,4 +24,6 @@ public interface UserSqlMapper {
     public Map<String, Object> selectKakaoUser(long kakao_user_id);
 
     public KakaoUserDto selectByKakaoUser(KakaoUserDto kakaoUserDto);
+
+    public List<Map<String,Object>> selectMstarUserMainPage();
 }

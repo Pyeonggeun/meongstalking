@@ -1,13 +1,31 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8= sha256-T+aPohYXbm0fRYDpJLr+zJ9RmYTswGsahAoIsNiMld4="
+        crossorigin="anonymous"></script>
+
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const c1Value = document.getElementById('c');
+            const d1Value = document.getElementById('d');
+
+            if (c1Value) {
+                c1Value.textContent = getParameterByName('c1');
+            }
+
+            if (d1Value) {
+                d1Value.textContent = getParameterByName('d1');
+            }
+        });
+
         function getParameterByName(name, url) {
             if (!url) url = window.location.href;
             name = name.replace(/[\[\]]/g, "\\$&");
@@ -17,19 +35,9 @@
             if (!results[2]) return '';
             return decodeURIComponent(results[2].replace(/\+/g, " "));
         }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const c1Value = getParameterByName('c1');
-            const d1Value = getParameterByName('d1');
-
-            if (c1Value !== '' && d1Value !== '') {
-                document.getElementById('c1Result').textContent = `c1에 대한 결과: ${c1Value}`;
-                document.getElementById('d1Result').textContent = `d1에 대한 결과: ${d1Value}`;
-            } else {
-                console.error('Error: c1Value or d1Value is empty.');
-            }
-        });
+        // console.log('c value:', /*[[@{${cc}}]]*/ null);
     </script>
+
 </head>
 
 <body>
@@ -71,8 +79,12 @@
             </div>
 
         </div>
+        <!-- <div class="row p-3">
+            <div id="c"></div>
+            <div id="d"></div>
+        </div> -->
         <div class="row p-3">
-            <div if="${c1Value}==c1" class="col p-3">
+            <div id="c" th:if="${c1 == 'c1' or c1 == 'c3'}" class="col-md-6 p-3 dynamic-content" style="border-bottom: 5px solid #e3e3e3;">
                 <div class="row text-center py-4">
                     <h6 style="font-weight: bold; margin-bottom: 0px; color: #0a0079;">습진</h6><br>
                 </div>
@@ -84,7 +96,7 @@
                 </div>
                 <div class="row mt-5 ">
                     <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
-                    aria-controls="offcanvasRight">더보기></button>
+                        aria-controls="offcanvasRight">더보기></button>
                 </div>
                 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight"
                     aria-labelledby="offcanvasRightLabel">
@@ -97,7 +109,7 @@
                     </div>
                 </div>
             </div>
-            <div if="${c1Value}==c1" class="col p-3" >
+            <div th:if="${c == c1}" class="col-md-6 p-3" style="border-bottom: 5px solid #e3e3e3;">
                 <div class="row text-center py-3 mb-1">
                     <h6 style="font-weight: bold; margin-bottom: 0px; color: #0a0079;">식이 알레르기<br>피부병</h6><br>
                 </div>
@@ -110,7 +122,7 @@
 
                 <div class="row mt-5 ">
                     <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
-                    aria-controls="offcanvasRight">더보기></button>
+                        aria-controls="offcanvasRight">더보기></button>
                 </div>
                 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight"
                     aria-labelledby="offcanvasRightLabel">
@@ -122,11 +134,8 @@
                         ...
                     </div>
                 </div>
-
             </div>
-        </div>
-        <div class="row p-3">
-            <div if="${c1Value}==c1" class="col p-3" >
+            <div th:if="${c == c1}" class="col-md-6 p-3" style="border-bottom: 5px solid #e3e3e3;">
                 <div class="row text-center py-4">
                     <h6 style="font-weight: bold; margin-bottom: 0px; color: #0a0079;">아토피</h6><br>
                 </div>
@@ -134,11 +143,11 @@
                     발생빈도: 많음
                 </div>
                 <div class="row mb-3">
-                    피부에 특별한 이상 없이 심한 가려움증을 일을키는 질병입니다. 
+                    피부에 특별한 이상 없이 심한 가려움증을 일을키는 질병입니다.
                 </div>
                 <div class="row mt-5 ">
                     <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
-                    aria-controls="offcanvasRight">더보기></button>
+                        aria-controls="offcanvasRight">더보기></button>
                 </div>
                 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight"
                     aria-labelledby="offcanvasRightLabel">
@@ -147,24 +156,24 @@
                         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     </div>
                     <div class="offcanvas-body">
-                        <!-- 내용 추가 -->
+
                     </div>
                 </div>
             </div>
-            <div if="${c1Value}==c1" class="col p-3">
+            <div th:if="${c == 'c1' or c == 'c2'}" class="col-md-6 p-3 mt-2" style="border-bottom: 5px solid #e3e3e3;">     
                 <div class="row text-center py-3 mb-1">
                     <h6 style="font-weight: bold; margin-bottom: 0px; color: #0a0079;">농피증</h6><br>
                 </div>
-                <div class="row" style="color: #444444;">
-                    발생빈도 : 많음
+                <div class="row mt-2" style="color: #444444;">
+                    발생빈도 : 보통
                 </div>
                 <div class="row mb-3">
-                    음식물 알레르기의 피부병을 의미합니다.
+                    종기가 곪아서 고름이 생기는 질병입니다.
                 </div>
 
                 <div class="row mt-5 ">
                     <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
-                    aria-controls="offcanvasRight">더보기></button>
+                        aria-controls="offcanvasRight">더보기></button>
                 </div>
                 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight"
                     aria-labelledby="offcanvasRightLabel">
@@ -176,13 +185,10 @@
                         ...
                     </div>
                 </div>
-
             </div>
         </div>
 
     </div>
-
-
 </body>
 
 </html>

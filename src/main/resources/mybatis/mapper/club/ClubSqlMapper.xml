@@ -285,4 +285,14 @@
     <delete id="deleteImgComment">
 		DELETE FROM ms_club_imgboard_comment WHERE imgcomment_pk = #{imgcomment_pk}
 	</delete>
+
+    <!--메인페이지용-->
+    <select id="selectFreeboardMainPage" resultType="map">
+        SELECT *
+        FROM ms_club_freeboard
+        JOIN ms_user ON ms_user.user_pk = ms_club_freeboard.user_pk
+        WHERE ms_club_freeboard.club_pk = #{club_pk}
+        ORDER BY ms_club_freeboard.created_at DESC
+        LIMIT 5;
+    </select>
 </mapper>
