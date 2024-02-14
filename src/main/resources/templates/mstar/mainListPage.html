@@ -9,6 +9,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
         <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}" />
+        <script src="/public/js/commons/lockLikeMobile.js"></script>
         <script src="/public/js/commons/naviBar.js"></script>
         <script>
              let user_pk = null;
@@ -198,14 +199,14 @@
             }
             function removeTouchImgEventListener() {
                 const story_img = document.querySelector("#story_img");
-                story_img.removeEventListener('touchstart', touchImg());
+                story_img.removeEventListener('click', touchImg());
             }
 
 
             function touchImg(event) {
                     console.log(event)
         
-                    const touchX = event.touches[0].clientX; // 터치 이벤트의 X 좌표
+                    const touchX = event.clientX; // 터치 이벤트의 X 좌표
                     // 이미지의 가로 중앙 좌표
                     const imageCenterX = story_img.getBoundingClientRect().left + story_img.offsetWidth / 2;
 
@@ -252,7 +253,7 @@
 
                 const story_img = document.querySelector("#story_img");
                 
-                story_img.addEventListener('touchstart', touchImg);
+                story_img.addEventListener('click', touchImg);
                 
                 const storyModal = bootstrap.Modal.getOrCreateInstance("#storyModal");
                 storyModal.show();
@@ -263,7 +264,7 @@
                 storyModal.hide();
                 
                 const story_img = document.querySelector("#story_img");
-                story_img.removeEventListener("touchstart", touchImg);    
+                story_img.removeEventListener("click", touchImg);    
             } 
             
             function loadArticleList(profile_info_pk){
@@ -1188,13 +1189,13 @@
             }
             function removeTouchImgEventListener() {
                 const my_story_img = document.querySelector("#my_story_img");
-                my_story_img.removeEventListener('touchstart', touchMyImg());
+                my_story_img.removeEventListener('click', touchMyImg());
             }
 
 
             function touchMyImg(event) {
                 
-                const touchX = event.touches[0].clientX; // 터치 이벤트의 X 좌표
+                const touchX = event.clientX; // 터치 이벤트의 X 좌표
                 // 이미지의 가로 중앙 좌표
                 const imageCenterX = my_story_img.getBoundingClientRect().left + my_story_img.offsetWidth / 2;
 
@@ -1262,7 +1263,7 @@
                 
                 const my_story_img = document.querySelector("#my_story_img");
                 
-                my_story_img.addEventListener('touchstart', touchMyImg);
+                my_story_img.addEventListener('click', touchMyImg);
                 
                 const myStoryModal = bootstrap.Modal.getOrCreateInstance("#myStoryModal");
                 myStoryModal.show();
@@ -1274,7 +1275,7 @@
                 
                 const my_story_img = document.querySelector("#my_story_img");
                 my_story_img.src ="";
-                my_story_img.removeEventListener("touchstart", touchMyImg);    
+                my_story_img.removeEventListener("click", touchMyImg);    
             } 
 
             function insertDirect(another_info_pk){
@@ -1408,6 +1409,9 @@
                 color: white; /* placeholder 글자 색상을 원하는 색상으로 설정 */
                 font-size: 0.9em
             }
+            .modal-fullscreen {
+                width: 100%;
+            }
         </style>
     </head>
 
@@ -1485,7 +1489,7 @@
                                 <div class="col-2 px-0 text-center my-auto">
                                     <i class="fa-solid fa-ellipsis text-body-tertiary"></i>
                                 </div>
-                                <div class="col-7 text-secondary text-truncate d-block" style="position: absolute; top: 2.1em; left: 4em; font-size: small;">
+                                <div class="col-7 text-secondary text-truncate d-block" style="position: absolute; top: 60%; left: 14%; font-size: small;">
                                     서울시 23-3 여의도 벚꽃길, 뽀삐와 삐뽀와
                                 </div>
                             </div>
@@ -1598,9 +1602,9 @@
             </div>
         </div>
 
-        <div class="offcanvas offcanvas-bottom" tabindex="-1" id="commentWriteBox" aria-labelledby="offcanvasBottomLabel" style="height: auto; background-color: transparent; border: none;"> 
+        <div class="offcanvas offcanvas-bottom" tabindex="-1" id="commentWriteBox" aria-labelledby="offcanvasBottomLabel" style="height: auto; background-color: transparent; border: none; padding-left: 0.7rem; padding-right: 0.7rem;"> 
             <div id="commentListBox" class="row d-none">
-                <div class="col bg-white" style="border-top-left-radius: 2.5em; border-top-right-radius: 2.5em; border-top: 0.1em solid rgb(211, 211, 215) ;">
+                <div class="col bg-white" style="border-top-left-radius: 2.3em; border-top-right-radius: 2.3em; border-top: 0.1em solid rgb(211, 211, 215) ;">
                     <div class="row py-2 ">
                         <div class="col-5"></div>
                         <div class="col rounded-pill border-4" style="background-color: rgb(194, 195, 195); height: 0.2em;"></div>

@@ -6,7 +6,7 @@
 // 주요 세팅값
 const llmSettingValues = {
     autoHeight: true,                           // 높이 최대 크기
-    fixedHeightRatio: 16,                       // 높이 배율
+    fixedHeightRatio: 18,                       // 높이 배율
     fixedWidthRatio: 9,                         // 너비 배율
     commonRatio: 3.3,                           // 크기 배율
     wrapperBackgroundColor: "#FFFFFF",          // 가두는 상자 배경 색
