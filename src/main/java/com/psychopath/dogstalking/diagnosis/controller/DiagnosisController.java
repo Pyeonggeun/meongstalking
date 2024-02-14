@@ -26,7 +26,8 @@ public class DiagnosisController {
         return "diagnosis/diagnosisSkinPage";
     }
 
-   @RequestMapping(value = "/diagnosisSkinResultPage", method = RequestMethod.GET)
+   //@RequestMapping(value = "/diagnosisSkinResultPage", method = RequestMethod.GET)
+   @RequestMapping("diagnosisSkinResultPage")
     public String diagnosisSkinResultPage(HttpSession session) {
         return "diagnosis/diagnosisSkinResultPage";
     }

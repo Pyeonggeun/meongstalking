@@ -6,6 +6,7 @@
 <insert id="insertProductInfo">
     insert into ms_funding_product(
         user_pk,
+        product_component,
         product_name,
         simple_explain,
         title_image,
@@ -16,6 +17,7 @@
         amount
     ) values (
         #{user_pk},
+        #{product_component},
         #{product_name},
         #{simple_explain},
         #{title_image},
@@ -90,6 +92,12 @@ where product_pk = #{product_pk} order by created_at DESC
     from ms_funding_product mfp where mfp.product_pk=#{product_pk};
 </select>
 
+<select id="countMyWish" resultType="int">
+    select count(*) from ms_funding_wishlist 
+    where product_pk = #{product_pk}
+    AND user_pk= #{user_pk}
+</select>
+
 <insert id="insertWish">
     insert into ms_funding_wishlist (
         product_pk,
@@ -121,7 +129,8 @@ where product_pk = #{product_pk} order by created_at DESC
 <select id="selectNewsForDetail" resultType="String">
     select COALESCE(content,'새소식이 아직 없습니다') from ms_funding_news 
     where product_pk = #{product_pk}
-    LIMIT 1;
+    order by news_pk DESC 
+    LIMIT 1
 </select>
 
 <select id="selectNewsById" resultType="com.psychopath.dogstalking.funding.dto.FundingNewsDto">
@@ -293,6 +302,16 @@ select
     select count(*) from ms_funding_cheering
     where product_pk = #{product_pk}
 </select>
+
+    <select id="selectFundingMainList" resultType="map">
+        <![CDATA[
+        SELECT *
+        FROM ms_funding_product
+        WHERE start_date <= CURRENT_DATE
+        AND finish_date >= CURRENT_DATE
+        ORDER BY RAND();
+        ]]>
+    </select>
 
 
 </mapper>

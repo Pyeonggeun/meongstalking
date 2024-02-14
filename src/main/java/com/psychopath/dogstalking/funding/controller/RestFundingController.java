@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.psychopath.dogstalking.dto.UserDto;
 import com.psychopath.dogstalking.funding.dto.FundingCheeringDto;
+import com.psychopath.dogstalking.funding.dto.FundingWishlistDto;
 import com.psychopath.dogstalking.funding.dto.RestResponseFundingDto;
 import com.psychopath.dogstalking.funding.service.FundingServiceImpl;
 
@@ -25,6 +26,16 @@ public class RestFundingController {
 
     @Autowired
     private FundingServiceImpl fundingService;
+
+    @RequestMapping("callListingProductUsingAjax")
+    public RestResponseFundingDto callListingProducttUsingAjax(){
+        RestResponseFundingDto restResponseFundingDto = new RestResponseFundingDto();
+        System.out.println("callListingProducttUsingAjax 실행 시작");
+        restResponseFundingDto.setResult("success");
+        restResponseFundingDto.setData(fundingService.fundingListCall());
+        System.out.println("callListingProducttUsingAjax 실행 마무리");
+        return restResponseFundingDto;
+    }
 
     @RequestMapping("insertCheeringUsingAjax")
     public RestResponseFundingDto insertCheeringUsingAjax(HttpSession session,
@@ -86,20 +97,44 @@ public class RestFundingController {
 
     }
 
-    @RequestMapping("toggleWish")
-    public RestResponseFundingDto toggleWish(HttpSession session, FundingCheeringDto paraCheeringDto, @RequestParam("product_pk")int product_pk){
+    @RequestMapping("toggleWishProduct")
+    public RestResponseFundingDto toggleWishProduct(HttpSession session, FundingWishlistDto paraWishDto, @RequestParam("product_pk")int product_pk){
         RestResponseFundingDto restResponseFundingDto = new RestResponseFundingDto();
 
         UserDto sessionUser = (UserDto)session.getAttribute("sessionUser");
-        paraCheeringDto.setUser_pk(sessionUser.getUser_pk());
+        paraWishDto.setUser_pk(sessionUser.getUser_pk());
 
-        paraCheeringDto.setProduct_pk(product_pk);
-        fundingService.insertCheering(paraCheeringDto);
+        paraWishDto.setProduct_pk(product_pk);
+        System.out.println("rest twp product_pk="+product_pk);
+        fundingService.toggleWishProduct(paraWishDto);
 
         restResponseFundingDto.setResult("success");
         
         return restResponseFundingDto;
     }
+
+    @RequestMapping("reloadWish")
+    public RestResponseFundingDto reloadWish(HttpSession session, FundingWishlistDto paraWishDto, @RequestParam("product_pk")int product_pk){
+        RestResponseFundingDto restResponseFundingDto = new RestResponseFundingDto();
+        System.out.println("나와라 : " + paraWishDto);
+
+        UserDto sessionUser = (UserDto)session.getAttribute("sessionUser");
+        paraWishDto.setUser_pk(sessionUser.getUser_pk());
+
+        paraWishDto.setProduct_pk(product_pk);
+        System.out.println("rest rw product_pk="+product_pk);
+        boolean wishOrNot=  fundingService.reloadWish(paraWishDto);
+        System.out.println("rest rw wishOrNot="+wishOrNot);
+        System.out.println("rest rw product_pk="+product_pk);
+
+        restResponseFundingDto.setResult("success");
+        restResponseFundingDto.setData(wishOrNot);
+        
+        return restResponseFundingDto;
+    }
+
+
+
 }
 
 //여기서 리퀘스트 하면 죄다 json으로 된다 포워딩 안 해도 된다. 모델 필요없고 값만 잘 리턴헤주자

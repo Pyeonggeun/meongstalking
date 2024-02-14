@@ -37,8 +37,8 @@ public class FundingController {
 
     @RequestMapping("listPage")
     public String listPage(Model model, HttpSession session,FundingWishlistDto paraWishDto){
-        List<Map<String,Object>> fundingList = fundingService.fundingListCall();
-        model.addAttribute("list", fundingList);
+        // List<Map<String,Object>> fundingList = fundingService.fundingListCall();
+        // model.addAttribute("list", fundingList);
 
         return "funding/listPage";
     }

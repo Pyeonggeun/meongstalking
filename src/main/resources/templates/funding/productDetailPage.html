@@ -3,14 +3,77 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>상품 상세 페이지</title>
+    <title>프로젝트 상세 페이지</title>
 
     <script>
+
+        window.addEventListener('DOMContentLoaded', () => {
+        const productPkElement = document.getElementById("product_pk");
+        const product_pk = productPkElement.value;
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            fetch("./reloadWish?product_pk=" +product_pk.value)
+            .then(response => response.json())
+            .then(response => {
+                const wishOrNot = response.data;
+                const wishButton = document.getElementById("wishButton");
+                console.log(wishOrNot);
+                if(wishOrNot === true){
+                    wishButton.classList.remove("bi-heart");
+                    wishButton.classList.add("bi-heart-fill");
+                }else if(wishOrNot === false){
+                    wishButton.classList.remove("bi-heart-fill");
+                    wishButton.classList.add("bi-heart");
+                }
+            });
+        });
+
+        function toggleWish(){    
+            console.log("product_pk="+product_pk.value)
+            fetch("./toggleWishProduct?product_pk="+product_pk.value)
+                .then(response => response.json())
+                .then(response => {
+                    reloadWish();
+                });
+            }
+
+        function reloadWish(){
+            console.log("product_pk="+product_pk.value)
+            const wishText = document.getElementById("wishOrNotText");
+            
+            fetch("./reloadWish?product_pk=" +product_pk.value)
+            .then(response => response.json())
+                .then(response => {
+                    const wishButton = document.getElementById("wishButton");
+                    console.log("wishButton="+wishButton)
+                    if(response.data == true){
+                        wishButton.classList.remove("bi-heart");
+                        wishButton.classList.add("bi-heart-fill");
+                        wishText.innerText = "찜 완료";
+                    }else{
+                        wishButton.classList.remove("bi-heart-fill");
+                        wishButton.classList.add("bi-heart");
+                        wishText.innerText = "찜하기";
+                    }
+                });
+        }
+
+
+        // // model에서 int 값 가져오기
+        // const intVal = model.getAttribute("intVal");
+
+        // // 3자리 마다 쉼표 넣는 함수
+        // function addCommas(num) {
+        // const parts = num.toString().split(".");
+        // parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        // return parts.join(".");
+        // }
+
+        // // 쉼표 넣은 값 출력
+        // document.getElementById("output").innerHTML = addCommas(intVal);
         
-    
     </script>
-
-
 
     <style>
         .overflow-x-auto{
@@ -18,9 +81,26 @@
             display: flex;
         }
 
-        #purchaseBtn:hover {
-            background-color: black;
+        body{
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .preCol{
+            margin-left: 0.5em;
+            margin-right: 0.5em;
+            max-width: 18em;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        #purchaseBtn {
+            background-color: rgb(61, 134, 252);
             color: whitesmoke;
+            }
+        
+        #fixedForPurchase{
+            position: fixed;
+            bottom: 0%;
         }
 
         ::-webkit-scrollbar { 
@@ -31,6 +111,10 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -47,49 +131,35 @@
 
                 <div class="row"><div class="col d-grid"><img class="img-fluid px-0" th:src="@{'/uploadFiles/'+${product.detail.title_image}}" alt="등록된 이미지가 없습니다" style="width: 100%;"></div></div>
                 <div class="row my-1"><div class="col"><span style="font-size: 0.85em; color: gray;"> 카테고리 ></span> <span style="color: black;">#</span></div><div class="col text-end" style="font-size: 0.85;"><i class="bi bi-share"></i></div></div>
-                <div class="row mt-2 mb-2"><div class="col fw-bold" style="font-size: 1.15em;" th:text="${product.detail.product_name}"></div></div>
-                <div class="row py-1 mb-3"><div class="col" style="font-size: 0.9em;" th:text="${product.detail.simple_explain}"></div> </div>
+                <div class="row mt-2 mx-1 mb-2"><div class="col fw-bold" style="font-size: 1.15em;" th:text="${product.detail.product_name}"></div></div>
+                <div class="row py-1 mb-3"><div class="col preCol" style="font-size: 0.9em;" th:text="${product.detail.simple_explain}"></div> </div>
 
-                <div class="row py-2 mb-1"><div class="col"><span style="font-size: 1.4em;" class="fw-bold" th:utext="|${product.percent}%|"></span><span style="font-size: 0.95em;"> 달성</span></div><div class="col"><div class="badge text-wrap" style="background-color: gainsboro;"><span th:utext="${product.f_day}"></span><span>일 남음</span></div></div></div>
-                <div class="row py-2 mb-4"><div class="col"><span style="font-size: 1.4em;" class="fw-bold" th:text="${product.t_sales}"></span> <span style="font-size: 0.95em;">원 달성</span></div><div class="col"><div class="badge text-wrap" style="background-color: gainsboro;"><span th:text="|${product.c_purchase}회 구매|"></span></div></div></div>
+                <div class="row py-2 mb-1"><div class="col ps-4"><span style="font-size: 1.4em;" class="fw-bold" th:utext="|${product.percent}%|"></span><span style="font-size: 0.95em;"> 달성</span></div><div class="col" style="font-size: 1.15em;"><div class="badge text-wrap" style="background-color: burlywood"><span th:utext="${product.f_day}"></span><span>일 남음</span></div></div></div>
+                <div class="row py-2 mb-4"><div class="col ps-4"><span style="font-size: 1.4em;" class="fw-bold" th:text="${product.t_sales}"></span> <span style="font-size: 0.95em;">원 달성</span></div><div class="col" style="font-size: 1.15em;"><div class="badge text-wrap" style="background-color: burlywood;"><span th:text="|${product.c_purchase}회 구매|"></span></div></div></div>
 
 
-                <div class="row py-1 mb-4 mx-1 rounded border-0" style="background-color: gainsboro"><div class="col" style="font-size: 0.85em; color: gray;"><i class="bi bi-shield-fill-exclamation"></i> 프로젝트에 문제가 있나요?</div><div class="col-4 text-end" style="font-size: 0.9em; color: lightslategrey;">신고하기 <i class="bi bi-caret-right-fill"></i></div></div>
+                <div class="row py-1 mb-4 mx-2 rounded border-0" style="background-color: gainsboro"><div class="col" style="font-size: 0.85em; color: gray;"><i class="bi bi-shield-fill-exclamation"></i> 프로젝트에 문제가 있나요?</div><div class="col-4 text-end" style="font-size: 0.9em; color: lightslategrey;">신고하기 <i class="bi bi-caret-right-fill"></i></div></div>
                 
                 <div class="row mb-4 px-0">
-                    <div class="col py-2 mx-3 border border-2 rounded">
+                    <div class="col py-2 mx-4 border border-2 rounded">
                         <div class="row pb-1"><div class="col fw-light" style="font-size: 0.75em;">최근 새소식</div></div>
-                        <div class="row"><div class="col" th:text="${product.news}"></div></div>
+                        <div class="row"><div class="col preCol" th:text="${product.news}"></div></div>
                     </div>
                 </div>
 
                 <div class="row mt-4 mb-2"><div class="col fw-bold" style="font-size: 1.25em;">프로젝트 스토리</div></div>
                 <div class="row mb-4"><div class="col"><img th:src="@{'/uploadFiles/'+${product.detail.explain_image}}" alt="등록된 이미지가 없습니다" style="width: 100%;"></div></div>
 
-                <div class="row mb-1"><div class="col ms-1 fw-bold" style="font-size: 1em;">상품가격</div></div>
-                <div class="row mx-1 py-1 mb-4 border border-2 rounded"><div class="col"><span th:text="${product.detail.price}" class="fw-bold" style="font-size: 1.15em;"></span> 원</div></div>
-
-                <div class="row py-2 mt-2 mb-4">
-                    <div class="col-1 text-center ms-3 me-2 px-0 rounded">
-
-                        <div class="row"><div class="col px-0"><i id="wishBox" onclick="wishButton()" class="bi bi-heart" style="font-size: 1.5em;"></i></div></div>
-                        <div class="row"><div id="wishCountBox" class="col px-0" style="font-size: 0.65em;"></div></div>
-                        
-
-                    </div>    
-
-                    <div class="col-1 text-center mx-2 px-0 rounded">
-                        <div class="row"><div class="col px-0"><i class="bi bi-chat-left-heart" style="font-size: 1.5em;"></i></div></div>
-                        <div class="row"><div class="col px-0" style="font-size: 0.65em;">응원하기</div></div>
-                    </div> 
-
-
-                    <div class="col d-grid"><a th:href="@{./productPurchasePage(id = ${product.detail.product_pk})}" class="btn border rouneded  border-2 border-dark fw-bold" id="purchaseBtn" style="font-size:1.25em;">구매하기</a></div> 
-                </div>
+                <div class="row mb-1"><div class="col ms-1 fw-bold" style="font-size: 1em;">상품가격과 구성</div></div>
+                
+                <div class="row"><div class="col mx-3 mb-4 border border-2 rounded">
+                <div class="row pt-2"><div class="col-2" style="font-size: 0.85em; color: dimgray;">가격 </div><div class="col"><span th:text="${product.detail.price}" class="fw-bold" style="font-size: 1em;"></span> 원</div></div>
+                <div class="row pt-1 pb-2"><div class="col-2" style="font-size: 0.85em; color: dimgray;">구성 </div><div class="col"><span class="preCol" th:text="${product.detail.product_component}" style="font-size: 1em;"></span></div></div>
+                </div></div>
                 
                 <div class="row my-3">
                     <div class="col">
-                        <div class="row my-1 mb-2"><div class="col-4 fw-bold border border border-start-0 border-end-0" style="font-size: 0.85em;">리뷰목록</div></div>
+                        <div class="row my-1 mb-2"><div class="col-4 py-1 fw-bold border border border-start-0 border-end-0" style="font-size: 0.85em;">리뷰목록</div></div>
                         
                             <div class="container overflow-x-auto">
                                 <th:block th:each="review : ${review}"> 
@@ -103,30 +173,28 @@
                             </div>
                     </div>
                 </div>
-                <div class="row"><div class="col"></div></div>
+
+                <div class="row"><div class="col" style="padding: 3em;"></div></div>
 
 
+                <div class="row pb-2 pt-3" id="fixedForPurchase" style="background-color: white; width: 100%;">
 
+                    <div class="col-1 text-center ms-3 me-2 px-0 rounded">
+                        <div class="row">
+                            <div class="col px-0"><i id="wishButton" onclick="toggleWish()" class="bi bi-heart" style="font-size: 1.5em;"></i></div>
+                        </div>
+                        <div class="row"><div id="wishOrNotText" class="col px-0" style="font-size: 0.65em;">찜하기</div></div>
+                    </div>    
 
+                    <div class="col-1 text-center mx-2 px-0 rounded">
+                        <div class="row"><div class="col px-0"><i class="bi bi-chat-left-heart" style="font-size: 1.5em;"></i></div></div>
+                        <div class="row"><div class="col px-0" style="font-size: 0.65em;">응원하기</div></div>
+                    </div> 
 
+                    <div class="col me-1 d-grid align-self-center"><a th:href="@{./productPurchasePage(id = ${product.detail.product_pk})}" class="btn border rouneded border-primary fw-bold" id="purchaseBtn" style="font-size:1.25em;">구매하기</a></div> 
+                </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <!--컨테이너 끝-->
             </div>
         </div>
     </div>
@@ -136,6 +204,7 @@
     <input id="user_pk" type="hidden" th:value="${session.sessionUser.user_pk}">
     <input id="product_pk" type="hidden" th:value="${product.detail.product_pk}">
 
+    <script src="/public/js/commons/lockLikeMobile.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 

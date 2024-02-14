@@ -15,7 +15,9 @@
         <script src="/public/js/commons/lockLikeMobile.js"></script>
 
         <link rel="stylesheet" th:href="@{/public/css/mFollowShop/item.css}" />
+        <link rel="stylesheet" th:href="@{/public/css/mFollowShop/achievement.css}" />
         <script src="/public/js/mFollowShop/item.js"></script>
+        <script src="/public/js/mFollowShop/achievement.js"></script>
 
         <script>
 
@@ -47,6 +49,8 @@
 
             let traceMarkerUpTo = 3;
 
+            let plusTrackMarkerProbability = 0;
+
             function getMyUserPk() {
 
                 const url = "./getMyUserPk";
@@ -60,6 +64,7 @@
 
                     getMyTrackMarkers();
                     getTracingTrackMarkers();
+                    getPermanentItemLv();
 
                 });
 
@@ -122,7 +127,6 @@
             }
 
             function displayMyLocation(position) {
-                displayScanningTrackMarkers(position);
 
                 if(myLocation) {
                     myLocation.setPosition(position);
@@ -223,34 +227,56 @@
 
             function displayScanningTrackMarkers(e) {
 
-                // const position = new kakao.maps.LatLng(e.latitude, e.longitude);
-                const position = new kakao.maps.LatLng(currentLat, currentLng);
+                const position = new kakao.maps.LatLng(e.latitude, e.longitude);
 
                 const content = document.createElement("div");
                 content.classList.add("scanMarkerBox");
-                content.style.position = "relative";
-                content.style.width = "4rem";
-                content.style.height = "4rem";
 
                 const div1 = document.createElement("div");
                 div1.classList.add("scanMarkerImage");
-                div1.style.position = "absolute";
-                div1.style.width = "4rem";
-                div1.style.height = "4rem";
-                div1.style.background = "url('/public/image/follow/sixstar.png') no-repeat center";
+
+                if(e.star_rating == 'oneStar') {
+                    div1.style.background = "url('/public/image/follow/onestar.png') no-repeat center";
+                }else if(e.star_rating == 'twoStar') {
+                    div1.style.background = "url('/public/image/follow/twostar.png') no-repeat center";
+                }else if(e.star_rating == 'threeStar') {
+                    div1.style.background = "url('/public/image/follow/threestar.png') no-repeat center";
+                }else if(e.star_rating == 'fourStar') {
+                    div1.style.background = "url('/public/image/follow/fourstar.png') no-repeat center";
+                }else if(e.star_rating == 'fiveStar') {
+                    div1.style.background = "url('/public/image/follow/fivestar.png') no-repeat center";
+                }else if(e.star_rating == 'S') {
+                    div1.style.background = "url('/public/image/follow/sixstar.png') no-repeat center";
+                }else if(e.star_rating == 'SR') {
+                    div1.style.background = "url('/public/image/follow/sevenstar.png') no-repeat center";
+                }else {
+                    div1.style.background = "url('/public/image/follow/eightstar.png') no-repeat center";
+                }
+
                 div1.style.backgroundSize = "cover";
 
-                // const div2 = document.createElement("div");
-                // div2.classList.add("scanMarkerContent");
-                // div2.style.position = "absolute";
-                // div2.style.top = "1.05rem";
-                // div2.style.left = "33%";
-                // div2.style.fontSize = "0.55rem";
-                // div2.style.fontWeight = "700";
-                // div2.innerText = "No.737";
+                const div2 = document.createElement("div");
+                div2.classList.add("scanMarkerContent");
+                
+                div2.style.width = "1.2rem";
+                div2.style.height = "1.2rem";
+                div2.style.top = "0.8rem";
+                div2.style.left = "1.4rem";
+
+                div2.style.background = "url('/public/image/follow/questionBlack.png') no-repeat center";
+                div2.style.backgroundSize = "cover";
+
+                if(e.open_rating == 10) {
+                    div2.style.width = "1.6rem";
+                    div2.style.height = "1.6rem";
+                    div2.style.top = "0.7rem";
+                    div2.style.left = "1.2rem";
+
+                    div2.style.background = "url('/uploadFiles/ " + e.profile_photo + " ') no-repeat center";
+                }
 
                 content.appendChild(div1);
-                // content.appendChild(div2);
+                content.appendChild(div2);
 
                 // 커스텀 오버레이를 생성합니다
                 var customOverlay = new kakao.maps.CustomOverlay({
@@ -326,6 +352,32 @@
                             displayTracingTrackAndInfoMarker(e);
 
                         }
+
+                });
+
+            }
+
+            function getPermanentItemLv() {
+
+                const url = "./getPermanentItemLv?user_pk=" + user_pk;
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+
+                    for(let e of response.data) {
+
+                        if(e.item_pk == 1) {
+                            scanMarkerUpTo += e.item_cnt;
+                        }else if(e.item_pk == 2) {
+                            scanMarkerEffectiveDistance += e.item_cnt * 5;
+                        }else if(e.item_pk == 3) {
+                            traceMarkerUpTo += e.item_cnt;
+                        }else if(e.item_pk == 4) {
+                            plusTrackMarkerProbability += e.item_cnt;
+                        }
+
+                    }
 
                 });
 
@@ -413,7 +465,7 @@
                 .then(response => response.json())
                 .then(response => {
                     console.log("getCurrentMyTrackMarkerCount : " + response.data);
-                    if(response.data == trackMarkerUpTo) {
+                    if(response.data >= trackMarkerUpTo) {
 
                         document.getElementById("alertContent").innerText = "횟수를 모두 사용하셨습니다";
                         showAlertModal();
@@ -459,6 +511,12 @@
 
                 const inputImage = document.getElementById("writeTrackMarkImage");
                 const content = document.getElementById("writeTrackMarkContent").value;
+
+                if(inputImage.files.length == 0 || content == "") {
+
+                    //asdf
+                    return;
+                }
 
                 const formData = new FormData();
                 formData.append("user_pk", user_pk);
@@ -548,9 +606,37 @@
                 .then(response => response.json())
                 .then(response => {
                     console.log("getCurrentCollectTrackMarkerCount : " + response.data);
-                    if(response.data == collectMarkerUpTo) {
+                    if(response.data >= collectMarkerUpTo) {
+                        //ghgh
 
-                        document.getElementById("alertContent").innerText = "횟수를 모두 사용하셨습니다";
+                        document.getElementById("alertWithCancelContent").innerText = `횟수를 모두 사용하셨습니다\n아이템을 사용하시겠습니까?`;
+                        document.getElementById("alertWithCancelCheckButton").onclick = () => {
+                            hideAlertWithCancelModal();
+                            getPlusCollectTrackMarkerItemCount(e);
+                        };
+                        showAlertWithCancelModal();
+
+                        return;
+
+                    }
+
+                    collectTrackMarkerInfo(e);
+
+                });
+
+            }
+
+            function getPlusCollectTrackMarkerItemCount(e) {
+
+                const url = "./getItemCount?user_pk=" + user_pk + "&item_pk=6";
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+                    
+                    if(response.data <= 0) {
+
+                        document.getElementById("alertContent").innerText = "사용할 수 있는 아이템이 없습니다";
                         document.getElementById("alertCheckButton").onclick = () => {
                             hideAlertModal();
                         };
@@ -559,6 +645,20 @@
                         return;
 
                     }
+
+                    savePlusCollectTrackMarkerItemUse(e);
+
+                });
+
+            }
+
+            function savePlusCollectTrackMarkerItemUse(e) {
+
+                const url = "./insertUserItemInfo?user_pk=" + user_pk + "&item_pk=6";
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
 
                     collectTrackMarkerInfo(e);
 
@@ -572,6 +672,27 @@
                 removeScanningTrackMarkers();
                 fillTrackMarkerModal(e);
                 saveCollectionInfo(e.log_pk);
+
+                // mnbv
+                const random = Math.floor((Math.random() * 99) + 1);
+
+                if(plusTrackMarkerProbability >= random) {
+                    getPlusTrackMarker(e.user_pk);
+                }
+
+            }
+
+            function getPlusTrackMarker(userWriterPk) {
+
+                const url = "./getPlusTrackMarker?user_pk=" + user_pk + "&user_writer_pk=" + userWriterPk;
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+
+                    saveCollectionInfo(response.data.log_pk);
+
+                });
 
             }
 
@@ -652,12 +773,17 @@
                         likeListWrapper.querySelector(".likeListButton").onclick = () => {
                             console.log(e.user_pk + ": " + e.is_trace);
                             if(e.is_trace == "Y") {
+                                // ghgh
 
-                                document.getElementById("alertContent").innerText = "이미 추행하고 있습니다";
-                                document.getElementById("alertCheckButton").onclick = () => {
-                                    hideAlertModal();
-                                };
-                                showAlertModal();
+                                // document.getElementById("alertContent").innerText = "이미 추행하고 있습니다";
+                                // document.getElementById("alertCheckButton").onclick = () => {
+                                //     hideAlertModal();
+                                // };
+                                // showAlertModal();
+
+                                // 버튼 2개있는 모달 띄워서 item기능이랑 연결시키기 > 아이템을 사용하시겠습니까?
+                                // getImmediateCollectTrackMarkerItemCount();
+                                // getSendMessageItemCount(e.user_pk);
 
                                 return;
 
@@ -686,6 +812,114 @@
                 });
 
             }
+
+            function getImmediateCollectTrackMarkerItemCount() {
+
+                const url = "./getItemCount?user_pk=" + user_pk + "&item_pk=5";
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+                    
+                    if(response.data <= 0) {
+
+                        document.getElementById("alertContent").innerText = "사용할 수 있는 아이템이 없습니다";
+                        document.getElementById("alertCheckButton").onclick = () => {
+                            hideAlertModal();
+                        };
+                        showAlertModal();
+
+                        return;
+
+                    }
+
+                    saveImmediateCollectTrackMarkerItemUse();
+
+                });
+
+            }
+
+            function saveImmediateCollectTrackMarkerItemUse() {
+
+                const url = "./insertUserItemInfo?user_pk=" + user_pk + "&item_pk=5";
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+
+                    // collectTrackMarkerInfo(e); > 이거 실행되는 처음부분 e에 채워지는 값이 전부 있는지 확인하기 아마 log부분이 없을 듯
+
+                });
+
+            }
+
+            function getSendMessageItemCount(userWriterPk) {
+
+                const url = "./getItemCount?user_pk=" + user_pk + "&item_pk=7";
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+                    
+                    if(response.data <= 0) {
+
+                        document.getElementById("alertContent").innerText = "사용할 수 있는 아이템이 없습니다";
+                        document.getElementById("alertCheckButton").onclick = () => {
+                            hideAlertModal();
+                        };
+                        showAlertModal();
+
+                        return;
+
+                    }
+
+                    // 메세지 적을 수 있는 모달 띄우기
+                    // show SendMessageItemModal();
+                    // 보내기 버튼 > sendMessage(userWriterPk);
+
+                });
+
+            }
+
+            function sendMessage(userWriterPk) {
+
+                // message 내용 가져오기 asdf
+                const message = "Asdf";
+                const title = "누군가가 메세지를 보냈어요!";
+                const linkPath = "/follow/gamePage";
+                const notifyImg = "N";
+
+                const url = "./sendMessage?user_pk=" + userWriterPk + "&title=" + title +
+                    "&message=" + message + "&link_path=" + linkPath + "&notify_img=" + notifyImg;
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+
+                    saveSendMessageItemUse();
+
+                });
+
+            }
+
+            function saveSendMessageItemUse() {
+
+                const url = "./insertUserItemInfo?user_pk=" + user_pk + "&item_pk=7";
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+
+                    document.getElementById("alertContent").innerText = "메세지 전달이 완료되었습니다";
+                    document.getElementById("alertCheckButton").onclick = () => {
+                        hideAlertModal();
+                    };
+                    showAlertModal();
+
+                });
+
+            }
+            
 
             function getClosestTrackMarker(userWriterPk) {
 
@@ -845,26 +1079,95 @@
 
             function getCollectionList() {
 
-                // resetmodal
+                resetCollectionModal();
 
                 const url = "./getCollectionList?user_pk=" + user_pk;
 
                 fetch(url)
                 .then(response => response.json())
                 .then(response => {
-
-                    if(response.data.length == 0) {
-
-                        return;
-                    }
+                    
+                    const collectionLikeListBox = document.getElementById("collectionLikeListBox");
+                    const collectionListBox = document.getElementById("collectionListBox");
 
                     for(e of response.data) {
 
-                        // 값 붙이기
-                        // 카드에 e 보내기
+                        const collectionWrapper = document.querySelector("#template .collectionWrapper").cloneNode(true);
+
+                        const collectionOuter = collectionWrapper.querySelector(".collectionOuter");
+                        const collectionInner = collectionWrapper.querySelector(".collectionInner");
+                        const collectionProgress = collectionWrapper.querySelector(".collectionProgress");
+
+                        if(e.star_rating == 'SSR') {
+                            collectionOuter.classList.add("collectionSSROuter");
+                            collectionInner.classList.add("collectionSSRInner");
+                        }else if(e.star_rating == 'SR') {
+                            collectionOuter.classList.add("collectionSROuter");
+                            collectionInner.classList.add("collectionSRInner");
+                        }else if(e.star_rating == 'S') {
+                            collectionOuter.classList.add("collectionSOuter");
+                            collectionInner.classList.add("collectionSInner");
+                        }else if(e.star_rating == 'oneStar') {
+                            collectionOuter.classList.add("collectionOneStarOuter");
+                            collectionInner.classList.add("collectionOneStarInner");
+                        }else if(e.star_rating == 'twoStar') {
+                            collectionOuter.classList.add("collectionTwoStarOuter");
+                            collectionInner.classList.add("collectionTwoStarInner");
+                        }else if(e.star_rating == 'threeStar') {
+                            collectionOuter.classList.add("collectionThreeStarOuter");
+                            collectionInner.classList.add("collectionThreeStarInner");
+                        }else if(e.star_rating == 'fourStar') {
+                            collectionOuter.classList.add("collectionFourStarOuter");
+                            collectionInner.classList.add("collectionFourStarInner");
+                        }else {
+                            collectionOuter.classList.add("collectionFiveStarOuter");
+                            collectionInner.classList.add("collectionFiveInner");
+                        }
+
+                        if(e.open_rating == '10') {
+                            collectionProgress.style.width = "100%";
+                            collectionInner.style.background = "url(/uploadFiles/" + e.profile_photo + ") no-reapt center";
+                        }else if(e.open_rating == '9') {
+                            collectionProgress.style.width = (20 - e.collection_count) / 20 * 100 + "%";
+                            collectionInner.style.background = "url(/uploadFiles/" + e.profile_photo + ") no-reapt center";
+                        }else if(e.open_rating == '8') {
+                            collectionProgress.style.width = (16 - e.collect_count) / 16 * 100 + "%";
+                        }else if(e.open_rating == '7') {
+                            collectionProgress.style.width = (15 - e.collect_count) / 15 * 100 + "%";
+                        }else if(e.open_rating == '6') {
+                            collectionProgress.style.width = (13 - e.collect_count) / 13 * 100 + "%";
+                        }else if(e.open_rating == '5') {
+                            collectionProgress.style.width = (12 - e.collect_count) / 12 * 100 + "%";
+                        }else if(e.open_rating == '4') {
+                            collectionProgress.style.width = (10 - e.collect_count) / 10 * 100 + "%";
+                        }else if(e.open_rating == '3') {
+                            collectionProgress.style.width = (7 - e.collect_count) / 7 * 100 + "%";
+                        }else if(e.open_rating == '2') {
+                            collectionProgress.style.width = (5 - e.collect_count) / 5 * 100 + "%";
+                        }else {
+                            collectionProgress.style.width = (2 - e.collect_count) / 2 * 100 + "%";
+                        }
+
+                        collectionOuter.onclick = () => {
+
+                        reloadDetailCollection(e);
+
+                        };
+
+                        document.getElementById("collectionLikeCnt").innerText = e.like_cnt;
+
+                        if(e.is_like == 'Y') {
+
+                            collectionLikeListBox.appendChild(collectionWrapper);
+                            
+                        }else {
+
+                            collectionListBox.appendChild(collectionWrapper);
+
+                        }
 
                     }
-                    
+
                     showCollectionModal();
 
 
@@ -876,7 +1179,66 @@
 
                 // 나머지 값 붙이기
 
+                // 큐피트화살 일단 랜덤으로 한 개 수집 > 여기서 있는걸로 // 확정 한개면 getCollectionLogList 여기에서 쿼리부터 다시 짜기 ghgh
+                // 버튼 onclick > cupidArrows(e.user_pk);
+
                 getCollectionLogList(e.user_pk);
+
+            }
+
+            function cupidArrows(userWriterPk) {
+
+                document.getElementById("alertWithCancelContent").innerText = `아이템을 사용하시겠습니까?`;
+                document.getElementById("alertWithCancelCheckButton").onclick = () => {
+                    hideAlertWithCancelModal();
+                    getCupidArrowsItemCount(userWriterPk);
+                    saveCupidArrowsItemUse();
+                };
+                showAlertWithCancelModal();
+
+            }
+            
+            function getCupidArrowsItemCount(userWriterPk) {
+
+                const url = "./getItemCount?user_pk=" + user_pk + "&item_pk=8";
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+                    
+                    if(response.data <= 0) {
+
+                        document.getElementById("alertContent").innerText = "사용할 수 있는 아이템이 없습니다";
+                        document.getElementById("alertCheckButton").onclick = () => {
+                            hideAlertModal();
+                        };
+                        showAlertModal();
+
+                        return;
+
+                    }
+
+                    getPlusTrackMarker(userWriterPk);
+
+                });
+
+            }
+
+            function saveCupidArrowsItemUse() {
+
+                const url = "./insertUserItemInfo?user_pk=" + user_pk + "&item_pk=8";
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+
+                    document.getElementById("alertContent").innerText = "수집이 완료되었습니다";
+                    document.getElementById("alertCheckButton").onclick = () => {
+                        hideAlertModal();
+                    };
+                    showAlertModal();
+
+                });
 
             }
 
@@ -900,8 +1262,7 @@
 
                     }
 
-                    // showmodal;
-
+                    showCollectionDetailModal();
 
                 });
                 
@@ -1067,6 +1428,13 @@
 
             }
 
+            function showCollectionDetailModal() {
+
+                const modal = bootstrap.Modal.getOrCreateInstance("#collectionDetailModal");
+                modal.show();
+
+            }
+
             function showMyPageModal() {
 
                 const modal = bootstrap.Modal.getOrCreateInstance("#myPageModal");
@@ -1114,6 +1482,12 @@
 
             function resetTrackMarkerModal() {
                 // modal 내용 초기화
+            }
+
+            function resetCollectionModal() {
+                // 꾸욱 개수
+                document.getElementById("collectionLikeListBox").innerHTML = "";
+                document.getElementById("collectionListBox").innerHTML = "";
             }
 
             window.addEventListener("DOMContentLoaded", () => {
@@ -1233,6 +1607,23 @@
                 --my-location-marker-radius: 0.328125rem;
             }
 
+            .scanMarkerBox {
+                position: relative;
+                width: 4rem;
+                height: 4rem;
+            }
+
+            .scanMarkerImage {
+                position: absolute;
+                width: 4rem;
+                height: 4rem;
+            }
+
+            .scanMarkerContent {
+                position: absolute;
+                border-radius: 50%;
+            }
+
             #shopButton {
                 width: 3rem;
                 height: 3rem;
@@ -1284,12 +1675,12 @@
                 bottom: 1rem;
             }
 
-            /* .myTrackMarker {
+            .myTrackMarker {
                 width: 1.5rem;
                 height: 1.5rem;
                 background: url("/public/image/follow/mytrackmarker.png") no-repeat center;
                 background-size : cover;
-            }asdf */
+            }
 
             #claw1 {
                 width: 0.6rem;
@@ -1445,6 +1836,78 @@
                 }
             }
 
+            .collectionSSROuter {
+                background: radial-gradient(white, #ffff90ff);
+                border: 1px solid #ffdf00;
+            }
+
+            .collectionSSRInner {
+                border: 1px solid #ffdf00;
+            }
+
+            .collectionSROuter {
+                background: radial-gradient(white, #cc4125ff);
+                border: 1px solid #980000;
+            }
+
+            .collectionSRInner {
+                border: 1px solid #980000;
+            }
+
+            .collectionSOuter {
+                background: radial-gradient(white, #c27ba0ff);
+                border: 1px solid #a64d79;
+            }
+
+            .collectionSInner {
+                border: 1px solid #a64d79;
+            }
+
+            .collectionFiveStarOuter {
+                background: radial-gradient(white, #8e7cc3ff);
+                border: 1px solid #674ea7;
+            }
+
+            .collectionFiveStarInner {
+                border: 1px solid #674ea7;
+            }
+
+            .collectionFourStarOuter {
+                background: radial-gradient(white, #3c78d8ff);
+                border: 1px solid #0b5394;
+            }
+
+            .collectionFourStarInner {
+                border: 1px solid #0b5394;
+            }
+
+            .collectionThreeStarOuter {
+                background: radial-gradient(white, #93c47dff);
+                border: 1px solid #38761d;
+            }
+
+            .collectionThreeStarInner {
+                border: 1px solid #38761d;
+            }
+
+            .collectionTwoStarOuter {
+                background: radial-gradient(white, #b7b7b7ff);
+                border: 1px solid #666666;
+            }
+
+            .collectionTwoStarInner {
+                border: 1px solid #666666;
+            }
+
+            .collectionOneStarOuter {
+                background: radial-gradient(white, #d9d9d9ff);
+                border: 1px solid #b7b7b7;
+            }
+
+            .collectionOneStarInner {
+                border: 1px solid #b7b7b7;
+            }
+
         </style>
 
     </head>
@@ -1509,12 +1972,371 @@
                             </div>
                         </div>
                         <div onclick="toggleAction()" id="actionToggle" class="commonStyle"></div>
+
+                        <!-- modal -->
+
+                        <div id="alertModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute;">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content fw-bold mx-auto rounded" style="width: auto; padding: 0.25rem; font-size: 0.85rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
+                                    <div class="modal-header text-white fw-bold py-1 px-1 border-0" style="font-size: 1rem;">
+                                        알림
+                                    </div>
+                                    <div class="modal-body pb-1 text-center rounded" style="background: #f3ecdd; border: 2px solid rgba(241, 194, 92, 0.4);">
+                                        <div id="alertContent" style="color: #81461A;">
+
+                                        </div>
+                                        <div class="modal-footer pb-0 border-0 justify-content-center">
+                                            <button id="alertCheckButton" class="d-grid btn py-0 px-4 text-white" style="background: #fdb96b; border: 2px solid rgba(188, 136, 46, 0.4); font-size: 0.9rem;">확인</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="alertWithCancelModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute;">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content fw-bold mx-auto rounded" style="width: auto; padding: 0.25rem; font-size: 0.85rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
+                                    <div class="modal-header text-white fw-bold py-1 px-1 border-0" style="font-size: 1rem;">
+                                        알림
+                                    </div>
+                                    <div class="modal-body pb-1 text-center rounded" style="background: #f3ecdd; border: 2px solid rgba(241, 194, 92, 0.4);">
+                                        <div id="alertWithCancelContent" style="color: #81461A;">
+
+                                        </div>
+                                        <div class="modal-footer pb-0 border-0 justify-content-center">
+                                            <button class="d-grid btn py-0 px-4 text-white" style="background: #a6a6a6; border: 2px solid rgba(91, 91, 91, 0.4); font-size: 0.9rem;" data-bs-dismiss="modal">취소</button>
+                                            <!-- <button id="alertWithCancelCheckButton" class="d-grid btn py-0 px-4 text-white" style="background: #5D81B7; border: 2px solid rgba(78, 106, 150, 0.4);">확인</button> -->
+                                            <button id="alertWithCancelCheckButton" class="d-grid btn py-0 px-4 text-white" style="background: #fdb96b; border: 2px solid rgba(188, 136, 46, 0.4); font-size: 0.9rem;">확인</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="writeMoreInfoModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute;">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content fw-bold mx-auto rounded" style="width: auto; padding: 0.25rem; font-size: 0.85rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
+                                    <div class="modal-header text-white fw-bold py-1 px-1 border-0" style="font-size: 1rem;">
+                                        <span>추가 정보 입력</span>
+                                        <span id="writeBlank" class="text-end" style="font-size: 0.7rem;"></span>
+                                    </div>
+                                    <div class="modal-body pb-1 text-center rounded" style="background: #f3ecdd; border: 2px solid rgba(241, 194, 92, 0.4); color: #81461A;">
+                                        
+                                        <div class="input-group">
+                                            <span class="my-auto">키&nbsp;&nbsp;</span>
+                                            <input id="writeMoreInfoHeight" type="number" class="form-control py-0 text-end" style="font-size: 0.8rem;">
+                                            <span class="my-auto">&nbsp;&nbsp;cm&nbsp;&nbsp;</span>
+                                            <span class="my-auto">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+                                            <span class="my-auto">&nbsp;&nbsp;몸무게&nbsp;&nbsp;</span>
+                                            <input id="writeMoreInfoWeight" type="number" class="form-control py-0 text-end" style="font-size: 0.8rem;">
+                                            <span class="my-auto">&nbsp;&nbsp;kg</span>
+                                        </div>
+
+                                        <div class="input-group mt-2">
+                                            <span class="my-auto">혈액형&nbsp;&nbsp;</span>
+                                            <select id="writeMoreInfoBloodType" class="form-select py-0 text-end" style="font-size: 0.8rem;">
+                                                <option value="0" selected>선택</option>
+                                                <option value="A">A</option>
+                                                <option value="B">B</option>
+                                                <option value="O">O</option>
+                                                <option value="AB">AB</option>
+                                            </select>
+                                            <span class="my-auto">&nbsp;&nbsp;형&nbsp;&nbsp;</span>
+                                            <span class="my-auto">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+                                            <span class="my-auto">&nbsp;&nbsp;MBTI&nbsp;&nbsp;</span>
+                                            <select id="writeMoreInfoMbtiType" class="form-select py-0 text-end" style="font-size: 0.8rem;">
+                                                <option value="0" selected>선택</option>
+                                                <option value="ENTP">ENTP</option>
+                                                <option value="ENTJ">ENTJ</option>
+                                                <option value="ENFP">ENFP</option>
+                                                <option value="ENFJ">ENFJ</option>
+                                                <option value="ESTP">ESTP</option>
+                                                <option value="ESTJ">ESTJ</option>
+                                                <option value="ESFP">ESFP</option>
+                                                <option value="ESFJ">ESFJ</option>
+                                                <option value="INTP">INTP</option>
+                                                <option value="INTJ">INTJ</option>
+                                                <option value="INFP">INFP</option>
+                                                <option value="INFJ">INFJ</option>
+                                                <option value="ISTP">ISTP</option>
+                                                <option value="ISTJ">ISTJ</option>
+                                                <option value="ISFP">ISFP</option>
+                                                <option value="ISFJ">ISFJ</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="input-group mt-2">
+                                            <span class="my-auto">취미&nbsp;&nbsp;</span>
+                                            <input id="writeMoreInfoHobby" type="text" class="form-control py-0" max="10" style="font-size: 0.8rem;">
+                                            <span class="my-auto" style="font-size: 0.6rem;">&nbsp;&nbsp;10글자이내</span>
+                                        </div>
+
+                                        <div class="input-group mt-2">
+                                            <span class="my-auto">음주여부&nbsp;&nbsp;</span>
+                                            <input type="radio" name="isDrinking" id="yesDrinking" class="form-check-input writeMoreInfoDrinking" value="Y">
+                                            <label class="form-check-label" for="yesDrinking">&nbsp;&nbsp;Y&nbsp;&nbsp;</label>
+                                            <input type="radio" name="isDrinking" id="noDrinking" class="form-check-input writeMoreInfoDrinking" value="N" checked>
+                                            <label class="form-check-label" for="noDrinking">&nbsp;&nbsp;N&nbsp;&nbsp;</label>
+                                            <span class="my-auto">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+                                            <span class="my-auto">&nbsp;&nbsp;흡연여부&nbsp;&nbsp;</span>
+                                            <input type="radio" name="isSmoking" id="yesSmoking" class="form-check-input writeMoreInfoSmoking" value="Y">
+                                            <label class="form-check-label" for="yesSmoking">&nbsp;&nbsp;Y&nbsp;&nbsp;</label>
+                                            <input type="radio" name="isSmoking" id="noSmoking" class="form-check-input writeMoreInfoSmoking" value="N" checked>
+                                            <label class="form-check-label" for="noSmoking">&nbsp;&nbsp;N&nbsp;&nbsp;</label>
+                                        </div>
+
+                                        <div class="input-group mt-2">
+                                            <span class="my-auto">성적지향&nbsp;&nbsp;</span>
+                                            <select id="writeMoreInfoPreference" class="form-select py-0 text-end" style="font-size: 0.8rem;">
+                                                <option value="0" selected>선택</option>
+                                                <option value="L">이성애</option>
+                                                <option value="B">게이</option>
+                                                <option value="G">레즈비언</option>
+                                                <option value="V">바이섹슈얼</option>
+                                                <option value="A">에이섹슈얼</option>
+                                                <option value="D">데미섹슈얼</option>
+                                                <option value="P">팬섹슈얼</option>
+                                                <option value="q">퀘스처닝</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="modal-footer pb-0 border-0 justify-content-center">
+                                            <button class="d-grid btn py-0 px-4 text-white" style="background: #a6a6a6; border: 2px solid rgba(91, 91, 91, 0.4); font-size: 0.9rem;" data-bs-dismiss="modal">취소</button>
+                                            <button onclick="saveMoreInfo()" class="d-grid btn py-0 px-4 text-white" style="background: #fdb96b; border: 2px solid rgba(188, 136, 46, 0.4); font-size: 0.9rem;">저장</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="writeTrackMarkModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute;">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content fw-bold mx-auto rounded" style="width: auto; padding: 0.25rem; font-size: 0.85rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
+                                    <div class="modal-header text-white fw-bold py-1 px-1 border-0" style="font-size: 1rem;">
+                                        체취 분사
+                                    </div>
+                                    <div class="modal-body pb-1 rounded" style="background: #f3ecdd; border: 2px solid rgba(241, 194, 92, 0.4);">
+
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="row">
+                                                    <div onclick="inputWriteTrackMarkImage()" onchange="previewWriteTrackMarkImage()" id="writeTrackMarkImageHere" class="col border rounded-pill mx-3 px-0" style="aspect-ratio: 16/9;">
+                                                        <!-- hidden -->
+                                                        <div id="writeTrackMarkNoimage" class="row text-center align-items-center" style="height: 100%;">
+                                                            <div class="col">
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <span class="material-symbols-outlined" style="color: #BFBFBF; font-size: 1.5rem;">
+                                                                            add_photo_alternate
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col" style="color: #BFBFBF; font-size: 0.9rem;">
+                                                                        이미지 추가
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <input id="writeTrackMarkImage" type="file" accept="image/*" hidden>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col">
+                                                        <span class="material-symbols-outlined align-middle" style="font-size: 1rem;">
+                                                            stylus_note
+                                                        </span>
+                                                        한줄글
+                                                    </div>
+                                                    <div class="col text-end my-auto" style="font-size: 0.65rem;">
+                                                        50글자 이내
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <textarea id="writeTrackMarkContent" class="form-control" rows="2" maxlength="50" placeholder="체취와 함께하는 흔적" style="font-size: 0.8rem;"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer pb-0 border-0 justify-content-center">
+                                            <button class="d-grid btn py-0 px-4 text-white" style="background: #a6a6a6; border: 2px solid rgba(91, 91, 91, 0.4); font-size: 0.9rem;" data-bs-dismiss="modal">취소</button>
+                                            <button onclick="saveWriteTrackMarkInfo()" class="d-grid btn py-0 px-4 text-white" style="background: #fdb96b; border: 2px solid rgba(188, 136, 46, 0.4); font-size: 0.9rem;">저장</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="previewTrackMarkerModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute;">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+
+                                    </div>
+                                    <div class="modal-footer pb-2 border-0 justify-content-center">
+                                        <button type="button" class="btn btn-secondary py-1" data-bs-dismiss="modal">닫기</button>
+                                        <button id="collectTrackMarkerButton" class="btn py-1 text-white" style="background: #D96161;">수집하기</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="trackMarkerModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute;">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <input id="trackMarkerCommentContent" type="text" class="form-control">
+                                        <button id="trackMarkerCommentButton">저장하기</button>
+                                    </div>
+                                    <div class="modal-footer pb-2 border-0 justify-content-center">
+                                        <button type="button" class="btn btn-secondary py-1" data-bs-dismiss="modal">닫기</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="collectionModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute;">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 0.5rem; padding-right: 0.5rem; padding-top: 1rem;">
+                                    <div style="position: absolute; width: 12rem; height: 3rem; z-index: 1; top: -0.4rem;">
+                                        <img class="img-fluid" th:src="@{/public/image/follow/banner.png}" style="width: 12rem; height: 3rem;">
+                                    </div>
+                                    <span class="text-white fw-bold" style="position: absolute; z-index: 1; font-size: 1rem; left: 5rem; top: 0.3rem; color: #f3ecdd;">내 가 방</span>
+                                    <button type="button" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" data-bs-dismiss="modal" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.3rem; top: 0.6rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
+                                        <div style="border-radius: 50%; background: #ac5e23; width: 1.3rem; height: 1.3rem; border: 1px solid #7D3A05;">
+                                            <span id="collectionModalCloseIcon" class="material-symbols-rounded" style="position: absolute; font-size: 1.2rem; left: 0.2rem; color: #f3ecdd;">
+                                                close
+                                            </span>
+                                        </div>
+                                    </button>
+                                    <div class="modal-body rounded" style="padding: 0.2rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
+                                        <div class="rounded" style="padding: 0.5rem; padding-top: 1rem; height: 26rem; background: #E0C9A9; border: 2px solid rgba(241, 194, 92, 0.4);">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <span class="ps-1 pe-5 rounded" style="color: #81461A; background: #CEB597; font-size: 0.9rem;">&nbsp;꾸욱: <span id="collectionLikeCnt">0</span></span>
+                                                </div>
+                                                <!-- <div class="col text-end">
+                                                    <span class="ps-1 pe-4 rounded" style="color: #81461A; background: #CEB597; font-size: 0.9rem;">&nbsp;등급순 &ShortDownArrow;</span>
+                                                </div> -->
+                                            </div>
+                                            <div class="rounded mt-2 overflow-auto" style="background: #C5A886; height: 19rem; border: 1px solid #f3ecdd;">
+
+                                                <div id="collectionLikeListBox" class="row row-cols-4 mx-auto py-2" style="width: 100%;">
+
+                                                    
+
+                                                </div>
+
+                                                <hr class="mx-2 mt-2 mb-0" style="border: 2px solid #81461A; border-style: dashed;">
+                                                <hr class="mx-2 mt-1 mb-0" style="border: 2px solid #81461A; border-style: dashed;">
+
+                                                <div id="collectionListBox" class="row row-cols-4 mx-auto py-2" style="width: 100%;">
+
+
+
+                                                </div>
+                                                
+                                            </div>
+
+                                            <div class="modal-footer pb-0 border-0 justify-content-center">
+                                                <!-- <button class="d-grid btn py-0 px-4 text-white" style="background: #4684d0; border: 2px solid rgba(188, 136, 46, 0.4); font-size: 0.9rem;">등급순</button>
+                                                <button class="d-grid btn py-0 px-4 text-white" style="background: #5d96dc; border: 2px solid rgba(188, 136, 46, 0.4); font-size: 0.9rem;">이름순</button>
+                                                <button class="d-grid btn py-0 px-4 text-white" style="background: #6fa3e3; border: 2px solid rgba(188, 136, 46, 0.4); font-size: 0.9rem;">수집도순</button> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="collectionDetailModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute;">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 0.5rem; padding-right: 0.5rem; padding-top: 1rem;">
+                                    <div style="position: absolute; width: 12rem; height: 3rem; z-index: 1; top: -0.4rem;">
+                                        <img class="img-fluid" th:src="@{/public/image/follow/banner.png}" style="width: 12rem; height: 3rem;">
+                                    </div>
+                                    <span class="text-white fw-bold" style="position: absolute; z-index: 1; font-size: 1rem; left: 4.5rem; top: 0.3rem; color: #f3ecdd;">상 세 정 보</span>
+                                    <button type="button" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" data-bs-dismiss="modal" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.3rem; top: 0.6rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
+                                        <div style="border-radius: 50%; background: #ac5e23; width: 1.3rem; height: 1.3rem; border: 1px solid #7D3A05;">
+                                            <span id="collectionModalCloseIcon" class="material-symbols-rounded" style="position: absolute; font-size: 1.2rem; left: 0.2rem; color: #f3ecdd;">
+                                                close
+                                            </span>
+                                        </div>
+                                    </button>
+                                    <div class="modal-body rounded" style="padding: 0.2rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
+                                        <div class="rounded" style="padding: 0.5rem; padding-top: 1rem; height: 26rem; background: #E0C9A9; border: 2px solid rgba(241, 194, 92, 0.4);">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="myPageModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute;">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 0.5rem; padding-right: 0.5rem; padding-top: 1rem;">
+                                    <div style="position: absolute; width: 12rem; height: 3rem; z-index: 1; top: -0.4rem;">
+                                        <img class="img-fluid" th:src="@{/public/image/follow/banner.png}" style="width: 12rem; height: 3rem;">
+                                    </div>
+                                    <span class="text-white fw-bold" style="position: absolute; z-index: 1; font-size: 1rem; left: 5rem; top: 0.3rem; color: #f3ecdd;">내 정 보</span>
+                                    <button type="button" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" data-bs-dismiss="modal" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.3rem; top: 0.6rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
+                                        <div style="border-radius: 50%; background: #ac5e23; width: 1.3rem; height: 1.3rem; border: 1px solid #7D3A05;">
+                                            <span id="collectionModalCloseIcon" class="material-symbols-rounded" style="position: absolute; font-size: 1.2rem; left: 0.2rem; color: #f3ecdd;">
+                                                close
+                                            </span>
+                                        </div>
+                                    </button>
+                                    <div class="modal-body rounded" style="padding: 0.2rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
+                                        <div class="rounded" style="padding: 0.5rem; padding-top: 3.5rem; height: 26rem; background:#E0C9A9; border: 2px solid rgba(241, 194, 92, 0.4);">
+                                            <div class="rounded" style="position: relative; background: #C5A886; height: 7rem; border: 1px solid #f3ecdd;">
+                                                <div class="d-flex gap-2 justify-content-end" style="position: absolute; left: 5rem; top: -1.7rem;">
+                                                    <button class="btn text-white py-0" style="background: sienna; font-size: 0.8rem;">내 체취 / 흔적</button>
+                                                    <button onclick="showAchievementModal()" class="btn text-white py-0" style="background: sienna; font-size: 0.8rem;">업적</button>
+                                                </div>
+                                                <div class="d-grid align-items-center justify-content-center" style="position: absolute; width: 4rem; height: 4rem; top: -2rem; left: 0.5rem; border-radius: 50%; background: #81461A;">
+                                                    <div style="width: 3.5rem; height: 3.5rem; border-radius: 50%; background: #f3ecdd;"></div>
+                                                </div>
+                                            </div>
+                                            <div style="position: relative;">
+                                                <hr style="color: #81461A;">
+                                                <span class="px-3" style="position: absolute; top: -0.65rem; left: calc(50% - 1.5rem); font-size: 0.9rem; background: #E0C9A9; color: #81461A;">활동</span>
+                                            </div>
+                                            <div></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <div id="myPageModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute;">
+                            <div class="modal-dialog modal-fullscreen">
+                                <div class="modal-content" style="background: transparent; padding: 1rem;">
+                                    <div class="modal-body px-0 py-0" style="background: white;">
+                                        <div class="py-2 px-3" style="background: #211e1e;">
+                                            <span class="text-white" style="font-size: 1.2rem;">
+                                                내정보
+                                            </span>
+                                            <button type="button" class="btn px-0 py-0 float-end" data-bs-dismiss="modal">
+                                                <span id="collectionModalCloseIcon" class="material-symbols-rounded">
+                                                    close
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                        
                     </div>
                 </div>
             </div>
         </div>
 
         <div th:insert="~{/commons/item/itemShop}"></div>
+        <div th:insert="~{/commons/item/achievement}"></div>
 
         <!-- fetch(url)
                 .then(response => response.json())
@@ -1528,270 +2350,25 @@
 
         <div id="template" class="d-none">
 
+            <div class="collectionWrapper col mt-2 px-2">
+                <div class="collectionOuter d-grid align-items-center" style="width: 100%; aspect-ratio: 1/1; border-radius: 8%;">
+                    <!-- <div class="d-flex justify-content-center" style="position: relative; width: 98%; aspect-ratio: 1/1; border: 1px solid #ffdf00; border-radius: 3%; background: url('/public/image/commons/list2.jpeg') no-repeat center; background-size: cover; filter: opacity(80%);"> -->
+                    <div class="collectionInner d-flex justify-content-center" style="position: relative; width: 98%; aspect-ratio: 1/1; border-radius: 3%; background: url('/public/image/follow/question.png') no-repeat center; background-size: cover; filter: opacity(80%);">
+                        <div class="progress" role="progressbar" style="position: absolute; width: 95%; height: 0.5rem; border: 0.1px solid #E0C9A9; bottom: 0.1rem;">
+                            <div class="collectionProgress progress-bar progress-bar-striped rounded-pill" style="background: #feb146; width: 75%;"></div>
+                        </div>
+                        <!-- <div class="fw-bold text-center" style="position: absolute; width: 1rem; height: 1rem; top: 0.2rem; left: 0.2rem; border-radius: 50%; background: #ffff90ff; border: 1px solid #feb146; font-size: 0.8rem;">
+                            1
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+
             <div class="likeListWrapper">
                 <div class="likeListContent"></div>
                 <button class="likeListButton">추행</button>
             </div>
 
-        </div>
-
-        <div id="alertModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content fw-bold mx-auto rounded" style="width: auto; padding: 0.25rem; font-size: 0.85rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
-                    <div class="modal-header text-white fw-bold py-1 px-1 border-0" style="font-size: 1rem;">
-                        알림
-                    </div>
-                    <div class="modal-body pb-1 text-center rounded" style="background: #f3ecdd; border: 2px solid rgba(241, 194, 92, 0.4);">
-                        <div id="alertContent" style="color: #81461A;">
-
-                        </div>
-                        <div class="modal-footer pb-0 border-0 justify-content-center">
-                            <button id="alertCheckButton" class="d-grid btn py-0 px-4 text-white" style="background: #fdb96b; border: 2px solid rgba(188, 136, 46, 0.4); font-size: 0.9rem;">확인</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="alertWithCancelModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content fw-bold mx-auto rounded" style="width: auto; padding: 0.25rem; font-size: 0.85rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
-                    <div class="modal-header text-white fw-bold py-1 px-1 border-0" style="font-size: 1rem;">
-                        알림
-                    </div>
-                    <div class="modal-body pb-1 text-center rounded" style="background: #f3ecdd; border: 2px solid rgba(241, 194, 92, 0.4);">
-                        <div id="alertWithCancelContent" style="color: #81461A;">
-
-                        </div>
-                        <div class="modal-footer pb-0 border-0 justify-content-center">
-                            <button class="d-grid btn py-0 px-4 text-white" style="background: #a6a6a6; border: 2px solid rgba(91, 91, 91, 0.4); font-size: 0.9rem;" data-bs-dismiss="modal">취소</button>
-                            <!-- <button id="alertWithCancelCheckButton" class="d-grid btn py-0 px-4 text-white" style="background: #5D81B7; border: 2px solid rgba(78, 106, 150, 0.4);">확인</button> -->
-                            <button id="alertWithCancelCheckButton" class="d-grid btn py-0 px-4 text-white" style="background: #fdb96b; border: 2px solid rgba(188, 136, 46, 0.4); font-size: 0.9rem;">확인</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="writeMoreInfoModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content fw-bold mx-auto rounded" style="width: auto; padding: 0.25rem; font-size: 0.85rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
-                    <div class="modal-header text-white fw-bold py-1 px-1 border-0" style="font-size: 1rem;">
-                        <span>추가 정보 입력</span>
-                        <span id="writeBlank" class="text-end" style="font-size: 0.7rem;"></span>
-                    </div>
-                    <div class="modal-body pb-1 text-center rounded" style="background: #f3ecdd; border: 2px solid rgba(241, 194, 92, 0.4); color: #81461A;">
-                        
-                        <div class="input-group">
-                            <span class="my-auto">키&nbsp;&nbsp;</span>
-                            <input id="writeMoreInfoHeight" type="number" class="form-control py-0 text-end" style="font-size: 0.8rem;">
-                            <span class="my-auto">&nbsp;&nbsp;cm&nbsp;&nbsp;</span>
-                            <span class="my-auto">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-                            <span class="my-auto">&nbsp;&nbsp;몸무게&nbsp;&nbsp;</span>
-                            <input id="writeMoreInfoWeight" type="number" class="form-control py-0 text-end" style="font-size: 0.8rem;">
-                            <span class="my-auto">&nbsp;&nbsp;kg</span>
-                        </div>
-
-                        <div class="input-group mt-2">
-                            <span class="my-auto">혈액형&nbsp;&nbsp;</span>
-                            <select id="writeMoreInfoBloodType" class="form-select py-0 text-end" style="font-size: 0.8rem;">
-                                <option value="0" selected>선택</option>
-                                <option value="A">A</option>
-                                <option value="B">B</option>
-                                <option value="O">O</option>
-                                <option value="AB">AB</option>
-                            </select>
-                            <span class="my-auto">&nbsp;&nbsp;형&nbsp;&nbsp;</span>
-                            <span class="my-auto">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-                            <span class="my-auto">&nbsp;&nbsp;MBTI&nbsp;&nbsp;</span>
-                            <select id="writeMoreInfoMbtiType" class="form-select py-0 text-end" style="font-size: 0.8rem;">
-                                <option value="0" selected>선택</option>
-                                <option value="ENTP">ENTP</option>
-                                <option value="ENTJ">ENTJ</option>
-                                <option value="ENFP">ENFP</option>
-                                <option value="ENFJ">ENFJ</option>
-                                <option value="ESTP">ESTP</option>
-                                <option value="ESTJ">ESTJ</option>
-                                <option value="ESFP">ESFP</option>
-                                <option value="ESFJ">ESFJ</option>
-                                <option value="INTP">INTP</option>
-                                <option value="INTJ">INTJ</option>
-                                <option value="INFP">INFP</option>
-                                <option value="INFJ">INFJ</option>
-                                <option value="ISTP">ISTP</option>
-                                <option value="ISTJ">ISTJ</option>
-                                <option value="ISFP">ISFP</option>
-                                <option value="ISFJ">ISFJ</option>
-                            </select>
-                        </div>
-
-                        <div class="input-group mt-2">
-                            <span class="my-auto">취미&nbsp;&nbsp;</span>
-                            <input id="writeMoreInfoHobby" type="text" class="form-control py-0" max="10" style="font-size: 0.8rem;">
-                            <span class="my-auto" style="font-size: 0.6rem;">&nbsp;&nbsp;10글자이내</span>
-                        </div>
-
-                        <div class="input-group mt-2">
-                            <span class="my-auto">음주여부&nbsp;&nbsp;</span>
-                            <input type="radio" name="isDrinking" id="yesDrinking" class="form-check-input writeMoreInfoDrinking" value="Y">
-                            <label class="form-check-label" for="yesDrinking">&nbsp;&nbsp;Y&nbsp;&nbsp;</label>
-                            <input type="radio" name="isDrinking" id="noDrinking" class="form-check-input writeMoreInfoDrinking" value="N" checked>
-                            <label class="form-check-label" for="noDrinking">&nbsp;&nbsp;N&nbsp;&nbsp;</label>
-                            <span class="my-auto">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-                            <span class="my-auto">&nbsp;&nbsp;흡연여부&nbsp;&nbsp;</span>
-                            <input type="radio" name="isSmoking" id="yesSmoking" class="form-check-input writeMoreInfoSmoking" value="Y">
-                            <label class="form-check-label" for="yesSmoking">&nbsp;&nbsp;Y&nbsp;&nbsp;</label>
-                            <input type="radio" name="isSmoking" id="noSmoking" class="form-check-input writeMoreInfoSmoking" value="N" checked>
-                            <label class="form-check-label" for="noSmoking">&nbsp;&nbsp;N&nbsp;&nbsp;</label>
-                        </div>
-
-                        <div class="input-group mt-2">
-                            <span class="my-auto">성적지향&nbsp;&nbsp;</span>
-                            <select id="writeMoreInfoPreference" class="form-select py-0 text-end" style="font-size: 0.8rem;">
-                                <option value="0" selected>선택</option>
-                                <option value="L">이성애</option>
-                                <option value="B">게이</option>
-                                <option value="G">레즈비언</option>
-                                <option value="V">바이섹슈얼</option>
-                                <option value="A">에이섹슈얼</option>
-                                <option value="D">데미섹슈얼</option>
-                                <option value="P">팬섹슈얼</option>
-                                <option value="q">퀘스처닝</option>
-                            </select>
-                        </div>
-
-                        <div class="modal-footer pb-0 border-0 justify-content-center">
-                            <button class="d-grid btn py-0 px-4 text-white" style="background: #a6a6a6; border: 2px solid rgba(91, 91, 91, 0.4); font-size: 0.9rem;" data-bs-dismiss="modal">취소</button>
-                            <button onclick="saveMoreInfo()" class="d-grid btn py-0 px-4 text-white" style="background: #fdb96b; border: 2px solid rgba(188, 136, 46, 0.4); font-size: 0.9rem;">저장</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="writeTrackMarkModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content fw-bold mx-auto rounded" style="width: auto; padding: 0.25rem; font-size: 0.85rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
-                    <div class="modal-header text-white fw-bold py-1 px-1 border-0" style="font-size: 1rem;">
-                        체취 분사
-                    </div>
-                    <div class="modal-body pb-1 rounded" style="background: #f3ecdd; border: 2px solid rgba(241, 194, 92, 0.4);">
-
-                        <div class="row">
-                            <div class="col">
-                                <div class="row">
-                                    <div onclick="inputWriteTrackMarkImage()" onchange="previewWriteTrackMarkImage()" id="writeTrackMarkImageHere" class="col border rounded-pill mx-3 px-0" style="aspect-ratio: 16/9;">
-                                        <!-- hidden -->
-                                        <div id="writeTrackMarkNoimage" class="row text-center align-items-center" style="height: 100%;">
-                                            <div class="col">
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <span class="material-symbols-outlined" style="color: #BFBFBF; font-size: 1.5rem;">
-                                                            add_photo_alternate
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col" style="color: #BFBFBF; font-size: 0.9rem;">
-                                                        이미지 추가
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <input id="writeTrackMarkImage" type="file" accept="image/*" hidden>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col">
-                                        <span class="material-symbols-outlined align-middle" style="font-size: 1rem;">
-                                            stylus_note
-                                        </span>
-                                        한줄글
-                                    </div>
-                                    <div class="col text-end my-auto" style="font-size: 0.65rem;">
-                                        50글자 이내
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <textarea id="writeTrackMarkContent" class="form-control" rows="2" maxlength="50" placeholder="체취와 함께하는 흔적" style="font-size: 0.8rem;"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="modal-footer pb-0 border-0 justify-content-center">
-                            <button class="d-grid btn py-0 px-4 text-white" style="background: #a6a6a6; border: 2px solid rgba(91, 91, 91, 0.4); font-size: 0.9rem;" data-bs-dismiss="modal">취소</button>
-                            <button onclick="saveWriteTrackMarkInfo()" class="d-grid btn py-0 px-4 text-white" style="background: #fdb96b; border: 2px solid rgba(188, 136, 46, 0.4); font-size: 0.9rem;">저장</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="previewTrackMarkerModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-body">
-
-                    </div>
-                    <div class="modal-footer pb-2 border-0 justify-content-center">
-                        <button type="button" class="btn btn-secondary py-1" data-bs-dismiss="modal">닫기</button>
-                        <button id="collectTrackMarkerButton" class="btn py-1 text-white" style="background: #D96161;">수집하기</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="trackMarkerModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <input id="trackMarkerCommentContent" type="text" class="form-control">
-                        <button id="trackMarkerCommentButton">저장하기</button>
-                    </div>
-                    <div class="modal-footer pb-2 border-0 justify-content-center">
-                        <button type="button" class="btn btn-secondary py-1" data-bs-dismiss="modal">닫기</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="collectionModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-fullscreen">
-                <div class="modal-content" style="position: relative;  background: transparent; padding: 1rem; padding-top: 3rem;">
-                    <button type="button" class="btn px-0 py-0 float-end" data-bs-dismiss="modal" style="position: absolute; z-index: 2000; right: 0.5rem; top: 2.5rem;">
-                        <span id="collectionModalCloseIcon" class="material-symbols-rounded">
-                            close
-                        </span>
-                    </button>
-                    <div class="modal-body rounded" style="padding: 0.2rem; background: linear-gradient(to top, #AC6D3A 80%, #ca8953); border: 3px solid rgba(55, 29, 13, 0.2);">
-                        <div class="rounded" style="width: 100%; height: 100%; background: #693617; box-shadow: inset 0 0 5px 5px rgba(55, 29, 13, 0.7);">
-                            
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="myPageModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-fullscreen">
-                <div class="modal-content" style="background: transparent; padding: 1rem;">
-                    <div class="modal-body px-0 py-0" style="background: white;">
-                        <div class="py-2 px-3" style="background: #211e1e;">
-                            <span class="text-white" style="font-size: 1.2rem;">
-                                내정보
-                            </span>
-                            <button type="button" class="btn px-0 py-0 float-end" data-bs-dismiss="modal">
-                                <span id="collectionModalCloseIcon" class="material-symbols-rounded">
-                                    close
-                                </span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- #FDE4CD  #FFC98B -->

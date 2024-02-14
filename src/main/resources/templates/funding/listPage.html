@@ -5,7 +5,159 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>멍's 토킹 펀딩 리스트</title>
 
+    <script>
+        function listingProduct() {
+
+            // 기존 코드 (상품 목록 데이터 가져오기)
+            fetch("./callListingProductUsingAjax")
+            .then(response => response.json())
+            .then(response => {
+                const productListElement = document.getElementById("productList");
+                productListElement.innerHTML = "";
+
+                for (const e of response.data) {
+                const productListWrapper = document.querySelector("#productListTemplate .productListWrapper").cloneNode(true);
+                const productBox = productListWrapper.querySelector("#productBox");
+                productBox.dataset.pk = e.list.product_pk;
+                console.log(e.list.product_pk);
+
+                checkWishOrNot(e.list.product_pk, (wishOrNot) => {
+                    const wishButton = productListWrapper.querySelector("#wishButton");    
+
+                    console.log("wishOrNot="+wishOrNot)
+                    if (wishOrNot) {
+                    wishButton.classList.remove("bi-heart");
+                    wishButton.classList.add("bi-heart-fill");
+                    } else {
+                    wishButton.classList.remove("bi-heart-fill");
+                    wishButton.classList.add("bi-heart");
+                    }
+                });
+                
+                productBox.addEventListener("click", function() {
+                    const productPk = this.dataset.pk;
+                    location.href = `/funding/productDetailPage?id=${productPk}`;
+                });
+
+                // 상품 정보 표시 (이미지, 설명, 할인율 등)
+                const titleImg = productListWrapper.querySelector(".titleImg");
+                titleImg.src = "/uploadFiles/" + e.list.title_image;
+
+                const percent = productListWrapper.querySelector(".percent");
+                percent.innerText = e.percent;
+
+                const simpleExplain = productListWrapper.querySelector(".simpleExplain");
+                simpleExplain.innerText = e.list.simple_explain;
+
+                const fDay = productListWrapper.querySelector(".fDay");
+                fDay.innerText = e.f_day;
+
+                const tSales = productListWrapper.querySelector(".tSales");
+                tSales.innerText = e.t_sales;
+
+                productListWrapper.classList.remove("d-none");
+                productListElement.appendChild(productListWrapper);
+                }
+            });
+            }
+
+            function checkWishOrNot(productPk, callback) {
+                console.log("checkWishOrNot productPk="+productPk)
+                fetch("./reloadWish?product_pk="+productPk)
+                    .then(response => response.json())
+                    .then(response => callback(response.data));
+                }
+
+        // function listingProduct(){
+            
+        //     fetch("./callListingProductUsingAjax")
+        //     .then(response => response.json())
+        //     .then(response=>{
+        //         const productListElement = document.getElementById("productList");
+        //         productListElement.innerHTML = "";
+        //         for(const e of response.data){
+        //             const productListWrapper = document.querySelector("#productListTemplate .productListWrapper").cloneNode(true);
+        //                 {
+        //                 const productBox = productListWrapper.querySelector("#productBox");
+        //                 productBox.addEventListener("click", function() {
+        //                     const titleImg= productListWrapper.querySelector(".titleImg");
+        //                     titleImg.src = "/uploadFiles/"+e.list.title_image;
+
+        //                     const percent= productListWrapper.querySelector(".percent");
+        //                     percent.innerText = e.percent;
+
+        //                     const simpleExplain= productListWrapper.querySelector(".simpleExplain");
+        //                     simpleExplain.innerText = e.list.simple_explain;
+
+        //                     const fDay= productListWrapper.querySelector(".fDay");
+        //                     fDay.innerText = e.f_day;
+
+        //                     const tSales= productListWrapper.querySelector(".tSales");
+        //                     tSales.innerText = e.t_sales;
+
+        //                     productBox.dataset.pk = e.list.product_pk;
+
+        //                 });
+        //             }
+                        
+        //                 productBox.addEventListener("click", function() {
+        //                     const productPk = this.dataset.pk;
+
+        //                     // Ajax 요청을 통해 서버로 productPk 값 전송
+        //                     fetch(`/productDetailPage?id=${productPk}`)
+        //                         .then(response => response.text())
+        //                         .then(html => {
+        //                         document.getElementById("main-content").innerHTML = html;
+        //                         });
+        //                     });
+
+        //                 productListWrapper.classList.remove("d-none");
+        //                 productListElement.appendChild(productListWrapper);
+                            
+        //         }
+        
+        //     });
+        // }
+
+        // productBox.addEventListener("click", function() {
+        //     const productPk = this.dataset.pk; // data-pk 속성 값 가져오기
+
+        //     // Ajax 요청을 통해 서버로 productPk 값 전송
+        //     fetch(`/productDetailPage?id=${productPk}`)
+        //         .then(response => response.text())
+        //         .then(html => {
+        //         document.getElementById("main-content").innerHTML = html;
+        //         });
+        //     });
+
+        // Template.addEventListener("click", function() {  // 이 템플릿 반복문 안에다가 "click" 을 통해 링크 걸어준다.
+        //                 event.stopPropagation();
+        //                 location.href = "/user/gt/applicationHistoryDetailPage?candidate_pk=" + e.CandidateDto.candidate_pk; 
+        // });
+        
+    
+
+        function toggleWish(){    
+            const product_pk = document.querySelector(".product_pk").value;
+            console.log("product_pk="+product_pk.value)
+            fetch("./toggleWishProduct?product_pk="+product_pk.value)
+                .then(response => response.json())
+                .then(response => {
+                    reloadWish();
+                });
+            }
+
+        window.addEventListener("DOMContentLoaded",()=>{
+            listingProduct();
+        })
+    </script>
+
     <style>
+
+        body{
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
         a {
             text-decoration-line: none !important;
             color: black !important;
@@ -14,10 +166,71 @@
         #productBox{
             box-shadow: 0.25em 0.25em 0.25em 0.25em rgb(211, 211, 211);
         }
+
+        #titleImg {
+            max-width: 100%;
+            object-fit: cover;
+            object-position: center center;
+            aspect-ratio: 16/10;
+            }
+            
+        .boxCol{
+            display: grid;
+            place-items: center;
+        }    
+
+        .categoryCircle{
+            width: 3.5em;
+            height: 3.5em;
+            background-color: #e9ecef;
+            border-radius: 50%;
+            padding: 0%;
+            place-items: center;
+            display: grid;
+            
+        } 
+        
+        #searchBox{
+            outline: none;
+        }
+
+        .fa-magnifying-glass{
+            padding-top: 45%;
+            padding-right: 10%;
+            vertical-align: middle;
+            text-align: center;
+        }
+        .categoryIcon{
+            font-size: 1.65em;
+            color: burlywood;
+        }
+
+        #searchRow {
+            align-items: center;
+            }
+
+        .cateContainer{
+            overflow-x: auto;
+            justify-content: space-between;
+            white-space: nowrap;
+            padding-top: 1em;
+            border-bottom: solid 0.45em;
+            border-color:  #e9ecef;
+
+        }
+        .overflow-x-auto::-webkit-scrollbar{
+            display: none;
+        }
+
     </style>
-    
+    <script src="/public/js/commons/lockLikeMobile.js"></script>
+    <script src="https://kit.fontawesome.com/feb61beef1.js" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -30,57 +243,95 @@
                 <div class ="row"><div class="col pt-2 py-0 text-center fw-bold" style="font-size: 1.25em;">meongstalking funding</div></div>
                 
                 <div class="row pt-3">
-                    <div class="col-10 pt-2"><input type="text" class="form-control" placeholder="다양한 상품을 찾아보세요"></div>
-                    <div class="col fw-bold text-center">
+                    <div class="col pe-0">
+                        <div class="row ms-2 border rounded" id="searchRow" style="width: 17em;">
+                            <div class="col px-0"><input type="text" id="searchBox" class="form-control py-0" style="border: none;" placeholder="다양한 상품을 찾아보세요"></div>
+                            <div class="col-2 pe-1 pb-2 text-center"><i class="fa-solid fa-magnifying-glass ps-0" style="font-size: 1.25em;"></i></div>
+                        </div>
+                    </div>
+                    <div class="col-2 fw-bold text-center">
                                 <a href="./fundingUserMyPage">
-                                    <div class="row"><div class="col"><i class="bi bi-file-person icon-link-hover" style="font-size: 1.25em; color:black"></i></div></div>
-                                    <div class="row"><div class="col"><span class="text-black py-0" style="font-size: 0.55em;">메인홈</span></div></div>
+                                    <div class="row"><div class="col ps-0"><i class="fa-regular fa-user icon-link-hover pt-1" style="font-size: 1.35em; color:black"></i></div></div>
+                                    <div class="row"><div class="col ps-0 d-grid"><span class="text-black py-0" style="font-size: 0.65em;">내 정보</span></div></div>
                                 </a>
                     </div>
                 </div>
+
+                <div class="container cateContainer" style="white-space: nowrap;">
+                    <div class="row pb-3 text-center">
+                                <div class="col-3">
+                                    <div class="row"><div class="col boxCol"><div class="box categoryCircle"><i class="fa-solid fa-paw categoryIcon"></i></div></div></div>
+                                    <div class="row"><span class="px-0" style="font-size: 0.85em;">전체</span></div>
+                                </div>
+
+                                <div class="col-3">
+                                    <div class="row"><div class="col boxCol"><div class="box categoryCircle"><i class="fa-solid fa-bone categoryIcon"></i></div></div></div>
+                                    <div class="row"><span class="px-0" style="font-size: 0.85em;">먹이</span></div>
+                                </div>
+
+                                <div class="col-3">
+                                    <div class="row"><div class="col boxCol"><div class="box categoryCircle"><i class="fa-solid fa-tents categoryIcon"></i></div></div></div>
+                                    <div class="row"><span style="font-size: 0.85em;" class="px-0">리빙</span></div>
+                                </div>
+
+                                <div class="col-3">
+                                    <div class="row"><div class="col boxCol"><div class="box categoryCircle"><i class="fa-solid fa-shirt categoryIcon"></i></div></div></div>
+                                    <div class="row"><span style="font-size: 0.85em;" class="px-0">의류</span></div>
+                                </div>
+
+                                <div class="col-3">
+                                    <div class="row"><div class="col boxCol"><div class="box categoryCircle"><i class="bi bi-scissors categoryIcon"></i> </div></div></div>
+                                    <div class="row"><span style="font-size: 0.85em;" class="px-0">미용</span></div>
+                                </div>
+
+                                <div class="col-3">
+                                    <div class="row"><div class="col boxCol"><div class="box categoryCircle"><i class="fa-solid fa-shower categoryIcon"></i></div></div></div>
+                                    <div class="row"><span style="font-size: 0.85em;" class="px-0">위생</span></div>
+                                </div>
+
+                                <div class="col-3">
+                                    <div class="row"><div class="col boxCol"><div class="box categoryCircle"><i class="fa-solid fa-bucket categoryIcon"></i></div></div></div>
+                                    <div class="row"><span style="font-size: 0.85em;" class="px-0">기타</span></div>
+                                </div>        
+                    </div>        
+                </div>   
                     
                 <div class="row my-4">
-                    <div class="col">
+                    <div id="productList" class="col"></div>
+                </div>
 
-                        <th:block th:each="list : ${list}">
-                            <div class="row mx-3 mb-4 d-grid">
-                                <a class="px-0" th:href="@{./productDetailPage(id = ${list.list.product_pk})}">
-                                    <div id="productBox" class="col border border-0 rounded">
+                <div id="productListTemplate" class="d-none">
+                    <div class="row productListWrapper mx-3 mb-4 d-grid">
+                        
+                            <div id="productBox" class="col border border-0 rounded">
 
-                                        <div class="row">
-                                            <div class="col d-grid" style="position: relative;">
-                                                <img class="img-fluid rounded-top" th:src="@{'/uploadFiles/'+${list.list.title_image}}" alt="nothing" style="max-width: 100%;">
-                                                <div style="position: absolute; top: 6%; right: 6%;"><i class="bi bi-heart text-white" style="font-size: 1.15em;"></i>
-                                                </div>
-                                            </div>
+                                <div class="row">
+                                    <div class="col d-grid px-0" style="position: relative;">
+                                        <img id="titleImg" class="titleImg img-fluid rounded-top">
+                                        <div style="position: absolute; top: 6%; right: 6%;"><i id="wishButton" onclick="toggleWish()" class="bi bi-heart text-white" style="font-size: 1.15em;"></i>
                                         </div>
-                                        <div class="row mx-1">
-                                            <div class="col">
-                                                <div class="row py-1"><div class="col"><span class="fw-bold" th:text="${list.percent}" style="font-size: 1.15em;"></span ><span class="fw-bold" style="font-size: 1.1em;">% 달성 중이에요</span></div></div>
-                                                <div class="row pb-1"><div class="col" th:text=${list.list.simple_explain} style="font-size: 0.95em; color:dimgray"></div></div>
-                                                <div class="row"><div class="col" th:text="${list.user.userid}" style="font-size: 0.85em; color: darkgray"></div></div>
-                                                <div class="row pb-2">
-                                                    <div class="col"><div class="badge text-wrap" style="background-color: rgba(204, 204, 204, 0.924)"><span th:text="|${list.f_day}일 남음|"></span></div> <div class="badge text-wrap" style="background-color: rgba(204, 204, 204, 0.924)"><span th:text="|${list.t_sales}원 |"></span></div></div>
-                                                </div>
-                                            </div>
-                                        </div>
-
                                     </div>
-                                </a>    
-                            </div>
-                        
-                        </th:block>
-                        
+                                </div>
+                                <div class="row mx-1">
+                                    <div class="col">
+                                        <div class="row py-1"><div class="col"><span class="percent fw-bold" style="font-size: 1.15em;"></span ><span class="fw-bold" style="font-size: 1.1em;">% 달성 중이에요</span></div></div>
+                                        <div class="row pb-1"><div class="simpleExplain col" style="font-size: 0.95em; color:dimgray"></div></div>
+                                        <div class="row"><div class="userid col" style="font-size: 0.85em; color: darkgray"></div></div>
+                                        <div class="row pb-3">
+                                            <div class="col"><div class="badge text-wrap" style="background-color:burlywood; font-size: 0.85em;"><span class="fDay"></span><span>일 남음</span></div> <div class="badge text-wrap" style="background-color: rgba(204, 204, 204, 0.924); font-size: 0.85em;"><span class="tSales"></span><span>+</span></div></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>   
                     </div>
                 </div>
-                
 
 
     <!--컨테이너 끝-->
             </div>
         </div>
     </div>
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>

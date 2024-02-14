@@ -41,4 +41,14 @@
 		WHERE kakao_user_id = #{kakaoUserId} 
 	</select>
 
+	<select id="selectMstarUserMainPage" resultType="map">
+		SELECT * 
+		FROM ms_mstar_profile_info
+		WHERE profile_photo IS NOT NULL AND nick_name IS NOT NULL AND status_message IS NOT NULL
+		ORDER BY RAND()
+		LIMIT 1;
+
+
+	</select>
+
 </mapper>

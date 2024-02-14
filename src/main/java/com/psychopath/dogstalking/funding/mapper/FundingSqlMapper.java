@@ -1,5 +1,7 @@
 package com.psychopath.dogstalking.funding.mapper;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.psychopath.dogstalking.dto.UserDto;
@@ -38,9 +40,13 @@ public interface FundingSqlMapper {
     public int countPercentByPk(int pk);
     //상품의 총 구매횟수 가져오기
     public int countPurchase(int product_pk);
+    
     //상품 찜하기 
-    // public void insertWish(FundingWishlistDto paraWishDto);
-    // public void deleteWish(FundingWishlistDto paraWishDto);
+    //카운트 해와서 boolean으로 판별하기 위함
+    public int countMyWish(FundingWishlistDto paraWishDto);
+    //카운트 해와서 넣거나 빼거나 
+    public void insertWish(FundingWishlistDto paraWishDto);
+    public void deleteWish(FundingWishlistDto paraWishDto);
 
     // 개별상품 페이지 위해 상품정보 가져오기 
     public FundingProductDto selectProductInfo(int pk);
@@ -97,5 +103,8 @@ public interface FundingSqlMapper {
 
     //응원 페이지에서 보일 물건별 응원수 카운트
     public int countCheeringByPk(int product_pk);
+
+    //mainpage 펀딩 리스트
+    public List<Map<String,Object>> selectFundingMainList();
 
 }

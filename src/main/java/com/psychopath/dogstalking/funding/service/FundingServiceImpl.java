@@ -35,6 +35,7 @@ public class FundingServiceImpl {
 
     //메인 페이지 호출되는 펀딩 상품리스트 불러오기
     public List<Map<String,Object>> fundingListCall(){
+        System.out.println("서비스 fundingListCall 시작");
         List<Map<String,Object>> fundingList = new ArrayList<>();
         List<FundingProductDto> fundingProductDtoList = fundingSqlMapper.fundingListCall();
 
@@ -46,6 +47,8 @@ public class FundingServiceImpl {
             int percent = fundingSqlMapper.countPercentByPk(eleproductDto.getProduct_pk());
             //총매출
             int t_sales = fundingSqlMapper.totalSales(eleproductDto.getProduct_pk());
+            //좋아요를 눌렀는지 안 눌렀는지 
+            // int wishOrNot = fundingSqlMapper.countMyWish(eleproductDto.getProduct_pk());
 
             Map<String,Object> productMap = new HashMap<>();                           
             productMap.put("list",eleproductDto);
@@ -56,6 +59,7 @@ public class FundingServiceImpl {
     
             fundingList.add(productMap);                   
         }
+        System.out.println("서비스 fundingListCall 마무리 리턴직전");
         return fundingList;
     }
 
@@ -169,6 +173,20 @@ public class FundingServiceImpl {
     }
 
     //찜하기
+    public void toggleWishProduct(FundingWishlistDto paraWishDto){
+        if(fundingSqlMapper.countMyWish(paraWishDto) > 0){
+            fundingSqlMapper.deleteWish(paraWishDto);
+        }else{
+            fundingSqlMapper.insertWish(paraWishDto);
+        }   
+    }
+
+    public boolean reloadWish(FundingWishlistDto paraWishDto){
+        System.out.println("rest reloadWish 실행");
+        return fundingSqlMapper.countMyWish(paraWishDto) > 0 ? true : false;
+    }
+
+
     // public void insertWish(FundingWishlistDto paraWishDto){
     //     fundingSqlMapper.insertWish(paraWishDto);
     // }
@@ -254,6 +272,10 @@ public class FundingServiceImpl {
     //물건별 새소식 페이지에서 보일 새소식 카운트
     public int countNewsByPk(int product_pk){
         return fundingSqlMapper.countNewsByPk(product_pk);
+    }
+
+    public List<Map<String, Object>> selectFundingMainList(){
+        return fundingSqlMapper.selectFundingMainList();
     }
 
 }

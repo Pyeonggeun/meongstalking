@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>상품 등록 신청 정보 입력</title>
+    <title>펀딩 프로젝트 등록 정보 입력</title>
 
     <script>
         function imageBoxClickHandler1() {
@@ -15,6 +15,13 @@
             const imageInput = document.getElementById("imageFile2");
             imageInput.click();
         }
+
+        const input = document.querySelector('#Number');
+        input.addEventListener('keyup', function(e) {
+        let value = e.target.value;                 
+        value = Number(value.replaceAll(',', ''));
+        const formatValue = value.toLocaleString('ko-KR'); 
+        })
 
         function titleCount(text,length){
         var limit = length;
@@ -34,6 +41,16 @@
             text.focus();
         }
         document.getElementById("explainReCount").innerHTML = text.value.length + " / " + limit;
+        }
+
+        function componentCount(text,length){
+        var limit = length;
+        var str = text.value.length;
+        if(str>limit){
+            text.value = text.value.substring(0,limit);
+            text.focus();
+        }
+        document.getElementById("componentReCount").innerHTML = text.value.length + " / " + limit;
         }
 
         function formSubmit(){
@@ -113,9 +130,15 @@
         }
 
 
+
+
     </script>
 
     <style>
+        body{
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
         .box-dashed {
                 border-width: 0.15em;
                 border-style: dashed;
@@ -131,6 +154,10 @@
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -167,11 +194,18 @@
                                         <div class="row mb-1"><div class="col"style="font-size: 0.9em;"><i class="bi bi-check"></i> 제목 작성 팁</div></div>
                                         <div class="row"><div class="col" style="font-size: 0.8em;">중요한 키워드는 눈에 잘 띄도록 앞부분에 적어주세요. 제목이 너무 길 경우 화면에서 잘려보일 수 있습니다. 가장 중요한 내용을 앞세워 후원회원님들의 호기심을 자극해보세요.</div></div>
                                     </div>
-                            </div>
+                                </div>
                                 <div class="row"><div class="col" style="font-size: 1.05em;">상품 제목 <span style="font-size: 0.5em"></span></sapn></div></div>
                                 <div class="row"><div class="col"><input class="form-control" onkeyup="titleCount(this,150)" id="inputTitle" type="text" name="product_name"></div></div>
                                 <div class="row"><div class="col"><div style="text-align: right; font-size: 0.75em;"><span id="titleReCount">0 / 150</span></div></div></div>
                             </div></div>  
+
+                            <div class="row mb-4"><div class="col">
+                                <div class="row"><div class="col" style="font-size: 1.05em;">상품 구성 <span style="font-size: 0.5em"></span></sapn></div></div>
+                                <div class="row mb-1"><div class="col" style="font-size: 0.7em; color: gray;"> 구성의 정확한 명칭과 수량을 적어주세요. 입력시 줄 바꿈에 유의해 주세요. 그대로 출력됩니다 </div></div>
+                                <div class="row"><div class="col"><textarea type="text" name="product_component" id="productComponent" onkeyup="componentCount(this,50)" class="form-control"></textarea></div></div>
+                                <div class="row"><div class="col"><div style="text-align: right; font-size: 0.75em;"><span id="componentReCount">0 / 50</span></div></div></div>
+                            </div></div>
 
                             <div class="row mb-4"><div class="col">
                                 <div class="row"><div class="col" style="font-size: 1.05em;">상품 요약 설명 <span style="font-size: 0.5em"></span></sapn></div></div>
@@ -221,7 +255,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col py-2 mx-3 rounded" style="background-color: #e9ecef; clolo:#555c65;">
+                                        <div class="col py-2 mx-3 rounded" style="background-color: #e9ecef; color:#555c65;">
                                             <div class="row pb-1"><div class="col" style="font-size: 0.9em;">* 상세 이미지 등록 가이드</div></div>
                                             <div class="row pb-1"><div class="col" style="font-size: 0.8em;">JPG, JPEG,PNG파일만 등록가능합니다</div></div>
                                             <div class="row pb-1"><div class="col" style="font-size: 0.8em;">한장의 사진에 모든 정보가 담겨야 합니다. 미리 편집해서 등록해주시기 바랍니다.</div></div>
@@ -281,7 +315,7 @@
                                 </div>
                             </div> 
 
-                            <div class="row my-3"><div class="col-3 px-0 ps-2 text-center"><a href="./prepareRgstrPage" class="btn border-0 rounded text-white" style="background-color: salmon; font-size: 0.85em;">뒤로가기</a></div> <div class="col d-grid"><input type="button" onclick="formSubmit()" value="제출하기" class="rounded" style="background-color: white;"> </div></div>
+                            <div class="row my-3"><div class="col-3 px-0 ps-2 d-grid text-center"><a href="./prepareRgstrPage" class="btn border-0 rounded py-1 px-0 text-white" style="background-color: salmon; font-size: 1em;">뒤로가기</a></div> <div class="col d-grid"><input type="button" onclick="formSubmit()" value="제출하기" class="rounded py-1" style="background-color: white; font-size: 1em;"> </div></div>
                             <div class="row" style="padding: 2em;"></div> 
                         </form>
 
@@ -295,7 +329,7 @@
     </div>
 
 
-
+    <script src="/public/js/commons/lockLikeMobile.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 
