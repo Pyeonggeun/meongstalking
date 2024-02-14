@@ -763,13 +763,13 @@
 
                     }
 
-                    const likeListBox = document.getElementById("likeListBox");
-                    likeListBox.innerHTML = "";
+                    // const likeListBox = document.getElementById("likeListBox");
+                    // likeListBox.innerHTML = "";
 
                     for(let e of response.data) {
                         console.log(e);
-                        const likeListWrapper = document.querySelector("#template .likeListWrapper").cloneNode(true);
-                        likeListWrapper.querySelector(".likeListContent").innerText = e.user_pk;
+                        // const likeListWrapper = document.querySelector("#template .likeListWrapper").cloneNode(true);
+
                         likeListWrapper.querySelector(".likeListButton").onclick = () => {
                             console.log(e.user_pk + ": " + e.is_trace);
                             if(e.is_trace == "Y") {
@@ -805,7 +805,8 @@
 
                         };
 
-                        likeListBox.appendChild(likeListWrapper);
+                        // likeListBox.appendChild(likeListWrapper);
+                        showLikeListModal();
 
                     }
 
@@ -1442,6 +1443,16 @@
 
             }
 
+            function showLikeListModal() {
+
+                const modal = bootstrap.Modal.getOrCreateInstance("#likeListModal");
+                modal.show();
+
+                document.getElementById("likeListCarouselPrev").click();
+                document.getElementById("likeListCarouselNext").click();
+
+            }
+
             function showShopModal(){
 
                 const itemModal = bootstrap.Modal.getOrCreateInstance("#itemModal");
@@ -1495,6 +1506,7 @@
                 getMyUserPk();
                 createMap();
                 getMyLocation();
+                // showPreviewTrackMarkerModal();
 
             })
 
@@ -1518,7 +1530,7 @@
                 position: relative;
                 overflow: hidden;
                 width: 100%;
-                height: 32rem;
+                height: 72vh;
             }
 
             #block {
@@ -1916,7 +1928,7 @@
 
         <div class="container-fluid">
             <div class="row">
-                <div id="topBanner" class="col" style="height: 5rem;"></div>
+                <div id="topBanner" class="col" style="height: 3.5rem;"></div>
             </div>
             <div class="row">
                 <div class="col px-0">
@@ -2111,7 +2123,7 @@
 
                         <div id="writeTrackMarkModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute;">
                             <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content fw-bold mx-auto rounded" style="width: auto; padding: 0.25rem; font-size: 0.85rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
+                                <div class="modal-content fw-bold mx-auto rounded" style="width: 70%; padding: 0.25rem; font-size: 0.85rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
                                     <div class="modal-header text-white fw-bold py-1 px-1 border-0" style="font-size: 1rem;">
                                         체취 분사
                                     </div>
@@ -2172,13 +2184,187 @@
 
                         <div id="previewTrackMarkerModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute;">
                             <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-body">
-
+                                <div class="modal-content fw-bold mx-auto rounded" style="width: 90%; padding: 0.25rem; font-size: 0.85rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
+                                    <div id="previewTrackMarkerPk" class="modal-header text-white fw-bold py-1 px-1 border-0" style="font-size: 1rem;">
+                                        No. 777
                                     </div>
-                                    <div class="modal-footer pb-2 border-0 justify-content-center">
-                                        <button type="button" class="btn btn-secondary py-1" data-bs-dismiss="modal">닫기</button>
-                                        <button id="collectTrackMarkerButton" class="btn py-1 text-white" style="background: #D96161;">수집하기</button>
+                                    <div class="modal-body pb-1 px-1 pt-2 rounded" style="background: #f3ecdd; border: 2px solid rgba(241, 194, 92, 0.4);">
+                                        <div class="rounded px-3 py-2" style="width: 100%; background: #C5A886;">
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <div class="row">
+                                                        <div class="col px-2">
+                                                            <div id="previewTrackMarkerOuter" class="d-flex align-items-center justify-content-center border-0" style="width: 100%; aspect-ratio: 1/1; border-radius: 50%;">
+                                                                <div id="previewTrackMarkerImage" style="width: 90%; aspect-ratio: 1/1; border-radius: 50%; background: url('/public/image/follow/questionBlack.png') no-repeat center; background-size: cover; filter: opacity(85%);"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mt-1">
+                                                        <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                            <span id="previewTrackMarkerName">? ? ?</span>
+                                                            <!-- 김아무 -->
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div id="previewTrackMarkerOpenRating" class="col text-center fw-bold" style="font-size: 0.56rem;">
+                                                            Lv ? ( ?? / ?? )
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col my-auto">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="row">
+                                                                <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                    <span id="previewTrackMarkerHeight">? ? ?</span> cm
+                                                                    <!-- 163 cm -->
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                    키
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                        <div class="col-3">
+                                                            <div class="row">
+                                                                <div id="previewTrackMarkerGender" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                    ? ?
+                                                                    <!-- 👱🏻‍♀️ -->
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                    성별
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                        <div class="col">
+                                                            <div class="row">
+                                                                <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                    <span id="previewTrackMarkerWeight">? ? ?</span> kg
+                                                                    <!-- 50 kg -->
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                    몸무게
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="row">
+                                                                <div id="previewTrackMarkerMbtiType" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                    ? ? ? ?
+                                                                    <!-- ISTJ -->
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                    MBTI
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                        <div class="col">
+                                                            <div class="row">
+                                                                <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                    <span id="previewTrackMarkerBloodType">? ?</span> 형
+                                                                    <!-- B 형 -->
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                    혈액형
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                        <div class="col">
+                                                            <div class="row">
+                                                                <div id="previewTrackMarkerDrinking" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                    ? ?
+                                                                    <!-- N -->
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                    음주여부
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                        <div class="col">
+                                                            <div class="row">
+                                                                <div id="previewTrackMarkerSmoking" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                    ? ?
+                                                                    <!-- N -->
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                    흡연여부
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="row">
+                                                                <div id="previewTrackMarkerHobby" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                    ? ? ? ? ?
+                                                                    <!-- 집에서 뒹굴거리기 -->
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                    취미
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                        <div class="col">
+                                                            <div class="row">
+                                                                <div id="previewTrackMarkerPreference" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                    ? ? ? ? ?
+                                                                    <!-- 게이 -->
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                    성적지향
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row align-items-center">
+                                                <div class="col-auto pe-0 text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                    인스타 활동온도
+                                                </div>
+                                                <div class="col">
+                                                    <div class="row align-items-center">
+                                                        <div class="col">
+                                                            <div class="progress" style="height: 0.5rem;">
+                                                                <div id="previewTrackMarkerTemp" class="progress-bar rounded" style="background: #feb146; width: 36.5%;"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-auto ps-0 fw-bold text-end" style="font-size: 0.8rem; color: #000;">
+                                                            <span id="previewTrackMarkerTempContent">36.5</span>℃
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer pb-0 border-0 justify-content-center">
+                                            <button class="d-grid btn py-0 px-4 text-white" style="background: #a6a6a6; border: 2px solid rgba(91, 91, 91, 0.4); font-size: 0.9rem;" data-bs-dismiss="modal">취소</button>
+                                            <button id="collectTrackMarkerButton" class="d-grid btn py-0 px-4 text-white" style="background: #fdb96b; border: 2px solid rgba(188, 136, 46, 0.4); font-size: 0.9rem;">수집</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -2200,12 +2386,12 @@
 
                         <div id="collectionModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute;">
                             <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 0.5rem; padding-right: 0.5rem; padding-top: 1rem;">
+                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 1rem; padding-right: 1rem; padding-top: 1rem;">
                                     <div style="position: absolute; width: 12rem; height: 3rem; z-index: 1; top: -0.4rem;">
                                         <img class="img-fluid" th:src="@{/public/image/follow/banner.png}" style="width: 12rem; height: 3rem;">
                                     </div>
-                                    <span class="text-white fw-bold" style="position: absolute; z-index: 1; font-size: 1rem; left: 5rem; top: 0.3rem; color: #f3ecdd;">내 가 방</span>
-                                    <button type="button" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" data-bs-dismiss="modal" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.3rem; top: 0.6rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
+                                    <span class="text-white fw-bold" style="position: absolute; z-index: 1; font-size: 1rem; left: 5.5rem; top: 0.3rem; color: #f3ecdd;">내 가 방</span>
+                                    <button type="button" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" data-bs-dismiss="modal" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.7rem; top: 0.6rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
                                         <div style="border-radius: 50%; background: #ac5e23; width: 1.3rem; height: 1.3rem; border: 1px solid #7D3A05;">
                                             <span id="collectionModalCloseIcon" class="material-symbols-rounded" style="position: absolute; font-size: 1.2rem; left: 0.2rem; color: #f3ecdd;">
                                                 close
@@ -2213,7 +2399,7 @@
                                         </div>
                                     </button>
                                     <div class="modal-body rounded" style="padding: 0.2rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
-                                        <div class="rounded" style="padding: 0.5rem; padding-top: 1rem; height: 26rem; background: #E0C9A9; border: 2px solid rgba(241, 194, 92, 0.4);">
+                                        <div class="rounded" style="padding: 0.5rem; padding-top: 1rem; height: 60vh; background: #E0C9A9; border: 2px solid rgba(241, 194, 92, 0.4);">
                                             <div class="row">
                                                 <div class="col">
                                                     <span class="ps-1 pe-5 rounded" style="color: #81461A; background: #CEB597; font-size: 0.9rem;">&nbsp;꾸욱: <span id="collectionLikeCnt">0</span></span>
@@ -2222,7 +2408,7 @@
                                                     <span class="ps-1 pe-4 rounded" style="color: #81461A; background: #CEB597; font-size: 0.9rem;">&nbsp;등급순 &ShortDownArrow;</span>
                                                 </div> -->
                                             </div>
-                                            <div class="rounded mt-2 overflow-auto" style="background: #C5A886; height: 19rem; border: 1px solid #f3ecdd;">
+                                            <div class="rounded mt-2 overflow-auto" style="background: #C5A886; height: 51vh; border: 1px solid #f3ecdd;">
 
                                                 <div id="collectionLikeListBox" class="row row-cols-4 mx-auto py-2" style="width: 100%;">
 
@@ -2254,12 +2440,12 @@
 
                         <div id="collectionDetailModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute;">
                             <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 0.5rem; padding-right: 0.5rem; padding-top: 1rem;">
+                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 1rem; padding-right: 1rem; padding-top: 1rem;">
                                     <div style="position: absolute; width: 12rem; height: 3rem; z-index: 1; top: -0.4rem;">
                                         <img class="img-fluid" th:src="@{/public/image/follow/banner.png}" style="width: 12rem; height: 3rem;">
                                     </div>
-                                    <span class="text-white fw-bold" style="position: absolute; z-index: 1; font-size: 1rem; left: 4.5rem; top: 0.3rem; color: #f3ecdd;">상 세 정 보</span>
-                                    <button type="button" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" data-bs-dismiss="modal" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.3rem; top: 0.6rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
+                                    <span class="text-white fw-bold" style="position: absolute; z-index: 1; font-size: 1rem; left: 5rem; top: 0.3rem; color: #f3ecdd;">상 세 정 보</span>
+                                    <button type="button" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" data-bs-dismiss="modal" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.7rem; top: 0.6rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
                                         <div style="border-radius: 50%; background: #ac5e23; width: 1.3rem; height: 1.3rem; border: 1px solid #7D3A05;">
                                             <span id="collectionModalCloseIcon" class="material-symbols-rounded" style="position: absolute; font-size: 1.2rem; left: 0.2rem; color: #f3ecdd;">
                                                 close
@@ -2267,7 +2453,7 @@
                                         </div>
                                     </button>
                                     <div class="modal-body rounded" style="padding: 0.2rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
-                                        <div class="rounded" style="padding: 0.5rem; padding-top: 1rem; height: 26rem; background: #E0C9A9; border: 2px solid rgba(241, 194, 92, 0.4);">
+                                        <div class="rounded" style="padding: 0.5rem; padding-top: 1rem; height: 60vh; background: #E0C9A9; border: 2px solid rgba(241, 194, 92, 0.4);">
                                             
                                         </div>
                                     </div>
@@ -2277,12 +2463,12 @@
 
                         <div id="myPageModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute;">
                             <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 0.5rem; padding-right: 0.5rem; padding-top: 1rem;">
+                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 1rem; padding-right: 1rem; padding-top: 1rem;">
                                     <div style="position: absolute; width: 12rem; height: 3rem; z-index: 1; top: -0.4rem;">
                                         <img class="img-fluid" th:src="@{/public/image/follow/banner.png}" style="width: 12rem; height: 3rem;">
                                     </div>
-                                    <span class="text-white fw-bold" style="position: absolute; z-index: 1; font-size: 1rem; left: 5rem; top: 0.3rem; color: #f3ecdd;">내 정 보</span>
-                                    <button type="button" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" data-bs-dismiss="modal" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.3rem; top: 0.6rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
+                                    <span class="text-white fw-bold" style="position: absolute; z-index: 1; font-size: 1rem; left: 5.5rem; top: 0.3rem; color: #f3ecdd;">내 정 보</span>
+                                    <button type="button" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" data-bs-dismiss="modal" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.7rem; top: 0.6rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
                                         <div style="border-radius: 50%; background: #ac5e23; width: 1.3rem; height: 1.3rem; border: 1px solid #7D3A05;">
                                             <span id="collectionModalCloseIcon" class="material-symbols-rounded" style="position: absolute; font-size: 1.2rem; left: 0.2rem; color: #f3ecdd;">
                                                 close
@@ -2290,11 +2476,11 @@
                                         </div>
                                     </button>
                                     <div class="modal-body rounded" style="padding: 0.2rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
-                                        <div class="rounded" style="padding: 0.5rem; padding-top: 3.5rem; height: 26rem; background:#E0C9A9; border: 2px solid rgba(241, 194, 92, 0.4);">
+                                        <div class="rounded" style="padding: 0.5rem; padding-top: 3.5rem; height: 60vh; background:#E0C9A9; border: 2px solid rgba(241, 194, 92, 0.4);">
                                             <div class="rounded" style="position: relative; background: #C5A886; height: 7rem; border: 1px solid #f3ecdd;">
-                                                <div class="d-flex gap-2 justify-content-end" style="position: absolute; left: 5rem; top: -1.7rem;">
-                                                    <button class="btn text-white py-0" style="background: sienna; font-size: 0.8rem;">내 체취 / 흔적</button>
-                                                    <button onclick="showAchievementModal()" class="btn text-white py-0" style="background: sienna; font-size: 0.8rem;">업적</button>
+                                                <div class="d-flex gap-2 justify-content-end" style="position: absolute; left: 4.7rem; top: -1.7rem;">
+                                                    <button class="btn text-white py-0" style="background: #81461A; font-size: 0.8rem;">내 체취 / 흔적</button>
+                                                    <button onclick="showAchievementModal()" class="btn text-white py-0" style="background: #81461A; font-size: 0.8rem;">업적</button>
                                                 </div>
                                                 <div class="d-grid align-items-center justify-content-center" style="position: absolute; width: 4rem; height: 4rem; top: -2rem; left: 0.5rem; border-radius: 50%; background: #81461A;">
                                                     <div style="width: 3.5rem; height: 3.5rem; border-radius: 50%; background: #f3ecdd;"></div>
@@ -2311,24 +2497,219 @@
                             </div>
                         </div>
 
-                        <!-- <div id="myPageModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute;">
-                            <div class="modal-dialog modal-fullscreen">
-                                <div class="modal-content" style="background: transparent; padding: 1rem;">
-                                    <div class="modal-body px-0 py-0" style="background: white;">
-                                        <div class="py-2 px-3" style="background: #211e1e;">
-                                            <span class="text-white" style="font-size: 1.2rem;">
-                                                내정보
-                                            </span>
-                                            <button type="button" class="btn px-0 py-0 float-end" data-bs-dismiss="modal">
-                                                <span id="collectionModalCloseIcon" class="material-symbols-rounded">
-                                                    close
-                                                </span>
+                        <div id="likeListModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute;">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content fw-bold mx-auto rounded" style="width: 90%; padding: 0.25rem; font-size: 0.85rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
+                                    <div id="previewTrackMarkerPk" class="modal-header text-white fw-bold py-1 px-1 border-0" style="font-size: 1rem;">
+                                        꾸욱
+                                    </div>
+                                    <div class="modal-body pb-1 px-0 pt-1 rounded" style="width: 100%; background: #f3ecdd; border: 2px solid rgba(241, 194, 92, 0.4);">
+                                        <div id="likeListCarousel" class="carousel slide">
+                                            <div class="carousel-inner">
+                                                
+                                                <div class="carousel-item px-1 active">
+                                                    <div class="likeListButton rounded px-3 py-2" style="width: 100%; background: #C5A886;">
+                                                        <div class="row my-auto align-items-center">
+                                                            <div class="col">No. <span class="likeListPk">777</span></div>
+                                                            <div class="col">
+                                                                <span class="heartIcon material-symbols-rounded d-flex align-items-center float-end" style="font-size: 1.3rem;">
+                                                                    favorite
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <hr class="mt-1 mb-2" style="color: #81461A;">
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-3">
+                                                                <div class="row">
+                                                                    <div class="col px-2">
+                                                                        <div class="likeListOuter d-flex align-items-center justify-content-center border-0" style="width: 100%; aspect-ratio: 1/1; border-radius: 50%;">
+                                                                            <div class="likeListImage" style="width: 90%; aspect-ratio: 1/1; border-radius: 50%; background: url('/public/image/follow/questionBlack.png') no-repeat center; background-size: cover; filter: opacity(85%);"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mt-1">
+                                                                    <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                        <span class="likeListName">? ? ?</span>
+                                                                        <!-- 김아무 -->
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="likeListOpenRating col text-center fw-bold" style="font-size: 0.56rem;">
+                                                                        Lv ? ( ?? / ?? )
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col my-auto">
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <div class="row">
+                                                                            <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                                <span class="likeListHeight">? ? ?</span> cm
+                                                                                <!-- 163 cm -->
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                                키
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                                    <div class="col-3">
+                                                                        <div class="row">
+                                                                            <div class="likeListGender col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                                ? ?
+                                                                                <!-- 👱🏻‍♀️ -->
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                                성별
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                                    <div class="col">
+                                                                        <div class="row">
+                                                                            <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                                <span class="likeListWeight">? ? ?</span> kg
+                                                                                <!-- 50 kg -->
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                                몸무게
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <div class="row">
+                                                                            <div class="likeListMbtiType col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                                ? ? ? ?
+                                                                                <!-- ISTJ -->
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                                MBTI
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                                    <div class="col">
+                                                                        <div class="row">
+                                                                            <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                                <span class="likeListBloodType">? ?</span> 형
+                                                                                <!-- B 형 -->
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                                혈액형
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                                    <div class="col">
+                                                                        <div class="row">
+                                                                            <div class="likeListDrinking col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                                ? ?
+                                                                                <!-- N -->
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                                음주여부
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                                    <div class="col">
+                                                                        <div class="row">
+                                                                            <div class="likeListSmoking col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                                ? ?
+                                                                                <!-- N -->
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                                흡연여부
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <div class="row">
+                                                                            <div class="likeListHobby col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                                ? ? ? ? ?
+                                                                                <!-- 집에서 뒹굴거리기 -->
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                                취미
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                                    <div class="col">
+                                                                        <div class="row">
+                                                                            <div class="likeListPreference col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                                ? ? ? ? ?
+                                                                                <!-- 게이 -->
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                                성적지향
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row align-items-center">
+                                                            <div class="col-auto pe-0 text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                인스타 활동온도
+                                                            </div>
+                                                            <div class="col">
+                                                                <div class="row align-items-center">
+                                                                    <div class="col">
+                                                                        <div class="progress" style="height: 0.5rem;">
+                                                                            <div class="likeListTemp progress-bar rounded" style="background: #feb146; width: 36.5%;"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-auto ps-0 fw-bold text-end" style="font-size: 0.8rem; color: #000;">
+                                                                        <span class="likeListTempContent">36.5</span>℃
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <button id="likeListCarouselPrev" class="carousel-control-prev" type="button" data-bs-target="#likeListCarousel" data-bs-slide="prev" style="position: absolute; top: calc(50% - 5.3rem); left: -3rem;">
+                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Previous</span>
+                                              </button>
+                                              <button id="likeListCarouselNext" class="carousel-control-next" type="button" data-bs-target="#likeListCarousel" data-bs-slide="next" style="position: absolute; top: calc(50% - 5.3rem); right: -3rem;">
+                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Next</span>
                                             </button>
+                                        </div>
+                                        <div class="modal-footer pb-0 border-0 justify-content-center">
+                                            <button id="collectTrackMarkerButton" class="d-grid btn py-0 px-4 text-white" style="background: #fdb96b; border: 2px solid rgba(188, 136, 46, 0.4); font-size: 0.9rem;" data-bs-dismiss="modal">닫기</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
                         
                     </div>
                 </div>
@@ -2353,7 +2734,7 @@
             <div class="collectionWrapper col mt-2 px-2">
                 <div class="collectionOuter d-grid align-items-center" style="width: 100%; aspect-ratio: 1/1; border-radius: 8%;">
                     <!-- <div class="d-flex justify-content-center" style="position: relative; width: 98%; aspect-ratio: 1/1; border: 1px solid #ffdf00; border-radius: 3%; background: url('/public/image/commons/list2.jpeg') no-repeat center; background-size: cover; filter: opacity(80%);"> -->
-                    <div class="collectionInner d-flex justify-content-center" style="position: relative; width: 98%; aspect-ratio: 1/1; border-radius: 3%; background: url('/public/image/follow/question.png') no-repeat center; background-size: cover; filter: opacity(80%);">
+                    <div class="collectionInner d-flex justify-content-center" style="position: relative; width: 98%; aspect-ratio: 1/1; border-radius: 3%; background: url('/public/image/follow/questionAnother.png') no-repeat center; background-size: cover; filter: opacity(80%);">
                         <div class="progress" role="progressbar" style="position: absolute; width: 95%; height: 0.5rem; border: 0.1px solid #E0C9A9; bottom: 0.1rem;">
                             <div class="collectionProgress progress-bar progress-bar-striped rounded-pill" style="background: #feb146; width: 75%;"></div>
                         </div>
@@ -2362,11 +2743,6 @@
                         </div> -->
                     </div>
                 </div>
-            </div>
-
-            <div class="likeListWrapper">
-                <div class="likeListContent"></div>
-                <button class="likeListButton">추행</button>
             </div>
 
         </div>
