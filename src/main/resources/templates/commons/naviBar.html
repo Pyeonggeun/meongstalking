@@ -1,12 +1,13 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
-
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 <div class="row border-bottom px-3 ">
     <div class="col">
         <div class="row">
             <div class="col py-1">
                 <div class="row">
-                    <div class="col-2"></div>
+                    <div class="col-3"></div>
                     <div class="col text-center">
                         <img class="img-fluid" src="/public/image/mstar/logo1.png" alt="" style="height: 1.7em;">
                     </div>
@@ -23,31 +24,33 @@
 <div class="row bg-white fixed-bottom border-top">
     <div class="col py-2">
         <div class="row">
-            <div class="col text-center">
+            <div th:onclick="location.href='/club/clubHomePage'" class="col text-center">
                 <div class="row">
                     <div class="col menu-trigger text-body-tertiary">
-                        <i class="fa-solid fa-bars"></i>
+                        <span class="material-symbols-outlined">
+                            groups_3
+                            </span> 
                     </div>
                 </div>
                 <div class="row">
                     <div class="col text-secondary">
-                        메뉴
+                        클럽
                     </div>
                 </div>
             </div>
-            <div class="col text-center ps-0">
+            <div th:onclick="location.href='/auction/mainPage'" class="col text-center ps-0">
                 <div class="row">
                     <div class="col text-body-tertiary">
-                        <i class="fa-solid fa-bolt"></i>
+                        <span class="material-symbols-outlined">gavel</span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col text-secondary">
-                        먹거리
+                        경매
                     </div>
                 </div>
             </div>
-            <div class="col text-center ps-0">
+            <div th:onclick="location.href='/follow/function'" class="col text-center ps-0 ">
                 <div class="row">
                     <div class="col text-body-tertiary">
                         <span class="material-symbols-rounded">
@@ -57,31 +60,35 @@
                 </div>
                 <div class="row">
                     <div class="col text-secondary">
-                        멍냥닥터
+                        s토킹
                     </div>
                 </div>
             </div>
-            <div class="col text-center ps-0">
+            <div th:onclick="|location.href='@{/mstar/profilePage(user_pk=${session.sessionUser.user_pk})}'|" class="col text-center ps-0">
                 <div class="row">
                     <div class="col text-body-tertiary">
-                        <i class="fa-solid fa-comment-dots"></i>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col text-secondary">
-                        커뮤니티
-                    </div>
-                </div>
-            </div>
-            <div class="col text-center ps-0">
-                <div class="row">
-                    <div class="col text-body-tertiary">
-                        <i class="fa-solid fa-pen-to-square"></i>
+                        <span class="material-symbols-outlined">
+                            edit_square
+                        </span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col text-secondary">
                         멍스타
+                    </div>
+                </div>
+            </div>
+            <div th:onclick="location.href='/funding/listPage'" class="col text-center ps-0">
+                <div class="row">
+                    <div class="col text-body-tertiary">
+                        <span class="material-symbols-outlined">
+                            lightbulb
+                            </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col text-secondary">
+                        펀딩
                     </div>
                 </div>
             </div>
