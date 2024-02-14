@@ -85,5 +85,5 @@ public class MstarController {
     public String testNavi(){
         return "mstar/testNavi";
     }
-
+   
 }

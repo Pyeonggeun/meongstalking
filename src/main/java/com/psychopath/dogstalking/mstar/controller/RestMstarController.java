@@ -26,6 +26,8 @@ import com.psychopath.dogstalking.mstar.dto.StoryDto;
 import com.psychopath.dogstalking.mstar.dto.TcommentDto;
 import com.psychopath.dogstalking.mstar.service.MstarServiceImpl;
 
+import jakarta.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping("/mstar/*")
 public class RestMstarController {
@@ -165,6 +167,16 @@ public class RestMstarController {
 
         responseDto.setResult("success");
         responseDto.setData(map);
+
+        return responseDto;
+    }
+    @RequestMapping("getUserDto")
+    public RestResponseDto getUserDto(HttpSession session){
+        RestResponseDto responseDto = new RestResponseDto();
+        UserDto userDto  = (UserDto)session.getAttribute("sessionUser");
+
+        responseDto.setResult("success");
+        responseDto.setData(userDto);
 
         return responseDto;
     }
