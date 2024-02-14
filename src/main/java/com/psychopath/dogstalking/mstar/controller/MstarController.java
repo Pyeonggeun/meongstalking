@@ -64,7 +64,7 @@ public class MstarController {
         return "mstar/userScrapArticleListPage";
     }
     @RequestMapping("directListPage")
-    public String directListPage(int user_pk){
+    public String directListPage(){
 
         return "mstar/directListPage";
     }

@@ -12,13 +12,17 @@
         <script>
             
             let user_pk = null;
-            function getUrlKey() {
-                const urlParams = new URLSearchParams(location.search);
-                const key = urlParams.get("user_pk");
-                user_pk = key;
-                loadMyProfileInfo(user_pk);
-                
+
+            function getUserDto(){
+                const url = "/mstar/getUserDto";
+                fetch(url)
+                .then(response => response.json())
+                .then((response) =>{
+                    response.data.user_pk = user_pk;
+                    loadMyProfileInfo(user_pk);
+                });
             }
+
             let profile_info_pk = null;
             function loadMyProfileInfo(user_pk){
                 const url = "/mstar/myProfileInfoDto";
@@ -522,7 +526,7 @@
             }
          
             window.addEventListener("DOMContentLoaded", () =>{
-                getUrlKey();
+                getUserDto();
             });
 
         </script>
