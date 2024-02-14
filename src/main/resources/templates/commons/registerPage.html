@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -9,6 +9,11 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
         crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/feb61beef1.js" crossorigin="anonymous"></script>
     
     <script>
         function formSubmit(){
@@ -64,27 +69,42 @@
 
 
     <style>
-        body {
-            background-color: #f8f9fa;
+        
+        body{
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        a{
+            color: black;
+        }
+
+        input:focus {
+            outline: none;
         }
 
         ::placeholder{
             font-weight: normal;
         }
-        .form-control{
-            font-size: 0.75em;
+
+
+        #titleCol{
+            font-size: 1.55em;
+        }
+
+        .inputClass{
+            font-size: 0.85em;
+            border-width: 0 0 0.1em;
         }
 
         .packCol {
             width: 100%;
-            padding-left: 1.25em;
-            padding-right: 1.25em;
             background-color: white;
-            border-radius: 0.33em;
         }
 
         .form-group {
+            margin-top: 1.25em;
             margin-bottom: 1.25em;
+            display: grid;
         }
 
         .form-label {
@@ -101,21 +121,10 @@
         }
 
         .explainCol{
-            font-size: 0.75em;
+            font-size: 0.6em;
             color: dimgray;
-            margin-bottom: 0.25em;
-        }
-
-        @font-face {
-                font-family: 'omyu_pretty';
-                src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
-                font-weight: normal;
-                font-style: normal;
-            }
-
-        #titleCol{
-            font-family: 'omyu_pretty';
-            font-size: 2em;
+            margin-top: 0.25em;
+            width: 90%;
         }
 
         input[type="radio"] {
@@ -136,108 +145,154 @@
             box-shadow: 0 0 0 0.2em skyblue;
             }
 
+            .nameCol{
+                font-weight:bold;
+                padding-right: 0;
+            }
+            
+            .inputCol{
+                padding: 0;
+            } 
+
+            .submitBut{
+                background-color: skyblue;
+                color: white;
+                font-weight: bold;
+                font-size: 1.15em;
+            }
+
+
+
+
     </style>
 </head>
 
 <body>
 
-    <div class="container img-fluid">
+    <div class="container-fluid">
         <div class="row">
             <div class="col packCol">
     <!-- container와 전체 감싸는 row col-->
 
-            <div class="row"><div class="col" style="padding: 2em;"></div></div>
-            <div class="row"><div id="titleCol" class="col text-center">멍스토킹 회원가입</div></div>
-
-            <form action="./registerProcess" id="rgstrUserInfo" method="post">
-
-
-                <div class="row">
-                    <div class="col text-center my-3">
-                        <label for="fileInput">
-                            <img th:src="@{/public/image/dog_img.png}" class="img-fluid rounded-circle" id="imagePreview" style="height: 6em;">
-                        </label>
-                        <input type="file" id="fileInput" class="form-control" style="display: none;" onchange="previewImage()">
-                    </div>
-                </div>
-                
-
-                <div class="form-group">
-                    <label for="userid" class="form-label">아이디<span class="starMark"> *</span></label>
-                    <div class="row"><div class="col explainCol">아이디는 사이트 이용시 타 회원에게 노출됩니다.</div></div>
-                    <input type="text" class="form-control" id="userid" name="userid" placeholder="다섯글자 이상으로 구성하셔야 합니다" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="userpw" class="form-label">비밀번호<span class="starMark"> *</span></label>
-                    <div class="row"><div class="col explainCol">영문과 숫자를 조합해주세요.</div></div>
-                    <input type="password" class="form-control" id="userpw" name="userpw" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="name" class="form-label">이름<span class="starMark"> *</span></label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="김멍스" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="gender" class="col form-label">성별<span class="starMark"> *</span></label>
-                    <div class="col">
-                        <div class="row">
-                        <div class="col-1 mx-2">
-                            <input name="gender" type="radio" value="M" id="genderM">
-                        </div>
-                        <div class="col-3">
-                            <span class="fw-bold text-secondary " style="font-size: 0.85em;">남</span>
-                        </div>
-                        <div class="col-1 mx-2">
-                            <input name="gender" type="radio" value="F" id="genderF">
-                        </div>
-                        <div class="col">
-                            <span class="fw-bold text-secondary " style="font-size: 0.85em;">여</span>
-                        </div>
-                        </div>
-                    </div>
-                    </div>
-
-                <div class="form-group">
-                    <label for="email" class="form-label">이메일<span class="starMark"> *</span></label>
-                    <div class="row"><div class="col explainCol"> @ 뒤 포털사이트 주소까지 정확하게 입력해주시기 바랍니다</div></div>
-                    <input type="email" class="form-control" id="email" name="email" placeholder="example@email.com" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="phone" class="form-label">휴대폰 번호<span class="starMark"> *</span></label>
-                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="01012345678" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="birthdate" class="form-label">생년월일<span class="starMark"> *</span></label>
-                    <div class="row"><div class="col explainCol">입력창을 누르면 달력으로 이동합니다.</div></div>
-                    <input type="date" class="form-control" id="birthdate" name="birthdate" placeholder="yyyyMMdd" required>
-                </div>
-
-                <div class="row"><div class="col" style="padding: 0.5em;"></div></div>
-
-
-                <div class="d-grid">
-                    <button type="button" onclick="formSubmit()" class="btn btn-secondary fw-bold">가입하기</button>
-                </div>
-            </form>
-
-            <div class="row"><div class="col" style="padding: 1.5em;"></div></div>
-
-
-    <!-- container와 전체 감싸는 row col 끝-->
-            </div>
-        </div>
+    
+    <div class="row py-1">
+        <div class="col-1 pe-0 pt-2"><a href="./loginPage"><i class="fa-solid fa-chevron-left" style="font-size: 1.45em;"></i></a></div>
+        <div id="titleCol" class="col text-center" style="align-self: center;">멍스토킹 회원가입</div>
+        <div class="col-1"></div>
     </div>
 
+    <form action="./registerProcess" id="rgstrUserInfo" method="post">
+        
+        <div class="form-group">
+            <label for="userid">
+                <div class="row">
+                    <div class="col-4 nameCol">아이디<span class="starMark"> *</span></div>
+                    <div class="col-7 inputCol">
+                        <div class="row"><div class="col d-grid"><input type="text" class="inputClass" id="userid" name="userid" placeholder="입력 대기중..." required></div></div>
+                        <div class="row d-grid"><div class="col explainCol">다섯글자 이상으로 구성하셔야 합니다</div></div>
+                    </div>
+                </div> 
+            </label> 
+        </div>
+
+        <div class="form-group">
+            <label for="userpw">
+                <div class="row">
+                    <div class="col-4 nameCol">비밀번호<span class="starMark"> *</span></div>
+                    <div class="col-7 inputCol">
+                        <div class="row"><div class="col"><input type="password" class="inputClass" id="userpw" name="userpw" style="width: 100%;" placeholder="*****" required></div></div>
+                        <div class="row"><div class="col explainCol">영문과 숫자를 조합해주세요.</div></div>
+                    </div>
+                </div> 
+            </label> 
+        </div>
+
+        <div class="form-group">
+            <label for="name">
+                <div class="row">
+                    <div class="col-4 nameCol">이름<span class="starMark"> *</span></div>
+                    <div class="col-7 inputCol d-grid"><input type="text" class="inputClass" id="name" name="name" placeholder="김멍스" required></div>
+                </div>
+            </label>
+            
+        </div>
+
+        <div class="form-group">
+            <label for="gender">
+                <div class="row">
+                    <div class="col-4 nameCol">성별<span class="starMark"> *</span></div>
+                    <div class="col-7 inputCol">
+                        <div class="row">
+                                <div class="col">
+                                    <label for="genderM"><input name="gender" type="radio" value="M" id="genderM"> <span class="fw-bold text-secondary" style="font-size: 0.85em;">남</span></label>
+                                </div>
+                                <div class="col">
+                                    <label for="genderF"><input name="gender" type="radio" value="F" id="genderF"> <span class="fw-bold text-secondary " style="font-size: 0.85em;">여</span></label>
+                                </div>
+                        </div>    
+                    </div>
+                </div>
+            </label> 
+
+            
+                
+
+            
+        <div class="form-group">
+            <label for="email">
+            <div class="row">
+                <div class="col-4 nameCol">이메일<span class="starMark"> *</span></div>
+                <div class="col-7 inputCol">
+                    <div class="row"><div class="col d-grid"><input type="email" class="inputClass" id="email" name="email" placeholder="example@email.com" required></div>
+                    <div class="row"><div class="col explainCol">@ 뒤 포털사이트 주소까지 정확하게 입력해주시기 바랍니다</div></div>
+                </div>
+            </div> 
+        </div>
+
+        <div class="form-group">
+            <label for="phone">
+            <div class="row">
+                <div class="col-4 nameCol">휴대폰 번호<span class="starMark"> *</span></div>
+                <div class="col-7 inputCol">
+                    <div class="row"><div class="col d-grid"><input type="tel" class="inputClass" id="phone" name="phone" placeholder="01012345678" required></div>
+                    <div class="row"><div class="col explainCol"> - 없이 입력하셔야 합니다.</div></div>
+                </div>
+            </div>
+            </label> 
+        </div>
+
+        <div class="form-group">
+            <label for="birthdate">
+            <div class="row">
+                <div class="col-4 nameCol">생년월일<span class="starMark"> *</span></div>
+                <div class="col-7 inputCol">
+                    <div class="row"><div class="col d-grid"><input type="date" class="inputClass" id="birthdate" name="birthdate" placeholder="yyyyMMdd" required></div>
+                    <div class="row"><div class="col explainCol">입력창을 누르면 달력으로 이동합니다.</div></div>
+                </div>
+            </div> 
+        </div>
+
+        <div class="row"><div class="col" style="padding: 0.5em;"></div></div>
 
 
-    <script src="/public/js/commons/lockLikeMobile.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
+        
+        <div class="row pt-1"><div class="col d-grid"><button type="button" onclick="formSubmit()" class="btn submitBut">가입하기</button></div>
+        
+
+
+    </form>
+
+<!-- container와 전체 감싸는 row col 끝-->
+    </div>
+</div>
+</div>
+
+
+
+<script src="/public/js/commons/lockLikeMobile.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+crossorigin="anonymous"></script>
 </body>
 
 </html>
