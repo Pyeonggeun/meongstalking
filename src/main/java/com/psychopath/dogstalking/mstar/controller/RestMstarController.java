@@ -1,6 +1,9 @@
 package com.psychopath.dogstalking.mstar.controller;
 
 import java.util.Map;
+
+import javax.management.Notification;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +19,14 @@ import com.psychopath.dogstalking.mstar.dto.CmtLikeDto;
 import com.psychopath.dogstalking.mstar.dto.CommentDto;
 import com.psychopath.dogstalking.mstar.dto.DirectDto;
 import com.psychopath.dogstalking.mstar.dto.FollowDto;
+import com.psychopath.dogstalking.mstar.dto.NotificationDto;
 import com.psychopath.dogstalking.mstar.dto.ProfileInfoDto;
 import com.psychopath.dogstalking.mstar.dto.StorageDto;
 import com.psychopath.dogstalking.mstar.dto.StoryDto;
 import com.psychopath.dogstalking.mstar.dto.TcommentDto;
 import com.psychopath.dogstalking.mstar.service.MstarServiceImpl;
+
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/mstar/*")
@@ -161,6 +167,16 @@ public class RestMstarController {
 
         responseDto.setResult("success");
         responseDto.setData(map);
+
+        return responseDto;
+    }
+    @RequestMapping("getUserDto")
+    public RestResponseDto getUserDto(HttpSession session){
+        RestResponseDto responseDto = new RestResponseDto();
+        UserDto userDto  = (UserDto)session.getAttribute("sessionUser");
+
+        responseDto.setResult("success");
+        responseDto.setData(userDto);
 
         return responseDto;
     }
@@ -531,8 +547,51 @@ public class RestMstarController {
         mstarService.changeReadStatus(profile_info_pk,another_info_pk);
     }
     
+    @RequestMapping("loadUnReadMyNotificationList")
+    public RestResponseDto loadUnReadMyNotificationList(int user_pk){
+        RestResponseDto responseDto = new RestResponseDto();
+        List<NotificationDto> list = mstarService.getUnReadNotificationList(user_pk);
 
+        responseDto.setResult("success");
+        responseDto.setData(list);
+ 
+         return responseDto;
+    }
+    @RequestMapping("loadReadMyNotificationList")
+    public RestResponseDto loadReadMyNotificationList(int user_pk){
+        RestResponseDto responseDto = new RestResponseDto();
+        List<NotificationDto> list = mstarService.getReadNotificationList(user_pk);
 
+        responseDto.setResult("success");
+        responseDto.setData(list);
+ 
+         return responseDto;
+    }
+    @RequestMapping("checkUnReadNotify")
+    public RestResponseDto checkUnReadNotify(int user_pk){
+        RestResponseDto responseDto = new RestResponseDto();
+        int unReadStatus = mstarService.checkUnReadNotifyCount(user_pk);
+
+        responseDto.setResult("success");
+        responseDto.setData(unReadStatus);
+ 
+         return responseDto;
+    }
+
+    @RequestMapping("checkUnReadDirect")
+    public RestResponseDto checkUnReadDirect(int user_pk){
+        RestResponseDto responseDto = new RestResponseDto();
+        int unReadStatus = mstarService.checkUnReadDirectCount(user_pk);
+
+        responseDto.setResult("success");
+        responseDto.setData(unReadStatus);
+ 
+         return responseDto;
+    }
+    @RequestMapping("updateNotifyReadStatus")
+    public void updateNotifyReadStatus(int user_pk){
+        mstarService.changeNotifyReadStatus(user_pk);
+    }
     
     
 

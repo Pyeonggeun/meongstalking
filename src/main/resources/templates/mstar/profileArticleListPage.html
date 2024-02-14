@@ -8,7 +8,7 @@
         <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
+        <script src="/public/js/commons/lockLikeMobile.js"></script>
         <script>
              let profile_info_pk = null;
              let user_pk = null;
@@ -152,7 +152,11 @@
                             likeCountAndUserId.appendChild(span4);
 
                         }else{
-                            if(e.likeCount != 0)
+                            if(e.likeCount != 0){
+                                const likeProfile1 = articleListWrapper.querySelector(".likeProfile1");
+                                likeProfile1.classList.add("d-none")    
+                            }
+                            
                             likeCountAndUserId.innerText = e.likeCount+"명이 좋아합니다."
                         }
                         
@@ -995,23 +999,9 @@
 
     <body>
         <div class="container-fluid">
-            <div class="row border-bottom">
-                <div class="col px-4 py-2">
-                    <div class="row">
-                        <div class="col">
-                            <i class="fa-solid fa-bars"></i>
-                        </div>
-                        <div class="col text-center fw-bold">
-                            멍's토킹
-                        </div>
-                        <div class="col text-end">
-                            <i  class="fa-regular fa-bell"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row text-center border-bottom" style="font-size: 0.8em;">
-                <div id="backProfilePage" class="col-2 align-self-center">
+            <div th:insert="~{/commons/naviBar}"></div>
+            <div class="row text-center border-bottom sticky-top bg-white" style="font-size: 0.8em;">
+                <div id="backProfilePage" class="col-2 align-self-center text-start">
                     <i class="fa-solid fa-arrow-left"></i>
                 </div>
                 <div class="col">
@@ -1039,72 +1029,6 @@
                     
                 </div>
             </div>
-            <div class="row bg-white border-top sticky-bottom">
-                <div class="col px-4 py-2">
-                    <div class="row">
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col text-body-tertiary">
-                                    <i class="fa-solid fa-house"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col text-secondary">
-                                    홈
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col text-body-tertiary">
-                                    <i class="fa-solid fa-bolt"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col text-secondary">
-                                    먹거리
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col text-body-tertiary">
-                                    <i class="fa-solid fa-hand-holding-medical"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col text-secondary">
-                                    멍냥닥터
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    멍냥피드
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col text-body-tertiary">
-                                    <i class="fa-solid fa-comment-dots"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col text-secondary">
-                                    커뮤니티
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
       
         <!--게시물 반복문-->
@@ -1130,7 +1054,7 @@
                                 <div class="col-2 px-0 text-center my-auto">
                                     <i class="fa-solid fa-ellipsis text-body-tertiary"></i>
                                 </div>
-                                <div class="col-7 text-secondary text-truncate d-block" style="position: absolute; top: 2.1em; left: 4em; font-size: small;">
+                                <div class="col-7 text-secondary text-truncate d-block" style="position: absolute;  top: 60%; left: 14%; font-size: small;">
                                     서울시 23-3 여의도 벚꽃길, 뽀삐와 삐뽀와
                                 </div>
                             </div>
@@ -1237,9 +1161,9 @@
             </div>
         </div>
 
-        <div class="offcanvas offcanvas-bottom" tabindex="-1" id="commentWriteBox" aria-labelledby="offcanvasBottomLabel" style="height: auto; background-color: transparent; border: none;"> 
+        <div class="offcanvas offcanvas-bottom" tabindex="-1" id="commentWriteBox" aria-labelledby="offcanvasBottomLabel" style="height: auto; background-color: transparent; border: none; padding-left: 0.7em; padding-right: 0.7em;"> 
             <div id="commentListBox" class="row d-none">
-                <div class="col bg-white" style="border-top-left-radius: 2.5em; border-top-right-radius: 2.5em; border-top: 0.1em solid rgb(211, 211, 215) ;">
+                <div class="col bg-white" style="border-top-left-radius: 2em; border-top-right-radius: 2em; border-top: 0.1em solid rgb(211, 211, 215) ;">
                     <div class="row py-2 ">
                         <div class="col-5"></div>
                         <div class="col rounded-pill border-4" style="background-color: rgb(194, 195, 195); height: 0.2em;"></div>

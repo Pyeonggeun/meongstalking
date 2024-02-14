@@ -9,20 +9,20 @@ public class MfollowController {
 
     @RequestMapping("testModal")
     public String testModal(){
-        return "/mFollow/testModal";
+        return "mFollow/testModal";
     }
     @RequestMapping("testAchievement")
     public String testAchievement(){
-        return "/mFollow/testAchievement";
+        return "mFollow/testAchievement";
     }
     @RequestMapping("payRequestPage")
     public String payRequestPage(){
-        return "/mFollow/payRequestPage";
+        return "mFollow/payRequestPage";
     }
 
     @RequestMapping("requestResultPage")
     public String requestResultPage(){
-        return "/mFollow/requestResultPage";
+        return "mFollow/requestResultPage";
     }
     
 }

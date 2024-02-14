@@ -8,19 +8,369 @@
         <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
-        <script th:inline="javascript">
-            let profile_info_pk = null;
+        <script src="/public/js/commons/lockLikeMobile.js"></script>
+        <script>
+            
+            let user_pk = null;
             function getUrlKey() {
                 const urlParams = new URLSearchParams(location.search);
-                const key = urlParams.get("profile_info_pk");
-                profile_info_pk = key;
-                loadDirectUserList(profile_info_pk);
+                const key = urlParams.get("user_pk");
+                user_pk = key;
+                loadMyProfileInfo(user_pk);
+                
+            }
+            let profile_info_pk = null;
+            function loadMyProfileInfo(user_pk){
+                const url = "/mstar/myProfileInfoDto";
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "user_pk="+user_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    profile_info_pk = response.data.profile_info_pk;
+                    loadDirectUserList(profile_info_pk);
+                });
+            }
+            //////////////////////////////////////////////////
+            let another_info_pk = null;
+            function showDirectModal(another_infoPk){
+                another_info_pk = another_infoPk;
+                const directModal = bootstrap.Modal.getOrCreateInstance("#directModal");
+                updateDirectReadStatus();
+                directModal.show();
+                loadAnotherProfileInfo(profile_info_pk, another_info_pk);
+                loadDirectChatList(profile_info_pk, another_info_pk);
+                loadMyProfileInfoForFollow(profile_info_pk, another_info_pk);
+                inputDirectHandler();
+                
+            }
+            function closeDirectModal(){
+                const directModal = bootstrap.Modal.getOrCreateInstance("#directModal");
+                clearInterval(intervalNewChat);
+                loadDirectUserList();
+                directModal.hide();
+            }
+            function inputDirectHandler(){
+                const insertButtonStatus = document.querySelector("#insertButtonStatus");
+                const directChat = document.querySelector("#directChat");
+                const insertDirectButton = document.querySelector("#insertDirectButton");
+                directChat.addEventListener("input", function() {
+                    if(directChat.value.trim() === ""){
+                        insertButtonStatus.style.color = "rgb(190, 190, 245)";
+                        insertDirectButton.removeAttribute("onclick");
+                        insertDirectButton.setAttribute("disabled","disabled");
+                    }else{
+                        insertButtonStatus.style.color = "rgb(250, 250, 250)";
+                        insertDirectButton.setAttribute("onclick", "insertDirect()");
+                        insertDirectButton.removeAttribute("disabled")
+                    }
+
+                });
+            }
+                
+                
+                
+            
+            
+
+            function loadMyProfileInfoForFollow(another_info_pk){
+                const url = "/mstar/loadMyProfileInfoForFollow";
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    const myProfilePhoto = document.querySelector("#myProfilePhoto");
+                    myProfilePhoto.src = response.data.profileInfoDto.profile_photo;
+                });
+
             }
 
-            function loadDirectUserList(profile_info_pk){
-                const url = "./loadDirectUserList";
+            function loadAnotherProfileInfo(profile_info_pk, another_info_pk){
+                const url = "./loadAnotherProfileInfo";
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
 
+                    const topAnotherUserProfilePhoto= document.querySelector("#topAnotherUserProfilePhoto");
+                    topAnotherUserProfilePhoto.src = response.data.profileInfoDto.profile_photo;
+
+                    const topAnotherUserid= document.querySelector("#topAnotherUserid");
+                    topAnotherUserid.innerText = response.data.userDto.userid;
+
+                    const anotherUserPoriflePhoto = document.querySelector("#anotherUserPoriflePhoto");
+                    anotherUserPoriflePhoto.src = response.data.profileInfoDto.profile_photo;
+
+                    const anotherUserId = document.querySelector("#anotherUserId");
+                    anotherUserId.innerText = response.data.userDto.userid;
+
+                    const topAnotherUserNickName = document.querySelector("#topAnotherUserNickName");
+                    topAnotherUserNickName.innerText = response.data.profileInfoDto.nick_name;
+
+                    const anotherUserFollowArricle = document.querySelector("#anotherUserFollowArricle");
+                    if(response.data.followCount != 0){
+                        anotherUserFollowArricle.innerText = "팔로워 "+response.data.followCount+"명 게시물 "+response.data.articleCount+"개";
+                    }else{
+                        anotherUserFollowArricle.innerText = "";
+                    }
+
+
+                });
+
+            }
+
+            function insertDirect(){
+
+                const directChat = document.querySelector("#directChat");
+                const chat = directChat.value;
+                const url = "/mstar/insertDirect";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "send_user_pk="+profile_info_pk+"&rcv_user_pk="+another_info_pk+"&chat="+chat
+            	})
+                .then(() => {
+                    // fetch가 완료된 후에 실행할 코드
+                    directChat.value = "";
+                    loadNewChat(lastDirectPk);
+                    const scrollBox = document.querySelector("#scrollBox");
+                    scrollBox.scrollTop = scrollBox.scrollHeight;
+                });
+            }
+            let intervalNewChat = null;
+            let lastDirectPk = 0;
+            function loadDirectChatList(profile_info_pk, another_info_pk){
+                
+                const url = "./loadDirectChatList";
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    const directMessageListBox =  document.querySelector("#directMessageListBox");
+                    directMessageListBox.innerHTML = "";
+                    let beforeCount = 0;
+                    if(response.data.length != 0){
+
+                        for(e of response.data){
+                        
+                        const dateWrapper = document.querySelector("#dateTemplete .dateWrapper").cloneNode(true);
+                        const chatDate = dateWrapper.querySelector(".chatDate");
+                        if (beforeCount == 0) {
+                           // 최초의 메시지는 무조건 날짜를 출력
+                            chatDate.innerText = e.directDto.created_at[0] + "년 " + e.directDto.created_at[1] + "월 " + e.directDto.created_at[2] + "일 ";
+                            directMessageListBox.appendChild(dateWrapper);
+
+                        } else {
+                            const beforeDate = response.data[beforeCount - 1].directDto.created_at;
+                            const currentDate = e.directDto.created_at;
+
+                            if (
+                                currentDate[0] === beforeDate[0] &&
+                                currentDate[1] === beforeDate[1] &&
+                                currentDate[2] === beforeDate[2]
+                            ) {
+                                // 같은 날이면 시간을 출력
+                                if ((currentDate[3] - beforeDate[3]) >= 3) {
+                                    chatDate.innerText = e.directDto.created_at[3] + "시 " + e.directDto.created_at[4] + "분";
+                                    directMessageListBox.appendChild(dateWrapper);
+                                }
+
+                            } else {
+                                // 다른 날이면 날짜를 출력
+                                chatDate.innerText = e.directDto.created_at[0] + "년 " + e.directDto.created_at[1] + "월 " + e.directDto.created_at[2] + "일 ";
+                                directMessageListBox.appendChild(dateWrapper);
+
+                            }
+                        }
+                        beforeCount++;
+                        
+                        
+                        if(e.directDto.send_user_pk == profile_info_pk){
+                            const sendChatWrapper = document.querySelector("#sendChatTemplete .sendChatWrapper").cloneNode(true);
+
+                            const myChat = sendChatWrapper.querySelector(".myChat");
+                            myChat.innerText = e.directDto.chat;
+                            if(myChat.textContent.length >=20){
+                                myChat.classList.add("py-2");
+                                myChat.classList.remove("rounded-pill");
+                                myChat.setAttribute("style","background-color: rgb(36, 106, 246); max-width: 70%; word-wrap: break-word; border-bottom-left-radius: 7%; border-top-left-radius: 7%; border-top-right-radius: 8%;");
+                                
+                            }
+                            if(e.directDto.read_status == 'N'){
+                                const readStatus = sendChatWrapper.querySelector(".readStatus");
+                                readStatus.classList.remove("d-none");
+                            }
+                            
+                            
+                            
+                            directMessageListBox.appendChild(sendChatWrapper);
+                        }else{
+                            const rcvChatWrapper = document.querySelector("#rcvChatTemplete .rcvChatWrapper").cloneNode(true);
+
+                            const anotherProfilePhoto = rcvChatWrapper.querySelector(".anotherProfilePhoto");
+                            anotherProfilePhoto.src = e.anotherProfileInfoDto.profile_photo;
+
+                            const anotherChat = rcvChatWrapper.querySelector(".anotherChat");
+                            anotherChat.innerText = e.directDto.chat; 
+                            if(anotherChat.textContent.length >=20){
+                                anotherChat.classList.add("py-2");
+                                anotherChat.classList.remove("rounded-pill");
+                                anotherChat.setAttribute("style","background-color: rgb(219, 219, 219); max-width: 70%; word-wrap: break-word; border-bottom-left-radius: 7%; border-top-left-radius: 7%; border-top-right-radius: 8%;");
+                            }
+                            
+                            directMessageListBox.appendChild(rcvChatWrapper);
+                        }
+                        
+                    }
+                    updateDirectReadStatus();
+                    lastDirectPk = response.data[response.data.length - 1].directDto.direct_pk;
+                    
+                    intervalNewChat = setInterval(function() {
+                        loadNewChat();
+                    }, 3000);
+
+                    const scrollBox = document.querySelector("#scrollBox")
+                    scrollBox.scrollTop = scrollBox.scrollHeight;
+                    
+                    }
+                    
+                });
+            }
+        
+
+            function loadNewChat(){
+                loadMyDirectReadStatus()
+                const url = "./loadNewChat";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "direct_pk="+lastDirectPk+"&profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    updateDirectReadStatus();
+                    if(response.data.length !=0){
+                        const directMessageListBox =  document.querySelector("#directMessageListBox");
+                        
+                        for(e of response.data){                            
+                                
+                            if(e.directDto.send_user_pk == profile_info_pk){
+                                const sendChatWrapper = document.querySelector("#sendChatTemplete .sendChatWrapper").cloneNode(true);
+
+                                const myChat = sendChatWrapper.querySelector(".myChat");
+                                myChat.innerText = e.directDto.chat;
+                                if(myChat.textContent.length >=20){
+                                    myChat.classList.add("py-2");
+                                    myChat.classList.remove("rounded-pill");
+                                    myChat.setAttribute("style","background-color: rgb(36, 106, 246); max-width: 70%; word-wrap: break-word; border-bottom-left-radius: 7%; border-top-left-radius: 7%; border-top-right-radius: 8%;");
+                                    
+                                }
+                                if(e.directDto.read_status == 'N'){
+                                    const readStatus = sendChatWrapper.querySelector(".readStatus");
+                                    readStatus.classList.remove("d-none");
+                                }
+                                
+                                
+
+                                directMessageListBox.appendChild(sendChatWrapper);
+                            }else{
+                                const rcvChatWrapper = document.querySelector("#rcvChatTemplete .rcvChatWrapper").cloneNode(true);
+
+                                const anotherProfilePhoto = rcvChatWrapper.querySelector(".anotherProfilePhoto");
+                                anotherProfilePhoto.src = e.anotherProfileInfoDto.profile_photo;
+
+                                const anotherChat = rcvChatWrapper.querySelector(".anotherChat");
+                                anotherChat.innerText = e.directDto.chat; 
+                                if(anotherChat.textContent.length >=20){
+                                    anotherChat.classList.add("py-2");
+                                    anotherChat.classList.remove("rounded-pill");
+                                    anotherChat.setAttribute("style","background-color: rgb(219, 219, 219); max-width: 70%; word-wrap: break-word; border-bottom-left-radius: 7%; border-top-left-radius: 7%; border-top-right-radius: 8%;");
+                                }
+                                
+                                directMessageListBox.appendChild(rcvChatWrapper);
+                            }
+                            
+                        }
+                        lastDirectPk = response.data[response.data.length - 1].directDto.direct_pk;
+                        const scrollBox = document.querySelector("#scrollBox")
+                        console.log(scrollBox.scrollTop)
+                        console.log(scrollBox.scrollHeight)
+                        scrollBox.scrollTop = scrollBox.scrollHeight;
+                    }
+                    
+                });
+                
+            }
+            function updateDirectReadStatus(){
+                const url = "./updateDirectReadStatus";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk
+            	})
+            }
+            function loadMyDirectReadStatus(){
+                const url = "./loadMyDirectReadStatus";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "direct_pk="+lastDirectPk+"&profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    if(response.data ==0){
+                        const readStatus = document.querySelectorAll(".readStatus") ;
+                        for(e of readStatus){
+                            e.classList.add("d-none");
+                        }
+                    }
+                });
+
+            }
+
+
+
+
+
+
+
+
+
+            ///////////////////////////////////////////////
+            function loadDirectUserList(){
+                const url = "./loadDirectUserList";
+                
                 fetch(url, {
                      method: "post",
                      headers: {
@@ -52,7 +402,6 @@
                         }else{
                             lastDirectMessage.innerText = e.directDto.chat;
                             if(e.directDto.read_status=='N'){
-                                console.log("ddd")
                                 const noReadChat = directListWrapper.querySelector(".noReadChat");
                                 noReadChat.classList.remove("d-none");
                             }
@@ -66,6 +415,7 @@
         	    			if((currentDate.getHours() - e.directDto.created_at[3]) == 0){
         	    				if((currentDate.getMinutes() - e.directDto.created_at[4]) < 10){
         	    					lastDirectCreatedAt.innerText = "방금";
+                                    lastDirectCreatedAt.classList.remove("text-secondary");
                                     lastDirectCreatedAt.classList.add("text-primary");
         	    				}else{
         	    					lastDirectCreatedAt.innerText = (currentDate.getMinutes() - e.directDto.created_at[4])+ "분전";
@@ -79,7 +429,7 @@
         	    		}
 
 
-                        directListWrapper.setAttribute("onclick","location.href='./directPage?profile_info_pk="+profile_info_pk+"&another_info_pk="+e.anotherProfileInfoDto.profile_info_pk+"'")
+                        directListWrapper.setAttribute("onclick","showDirectModal("+e.anotherProfileInfoDto.profile_info_pk+")");
 
                         directListBox.appendChild(directListWrapper);
                     }
@@ -98,8 +448,9 @@
 
             function showSearchModal(){
                 const searchModal = bootstrap.Modal.getOrCreateInstance("#searchModal");
-                searchModal.show();
                 selectSearchUserList("");
+                searchModal.show();
+                
 
                 const resetButton = document.querySelector("#resetButton");
 
@@ -121,7 +472,8 @@
                 searchModal.hide();
             }
             function selectSearchUserList(text){
-
+                console.log(text)
+                console.log(profile_info_pk)
                 const url = "./searchUserInfo";
 
                 fetch(url, {
@@ -183,7 +535,15 @@
                 font-style: normal;
             }
             
-
+            .profileImg {
+                position: relative;
+                border: 0.2em solid transparent;
+                border-radius: 50%;
+                background-image: linear-gradient(#4a94f6, #fff), 
+                linear-gradient(to right, rgb(249, 129, 129) 0%, rgb(49, 49, 244) 70%,  rgb(255, 239, 136) 100%);
+                background-origin: border-box;
+                background-clip: content-box, border-box;
+            }
             body {
                 font-family: 'omyu_pretty';
                 overflow: hidden;
@@ -191,6 +551,9 @@
           
             .form-control::placeholder {
                 color: rgb(127, 126, 126); /* placeholder 글자 색상을 원하는 색상으로 설정 */
+            }
+            .modal-fullscreen{
+                width: 100%;
             }
         </style>
         
@@ -267,28 +630,28 @@
         <!--채팅하는사람들 리스트-->
         <div id="directListTemplete" class="d-none">
             <div class="row directListWrapper mt-3">
-                <div class="col-auto pe-0 align-self-center">
+                <div class="col-auto ps-4 pe-2 align-self-center">
                     <div class="row">
-                        <div class="col-auto ">
-                            <img class="img-fluid rounded-circle directProfile_photo" alt="" style="height: 3em; aspect-ratio: 1/1;">
+                        <div class="col-auto px-0 py-0 profileImg">
+                            <img class="img-fluid rounded-circle directProfile_photo border border-white" alt="" style="height: 3em; aspect-ratio: 1/1;">
                         </div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="row">
-                        <div class="col-auto userIdAndNickName pe-0">
-                            김쿼카 (eun_jin_log)
+                        <div class="col-auto userIdAndNickName fw-bold pe-0">
+                            
                         </div>
                         <div class="col noReadChat d-none">
                             <i class="fa-solid fa-circle text-primary align-items-start d-flex mt-1" style="font-size: 0.4em;"></i>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col lastDirectMessage">
-                            아따 마 시원~하네... 내가 마지막이면 전송됨.
+                        <div class="col lastDirectMessage text-secondary">
+                            
                         </div>
-                        <div class="col-auto lastDirectCreatedAt">
-                            6주전
+                        <div class="col-auto lastDirectCreatedAt text-secondary">
+                            
                         </div>
                     </div>
                 </div>
@@ -298,7 +661,7 @@
         <div id="searchModal" class="modal" tabindex="-1">
             <div class="modal-dialog modal-fullscreen">
                 <div class="modal-content">
-                    <div class="modal-body" style="overflow: hidden;">
+                    <div class="modal-body">
                         <div class="row mt-2">
                             <div class="col mx-2 rounded" style="background-color: rgb(218, 217, 217);">
                                 <div class="row position-relative">
@@ -321,7 +684,7 @@
                                 취소
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" style="overflow-y: scroll;">
                             <div id="searchListBox" class="col">
 
                             </div>
@@ -354,7 +717,146 @@
                 </div>
             </div>
         </div>
-       
+
+        <div id="directModal" class="modal" tabindex="-1">
+            <div  class="modal-dialog modal-fullscreen">
+                <div class="modal-content" >
+                    <div id="scrollBox" class="modal-body" style="overflow-y: scroll; height: 100vh;">
+                        <div class="row fixed-top bg-white border-bottom">   
+                            <div class="col px-0">
+                                <div class="row my-2">
+                                    <div onclick="closeDirectModal()" class="col-auto align-self-center">
+                                        <i class="fa-solid fa-chevron-left ps-2"></i>
+                                    </div>
+                                    <div class="col-auto align-self-center">   
+                                        <img id="topAnotherUserProfilePhoto" class="img-fluid rounded-circle align-self-center" alt="" style="aspect-ratio: 1/1; height: 2em;">
+                                    </div>
+                                    <div class="col">
+                                        <div class="row">
+                                            <div id="topAnotherUserid" class="col-auto align-self-center ps-0">
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div id="topAnotherUserNickName" class="col text-secondary ps-0" style="font-size: 0.7em;">
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row pt-5">
+                            <div class="col">
+                                <div class="row text-center" style="font-size: 0.8em;">
+                                    <div class="col">
+                                        <div class="row pt-5">
+                                            <div  class="col">
+                                                <img id="anotherUserPoriflePhoto" class="rounded-circle"  alt="" style="aspect-ratio: 1/1; height: 5em;">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div id="anotherUserId" class="col">
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                Mstargram
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div id="anotherUserFollowArricle" class="col">
+                                            
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div id="followFollow" class="col">
+                                                jo_seongmu 님 외 4명을 함께 팔로우합니다.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row pe-0 mb-5">
+                                    <div id="directMessageListBox" class="col my-3">
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row bg-white fixed-bottom border-top pt-2">
+                            <div class="col">
+                                <div class="row pb-2">
+                                    <div class="col-auto ms-2">
+                                        <div class="row">
+                                            <div class="col">
+                                                <img id="myProfilePhoto" class="img-fluid rounded-circle" src="" alt="" style="aspect-ratio: 1/1; height: 2.7em;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col pe-0">
+                                        <div class="row rounded-pill me-4" style="border: 0.1em solid rgb(215, 216, 220)">
+                                            <div class="col">
+                                                <input id="directChat" class="form-control px-0" type="text" style="box-shadow: none; border: none;" placeholder="Jo_inchune(으)로 댓글 달기..">
+                                            </div>
+                                            <div id="insertDirectButton" class="col-auto py-0 text-center py-0 rounded-pill mx-2 my-1" style="background-color: rgb(81, 120, 235);">
+                                                <i id="insertButtonStatus" class="fa-solid fa-arrow-up pt-1" style="color: rgb(190, 190, 245);"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>   
+                    </div>    
+                </div>
+            </div>
+        </div>
+
+        <div id="rcvChatTemplete" class="d-none">
+            <div class="row mt-2 rcvChatWrapper">
+                <div class="col">
+                    <div class="row">
+                        <div class="col-auto ms-1 pe-0">
+                            <img class="img-fluid rounded-circle anotherProfilePhoto" alt="" style="aspect-ratio: 1/1; height: 2em;">
+                        </div>
+                        <div class="col-auto text-start py-0 align-self-center  rounded-pill anotherChat" style="background-color: rgb(219, 219, 219); max-width: 70%; word-wrap: break-word;">
+                            
+                        </div>
+                        <div class="col-auto align-self-end fw-bold text-warning px-1 readStatus d-none" style="font-size: 0.2em;">
+                            <i class="fa-solid fa-circle "></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="sendChatTemplete" class="d-none">
+            <div class="row pe-0 pt-2 sendChatWrapper">
+                <div class="col">
+                    <div class="row justify-content-end pe-0">
+                        <div class="col-auto align-self-end fw-bold text-warning px-1 readStatus d-none" style="font-size: 0.2em;">
+                            <i class="fa-solid fa-circle "></i>
+                        </div>
+                        <div class="col-auto text-white align-self-center rounded-pill myChat" style="background-color: rgb(36, 106, 246); max-width: 70%; word-wrap: break-word;">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dateTemplete" class="d-none">
+            <div class="row dateWrapper pt-2">
+                <div class="col">
+                    <div class="row">
+                        <div class="col text-center text-secondary chatDate" style="font-size: 0.8em;">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     </body>

@@ -23,6 +23,7 @@ import com.psychopath.dogstalking.mstar.dto.CmtLikeDto;
 import com.psychopath.dogstalking.mstar.dto.CommentDto;
 import com.psychopath.dogstalking.mstar.dto.DirectDto;
 import com.psychopath.dogstalking.mstar.dto.FollowDto;
+import com.psychopath.dogstalking.mstar.dto.NotificationDto;
 import com.psychopath.dogstalking.mstar.dto.ProfileInfoDto;
 import com.psychopath.dogstalking.mstar.dto.StorageDto;
 import com.psychopath.dogstalking.mstar.dto.StoryDto;
@@ -1075,8 +1076,21 @@ public class MstarServiceImpl {
         mstarSqlMapper.updateReadStatus(profile_info_pk, another_info_pk);
     }
 
-
-
+    public List<NotificationDto> getUnReadNotificationList(int user_pk){
+        return mstarSqlMapper.selectUnReadNotificationList(user_pk);
+    }
+    public List<NotificationDto> getReadNotificationList(int user_pk){
+        return mstarSqlMapper.selectReadNotificationList(user_pk);
+    }
+    public void changeNotifyReadStatus(int user_pk){
+        mstarSqlMapper.updateNotificationStatus(user_pk);
+    }
+    public int checkUnReadNotifyCount(int user_pk){
+       return mstarSqlMapper.selectUnReadNotify(user_pk);
+    }
+    public int checkUnReadDirectCount(int user_pk){
+        return mstarSqlMapper.selectUnReadDirect(user_pk);
+    }
 
 
 

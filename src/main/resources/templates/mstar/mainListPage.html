@@ -8,7 +8,9 @@
         <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
+        <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}" />
+        <script src="/public/js/commons/lockLikeMobile.js"></script>
+        <script src="/public/js/commons/naviBar.js"></script>
         <script>
              let user_pk = null;
             function getUrlKey() {
@@ -30,8 +32,8 @@
                     const myStoryListProfileImg = document.querySelector("#myStoryListProfileImg");
                     myStoryListProfileImg.src= profileInfoDto.profile_photo;
                     myStoryListProfileImg.setAttribute("onclick","showMyStoryModal("+profileInfoDto.profile_info_pk+")")
-                    const goDirectPage = document.querySelector("#goDirectPage");
-                    goDirectPage.setAttribute("onclick" , "location.href='./directListPage?profile_info_pk="+profile_info_pk+"'");
+                   
+                   // goDirectPage.setAttribute("onclick" , "location.href='./directListPage?profile_info_pk="+profile_info_pk+"'");
 
                     loadArticleList(profile_info_pk);
                     loadStoryProfileList(profile_info_pk)  
@@ -197,14 +199,14 @@
             }
             function removeTouchImgEventListener() {
                 const story_img = document.querySelector("#story_img");
-                story_img.removeEventListener('touchstart', touchImg());
+                story_img.removeEventListener('click', touchImg());
             }
 
 
             function touchImg(event) {
                     console.log(event)
         
-                    const touchX = event.touches[0].clientX; // 터치 이벤트의 X 좌표
+                    const touchX = event.clientX; // 터치 이벤트의 X 좌표
                     // 이미지의 가로 중앙 좌표
                     const imageCenterX = story_img.getBoundingClientRect().left + story_img.offsetWidth / 2;
 
@@ -251,7 +253,7 @@
 
                 const story_img = document.querySelector("#story_img");
                 
-                story_img.addEventListener('touchstart', touchImg);
+                story_img.addEventListener('click', touchImg);
                 
                 const storyModal = bootstrap.Modal.getOrCreateInstance("#storyModal");
                 storyModal.show();
@@ -262,7 +264,7 @@
                 storyModal.hide();
                 
                 const story_img = document.querySelector("#story_img");
-                story_img.removeEventListener("touchstart", touchImg);    
+                story_img.removeEventListener("click", touchImg);    
             } 
             
             function loadArticleList(profile_info_pk){
@@ -357,7 +359,10 @@
                             likeCountAndUserId.appendChild(span4);
 
                         }else{
-                            if(e.likeCount != 0)
+                            if(e.likeCount != 0){
+                                const likeProfile1 = document.querySelector(".likeProfile1");
+                                likeProfile1.classList.add("d-none");
+                            }
                             likeCountAndUserId.innerText = e.likeCount+"명이 좋아합니다."
                         }
                         
@@ -379,13 +384,23 @@
                         const nextButton = carouselWrapper.querySelector(".nextButton");
                         nextButton.setAttribute("data-bs-target","#carouselId"+e.articleDto.article_pk);
                         var count =1 ;
+                        //const articleSizeBox = articleListWrapper.querySelector(".articleSizeBox");
+                        // <div id="articleSizeTemplete" class="d-none">
+                        //     <div class="col-auto px-1 articleSizeWrapper">
+                        //         <i class="fa-solid fa-circle ps-0 point"></i>
+                        //     </div>
+                        // </div>
                         for(p of e.photoList){
-
                             const articleImgWrapper =  document.querySelector("#articleImgTemplete .articleImgWrapper").cloneNode(true);
-                            
+                            const articleSizeWrapper = document.querySelector("#articleSizeTemplete .articleSizeWrapper").cloneNode(true);
+                            const point = articleSizeWrapper.querySelector(".point");
+                            point.setAttribute("id", "point"+count);
+
                             const img = articleImgWrapper.querySelector(".img");
                             
                             if(count ==1){
+                                point.classList.add("text-primary");
+                                point.classList.remove("text-secondary");
                                 articleImgWrapper.classList.add("active");
                             }
                             count +=1;
@@ -1174,13 +1189,13 @@
             }
             function removeTouchImgEventListener() {
                 const my_story_img = document.querySelector("#my_story_img");
-                my_story_img.removeEventListener('touchstart', touchMyImg());
+                my_story_img.removeEventListener('click', touchMyImg());
             }
 
 
             function touchMyImg(event) {
                 
-                const touchX = event.touches[0].clientX; // 터치 이벤트의 X 좌표
+                const touchX = event.clientX; // 터치 이벤트의 X 좌표
                 // 이미지의 가로 중앙 좌표
                 const imageCenterX = my_story_img.getBoundingClientRect().left + my_story_img.offsetWidth / 2;
 
@@ -1248,7 +1263,7 @@
                 
                 const my_story_img = document.querySelector("#my_story_img");
                 
-                my_story_img.addEventListener('touchstart', touchMyImg);
+                my_story_img.addEventListener('click', touchMyImg);
                 
                 const myStoryModal = bootstrap.Modal.getOrCreateInstance("#myStoryModal");
                 myStoryModal.show();
@@ -1260,7 +1275,7 @@
                 
                 const my_story_img = document.querySelector("#my_story_img");
                 my_story_img.src ="";
-                my_story_img.removeEventListener("touchstart", touchMyImg);    
+                my_story_img.removeEventListener("click", touchMyImg);    
             } 
 
             function insertDirect(another_info_pk){
@@ -1394,33 +1409,21 @@
                 color: white; /* placeholder 글자 색상을 원하는 색상으로 설정 */
                 font-size: 0.9em
             }
+            .modal-fullscreen {
+                width: 100%;
+            }
         </style>
     </head>
 
     <body>
         <div class="container-fluid">
-            <div class="row border-bottom">
-                <div class="col px-4 py-2">
-                    <div class="row">
-                        <div class="col">
-                            <i class="fa-solid fa-bars"></i>
-                        </div>
-                        <div class="col text-center fw-bold">
-                            멍's토킹
-                        </div>
-                        <div class="col text-end">
-                            <i class="fa-regular fa-bell"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div th:insert="~{/commons/naviBar}"></div>
             <div class="row mt-1 fs-4">
                 <div class="col">
                     Mstargram
                 </div>
                 <div class="col text-end">
-                    <i class="fa-regular fa-heart"></i>&nbsp;&nbsp;
-                    <i class="fa-regular fa-paper-plane"></i>
+                    <i th:onclick="|location.href='@{./writeArticlePage(user_pk=${session.sessionUser.user_pk})}'|" class="fa-regular fa-square-plus me-2"></i>
                 </div>
             </div>
             <div id="d-none-scroll" class="row mt-3 overflow-x-auto">
@@ -1445,72 +1448,6 @@
             <div class="row">
                 <div id ="articleListBox" class="col">
                 
-                </div>
-            </div>
-            <div class="row bg-white border-top sticky-bottom">
-                <div class="col px-4 py-2">
-                    <div class="row">
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col text-body-tertiary">
-                                    <i class="fa-solid fa-house"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col text-secondary">
-                                    홈
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col text-body-tertiary">
-                                    <i class="fa-solid fa-bolt"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div id="goDirectPage" class="col text-secondary">
-                                    먹거리
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col text-body-tertiary">
-                                    <i class="fa-solid fa-hand-holding-medical"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col text-secondary">
-                                    멍냥닥터
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    멍냥피드
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col text-body-tertiary">
-                                    <i class="fa-solid fa-comment-dots"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col text-secondary">
-                                    커뮤니티
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -1552,7 +1489,7 @@
                                 <div class="col-2 px-0 text-center my-auto">
                                     <i class="fa-solid fa-ellipsis text-body-tertiary"></i>
                                 </div>
-                                <div class="col-7 text-secondary text-truncate d-block" style="position: absolute; top: 2.1em; left: 4em; font-size: small;">
+                                <div class="col-7 text-secondary text-truncate d-block" style="position: absolute; top: 60%; left: 14%; font-size: small;">
                                     서울시 23-3 여의도 벚꽃길, 뽀삐와 삐뽀와
                                 </div>
                             </div>
@@ -1569,13 +1506,19 @@
                                 <div class="col-auto ">
                                     <img class="img-fluid pt-0 mb-1 articleLike" alt="" style="height: 1em;">
                                 </div>
-                                <div class="col-1 px-0 text-start commnetListButton">
+                                <div class="col-auto px-0 text-start commnetListButton">
                                     <i class="fa-regular fa-comment-dots"></i>
                                 </div>
-                                <div class="col ps-0 text-start directButton">
+                                <div class="col text-start directButton">
                                     <i class="fa-regular fa-paper-plane"></i>
                                 </div>
-                                <div class="col text-end articleScrapButton">
+                                <div class="col align-self-center" style="font-size: 0.3em;">
+                                    <div class="row justify-content-center articleSizeBox">
+                                        
+                                    </div>
+                                </div>
+                                <div class="col-2"></div>
+                                <div class="col-auto text-end articleScrapButton">
                                     <i class="fa-regular fa-bookmark scrapIcon"></i>
                                 </div>
                             </div>
@@ -1659,9 +1602,9 @@
             </div>
         </div>
 
-        <div class="offcanvas offcanvas-bottom" tabindex="-1" id="commentWriteBox" aria-labelledby="offcanvasBottomLabel" style="height: auto; background-color: transparent; border: none;"> 
+        <div class="offcanvas offcanvas-bottom" tabindex="-1" id="commentWriteBox" aria-labelledby="offcanvasBottomLabel" style="height: auto; background-color: transparent; border: none; padding-left: 0.7rem; padding-right: 0.7rem;"> 
             <div id="commentListBox" class="row d-none">
-                <div class="col bg-white" style="border-top-left-radius: 2.5em; border-top-right-radius: 2.5em; border-top: 0.1em solid rgb(211, 211, 215) ;">
+                <div class="col bg-white" style="border-top-left-radius: 2.3em; border-top-right-radius: 2.3em; border-top: 0.1em solid rgb(211, 211, 215) ;">
                     <div class="row py-2 ">
                         <div class="col-5"></div>
                         <div class="col rounded-pill border-4" style="background-color: rgb(194, 195, 195); height: 0.2em;"></div>
@@ -2008,7 +1951,11 @@
             </div>
         </div>
         
-        
+        <div id="articleSizeTemplete" class="d-none">
+            <div class="col-auto px-1 articleSizeWrapper">
+                <i class="fa-solid fa-circle ps-0 point text-secondary"></i>
+            </div>
+        </div>
         
        
         

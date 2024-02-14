@@ -11,6 +11,7 @@ import com.psychopath.dogstalking.mFollow.dto.CoinCategoryDto;
 import com.psychopath.dogstalking.mFollow.dto.ItemShopDto;
 import com.psychopath.dogstalking.mFollow.dto.OrderCoinDto;
 import com.psychopath.dogstalking.mFollow.dto.OrderItemDto;
+import com.psychopath.dogstalking.mstar.dto.NotificationDto;
 
 import java.util.List;
 
@@ -58,5 +59,7 @@ public interface MfollowSqlMapper {
     public AchievementResultDto selectEightAchievementInfo(@RequestParam("user_pk") int user_pk,
                                                       @RequestParam("achievement_pk") int achievement_pk);  
     public AchievementResultDto selectNineAchievementInfo(@RequestParam("user_pk") int user_pk,
-                                                      @RequestParam("achievement_pk") int achievement_pk);                                                                
+                                                      @RequestParam("achievement_pk") int achievement_pk);  
+
+                                                         
 }
