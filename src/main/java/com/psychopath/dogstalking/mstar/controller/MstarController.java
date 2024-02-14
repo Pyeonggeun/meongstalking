@@ -18,7 +18,7 @@ public class MstarController {
     private MstarServiceImpl mstarService;
 
     @RequestMapping("profilePage")
-    public String profilePage(int user_pk){
+    public String profilePage(){
 
         return "/mstar/profilePage";
     }
