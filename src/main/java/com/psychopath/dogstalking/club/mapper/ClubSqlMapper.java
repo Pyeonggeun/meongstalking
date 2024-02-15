@@ -33,6 +33,8 @@ public interface ClubSqlMapper {
 
     //개설
     public void insertClub(ClubDto clubDto);
+    public int getLastInsertClubId();
+
     public void insertClubUser(ClubUserDto clubUserDto);
     public void insertClubUsers(ClubUserDto clubUserDto);
     

@@ -63,6 +63,10 @@ public class ClubServiceImpl {
 		clubSqlMapper.insertClub(clubDto);
 	}
 
+	public int getLastInsertClubId(){
+		return clubSqlMapper.getLastInsertClubId();
+	}
+
 	public void insertClubUser(ClubUserDto clubUserDto) {
 		clubSqlMapper.insertClubUser(clubUserDto);
 	}

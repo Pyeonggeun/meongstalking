@@ -74,6 +74,11 @@
         VALUES (#{name},#{content})
 	</insert>
 
+    <select id="getLastInsertClubId" resultType="int">
+        select MAX(club_pk) from ms_club
+    </select>
+
+
     <insert id="insertClubUser">
 		INSERT INTO ms_club_user(user_pk,club_pk,content)
         VALUES (#{user_pk},#{club_pk},"길드 개설자")
