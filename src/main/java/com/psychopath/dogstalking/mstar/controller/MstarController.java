@@ -20,17 +20,17 @@ public class MstarController {
     @RequestMapping("profilePage")
     public String profilePage(){
 
-        return "/mstar/profilePage";
+        return "mstar/profilePage";
     }
     @RequestMapping("mainListPage")
     public String mainListPage(){
 
-        return "/mstar/mainListPage";
+        return "mstar/mainListPage";
     }
     @RequestMapping("updateProfilePage")
     public String updateProfilePage(int user_pk){
 
-        return "/mstar/updateProfilePage";
+        return "mstar/updateProfilePage";
     }
    
     @RequestMapping("writeArticlePage")

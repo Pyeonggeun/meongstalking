@@ -68,7 +68,9 @@
                     const myUserId= document.querySelector("#myUserId");
                     myUserId.innerText = response.data.userDto.userid;
                     
-                    
+                    myProfilePhoto.setAttribute("onclick", "location.href='/mstar/profilePage'");
+                    myNickName.setAttribute("onclick", "location.href='/mstar/profilePage'");
+                    myUserId.setAttribute("onclick", "location.href='/mstar/profilePage'");
                     
                     if(requestStatus ==0){
                         if(response.data.followStatus == 1){
@@ -819,6 +821,10 @@
         
                         const search_userid = searchListWrapper.querySelector(".search_userid");
                         search_userid.innerText = e.followUserDto.userid;
+
+                        searchProfile_photo.setAttribute("onclick", "location.href='/mstar/anotherProfilePage?profile_info_pk="+profile_info_pk+"&another_info_pk="+e.followProfileInfoDto.profile_info_pk+"'");
+                        search_nick_name.setAttribute("onclick", "location.href='/mstar/anotherProfilePage?profile_info_pk="+profile_info_pk+"&another_info_pk="+e.followProfileInfoDto.profile_info_pk+"'");
+                        search_userid.setAttribute("onclick", "location.href='/mstar/anotherProfilePage?profile_info_pk="+profile_info_pk+"&another_info_pk="+e.followProfileInfoDto.profile_info_pk+"'");
                         
                         const listFollowButton = searchListWrapper.querySelector(".listFollowButton");
                         if(e.followStatus == 1){
@@ -894,6 +900,10 @@
         
                         const search_userid = searchListWrapper.querySelector(".search_userid");
                         search_userid.innerText = e.followUserDto.userid;
+
+                        searchProfile_photo.setAttribute("onclick", "location.href='/mstar/anotherProfilePage?profile_info_pk="+profile_info_pk+"&another_info_pk="+e.followProfileInfoDto.profile_info_pk+"'");
+                        search_nick_name.setAttribute("onclick", "location.href='/mstar/anotherProfilePage?profile_info_pk="+profile_info_pk+"&another_info_pk="+e.followProfileInfoDto.profile_info_pk+"'");
+                        search_userid.setAttribute("onclick", "location.href='/mstar/anotherProfilePage?profile_info_pk="+profile_info_pk+"&another_info_pk="+e.followProfileInfoDto.profile_info_pk+"'");
                         
                         const listFollowButton = searchListWrapper.querySelector(".listFollowButton");
                         if(e.followStatus == 1){
@@ -915,6 +925,13 @@
 
                 });
 
+            }
+            function resetSearchInputBox(){
+                const  searchInputBox = document.querySelector("#searchInputBox");
+                searchInputBox.value ="";
+                const resetButton = document.querySelector("#resetButton");
+                resetButton.classList.add("d-none");
+                loadUserFollowingList("");
             }
             
             function loadFollowFollowingList(searchText){
@@ -1032,6 +1049,21 @@
             .bar:first-child {
                 margin-left: 1em;
             }
+            #storyStorageListBox {
+                overflow-x: auto;
+                white-space: nowrap;
+                display: flex;
+                flex-wrap: nowrap;
+            }
+
+            #storyStorageListBox .col {
+                flex: 0 0 auto;
+                white-space: normal;
+            }
+            .modal-fullscreen{
+                width: 100%;
+            }
+            
         </style>
         
     </head>
@@ -1140,16 +1172,16 @@
                             <i class="fa-solid fa-user-plus px-0"></i>
                         </div>
                     </div>
-                    <div id="d-none-scroll" class="row mt-3 overflow-x-auto">
-                        <div class="col ms-3">
-                            <div id="storyStorageListBox" class="row" style="width: 200%;">
+                    <div id="d-none-scroll" class="row mt-3">
+                        <div class="col">
+                            <div id="storyStorageListBox" class="row ps-2">
                                 
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row mt-4 text-center">
+            <div class="row mt-3 text-center">
                 <div class="col">
                     <div class="row fs-5">
                         <div id="userArticleListButton" class="col border-bottom border-black border-1">
@@ -1164,73 +1196,19 @@
                     </div>
                 </div>
             </div>  
-            <div id="articleListBox" class="row row-cols-3 ps-0 overflow-y-auto" style="height: 20em;">
-                
-            </div>
-            <div class="row bg-white border-top sticky-bottom">
-                <div class="col px-4 py-2">
-                    <div class="row">
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col text-body-tertiary">
-                                    <i class="fa-solid fa-house"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col text-secondary">
-                                    홈
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col text-body-tertiary">
-                                    <i class="fa-solid fa-bolt"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col text-secondary">
-                                    먹거리
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div th:onclick="|location.href='@{./writeArticlePage(user_pk=${session.sessionUser.user_pk})}'|" class="col text-body-tertiary">
-                                    <i class="fa-solid fa-hand-holding-medical"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col text-secondary">
-                                    추가
-                                </div>
-                            </div>
-                        </div>
-                        <div th:onclick="|location.href='@{./uploadStoryPage(user_pk=${session.sessionUser.user_pk})}'|" class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    멍냥피드
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col text-body-tertiary">
-                                    <i class="fa-solid fa-comment-dots"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col text-secondary">
-                                    커뮤니티
-                                </div>
-                            </div>
+            <div class="row overflow-y-scroll" style="margin-bottom: 5em;">
+                <div class="col">
+                    <div id="articleListBox" class="row row-cols-3 ps-0" style="height: auto;">
+                        <div class="col"></div>
+                        <div class="col mt-5 text-center">
+                            <img class="img-fluid" src="/public/image/mstar/noPhoto.png" alt="">
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="row fixed-bottom text-end" style="bottom: 5em;">
+                <di class="col">
+                    <img th:onclick="|location.href='@{/mstar/mainListPage(user_pk=${session.sessionUser.user_pk})}'|" class="img-fluid rounded-circle px-0 py-0" src="/public/image/mstar/goListPage.png" alt="" style="height: 4rem;">
                 </div>
             </div>
         </div>
@@ -1297,7 +1275,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="resetButton" class="col px-0 align-self-center d-none">
+                                    <div id="resetButton" onclick="resetSearchInputBox()" class="col px-0 align-self-center d-none">
                                         <i class="fa-solid fa-xmark"></i>
                                     </div>
                                 </div>

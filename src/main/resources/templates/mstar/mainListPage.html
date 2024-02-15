@@ -331,7 +331,7 @@
                                 count += 1;
                                 const likeProfile = articleListWrapper.querySelector(".likeProfile"+count);
                                 likeProfile.src = l.profileInfoDto.profile_photo;
-                                
+                                likeProfile.classList.remove("d-none");
                             }    
                             likeCountAndUserId.style.paddingLeft = (count-1) * 0.7 + "em";
                             const span1 = document.createElement("span");
@@ -360,10 +360,15 @@
 
                         }else{
                             if(e.likeCount != 0){
-                                const likeProfile1 = document.querySelector(".likeProfile1");
-                                likeProfile1.classList.add("d-none");
+                                const span3 = document.createElement("span");
+                                span3.classList.add("likeCount");
+                                span3.classList.add("fw-bold");
+                                span3.innerText = e.likeCount+"명"
+                                const span4 = document.createElement("span");
+                                span4.innerText = "이 좋아합니다.";
+                                likeCountAndUserId.appendChild(span3);
+                                likeCountAndUserId.appendChild(span4);
                             }
-                            likeCountAndUserId.innerText = e.likeCount+"명이 좋아합니다."
                         }
                         
 
@@ -410,7 +415,7 @@
                             articleImg.appendChild(articleImgWrapper);
                             
                         }
-                        console.log()
+                        
                         articleImgBox.appendChild(carouselWrapper);
 
                         
@@ -433,6 +438,7 @@
                         if(e.followStatus == 0 && profile_info_pk != e.profileInfoDto.profile_info_pk){
                             followStatus.innerText = "팔로우";
                             followStatus.style.backgroundColor = "rgb(228,226,226 )";
+                            followStatus.setAttribute("onclick","followingUser("+e.profileInfoDto.profile_info_pk+", this)");
                         }
                         const myProfileImg = articleListWrapper.querySelector("#myProfileImg");
                         myProfileImg.src = profileInfoDto.profile_photo;
@@ -484,7 +490,20 @@
                     }
 
                 });
-            }            
+            }  
+            function followingUser(another_info_pk, target){
+                const url = "/mstar/followingAnotherUser";
+
+                fetch(url, {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: "following_user_pk="+profileInfoDto.profile_info_pk+"&follow_user_pk="+another_info_pk
+                });
+                target.remove();
+            }
+            
             function insertArticleComment(article_pk){
                 const comment = document.querySelector("#commentText").value;
                 const profile_info_pk = profileInfoDto.profile_info_pk;
@@ -1030,12 +1049,29 @@
                 });
 
             }
-
+            function reloadArticleLikeCount(article_pk, target){
+                const url = "/mstar/reloadArticleLikeCount";
+                
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "article_pk="+article_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    const articleListWrapper = target.closest(".articleListWrapper");
+                    const likeCount = articleListWrapper.querySelector(".likeCount");
+                    console.log(likeCount)
+                    likeCount.innerText = response.data+"명";
+                });
+            }
 
 
             ///////////////////새로운마음으로 시작해보자!!!
             function insertArticleLike(article_pk, target){
-                const url = "./insertMyArticleLike";
+                const url = "/mstar/insertMyArticleLike";
                 
                 fetch(url, {
                      method: "post",
@@ -1052,7 +1088,7 @@
                 articleLike.src = "/public/image/mstar/like.png";
                 articleLike.setAttribute("onclick","deleteArticleLike("+article_pk+", this)");
                 
-                
+                reloadArticleLikeCount(article_pk, target)
 
             }
 
@@ -1418,12 +1454,16 @@
     <body>
         <div class="container-fluid">
             <div th:insert="~{/commons/naviBar}"></div>
-            <div class="row mt-1 fs-4">
+            <div class="row">
                 <div class="col">
-                    Mstargram
-                </div>
-                <div class="col text-end">
-                    <i th:onclick="|location.href='@{./writeArticlePage(user_pk=${session.sessionUser.user_pk})}'|" class="fa-regular fa-square-plus me-2"></i>
+                    <div class="row mt-1 fs-4">
+                        <div class="col">
+                            Mstargram
+                        </div>
+                        <div class="col text-end">
+                            <i th:onclick="|location.href='@{/mstar/writeArticlePage(user_pk=${session.sessionUser.user_pk})}'|" class="fa-regular fa-square-plus"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="d-none-scroll" class="row mt-3 overflow-x-auto">
@@ -1525,10 +1565,10 @@
                         </div>
                     </div>
                     <div class="row pt-0">
-                        <div class="col-auto ps-2 pe-1 likeProfileListBox">
-                            <img class="img-fluid rounded-circle float-start border border-white border-2 likeProfile1"  style="aspect-ratio: 1/1; height: 1.5em; position: relative; z-index: 1;">
-                            <img class="img-fluid rounded-circle float-start border border-white border-2 likeProfile2"  style="aspect-ratio: 1/1; height: 1.5em; position: absolute; left: 1.5em; z-index: -1">
-                            <img class="img-fluid rounded-circle float-start border border-white border-2 likeProfile3"  style="aspect-ratio: 1/1; height: 1.5em; position: absolute; left: 2.5em; z-index: -2">
+                        <div class="col-auto ps-2 pe-1 likeProfileListBox" style="position: relative;">
+                            <img class="img-fluid rounded-circle float-start border border-white border-2 likeProfile1 d-none"  style="aspect-ratio: 1/1; height: 1.5em;">
+                            <img class="img-fluid rounded-circle float-start border border-white border-2 likeProfile2 d-none"  style="aspect-ratio: 1/1; height: 1.5em; position: absolute; left: 60%; z-index: 2">
+                            <img class="img-fluid rounded-circle float-start border border-white border-2 likeProfile3 d-none"  style="aspect-ratio: 1/1; height: 1.5em; position: absolute; left: 120%; z-index: 3">
                         </div>
                         <div class="col likeCountAndUserId" style="padding-left: 0em; font-size: 0.9em;">
                             

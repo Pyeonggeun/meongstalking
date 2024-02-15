@@ -1,7 +1,19 @@
-function showNotifyModal(session_pk){
+let user_pk_Navi = null;
+function getNaviUserDto(){
+    const url = "/mstar/getUserDto"
+    fetch(url)
+    .then(response => response.json())
+    .then((response) =>{
+        user_pk_Navi = response.data.user_pk;
+        checkUnReadNotify(user_pk_Navi);
+        checkUnReadDirect(user_pk_Navi);
+    });
+}
+
+function showNotifyModal(){
     const notifyModal = bootstrap.Modal.getOrCreateInstance("#notifyModal");
-    loadUnReadMyNotificationList(session_pk);
-    loadReadMyNotificationList(session_pk);
+    loadUnReadMyNotificationList();
+    loadReadMyNotificationList();
     notifyModal.show();
 }
 function closeNotifyModal(){
@@ -9,15 +21,15 @@ function closeNotifyModal(){
     notifyModal.hide();
 }
 
-function loadUnReadMyNotificationList(session_pk){
+function loadUnReadMyNotificationList(){
     const url = "/mstar/loadUnReadMyNotificationList";
-    console.log(session_pk);
+    
     fetch(url, {
         method: "post",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
         },
-        body: "user_pk="+session_pk
+        body: "user_pk="+user_pk_Navi
     })
     .then(response => response.json())
     .then((response) =>{
@@ -52,14 +64,13 @@ function loadUnReadMyNotificationList(session_pk){
         }else{
             unReadNotifyListBox.classList.add("text-center", "text-secondary");
             unReadNotifyListBox.innerText = "새로운 알림이 없습니다.";
-            console.log(unReadNotifyListBox)
         }
         const unReadNotify = document.querySelector("#unReadNotify");
         unReadNotify.classList.add("d-none");
-        updateNotifyReadStatus(session_pk);
+        updateNotifyReadStatus(user_pk_Navi);
     });
 }
-function loadReadMyNotificationList(session_pk){
+function loadReadMyNotificationList(){
     const url = "/mstar/loadReadMyNotificationList";
     
     fetch(url, {
@@ -67,7 +78,7 @@ function loadReadMyNotificationList(session_pk){
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
         },
-        body: "user_pk="+session_pk
+        body: "user_pk="+user_pk_Navi
     })
     .then(response => response.json())
     .then((response) =>{
@@ -111,7 +122,7 @@ function checkUnReadNotify(){
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
         },
-        body: "user_pk="+14
+        body: "user_pk="+user_pk_Navi
     })
     .then(response => response.json())
     .then((response) =>{
@@ -129,7 +140,7 @@ function checkUnReadDirect(){
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
         },
-        body: "user_pk="+14
+        body: "user_pk="+user_pk_Navi
     })
     .then(response => response.json())
     .then((response) =>{
@@ -141,18 +152,17 @@ function checkUnReadDirect(){
     });
 }
 
-function updateNotifyReadStatus(session_pk){
+function updateNotifyReadStatus(){
     const url = "/mstar/updateNotifyReadStatus";
     fetch(url, {
         method: "post",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
         },
-        body: "user_pk="+session_pk
+        body: "user_pk="+user_pk_Navi
     });
 
 }
 window.addEventListener("DOMContentLoaded",()=>{
-    checkUnReadNotify();
-    checkUnReadDirect();
+    getNaviUserDto();
 })

@@ -527,7 +527,7 @@
             
 
             function openCommentWriteBox(article_pk, target) {
-                
+                removeWriteTcomment();
                 const commentListBox = document.querySelector("#commentListBox");
                 commentListBox.classList.add("d-none");
 
@@ -690,7 +690,7 @@
                 });
 
             }
-            function insertTcomment(comment_pk ,target){
+            function insertTcomment(comment_pk){
                 const t_comment = document.querySelector("#commentText").value;
                 const profile_info_pk = profileInfoDto.profile_info_pk;
                 
@@ -804,6 +804,7 @@
                 const insertButtonColor = document.querySelector("#insertButtonColor");
                 commentText.addEventListener("input", function() {
                     // 입력된 글자의 유무에 따라 버튼 활성화/비활성화 처리
+                    console.log(commentSwitch)
                     if(commentSwitch == null){
                         if(commentText.value.trim() === ""){
                             insertButtonColor.style.color = "rgb(190, 190, 245)";
@@ -820,6 +821,7 @@
                             insertCommentButton.setAttribute("disabled","disabled");
                         }else{
                             insertButtonColor.style.color = "rgb(250, 250, 250)";
+                            insertCommentButton.setAttribute("onclick", "insertTcomment("+article_pk+")");
                             insertCommentButton.removeAttribute("disabled")
                         }
 

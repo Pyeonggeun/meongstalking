@@ -270,6 +270,18 @@ public class RestMstarController {
     public void deleteMyArticleLike(ArticleLikeDto articleLikeDto){
         mstarService.deleteArticleLike(articleLikeDto);
     }
+    @RequestMapping("reloadArticleLikeCount")
+    public RestResponseDto reloadArticleLikeCount(int article_pk){
+        RestResponseDto responseDto = new RestResponseDto();
+
+        int likeCount = mstarService.getArticleLikeCount(article_pk);
+ 
+         responseDto.setResult("success");
+         responseDto.setData(likeCount);
+ 
+         return responseDto;
+
+    }
 
     @RequestMapping("loadStorageStoryList")
     public RestResponseDto loadStorageStoryList(int storage_pk){
