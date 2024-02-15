@@ -232,7 +232,7 @@
 
     <!--이미지 게시판-->
     <insert id="insertClubImgFreeBoard">
-        INSERT INTO ms_club_imgboard(,club_user_pk,club_pk,views)
+        INSERT INTO ms_club_imgboard(img,club_user_pk,club_pk,views)
         VALUES (#{img},#{club_user_pk},#{club_pk},0); 
     </insert>
 
