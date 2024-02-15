@@ -101,12 +101,16 @@
             modal.show();
         }
     </script>
+    <script src="/public/js/commons/naviBar.js"></script>
+    <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}" />
+    
 </head>
 
 <body>
 
  
     <div class="container">
+        <div th:insert="~{/commons/naviBar}"></div>
         <th:block th:replace="~{club/clubTopNavi.html :: topNavi}"></th:block>
         <div class="row p-3">
         <form action="./boardwriteProcess" method="post" enctype="multipart/form-data">

@@ -194,4 +194,9 @@ public class ClubServiceImpl {
 	public List<Map<String, Object>> selectFreeboardMainPage(int club_pk){
 		return clubSqlMapper.selectFreeboardMainPage(club_pk);
 	}
+
+	public int isClubMember(int user_pk){
+		return clubSqlMapper.isClubMember(user_pk);
+	}
+
 }

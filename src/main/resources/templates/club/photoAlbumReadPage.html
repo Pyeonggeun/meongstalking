@@ -101,9 +101,13 @@
             modal.show();
         }
     </script>
+
+    <script src="/public/js/commons/naviBar.js"></script>   
+    <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}" />    
 </head>
 
 <body>
+    <div th:insert="~{/commons/naviBar}"></div>
     <th:block th:replace="~{club/clubTopNavi.html :: topNavi}"></th:block>
     <h1>게시글</h1>
 

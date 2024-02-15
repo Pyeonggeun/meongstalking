@@ -162,12 +162,15 @@
 
 
     </script>
-
+    <script src="/public/js/commons/naviBar.js"></script>
+    <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}" />
+    
 </head>
 
 <body>
    
     <div class="container">
+        <div th:insert="~{/commons/naviBar}"></div>
         <div class="row">
             <div class="col-8">
                 <textarea id="inputComment" class="form-control" placeholder="댓글을 입력하세요"></textarea>

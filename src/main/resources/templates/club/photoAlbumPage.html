@@ -5,15 +5,47 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
+    <script src="/public/js/commons/lockLikeMobile.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <style>
+        @font-face {
+            font-family: 'omyu_pretty';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'omyu_pretty';
+            min-width: 320px;
+        }
+
         .small {
             font-size: 0.8em;
             /* 원하는 크기로 조정 */
+        }
+        .scrollable-menu {
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .scrollable-menu .col {
+            display: flex;
+            flex-wrap: nowrap;
+        }
+
+        .scrollable-menu span {
+            border-bottom: 2px solid transparent;
+            padding-bottom: 2px;
+            transition: border-color 0.3s;
+        }
+
+        .scrollable-menu span:hover {
+            border-color: #000;
         }
     </style>
 
@@ -200,12 +232,14 @@
 
 
     </script>
-
+    <script src="/public/js/commons/naviBar.js"></script>
+    <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}" />    
 
 </head>
 
 <body>
     <div class="container">
+        <div th:insert="~{/commons/naviBar}"></div>
         <div class="row">
             <div class="col-2 my-2 ms-1">
                 <button class="btn" onclick="goBack()">
@@ -215,27 +249,23 @@
             <div th:text="${clubTF.clubname}" class="col d-flex align-items-center px-0">
             </div>
         </div>
-        <div class="row scrollable-menu px-0">
+        <div class="row scrollable-menu py-2">
             <div class="col justify-content-between fw-bold">
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
-                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">게시판</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">방명록</span>
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./photoAlbumPage'">사진첩</span>
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubMemberPage'">멤버</span>
-
             </div>
         </div>
 
-        <div class="row mt-4" style="color: #f45600;">
+        <div class="row mt-4" style="color: #323232;">
             <div class="col fw-bold fs-4">동호회 사진첩</div>
         </div>
-        <!-- th:href="@{'./photoAlbumReadPage?clubimgboard_pk=' + ${board.clubimgboard_pk}}"  -->
-
 
         <div class="row row-cols-1 row-cols-3 mt-1">
             <div class="col border border-white px-0" th:each="board : ${freeBoardList}">
                 <div class="row">
                     <div class="col" style="position: relative;">
-                        <div th:text="${board.clubimgboard_pk}"></div>
                         <a href="#" th:attr="onclick='openOffcanvas(event, \'' + ${board.clubimgboard_pk} + '\')'"
                             aria-controls="offcanvasBottom">
                             <img style="height: 7.5em;" class="img-fluid" th:src="@{'/uploadFiles/'+${board.location}}"
