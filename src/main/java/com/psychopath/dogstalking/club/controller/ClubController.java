@@ -249,7 +249,8 @@ public class ClubController {
         }
         int checkb = clubService.checkb();
 
-        int clubPks = clubService.selectClubPK(userDto.getUser_pk());
+        //int clubPks = clubService.selectClubPK(userDto.getUser_pk());
+        int clubPks = clubService.getLastInsertClubId();
 
         clubUserDto.setClub_user_pk(clubpk + 1);
         clubUserDto.setUser_pk(userDto.getUser_pk());
@@ -318,19 +319,19 @@ public class ClubController {
 
         Map<String, Object> clubTF = clubService.applyClubUserTF(userDto.getUser_pk());
         model.addAttribute("clubTF", clubTF);
-        return "redirect:./clubListPage";
+        return "redirect:./clubListPage?clubPk=" + clubPk;
     }
 
     @RequestMapping("approve")
     public String approve(@RequestParam("user_pk") int userPk, ClubUserDto clubUserDto,
             ClubStatusLogDto clubStatusLogDto, ClubUserRanklogDto clubUserRanklogDto, HttpSession session) {
 
-        UserDto userDto = (UserDto) session.getAttribute("sessionUser");
+        // UserDto userDto = (UserDto) session.getAttribute("sessionUser");
 
         clubStatusLogDto.setClub_user_pk(userPk);
         clubService.updateApplyClub(clubStatusLogDto);
 
-        clubUserRanklogDto.setClub_user_pk(userDto.getUser_pk());
+        clubUserRanklogDto.setClub_user_pk(userPk);
         clubUserRanklogDto.setClubuserranklogcategory_pk(3);
         clubService.insertClubUserRank(clubUserRanklogDto);
 
