@@ -4,6 +4,7 @@ function getNaviUserDto(){
     fetch(url)
     .then(response => response.json())
     .then((response) =>{
+
         user_pk_Navi = response.data.user_pk;
         checkUnReadNotify(user_pk_Navi);
         checkUnReadDirect(user_pk_Navi);
