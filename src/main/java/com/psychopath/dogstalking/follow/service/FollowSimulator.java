@@ -85,7 +85,7 @@ public class FollowSimulator {
     }
 
 
-    @Scheduled(cron = "0 0 0,3,6,9,12,15,18,21 * * *")
+    // @Scheduled(cron = "0 0 0,3,6,9,12,15,18,21 * * *")
     public void marking(){
         // 매일 마킹을 한다...
 
