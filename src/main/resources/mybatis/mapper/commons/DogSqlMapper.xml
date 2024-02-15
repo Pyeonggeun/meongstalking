@@ -5,7 +5,7 @@
 
     <insert id="insertDog">
         insert into 
-        ms_dog(userpk, name, birth, weight, gender, image)
+        ms_dog(userpk, name, birth, weight, gender, image, isNeutering, breed)
         values
         (
             #{userpk},
@@ -13,7 +13,9 @@
             #{birth},
             #{weight},
             #{gender},
-            'imagelink'
+            #{image},
+            #{isNeutering},
+            #{breed}
         )
 	</insert> 
 

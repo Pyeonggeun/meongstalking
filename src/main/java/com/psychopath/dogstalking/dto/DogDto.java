@@ -15,6 +15,8 @@ public class DogDto {
     private int weight;
     private String gender;
     private String image;
+    private String isNeutering;
+    private String breed;
     private LocalDateTime created_at;
 
 

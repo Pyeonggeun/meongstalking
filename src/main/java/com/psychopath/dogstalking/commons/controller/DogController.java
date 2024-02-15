@@ -20,7 +20,7 @@ public class DogController {
     @RequestMapping("registerDogPage")
     public String registerDogPage(){
 
-        return"/commons/dog/registerDogPage";
+        return"commons/dog/registerDogPage";
     }
 
     @RequestMapping("registerDogProcess")
@@ -31,6 +31,13 @@ public class DogController {
         dogService.registerDog(dogDto);
 
         return"redirect:../mainPage";
+    }
+
+    @RequestMapping("dogManagementPage")
+    public String dogManagementPage(){
+
+
+        return"commons/dog/dogManagementPage";
     }
 
 

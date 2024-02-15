@@ -7,119 +7,257 @@
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://kit.fontawesome.com/784384f602.js" crossorigin="anonymous"></script>
+
+
+
+
+    <script>
+
+        function previewImage(){
+            const imageFile = document.getElementById("imageFile").files[0];
+
+            let formdata = new FormData();
+
+            // 이미지 파일을 FormData에 추가
+            formdata.append("imageFile", imageFile);
+
+            const url = "./previewImage";
+
+            fetch(url, {
+                method: "post",
+                body: formdata // FormData 전달
+            })
+            .then(response => response.json())
+            .then(response => {
+                
+                const imageBox = document.querySelector("#image-box");
+                imageBox.classList.remove("d-none");
+
+                const plusIconBox = document.querySelector("#plus-icon-box");
+                plusIconBox.classList.add("d-none");
+
+                const cameraIcon = document.querySelector("#camera-icon");
+                cameraIcon.classList.add("d-none");
+
+                imageBox.setAttribute("src", "/uploadFiles/"+ response.data +"");
+
+                const imageHidden = document.getElementById("imageHidden");
+                imageHidden.value = response.data;
+            });
+        }
+
+
+        function imageBoxClickHandler() {
+            const imageInput = document.getElementById("imageFile");
+            imageInput.click();
+        }
+
+
+        window.addEventListener("DOMContentLoaded", () => {
+            const imageBox = document.querySelector("#imageadd-box");
+            imageBox.addEventListener("click", imageBoxClickHandler);
+        });  
+
+
+
+    </script>
+
+    <style>
+
+            #imageadd-box{
+                background-color: #E2E2E2;
+                height: 7em;
+                width: 7em;
+                border-radius: 100%;
+                position: relative;
+            }
+
+            #image-box{
+                height: 7em;
+                width: 7em;
+                border-radius: 100%;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            #camera-icon{
+                font-size: 1.5em;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            #plus-icon-box{
+                border-radius: 1em; 
+                background-color: white; 
+                width: 2em; 
+                height: 2em;
+                border-style: solid;
+                border-width: 0.01em;
+                border-color: #E2E2E2; 
+                position: absolute; 
+                top: 5%; 
+                left: 5%;
+            }
+    
+            .plus-icon{
+                font-size: 1.2em; 
+                position: absolute; 
+                top: 50%; 
+                left: 50%; 
+                transform: translate(-50%, -50%);
+            }
+
+    </style>
+
+
 </head>
 
 <body>
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-3 text-start" style="padding-left: 1em;">
+        <div class="row" style="height: 3em;">
+            <div class="col-3" style="display: flex; justify-content: start; align-items: center;">
                 <div style="font-size: 1.5em;"><i class="bi bi-arrow-left"></i></div>
             </div>
-            <div class="col text-center" style="padding-top: 0.5em;">
-                <div class="fw-bold" style="font-size: 0.9em;">반려동물 정보 입력</div>
+            <div class="col" style="display: flex; justify-content: center; align-items: center;">
+                <div class="fw-bold" style="font-size: 1.2em;">강아지 등록</div>
             </div>
-            <div class="col-3 text-end" style="padding-right: 1em;">
+            <div class="col-3" style="display: flex; justify-content: end; align-items: center;">
                 <div style="font-size: 1.5em;"><i class="bi bi-check-lg"></i></div>
             </div>
         </div>
-        <div class="row" style="height: 9em;">
-            <div class="col text-center" style="padding-left: 10em; padding-right: 10em; padding-top: 2em;">
-                <div style="height: 4em; width: 4em; border-width: 0; border-radius: 2em; background-color: #5C518B; opacity: 0.5;"></div>
+        <div class="row" style="height: 12em;">
+            <div class="col" style="display: flex; justify-content: center; align-items: center;">
+                <div id="imageadd-box">
+                    <img id="image-box" class="d-none">
+                    <div id="camera-icon"><i class="bi bi-camera" style="color: #777777;"></i></div>
+                    <div id="plus-icon-box">
+                        <div class="plus-icon"><i class="fa-solid fa-plus"></i></div>
+                    </div>
+                </div>
             </div>     
         </div>
 
         <form action="./registerDogProcess" method="post">
 
         <div class="row" style="height: 3em; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #dcdcdc;">
-            <div class="col-3 text-start" style="padding: 0.9em;">
+            <div class="col-3" style="display: flex; align-items: center; justify-content: start;">
                 <div class="fw-bold" style="color: #5C518B; font-size: 0.8em;">이름</div>
+                <!-- <div style="color: red; font-size: 1.2em; margin-left: 0.3em; margin-bottom: 0.3em;">*</div> -->
             </div>
-            <div class="col" style="padding-top: 0.7em;">
-                <input name="name" type="text" placeholder="이름을 입력하세요(최대5자)" style="border-width: 0; font-size: 0.7em; width: 100%;">
+            <div class="col" style="display: flex; align-items: center; justify-content: start;">
+                <input name="name" type="text" placeholder="이름을 입력하세요. (최대 5자)" style="border-width: 0; font-size: 0.75em; width: 100%;">
             </div>
         </div>
         <div class="row" style="height: 3em; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #dcdcdc;">
-            <div class="col-3 text-start" style="padding: 0.9em;">
+            <div class="col-3" style="display: flex; align-items: center; justify-content: start;">
                 <div class="fw-bold" style="color: #5C518B; font-size: 0.8em;">생년월일</div>
             </div>
-            <div class="col" style="padding-top: 0.7em;">
-                <input name="birth" type="text" placeholder="2023-10-10 형식으로 입력해주세요." style="width: 100%; border-width: 0; font-size: 0.7em;">
+            <div class="col" style="display: flex; align-items: center; justify-content: start;">
+                <input name="birth" type="text" placeholder="2023-10-10 형식으로 입력해주세요." style="width: 100%; border-width: 0; font-size: 0.75em;">
             </div>
         </div>
-        <div class="row" style="height: 4.8em; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #dcdcdc;">
-            <div class="col-3 text-start" style="padding: 0.9em;">
-                <div class="row">
-                    <div class="col">
-                        <div class="fw-bold" style="color: #5C518B; font-size: 0.8em;">몸무게</div>
-                    </div>
-                </div>
-                <div class="row"></div>
+
+        <div class="row" style="height: 3em;">
+            <div class="col-3" style="display: flex; align-items: center; justify-content: start;">
+                <div class="fw-bold" style="color: #5C518B; font-size: 0.8em;">몸무게</div>
             </div>
-            <div class="col" style="padding-top: 0.7em;">
-                <div class="row">
-                    <div class="col-3">
-                        <input name="weight" type="text" placeholder="예) 3.23" style="border-width: 0; font-size: 0.7em; width: 100%;">
-                    </div>
-                    <div class="col" style="padding-top: 0.12em;">
-                        <div style="font-weight: 600; color: #5C518B; font-size: 0.9em;">kg</div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col" style="padding-top: 0.3em; padding-left: 0.9em;">
-                        <span class="text-black-50" style="color: black; font-size: 0.65em;">1kg미만의 경우, 예 750g이라면</span>
-                        <span class="text-body-secondary fw-bold" style="color: black; font-size: 0.65em;">0.75</span><span class="text-black-50" style="color: black; font-size: 0.65em;">로 입력</span>
-                    </div>
-                </div>                
-                
+            <div class="col" style="display: flex; align-items: center; justify-content: start;">
+                <input name="weight" type="text" placeholder="예) 3.23" style="border-width: 0; font-size: 0.75em; width: 20%;">
+                <div style="font-weight: 600; color: #5C518B; font-size: 0.8em; margin-left: 1em;">kg</div>
             </div>
         </div>
+
+        <div class="row" style="height: 1.9em; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #dcdcdc;">
+            <div class="col-3" style="display: flex; align-items: start; justify-content: start;">
+            </div>
+            <div class="col" style="display: flex; align-items: start; justify-content: start;">
+                <div class="text-black-50" style="color: black; font-size: 0.6em;">1kg미만의 경우, 예 750g이라면</div>
+                <div class="text-body-secondary fw-bold" style="color: black; font-size: 0.6em; margin-left: 0.5em;">0.75</div>
+                <div class="text-black-50" style="color: black; font-size: 0.6em;">로 입력</div>
+            </div>
+        </div>
+
+
         <div class="row" style="height: 3em; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #dcdcdc;">
-            <div class="col-3 text-start" style="padding: 0.9em;">
+            <div class="col-3" style="display: flex; align-items: center; justify-content: start;">
                 <div class="fw-bold" style="color: #5C518B; font-size: 0.8em;">성별</div>
             </div>
             <div class="col">
-                <div class="row">
-                    <div class="col-2" style="padding-top: 0.85em;">
+                <div class="row" style="height: 3em;">
+                    <div class="col-2" style="display: flex; align-items: center; justify-content: start;">
                         <input name="gender" type="radio" value="M">
                     </div>
-                    <div class="col" style="padding-top: 0.68em;">
-                        <span class="fw-bold text-secondary " style="font-size: 0.7em;">남아</span>
+                    <div class="col" style="display: flex; align-items: center; justify-content: start;">
+                        <span class="fw-bold text-secondary" style="font-size: 0.75em;">남아</span>
                     </div>
                 </div>
             </div>
             <div class="col">
-                <div class="row">
-                    <div class="col-2" style="padding-top: 0.85em;">
+                <div class="row" style="height: 3em;">
+                    <div class="col-2" style="display: flex; align-items: center; justify-content: start;">
                         <input name="gender" type="radio" value="F">
                     </div>
-                    <div class="col" style="padding-top: 0.68em;">
-                        <span class="fw-bold text-secondary " style="font-size: 0.7em;">여아</span>
+                    <div class="col" style="display: flex; align-items: center; justify-content: start;">
+                        <span class="fw-bold text-secondary" style="font-size: 0.75em;">여아</span>
                     </div>
                 </div>
             </div>
         </div>    
+
         <div class="row" style="height: 3em; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #dcdcdc;">
-            <div class="col-3 text-start" style="padding: 0.9em;">
-                <div class="fw-bold" style="color: #5C518B; font-size: 0.8em;">사진</div>
+            <div class="col-3" style="display: flex; align-items: center; justify-content: start;">
+                <div class="fw-bold" style="color: #5C518B; font-size: 0.8em;">중성화</div>
             </div>
-            <div class="col" style="padding-top: 0.7em;">
-                <input class="form-control" type="file" style="width: 100%; border-width: 0; font-size: 0.7em;">
+            <div class="col">
+                <div class="row" style="height: 3em;">
+                    <div class="col-2" style="display: flex; justify-content: start; align-items: center;">
+                        <input name="isNeutering" type="radio" value="Y">
+                    </div>
+                    <div class="col" style="display: flex; justify-content: start; align-items: center;">
+                        <span class="fw-bold text-secondary" style="font-size: 0.75em;">했어요</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="row" style="height: 3em;">
+                    <div class="col-2" style="display: flex; justify-content: start; align-items: center;">
+                        <input name="isNeutering" type="radio" value="N">
+                    </div>
+                    <div class="col" style="display: flex; justify-content: start; align-items: center;">
+                        <span class="fw-bold text-secondary" style="font-size: 0.75em;">안했어요</span>
+                    </div>
+                </div>
             </div>
         </div>  
+
+        <div class="row" style="height: 3em; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #dcdcdc;">
+            <div class="col-3" style="display: flex; align-items: center; justify-content: start;">
+                <div class="fw-bold" style="color: #5C518B; font-size: 0.8em;">견종선택</div>
+            </div>
+            <div class="col" style="display: flex; align-items: center; justify-content: start;">
+                <input name="breed" type="text" placeholder="견종을 입력해주세요." style="width: 100%; border-width: 0; font-size: 0.75em;">
+            </div>
+        </div>
         
         <div class="row" style="height: 3em;"></div>
         <div class="row">
             <div class="col text-center">
-                <input type="submit" class="fw-bold" style="background-color: #1E3269; color: white; width: 100%; font-size: 0.8em; height: 3em; border-style: none; border-radius: 0.3em;" value="가입하기">
+                <input name="image" type="hidden" id="imageHidden">
+                <input type="submit" class="fw-bold" style="background-color: #1E3269; color: white; width: 100%; font-size: 0.8em; height: 3em; border-style: none; border-radius: 0.3em;" value="등록하기">
             </div>
         </div>
         </form>
 
-
+        <input id="imageFile" class="d-none" accept="image/*" oninput="previewImage()" type="file">
     </div>
 
 
-
+    <script src="/public/js/commons/lockLikeMobile.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 

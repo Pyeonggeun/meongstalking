@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>메인페이지</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://kit.fontawesome.com/784384f602.js" crossorigin="anonymous"></script>
+
+
+    <script>
+
+
+
+
+
+
+        window.addEventListener("DOMContentLoaded", () => {
+            
+        });  
+
+    </script>
+
+
+
+
+    <style>
+        .container-padding{
+            background-color: #f5f5f5;
+            padding-left: 1em;
+            padding-right: 1em;
+            padding-top: 0.5em;
+        }
+
+        body{
+            background-color: #f5f5f5;
+        }
+
+
+        #dogInfoBox{
+            height: 10em;
+            width: 100%;
+            border-radius: 1em;
+            background-color: white;
+            position: relative;    
+        }
+
+        #dogImage{
+            width: 2em;
+            height: 2em;
+            border-radius: 100%;
+            border-color: #f5f5f5;
+            border-style: solid;
+            border-width: 0.01em;
+        }
+
+        #dogName{
+            color: #111111;
+            font-size: 1em;
+            font-weight: bold;
+            margin-left: 0.3em;
+        }
+
+        #dogBreed{
+            color: rgba(0, 0, 0, 0.5);
+            position: absolute;
+            top: 65%;
+            left: 5%;
+            transform: translate(0, -50%);
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        #dogGender{
+            color: rgba(0, 0, 0, 0.5);
+
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-right: 1em;
+        }
+
+        #dogBirth{
+            color: rgba(0, 0, 0, 0.5);
+
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-right: 1em;
+        }
+
+        #dogWeight{
+            color: rgba(0, 0, 0, 0.5);
+
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .box{
+            height: 10em;
+            width: 100%;
+            border-radius: 1em;
+            background-color: white;
+            position: relative;    
+        }
+
+        .memo-image-cropping{
+            border-radius: 1em;
+            width: 100%;
+            height: 13em;
+            overflow: hidden;
+            position: relative;
+            border-style: solid;
+            border-color: white;
+            border-width: 0.1em;
+        }
+
+        .memo-image{
+            width: 100%;
+            height: 100%;
+            border-style: solid;
+            border-color: white;
+            border-width: 0.01em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .memo-image-opacity{
+            background-color: rgba(255, 255, 255, 0.9);
+            width: 100%;
+            height: 45%;
+            position: absolute;
+            bottom: 0%;
+            z-index: 2;
+        }
+
+        .memo-content{
+            position: absolute;
+            top: 10%;
+            left: 5%;
+            font-size: 0.8em;
+            color: #111111;
+            font-weight: bold;
+        }
+
+        .memo-date{
+            position: absolute;
+            bottom: 10%;
+            left: 5%;
+            font-size: 0.8em;
+            color: rgba(0, 0, 0, 0.5);
+            font-weight: bold;
+        }
+
+        .memo-more-icon{
+            position: absolute;
+            bottom: 10%;
+            right: 5%;
+            font-size: 1em;
+        }
+
+        .oc-dogImage{
+            width: 2.5em;
+            height: 2.5em;
+            border-radius: 100%;
+            border-color: #f5f5f5;
+            border-style: solid;
+            border-width: 0.01em;
+        }
+
+        .oc-dogWeight{
+            font-size: 1em;
+            font-weight: bold;
+            margin-left: 1em;
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        .oc-dogName{
+            font-size: 1em;
+            font-weight: bold;
+            margin-left: 1em;
+
+        }
+
+    </style>
+
+</head>
+
+
+
+
+
+<body>
+
+    <div class="container-fluid">
+        <div class="row" style="height: 3.5em;  padding-top: 1em; padding-bottom: 0.5em; display: flex; align-items: center;">
+            <div class="col" style="padding-left: 1em; padding-right: 1em; display: flex; position: relative;">
+                <div id="back-icon" class="fw-bold" style="font-size: 1.2em;"><i class="fa-solid fa-angle-left" style="color: #111111;"></i></div>
+                <div type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; justify-content: center; align-items: center;">
+                    <img id="dogImage" class="img-fluid" th:src="@{/public/image/trade/dogimage.png}">
+                    <div id="dogName">알렉스</div>
+                    <div style="margin-left: 0.3em;"><i class="bi bi-caret-down-fill"></i></div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+
+    <div class="container-fluid container-padding">
+
+        <div class="row">
+            <div class="col">
+
+                <div class="row" style="height: 10em;">
+                    <div class="col">
+                        <div id="dogInfoBox">
+                         
+                            <div id="dogBreed">그레이 하운드</div>
+                            <div style="width: 100%; position: absolute; top: 85%; left: 5%; transform: translate(0, -50%); display: flex; justify-content: start; align-items: center;">
+                                <div id="dogGender">남아</div>
+                                <div id="dogBirth">생후 5개월</div>
+                                <div id="dogWeight">3.5kg</div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="height: 1em;"></div>
+
+                <!--산책-->
+                <div class="row" style="height: 12em;">
+                    <div class="col">
+                        <div class="box" style="height: 12em;">
+                            <div style="position: absolute; top: 10%; left: 5%; font-weight: bold; font-size: 1em;">건강을 위해</div>
+                            <div style="position: absolute; top: 23%; left: 5%; font-weight: bold; font-size: 1em;">하루 산책 양을 챙겨 주세요.</div>
+                            <div style="position: absolute; top: 39%; left: 5%; font-weight: bold; font-size: 0.8em; color: rgba(0, 0, 0, 0.5);">포메라니안 하루 권장 산책 양은 30분입니다.</div>
+                            <div style="position: absolute; bottom: 30%; left: 5%; display: flex; justify-content: start; align-items: center;">
+                                <div style="font-size: 1em; color: #111111; font-weight: bold;">0</div>
+                                <div style="font-size: 1em; color: rgba(0, 0, 0, 0.3); font-weight: bold; margin-left: 0.5em;">/</div>
+                                <div style="font-size: 1em;  color: rgba(0, 0, 0, 0.3); font-weight: bold; margin-left: 0.5em;">30분</div>
+                            </div>
+                            <div style="position: absolute; bottom: 15%; left: 50%; transform: translate(-50%, 0); width: 80%; background-color: rgba(0, 0, 0, 0.1); border-style: none; height: 0.5em; border-radius: 1em;">
+                                <img style="position: absolute; left: 0%; top: 50%; transform: translate(-50%, -50%); border-radius: 100%; width: 2.5em; height: 2.5em;" class="img-fluid" th:src="@{/public/image/trade/dogimage.png}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--메모 리스트-->
+                <div class="row">
+                    <div class="col memoListBox">
+                        <div class="row memoWrapper" style="padding-top: 1em;">
+                            <div class="col">
+                                <div class="memo-image-cropping">
+                                    <img class="img-fluid memo-image" th:src="@{/public/image/trade/dogimage.png}">
+                                    <div class="memo-image-opacity">
+                                        <div class="memo-content">오늘 한강 산책 갔다 왔어요~</div>
+                                        <div class="memo-date">2024.02.13</div>
+                                        <div class="memo-more-icon"><i class="bi bi-three-dots"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- <div id="template" class="d-none">
+
+        입찰 내역 리스트
+        <div class="row bidHistoryWrapper">
+            <div class="col">
+                <div class="row" style="padding-bottom: 1em; position: relative;">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col">
+                                <div class="goods-title"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="goods-startDate"></div>
+                            </div>
+                        </div>
+                        <div class="goodsMore-icon d-none" onclick="navigateToGoodsDetailPage(this)"><i class="fa-solid fa-angle-right"></i></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col" style="display: flex; justify-content: center;">
+                        <div style="width: 100%; border-bottom-color: #f5f5f5; border-bottom-style: solid; border-bottom-width: 0.1em;"></div>
+                    </div>
+                </div>
+
+                <div class="row" style="padding-top: 1em;">
+                    <div class="col">
+                        <div class="info-box">
+                            <div class="goods-image-box">
+                                <img class="goods-image img-fluid" th:src="@{/public/image/trade/dogimage.png}">
+                            </div>
+                            <div class="bid-price-text">응찰가</div>
+                            <div class="highestbid-price-text">낙찰가</div>
+                            <div class="bid-date-text">응찰일</div>
+                            <div class="bid-price"></div>
+                            <div class="highestbid-price"></div>
+                            <div class="bid-date"></div>
+                            <div class="bid-state"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="padding-top: 1em;">
+                    <div class="col">
+                        <div class="bid-history-button" onclick="showModal(this)">응찰내역</div>
+                    </div>
+                </div>
+
+                <div class="row payment-row d-none" style="padding-top: 1em;">
+                    <div class="col">
+                        <div class="payment-button">결제하기</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        입찰 내역
+        <div class="row myBidHistoryWrapper" style="height: 3em; padding-bottom: 1em;">
+            <div class="col" style="position: relative;">
+                <div class="modal-bidder"></div>
+                <div class="modal-bid-price"></div>
+                <div class="modal-bid-date"></div>
+                <div class="modal-bid-time"></div>
+            </div>
+        </div>
+
+    </div> -->
+
+<!-- 
+    모달창
+    <div id="bidModal" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" style="height: 100vh; position: fixed; top: 0; left: 0; border-radius: 0; border: none;">
+                
+                <div class="modal-body" style="padding-left: 1.5em; padding-right: 1.5em; padding-top: 0em; overflow-y: auto;">
+
+                    <div class="row" style="height: 3.5em; padding-top: 1em; padding-bottom: 1em; display: flex; align-items: center;">
+                        <div class="col" style="padding-left: 1em; padding-right: 1em; display: flex; position: relative;">
+                            <div style="color: #111111; font-weight: bold; font-size: 1.2em;">응찰 내역</div>
+                            <div style="margin-right: 1em; font-size: 1.2em; position: absolute; right: 0; top: 50%; transform: translate(0, -50%);" onclick="closeModal()"><i class="fa-solid fa-x"></i></div>
+                        </div>
+                    </div>
+
+
+                    <div class="row" style="height: 1em;"></div>
+
+                    <div id="modal-bidList-row" class="row">
+                        <div id="myBidHistoryListBox" class="col">
+                            
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel" style="border-top-left-radius: 1em; border-top-right-radius: 1em;">
+      <div class="offcanvas-header" style="display: flex; justify-content: center; align-items: center;">
+        <div type="button" data-bs-dismiss="offcanvas" aria-label="Close" style="height: 0.2em; width: 3em; background-color: rgba(0, 0, 0, 0.1);"></div>
+      </div>
+      <div class="offcanvas-body small">
+        <div class="row">
+            <div class="col dogListBox">
+                <div class="row dogWrapper" style="height: 3em;">
+                    <div class="col" style="display: flex; justify-content: start; align-items: center;">
+                        <div><img class="img-fluid oc-dogImage" th:src="@{/public/image/trade/dogimage.png}"></div>
+                        <div class="oc-dogName">알렉스</div>
+                        <div class="oc-dogWeight">3.5kg</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col" style="display: flex; justify-content: start; align-items: center; height: 3em;">
+                <div style="color: rgba(0, 0, 0, 0.5);"><i class="bi bi-plus-lg"></i></div>
+                <div style="color: rgba(0, 0, 0, 0.5); font-weight: bold; margin-left: 0.5em;">반려동물 추가하기</div>
+            </div>
+        </div>
+
+
+      </div>
+    </div>
+
+    
+
+    <script src="/public/js/commons/lockLikeMobile.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+
+</html>
