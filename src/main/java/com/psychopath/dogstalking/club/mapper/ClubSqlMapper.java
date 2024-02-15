@@ -102,4 +102,6 @@ public interface ClubSqlMapper {
     //메인페이지
     public List<Map<String, Object>> selectFreeboardMainPage(int club_pk);
     
+
+    public int isClubMember(int user_pk);
 }

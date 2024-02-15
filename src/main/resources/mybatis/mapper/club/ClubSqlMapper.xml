@@ -92,8 +92,13 @@
         SELECT MAX(club_pk) FROM ms_club;
     </select>
     
+
+    <select id="isClubMember" resultType="int">
+        SELECT COUNT(*) FROM ms_club_user WHERE user_pk = #{user_pk};
+    </select>
+
     <select id="selectClubPK" resultType="int">
-        SELECT ms_club_user.club_pk FROM ms_club_user WHERE user_pk = #{user_pk};
+        SELECT IFNULL(ms_club_user.club_pk, -1) FROM ms_club_user WHERE user_pk = #{user_pk};
     </select>
     
     <select id="selectClubList" resultType="map">

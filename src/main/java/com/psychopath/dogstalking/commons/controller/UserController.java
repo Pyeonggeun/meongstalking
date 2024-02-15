@@ -76,31 +76,35 @@ public class UserController {
 
 	@RequestMapping("mainPage")
 	public String mainPage(Model model, HttpSession session,KakaoUserDto kakaoUserDto) {
-		UserDto userDto = (UserDto) session.getAttribute("sessionUser");
-		int user_pk = 0;
-		if (userDto == null) {
-			String kakaoUserIdString = kakaoUserDto.getKakaoUserId();
-            long kakaoUserId = Long.parseLong(kakaoUserIdString);
-			user_pk = (int) (kakaoUserId / 1000000);
-		} else {
-			user_pk = userDto.getUser_pk();
-		}
-
-		String path = userService.getProfilePhotoPath(user_pk).getProfile_photo();
-		//.out.println();
-		model.addAttribute("path", path);
 
 		List<Map<String, Object>> selectFundingMainList = fundingService.selectFundingMainList();
         model.addAttribute("selectFundingMainList", selectFundingMainList);
-		
-		int pk=userDto.getUser_pk();
-		int club_pk=clubService.selectClubPK(pk);
-		
-		List<Map<String, Object>> selectFreeboardMainPage = clubService.selectFreeboardMainPage(club_pk);
-		model.addAttribute("selectFreeboardMainPage", selectFreeboardMainPage);
 
 		List<Map<String, Object>> selectMstarUserMainPage = userService.selectMstarUserMainPage();
 		model.addAttribute("selectMstarUserMainPage", selectMstarUserMainPage);
+
+		UserDto userDto = (UserDto) session.getAttribute("sessionUser");
+		if(userDto != null){
+
+			if(clubService.isClubMember(userDto.getUser_pk()) != 0) {
+				int user_pk = userDto.getUser_pk();
+
+				String path = userService.getProfilePhotoPath(user_pk).getProfile_photo();
+				//.out.println();
+				model.addAttribute("path", path);
+		
+				
+				int pk=userDto.getUser_pk();
+				int club_pk=clubService.selectClubPK(pk);
+				
+				List<Map<String, Object>> selectFreeboardMainPage = clubService.selectFreeboardMainPage(club_pk);
+				model.addAttribute("selectFreeboardMainPage", selectFreeboardMainPage);
+			}
+
+		}
+
+
+
 
 		return "commons/mainPage";
 	}

@@ -5,11 +5,24 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
+    <script src="/public/js/commons/lockLikeMobile.js"></script>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
+         @font-face {
+            font-family: 'omyu_pretty';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+        body {
+            font-family: 'omyu_pretty';
+            min-width: 320px;
+        }
+
         .scrollable-menu {
             overflow-x: auto;
             white-space: nowrap;
@@ -137,15 +150,20 @@
         }
 
     </script>
+
+    <script src="/public/js/commons/naviBar.js"></script>
+    <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}" />
+
 </head>
 
 <body>
     <div class="container">
-        <div class="position-fixed bottom-0 end-0 m-3">
+        <div th:insert="~{/commons/naviBar}"></div>
+        <!-- <div class="position-fixed bottom-0 end-0 m-3">
             <a href="../diagnosis/diagnosisMainPage" class="btn btn-secondary rounded-circle p-3">
                 <i class="bi bi-hospital"></i>  
             </a>
-        </div>
+        </div> -->
         <div class="row">
             <div class="col-2 my-2 ms-1">
                 <button class="btn" onclick="goBack()">
@@ -159,26 +177,35 @@
                         class="bi bi-gear"></i></span>
             </div>
         </div>
-        <div class="row scrollable-menu px-0">
+        <div class="row scrollable-menu py-2">
             <div class="col justify-content-between fw-bold">
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
-                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">게시판</span>
-                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./photoAlbumPage'">사진첩</span>
-                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubMemberPage'">멤버</span>
 
+                <th:block th:if="${session.checkMember == null || session.checkMember != 1 }">
+                    <span class="mx-3" style="cursor: pointer;" onclick="alert('가입 후 이용해주세요')">방명록</span>
+                    <span class="mx-3" style="cursor: pointer;" onclick="alert('가입 후 이용해주세요')">사진첩</span>
+                    <span class="mx-3" style="cursor: pointer;" onclick="alert('가입 후 이용해주세요')">멤버</span>
+                </th:block>
+                <th:block th:unless="${session.checkMember == null || session.checkMember != 1 }">
+                    <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">방명록</span>
+
+                    <span class="mx-3" style="cursor: pointer;" onclick="location.href='./photoAlbumPage'">사진첩</span>
+                    <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubMemberPage'">멤버</span>
+                </th:block>
             </div>
         </div>
 
 
-        <div class="row border-bottom border-2 border-gray">
-            <div class="col-md-4  px-0">
-                <img class="img-fluid" th:src="@{'/uploadFiles/'+${showclubpk.img}}" alt="등록된 이미지가 없습니다">
+        <div class="row ">
+            <div class="col-md-4 px-0 py-3">
+                <img class="img-fluid rounded" th:src="@{'/uploadFiles/'+${showclubpk.img}}" alt="등록된 이미지가 없습니다">
             </div>
         </div>
+        
 
         <div class="row border-bottom border-5 border-gray">
             <div class="col my-3">
-                <p th:text="${showclubpk.name}" class="fw-bold fs-5" style="color: #30c000;"></p>
+                <p th:text="${showclubpk.name}" class="fw-bold fs-5" style="color: #313131;"></p>
                 <p class="text-secondary" style="font-size: 0.9em;" th:utext="${showclubpk.content}"></p>
             </div>
         </div>
@@ -188,7 +215,7 @@
                 <div class="row">
                     <div class="col fw-bold">사진첩</div>
                 </div>
-                <div class="row mt-2">
+                <div class="row mt-2 p-3">
                     <div class="col" style="overflow: auto;">
                         <div class="row" style="width: 230%;">
                             <div th:each="image : ${latestAlbum}" class="col px-1">
@@ -218,7 +245,7 @@
                                     <div class="col-7">
                                         <img src="/public/image/dog_img.png" class="img-fluid rounded-circle"
                                             style="width: 2em; height: 2em;">
-                                        <span class="fw-bold" style="color: #f45600;"
+                                        <span class="fw-bold ps-1 ms-2" style="color: #2f2f2f;"
                                             th:text="${latestPost.name}">닉네임1</span>
 
                                     </div>

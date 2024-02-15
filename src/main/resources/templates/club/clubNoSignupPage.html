@@ -44,11 +44,16 @@
         }
 
     </style>
+
+    <script src="/public/js/commons/naviBar.js"></script>
+    <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}" />
+
 </head>
 
 <body>
 
     <div class="container">
+        <div th:insert="~{/commons/naviBar}"></div>
         <th:block th:replace="~{club/clubTopNavi.html :: leaderTopNavi}"></th:block>
         신청 멤버가 없습니다.
     </div>
