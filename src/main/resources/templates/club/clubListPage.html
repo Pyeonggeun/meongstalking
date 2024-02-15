@@ -180,13 +180,12 @@
         <div class="row scrollable-menu py-2">
             <div class="col justify-content-between fw-bold">
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
-
-                <th:block th:if="${session.checkMember == null || session.checkMember != 1 }">
+                <th:block th:if="${session.checkMember == null || (session.checkMember != 2 && session.checkMember != 3)}">
                     <span class="mx-3" style="cursor: pointer;" onclick="alert('가입 후 이용해주세요')">방명록</span>
                     <span class="mx-3" style="cursor: pointer;" onclick="alert('가입 후 이용해주세요')">사진첩</span>
                     <span class="mx-3" style="cursor: pointer;" onclick="alert('가입 후 이용해주세요')">멤버</span>
                 </th:block>
-                <th:block th:unless="${session.checkMember == null || session.checkMember != 1 }">
+                <th:block th:unless="${session.checkMember == null || (session.checkMember != 2 && session.checkMember != 3)}">
                     <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">방명록</span>
 
                     <span class="mx-3" style="cursor: pointer;" onclick="location.href='./photoAlbumPage'">사진첩</span>
