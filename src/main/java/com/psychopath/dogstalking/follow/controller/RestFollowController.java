@@ -37,7 +37,7 @@ public class RestFollowController {
         RestResponseDto restResponseDto = new RestResponseDto();
         UserDto userDto = (UserDto)session.getAttribute("sessionUser");
         
-        restResponseDto.setData(userDto.getUser_pk());
+        restResponseDto.setData(userDto);
         restResponseDto.setResult("success");
         
         return restResponseDto;

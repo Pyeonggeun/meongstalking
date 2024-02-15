@@ -14,6 +14,9 @@
 
         <script src="/public/js/commons/lockLikeMobile.js"></script>
 
+        <script src="/public/js/commons/naviBar.js"></script>
+        <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}">
+
         <link rel="stylesheet" th:href="@{/public/css/mFollowShop/item.css}" />
         <link rel="stylesheet" th:href="@{/public/css/mFollowShop/achievement.css}" />
         <script src="/public/js/mFollowShop/item.js"></script>
@@ -59,8 +62,13 @@
                 .then(response => response.json())
                 .then(response => {
 
-                    user_pk = response.data;
+                    user_pk = response.data.user_pk;
                     console.log(user_pk);
+
+                    if(response.data.gender == "M") {
+                        console.log(response.data.gender);
+                        document.getElementById("myPageImage").setAttribute("src", "/public/image/follow/male.png");
+                    }
 
                     getMyTrackMarkers();
                     getTracingTrackMarkers();
@@ -89,9 +97,9 @@
                         currentLat = position.coords.latitude;
                         currentLng = position.coords.longitude;
 
-                        const currentPosition = new kakao.maps.LatLng(currentLat, currentLng)
+                        position = new kakao.maps.LatLng(currentLat, currentLng);
 
-                        displayMyLocation(currentPosition);
+                        displayMyLocation(position);
                     }, (error) => {
 
                         if(error.code === 3) {
@@ -108,14 +116,14 @@
                         };
                         showAlertModal();
 
-                        const staticPosition = new kakao.maps.LatLng(staticLat, staticLng);
-                        displayMyLocation(staticPosition);
+                        position = new kakao.maps.LatLng(staticLat, staticLng);
+                        displayMyLocation(position);
 
                         });
 
                 }else {
-                    const staticPosition = new kakao.maps.LatLng(staticLat, staticLng);
-                    displayMyLocation(staticPosition);
+                    position = new kakao.maps.LatLng(staticLat, staticLng);
+                    displayMyLocation(position);
 
                     document.getElementById("alertContent").innerText = "위치정보 사용이 불가합니다";
                     document.getElementById("alertCheckButton").onclick = () => {
@@ -515,7 +523,12 @@
 
                 if(inputImage.files.length == 0 || content == "") {
 
-                    //asdf
+                    document.getElementById("alertContent").innerText = "사진이 없습니다";
+                    document.getElementById("alertCheckButton").onclick = () => {
+                        hideAlertModal();
+                    };
+                    showAlertModal();
+
                     return;
                 }
 
@@ -811,7 +824,16 @@
                         likeListWrapper.querySelector(".heartIcon").style.fontVariationSettings = "'FILL' 1";
                         likeListWrapper.querySelector(".heartIcon").onclick = () => {
 
-                            toggleLike(e.user_pk, this);
+                            if(e.is_trace == "N") {
+                                toggleLike(e.user_pk, this);
+                                return;
+                            }
+
+                            document.getElementById("alertContent").innerText = "추행하고 있습니다";
+                            document.getElementById("alertCheckButton").onclick = () => {
+                                hideAlertModal();
+                            };
+                            showAlertModal();
 
                         };
 
@@ -844,8 +866,14 @@
                                 }
                             case 1:
                                 likeListWrapper.querySelector(".likeListPk").innerText = e.user_more_pk;
-                                likeListWrapper.querySelector(".likeListTemp").style.width = e.mstar_temp;
-                                likeListWrapper.querySelector(".likeListTempContent").innerText = e.mstar_temp;
+
+                                if(e.mstar_temp < 100) {
+                                    likeListWrapper.querySelector(".likeListTemp").style.width = e.mstar_temp;
+                                    likeListWrapper.querySelector(".likeListTempContent").innerText = e.mstar_temp;
+                                }else {
+                                    likeListWrapper.querySelector(".likeListTemp").style.width = 100;
+                                    likeListWrapper.querySelector(".likeListTempContent").innerText = 100;
+                                }
 
                         }
 
@@ -1265,7 +1293,7 @@
 
                 // 나머지 값 붙이기
 
-                // 큐피트화살 일단 랜덤으로 한 개 수집 > 여기서 있는걸로 // 확정 한개면 getCollectionLogList 여기에서 쿼리부터 다시 짜기 ghgh
+                // 큐피트화살 일단 랜덤으로 한 개 수집 > 여기서 있는걸로 // 확정 한개면 getCollectionLogList 여기에서 쿼리부터 다시 짜기 ghgh > 확정 1개 라신다,,,
                 // 버튼 onclick > cupidArrows(e.user_pk);
 
                 getCollectionLogList(e.user_pk);
@@ -1391,7 +1419,40 @@
 
             function openMyPage() {
 
+                getMyPageInfo();
                 showMyPageModal();
+
+            }
+
+            function getMyPageInfo() {
+
+                const url = "./getMyPageInfo?user_pk=" + user_pk;
+
+                fetch(url)
+                .then(response => response.json())
+                .then(resposne => {
+
+                    // asdf
+
+                });
+
+            }
+
+            function showMyTrackMarkersInfo() {
+
+                getMyTrackMarkersInfo();
+
+            }
+
+            function getMyTrackMarkersInfo() {
+//asdf
+                const url = "./getMyTrackMarkersInfo?user_pk=" + user_pk;
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+
+                });
 
             }
 
@@ -1594,14 +1655,42 @@
 
             window.addEventListener("DOMContentLoaded", () => {
 
-                getMyUserPk();
-                createMap();
-                getMyLocation();
+                // getMyUserPk();
+                // createMap();
+                // getMyLocation();
                 // showPreviewTrackMarkerModal();
 
             })
 
         </script>
+
+        <script>
+            window.addEventListener("DOMContentLoaded", () => {
+                const topNaviHeight = parseFloat(getComputedStyle(document.getElementById("topNavi")).height.replace("px", ""));
+                const bottomNaviHeight = parseFloat(getComputedStyle(document.getElementById("bottomNavi")).height.replace("px", ""));
+                const bodyHeight = parseFloat(getComputedStyle(document.body).height.replace("px", ""));
+                const bodyBottomMargin = parseFloat(getComputedStyle(document.body).marginBottom.replace("px", ""));
+
+                // alert(screen.availHeight);
+                // alert(screen.height);
+                // alert(bodyHeight);
+
+                // alert(getComputedStyle(document.getElementById("map")).height);
+
+                // const xxx = parseFloat(getComputedStyle(document.getElementById("map")).height.replace("px", ""));
+
+                document.getElementById("map").style.height = screen.availHeight - topNaviHeight - bottomNaviHeight + "px";
+                // document.getElementById("map").style.height = xxx - topNaviHeight - bottomNaviHeight + "px";
+
+                getMyUserPk();
+                createMap();
+                getMyLocation();
+
+
+            });
+
+        </script>
+
 
         <style>
 
@@ -1615,13 +1704,14 @@
             body {
                 font-family: 'omyu_pretty';
                 min-width: 375px;
+                touch-action: none;
             }
 
             #map {
                 position: relative;
                 overflow: hidden;
                 width: 100%;
-                height: 72vh;
+                height: 100vh;
             }
 
             #block {
@@ -1731,28 +1821,29 @@
                 width: 3rem;
                 height: 3rem;
                 right: 1rem;
-                top: 1rem;
+                top: 2rem;
             }
 
             #myPageButton {
                 width: 3rem;
                 height: 3rem;
                 right: 1rem;
-                top: 4.5rem;
+                top: 5.5rem;
             }
 
             #bagButton {
                 width: 3rem;
                 height: 3rem;
                 right: 1rem;
-                top: 8rem;
+                top: 9rem;
             }
 
             #locationButton {
+                position: relative;
                 width: 2rem;
                 height: 2rem;
                 right: 1.5rem;
-                bottom: 1.5rem;
+                bottom: 2.5rem;
                 border-radius: 50%;
                 border: 1px solid rgb(0, 0, 0, 0.15);
                 box-shadow: 0 1px 1px 0 rgb(94, 94, 94, 0.7);
@@ -1762,8 +1853,8 @@
             #actionButton {
                 width: 3rem;
                 height: 3rem;
-                right: calc(50% - 1.5rem);
-                bottom: 1rem;
+                left: calc(50% - 1.5rem);
+                /* bottom: 7.5rem; */
                 border-radius: 50%;
                 border: 1px solid rgb(0, 0, 0, 0.15);
                 box-shadow: 0 1px 1px 0 rgb(94, 94, 94, 0.7);
@@ -1774,8 +1865,8 @@
             #actionToggle {
                 width: 3rem;
                 height: 3rem;
-                right: calc(50% - 1.5rem);
-                bottom: 1rem;
+                /* right: calc(50% - 1.5rem);
+                bottom: 7.5rem; */
             }
 
             .myTrackMarker {
@@ -2018,9 +2109,11 @@
     <body>
 
         <div class="container-fluid">
-            <div class="row">
-                <div id="topBanner" class="col" style="height: 3.5rem;"></div>
-            </div>
+            <div th:insert="~{/commons/naviBar.html :: topNavi}"></div>
+            <div th:insert="~{/commons/naviBar.html :: bottomNavi}"></div>
+            <div th:insert="~{/commons/naviBar.html :: motifyModal}"></div>
+            <div th:insert="~{/commons/naviBar.html :: unReadNotifyListTemplate}"></div>
+            <div th:insert="~{/commons/naviBar.html :: readNotifyListTeplate}"></div>
             <div class="row">
                 <div class="col px-0">
                     <div id="map">
@@ -2029,52 +2122,13 @@
                             <img class="img-fluid" th:src="@{/public/image/follow/shop.png}">
                         </div>
                         <div onclick="openMyPage()" id="myPageButton" class="commonStyle">
-                            <img class="img-fluid" th:src="@{/public/image/follow/female.png}">
+                            <img id="myPageImage" class="img-fluid" th:src="@{/public/image/follow/female.png}">
                         </div>
                         <div onclick="openBag()" id="bagButton" class="commonStyle">
                             <img class="img-fluid" th:src="@{/public/image/follow/bag.png}">
                         </div>
-                        <div onclick="getMyLocation()" id="locationButton" class="commonStyle text-center d-grid align-items-center">
-                            <span id="locationIcon" class="material-symbols-rounded">
-                                my_location
-                            </span>
-                        </div>
-                        <div id="actionButton" class="commonStyle text-center d-grid align-items-center">
-                            <div id="actionPaw" style="position: relative;">
-                                <span id="pawIcon" class="material-symbols-rounded">
-                                    pets
-                                </span>
-    
-                                <div id="claw1" class="commonStyle"></div>
-                                <div id="claw2" class="commonStyle"></div>
-                                <div id="claw3" class="commonStyle"></div>
-                                <div id="claw4" class="commonStyle"></div>
-                            </div>
-                            
-                            <input id="checkClaw" value="hide" hidden>
-                            
-                            <div onclick="marking()" id="markClaw" class="commonStyle text-center d-grid align-items-center">
-                                <span class="material-symbols-rounded actionIcon">
-                                    where_to_vote
-                                </span>
-                            </div>
-                            <div onclick="scanning()" id="scanClaw" class="commonStyle text-center d-grid align-items-center">
-                                <span class="material-symbols-rounded actionIcon">
-                                    wifi_tethering
-                                </span>
-                            </div>
-                            <div onclick="tracing()" id="traceClaw" class="commonStyle text-center d-grid align-items-center">
-                                <span class="material-symbols-rounded actionIcon">
-                                    footprint
-                                </span>
-                            </div>
-                            <div id="loveClaw" class="commonStyle text-center d-grid align-items-center">
-                                <span class="material-symbols-rounded actionIcon">
-                                    favorite
-                                </span>
-                            </div>
-                        </div>
-                        <div onclick="toggleAction()" id="actionToggle" class="commonStyle"></div>
+
+
 
                         <!-- modal -->
 
@@ -2501,7 +2555,7 @@
                                             </div>
                                             <div class="rounded mt-2 overflow-auto" style="background: #C5A886; height: 51vh; border: 1px solid #f3ecdd;">
 
-                                                <div id="collectionLikeListBox" class="row row-cols-5 mx-auto py-2" style="width: 100%;">
+                                                <div id="collectionLikeListBox" class="row row-cols-3 mx-auto py-2" style="width: 100%;">
 
                                                     
 
@@ -2510,7 +2564,7 @@
                                                 <hr class="mx-2 mt-2 mb-0" style="border: 2px solid #81461A; border-style: dashed;">
                                                 <hr class="mx-2 mt-1 mb-0" style="border: 2px solid #81461A; border-style: dashed;">
 
-                                                <div id="collectionListBox" class="row row-cols-5 mx-auto py-2" style="width: 100%;">
+                                                <div id="collectionListBox" class="row row-cols-3 mx-auto py-2" style="width: 100%;">
 
 
 
@@ -2570,7 +2624,7 @@
                                         <div class="rounded" style="padding: 0.5rem; padding-top: 3.5rem; height: 60vh; background:#E0C9A9; border: 2px solid rgba(241, 194, 92, 0.4);">
                                             <div class="rounded" style="position: relative; background: #C5A886; height: 7rem; border: 1px solid #f3ecdd;">
                                                 <div class="d-flex gap-2 justify-content-end" style="position: absolute; left: 4.7rem; top: -1.7rem;">
-                                                    <button class="btn text-white py-0" style="background: #81461A; font-size: 0.8rem;">내 체취 / 흔적</button>
+                                                    <button onclick="showMyTrackMarkersInfo()" class="btn text-white py-0" style="background: #81461A; font-size: 0.8rem;">내 체취 / 흔적</button>
                                                     <button onclick="showAchievementModal()" class="btn text-white py-0" style="background: #81461A; font-size: 0.8rem;">업적</button>
                                                 </div>
                                                 <div class="d-grid align-items-center justify-content-center" style="position: absolute; width: 4rem; height: 4rem; top: -2rem; left: 0.5rem; border-radius: 50%; background: #81461A;">
@@ -2638,16 +2692,25 @@
 
         <div id="template" class="d-none">
 
-            <div class="collectionWrapper col mt-2 px-2">
+            <div class="collectionWrapper col mt-2 px-4">
+                <div class="row">
+                    <div class="col d-grid align-items-bottom">
+                        <span style="font-size: 0.7rem; color: #81461A;">No. 7777</span>
+                    </div>
+                </div>
                 <div class="collectionOuter d-flex align-items-center justify-content-center" style="width: 100%; aspect-ratio: 1/1; border-radius: 8%;">
                     <!-- <div class="d-flex justify-content-center" style="position: relative; width: 98%; aspect-ratio: 1/1; border: 1px solid #ffdf00; border-radius: 3%; background: url('/public/image/commons/list2.jpeg') no-repeat center; background-size: cover; filter: opacity(80%);"> -->
-                    <div class="collectionInner" style="position: relative; width: 98%; aspect-ratio: 1/1; border-radius: 3%; background: url('/public/image/follow/questionAnother.png') no-repeat center; background-size: cover; filter: opacity(80%);">
-                        <div class="progress" role="progressbar" style="position: absolute; width: 95%; height: 0.5rem; border: 0.1px solid #E0C9A9; bottom: 0.1rem;">
-                            <div class="collectionProgress progress-bar progress-bar-striped rounded-pill" style="background: #feb146; width: 75%;"></div>
-                        </div>
+                    <div class="collectionInner" style="position: relative; width: 97%; aspect-ratio: 1/1; border-radius: 3%; background: url('/public/image/follow/questionAnother (2).png') no-repeat; background-position: center; background-size: contain; filter: opacity(80%);">
                         <!-- <div class="fw-bold text-center" style="position: absolute; width: 1rem; height: 1rem; top: 0.2rem; left: 0.2rem; border-radius: 50%; background: #ffff90ff; border: 1px solid #feb146; font-size: 0.8rem;">
                             1
                         </div> -->
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col">
+                        <div class="progress" role="progressbar" style="height: 0.4rem; border: 0.1px solid #E0C9A9; bottom: 0.1rem;">
+                            <div class="collectionProgress progress-bar progress-bar-striped rounded-pill" style="background: #feb146; width: 75%;"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2860,6 +2923,58 @@
             </div>
 
         </div>
+
+
+        <div class="fixed-bottom" style="bottom: 4.5em; height: 5rem;">
+            <div class="row">
+                <div class="col">
+                    <div id="actionButton" class="text-center d-grid align-items-center" style="position: relative;">
+                        <div id="actionPaw" style="position: relative;">
+                            <span id="pawIcon" class="material-symbols-rounded">
+                                pets
+                            </span>
+        
+                            <div id="claw1" class="commonStyle"></div>
+                            <div id="claw2" class="commonStyle"></div>
+                            <div id="claw3" class="commonStyle"></div>
+                            <div id="claw4" class="commonStyle"></div>
+                        </div>
+                        
+                        <input id="checkClaw" value="hide" hidden>
+                        
+                        <div onclick="marking()" id="markClaw" class="commonStyle text-center d-grid align-items-center">
+                            <span class="material-symbols-rounded actionIcon">
+                                where_to_vote
+                            </span>
+                        </div>
+                        <div onclick="scanning()" id="scanClaw" class="commonStyle text-center d-grid align-items-center">
+                            <span class="material-symbols-rounded actionIcon">
+                                wifi_tethering
+                            </span>
+                        </div>
+                        <div onclick="tracing()" id="traceClaw" class="commonStyle text-center d-grid align-items-center">
+                            <span class="material-symbols-rounded actionIcon">
+                                footprint
+                            </span>
+                        </div>
+                        <div id="loveClaw" class="commonStyle text-center d-grid align-items-center">
+                            <span class="material-symbols-rounded actionIcon">
+                                favorite
+                            </span>
+                        </div>
+                        <div onclick="toggleAction()" id="actionToggle" class="commonStyle"></div>
+                    </div>
+                    <div onclick="getMyLocation()" id="locationButton" class="text-center d-grid align-items-center float-end">
+                        <span id="locationIcon" class="material-symbols-rounded">
+                            my_location
+                        </span>
+                    </div>
+                </div>
+            </div>
+                
+        </div>
+
+
 
         <!-- #FDE4CD  #FFC98B -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
