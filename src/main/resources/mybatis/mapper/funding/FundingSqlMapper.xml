@@ -313,5 +313,10 @@ select
         ]]>
     </select>
 
+    <select id="pickProfilePhoto" resultType="String">
+    select profile_photo from ms_mstar_profile_info
+    where user_pk = #{user_pk}
+    </select>
+
 
 </mapper>

@@ -84,9 +84,9 @@
                                         <div class="row piUpRow"><div class="col-3 px-0 piUpCol">상품 구성 </div></div>
                                         <div class="row piUnRow"><div class="col picUnCol" th:text="${product.detail.product_component}"> </div></div>
                                         <div class="row piUpRow"><div class="col-3 px-0 piUpCol">시작일 </div></div>
-                                        <div class="row piUnRow"><div class="col picUnCol" th:text="${product.detail.start_date}"> </div></div>
+                                        <div class="row piUnRow"><div class="col picUnCol" th:text="${#temporals.format(product.detail.start_date,'yyyy.MM.dd HH:mm:SS')}"> </div></div>
                                         <div class="row piUpRow"><div class="col-3 px-0 piUpCol">종료일 </div></div>
-                                        <div class="row piUnRow"><div class="col picUnCol" th:text="${product.detail.finish_date}"> </div> <div class="col-3 ps-0 text-end" style="color:gray; font-size: 0.85em;">수정하기 > </div></div>
+                                        <div class="row piUnRow"><div class="col picUnCol" th:text="${#temporals.format(product.detail.finish_date,'yyyy.MM.dd HH:mm:SS')}"> </div> <div class="col-3 ps-0 text-end" style="color:gray; font-size: 0.85em;">수정하기 > </div></div>
                                 </div>
                             </div>
                         </div>

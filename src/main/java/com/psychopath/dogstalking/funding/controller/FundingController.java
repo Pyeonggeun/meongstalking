@@ -253,8 +253,11 @@ public class FundingController {
         List<FundingProductDto> fundingList = fundingService.fundingListCallForPk(sessionUser.getUser_pk());  
         //통계구하기
         Map<String,Object> statisticsMap = fundingService.selectStatistics(sessionUser.getUser_pk());
+        //프로필 사진 가져오기
+        String photo = fundingService.pickProfilePhoto(sessionUser.getUser_pk());
         model.addAttribute("listForPk", fundingList);
         model.addAttribute("stast",statisticsMap);
+        model.addAttribute("photo",photo);
 
         return "funding/fundingSellerMyPage";
     }
@@ -268,6 +271,9 @@ public class FundingController {
         model.addAttribute("order",fundingService.selectOrderListByPk(user_pk));
         model.addAttribute("wish",fundingService.selectWishlistByPk(user_pk));
         model.addAttribute("count",fundingService.selectForMyPage(user_pk));
+        model.addAttribute("photo",fundingService.pickProfilePhoto(user_pk));
+
+        System.out.println("photo ="+fundingService.pickProfilePhoto(user_pk));
 
         return "funding/fundingUserMyPage";
     }
