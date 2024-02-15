@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
 
-<div class="row border-bottom px-3 ">
+<div class="row border-bottom" style="font-family: 'omyu_pretty';">
     <div class="col">
         <div class="row">
             <div class="col py-1">
@@ -10,16 +10,16 @@
                     <div class="col text-center">
                         <img class="img-fluid" src="/public/image/mstar/logo1.png" alt="" style="height: 1.7em;">
                     </div>
-                    <div class="col-3 text-end align-self-center" style="font-size: 1.1em;">
-                        <i th:onclick="|location.href='@{/mstar/directListPage(user_pk=${session.sessionUser.user_pk})}'|" class="fa-regular fa-paper-plane"><i id="unReadDirect" class="fa-solid fa-circle position-absolute text-danger d-none" style="font-size: 0.3em; left: 75%;"></i></span></i>&nbsp;&nbsp;
-                        <i th:onclick="'showNotifyModal('+${session.sessionUser.user_pk}+')'" class="fa-sharp fa-regular fa-bell position-relative"><i id="unReadNotify" class="fa-solid fa-circle position-absolute text-danger d-none" style="font-size: 0.3em; left: 75%;"></i></span></i>
+                    <div class="col-3 text-end align-self-center">
+                        <i th:onclick="location.href='/mstar/directListPage'" class="fa-regular fa-paper-plane fs-5"><i id="unReadDirect" class="fa-solid fa-circle position-absolute text-danger d-none" style="font-size: 0.3em; left: 75%;"></i></span></i>&nbsp;&nbsp;
+                        <i th:onclick="showNotifyModal()" class="fa-sharp fa-regular fa-bell position-relative fs-5"><i id="unReadNotify" class="fa-solid fa-circle position-absolute text-danger d-none" style="font-size: 0.3em; left: 75%;"></i></span></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<div class="row bg-white fixed-bottom border-top">
+<div class="row bg-white fixed-bottom border-top" style="font-family: 'omyu_pretty'; z-index: 200;">
     <div class="col py-2">
         <div class="row">
             <div th:onclick="location.href='/club/clubHomePage'" class="col text-center">
@@ -78,7 +78,7 @@
             </div>
             <div th:onclick="location.href='/funding/listPage'" class="col text-center ps-0">
                 <div class="row">
-                    <div class="col text-body-tertiary" style="display: flex; justify-content: center;">
+                    <div class="col text-body-tertiary" >
                         <span class="material-symbols-outlined">
                             lightbulb
                             </span>
@@ -95,7 +95,7 @@
 </div>
 
 
-<div id="notifyModal" class="modal" tabindex="-1">
+<div id="notifyModal" class="modal" tabindex="-1" style="font-family: 'omyu_pretty';">
 <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
     <div class="modal-content">
         <div class="row mt-1 border-bottom" style="font-size: 1.3em;">

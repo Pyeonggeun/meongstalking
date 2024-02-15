@@ -19,14 +19,15 @@
                 .then(response => response.json())
                 .then((response) =>{
                     user_pk = response.data.user_pk;
-                    getProfileInfoDto(user_pk);
-                    loadMyProfileInfo(user_pk) ;
+                    getProfileInfoDto();
+                    loadMyProfileInfo() ;
                 });
             }
             
             let profileInfoDto = null;
-            function getProfileInfoDto(user_pk){
-                const url = "./myProfileInfoDto?user_pk="+user_pk;
+            function getProfileInfoDto(){
+                
+                const url = "/mstar/myProfileInfoDto?user_pk="+user_pk;
                 fetch(url)
                 .then(response => response.json())
                 .then((response) =>{
@@ -45,10 +46,16 @@
                 });
                 
             }
-           
+            function resetSearchInputBox(){
+                const  searchInputBox = document.querySelector("#searchInputBox");
+                searchInputBox.value ="";
+                const resetButton = document.querySelector("#resetButton");
+                resetButton.classList.add("d-none");
+                loadUserFollowingList("");
+            }
 
-            function loadMyProfileInfo(user_pk){
-                const url = "./loadMyProfileInfo";
+            function loadMyProfileInfo(){
+                const url = "/mstar/loadMyProfileInfo";
 
                 fetch(url, {
                      method: "post",
@@ -62,7 +69,7 @@
 
                     const profilePhoto = document.querySelector("#profilePhoto");
                     profilePhoto.src = response.data.profileInfoDto.profile_photo;                    
-                    console.log(response.data.profileInfoDto.profile_photo);
+                    
                     const articleCount = document.querySelector("#articleCount");
                     articleCount.innerText = response.data.articleCount;
 
@@ -95,7 +102,7 @@
             }
 
             function loadMyArticleFirstImgList(profile_info_pk){
-                const url = "./loadMyArticeleList";
+                const url = "/mstar/loadMyArticeleList";
 
                 fetch(url, {
                      method: "post",
@@ -136,10 +143,10 @@
                         
                         
                         const icon = articleListWrapper.querySelector(".icon");
-                        console.log(e.artPhotoList.length)
+                        
                         if(e.artPhotoList.length >= 2){
                             icon.classList.add("fa-copy" ,"fa-solid")
-                            console.log(icon)
+                            
                         }
 
                         articleListBox.appendChild(articleListWrapper);
@@ -297,7 +304,6 @@
                 followListModal.show();
                 followSwitch=1;
                 loadUserFollowList("")
-                console.log(followSwitch)
                 const searchInputBox = document.querySelector("#searchInputBox");
                 searchInputBox.addEventListener("input", function() {
                     
@@ -388,16 +394,19 @@
                         
                         const searchProfile_photo = searchListWrapper.querySelector(".searchProfile_photo");
                         searchProfile_photo.src = e.followProfileInfoDto.profile_photo;
-                        searchProfile_photo.setAttribute("onclick", "location.href='./anotherProfilePage?profile_info_pk="+profileInfoDto.profile_info_pk+"&another_info_pk="+another_info_pk+"'");
-
+                        
+                        
                         const search_nick_name = searchListWrapper.querySelector(".search_nick_name");
                         search_nick_name.innerText = e.followProfileInfoDto.nick_name;
                         
-                        
-        
                         const search_userid = searchListWrapper.querySelector(".search_userid");
                         search_userid.innerText = e.followUserDto.userid;
                         
+                        searchProfile_photo.setAttribute("onclick", "location.href='/mstar/anotherProfilePage?profile_info_pk="+profileInfoDto.profile_info_pk+"&another_info_pk="+another_info_pk+"'");
+                        search_nick_name.setAttribute("onclick", "location.href='/mstar/anotherProfilePage?profile_info_pk="+profileInfoDto.profile_info_pk+"&another_info_pk="+another_info_pk+"'");
+                        search_userid.setAttribute("onclick", "location.href='/mstar/anotherProfilePage?profile_info_pk="+profileInfoDto.profile_info_pk+"&another_info_pk="+another_info_pk+"'");
+                        
+
                         const listFollowButton = searchListWrapper.querySelector(".listFollowButton");
                         if(e.followStatus == 1){
                             listFollowButton.setAttribute("onclick", "listUnFollowingUser("+e.followProfileInfoDto.profile_info_pk+", this)");
@@ -480,7 +489,10 @@
                         listFollowButton.innerText = "삭제";
                         listFollowButton.classList.remove("text-white");
                        
-
+                        searchProfile_photo.setAttribute("onclick", "location.href='/mstar/anotherProfilePage?profile_info_pk="+profileInfoDto.profile_info_pk+"&another_info_pk="+another_info_pk+"'");
+                        search_nick_name.setAttribute("onclick", "location.href='/mstar/anotherProfilePage?profile_info_pk="+profileInfoDto.profile_info_pk+"&another_info_pk="+another_info_pk+"'");
+                        search_userid.setAttribute("onclick", "location.href='/mstar/anotherProfilePage?profile_info_pk="+profileInfoDto.profile_info_pk+"&another_info_pk="+another_info_pk+"'");
+                        
                         searchListBox.appendChild(searchListWrapper);
                     }
 
@@ -799,6 +811,16 @@
                 flex: 0 0 auto;
                 white-space: normal;
             }
+            #storyStorageListBox {
+                overflow-y: scroll;
+                white-space: nowrap;
+                display: flex;
+                flex-wrap: nowrap;
+            }
+            #articleListBox .col{
+                flex: 0 0 auto;
+                white-space: normal;
+            }
         </style>
         
     </head>
@@ -806,12 +828,16 @@
     <body>
         <div class="container-fluid">
             <div th:insert="~{/commons/naviBar}"></div>
-            <div class="row mt-2">
-                <div  class="col fw-bold ms-3 fs-5" th:text="${session.sessionUser.userid} ">
-                
-                </div>
-                <div class="col text-end fs-5 me-3">
-                    <i th:onclick="|location.href='@{./writeArticlePage(user_pk=${session.sessionUser.user_pk})}'|" class="fa-regular fa-square-plus me-2"></i>
+            <div class="row">
+                <div class="col">
+                    <div class="row mt-2">
+                        <div  class="col fw-bold ms-3 fs-5" th:text="${session.sessionUser.userid} ">
+                        
+                        </div>
+                        <div class="col text-end fs-4">
+                            <i th:onclick="|location.href='@{./writeArticlePage(user_pk=${session.sessionUser.user_pk})}'|" class="fa-regular fa-square-plus"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -912,9 +938,9 @@
                     </div>
                 </div>
             </div>
-            <div class="row text-center">
+            <div class="row sticky-top mt-2 text-center">
                 <div class="col">
-                    <div class="row mt-3 text-center">
+                    <div class="row text-center">
                         <div class="col">
                             <div class="row fs-5">
                                 <div id="userArticleListButton" class="col border-bottom border-black border-1">
@@ -930,84 +956,26 @@
                         </div>
                     </div>  
                 </div>
-            </div>  
-
-            <div id="articleListBox" class="row row-cols-3 ps-0 overflow-y-scroll" style="height: 20em;">
-                <div class="col"></div>
-                <div class="col mt-5 text-center">
-                    <img class="img-fluid" src="/public/image/mstar/noPhoto.png" alt="">
+            </div>
+            <div class="row overflow-y-scroll" style="margin-bottom: 5em;">
+                <div class="col">
+                    <div id="articleListBox" class="row row-cols-3 ps-0" style="height: auto;">
+                        <div class="col"></div>
+                        <div class="col mt-5 text-center">
+                            <img class="img-fluid" src="/public/image/mstar/noPhoto.png" alt="">
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="row bg-white border-top sticky-bottom">
-                <div class="col px-4 py-2">
-                    <div class="row">
-                        <!-- <div class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col text-body-tertiary">
-                                    <i class="fa-solid fa-house"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col text-secondary">
-                                    홈
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col text-body-tertiary">
-                                    <i class="fa-solid fa-bolt"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col text-secondary">
-                                    먹거리
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div th:onclick="|location.href='@{./writeArticlePage(user_pk=${session.sessionUser.user_pk})}'|" class="col text-body-tertiary">
-                                    <i class="fa-solid fa-hand-holding-medical"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col text-secondary">
-                                    추가
-                                </div>
-                            </div>
-                        </div>
-                        <div th:onclick="|location.href='@{./uploadStoryPage(user_pk=${session.sessionUser.user_pk})}'|" class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    멍냥피드
-                                </div>
-                            </div>
-                        </div>
-                        <div th:onclick="|location.href='@{./mainListPage(user_pk=${session.sessionUser.user_pk})}'|" class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col text-body-tertiary">
-                                    <i class="fa-solid fa-comment-dots"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col text-secondary">
-                                    커뮤니티
-                                </div>
-                            </div>
-                        </div> -->
-                    </div>
+            <div class="row fixed-bottom text-end" style="bottom: 5em;">
+                <di class="col">
+                    <img th:onclick="|location.href='@{/mstar/mainListPage(user_pk=${session.sessionUser.user_pk})}'|" class="img-fluid rounded-circle px-0 py-0" src="/public/image/mstar/goListPage.png" alt="" style="height: 4rem;">
                 </div>
             </div>
         </div>
 
         <div id="articleListTemplete" class="d-none">
-            <div class="col-4 px-0 position-relative articleListWrapper">
+            <div class="col px-0 position-relative articleListWrapper">
                 <img class="img-fluid articleFirstImg border border-white"  alt="" style="aspect-ratio: 1/1;">
                 <i class="position-absolute top-0 end-0 text-white pe-2 pt-2 icon"></i>
             </div>
@@ -1015,7 +983,7 @@
         
         <div id="storyStorageListTemplete" class="d-none">
             <div class="col-auto storyStorageListWrapper">
-                <div class="row px-2">
+                <div class="row">
                     <div class="col-auto rounded-circle storageImg px-0 py-0">
                         <img class="img-fluid rounded-circle border border-white border-2 storage_img"  src="" alt="" style="aspect-ratio: 1/1; height: 4em;">
                     </div>
@@ -1027,34 +995,33 @@
                 </div>
             </div>
         </div>
-        
         <div id="storyModal" class="modal" tabindex="-1">
             <div class="modal-dialog modal-fullscreen">
-                <div class="modal-content " style="background-color: black; overflow: hidden;">
+                <div class="modal-content " style="background-color: rgb(49, 49, 49); overflow: hidden;">
                     <div class="modal-body" style="overflow: hidden;">
-                        <div id="story_img" class="row position-relative px-0 rounded" style="height: 35em; background-size: 100%; background-repeat: no-repeat; background-position: center; background-color: rgb(49, 49, 49); top: 1rem;">   
+                        <div class="row">
+                            <div class="col">
+                                <div id="barBox" class="mt-1 "> 
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row text-light">
+                            <div class="col-auto">
+                                <img id="storyStorageImg" class="rounded-circle ms-2"  alt="" style="aspect-ratio: 1/1; height: 2em;">
+                            </div>
+                            <div id="story_storage_name" class="col-auto align-self-center px-0">
+                                
+                            </div>
+                            <div id="story_created_at" class="col-auto text-secondary align-self-center pt-1" style="font-size: 0.9em;">
+                                
+                            </div>
+                            <div class="col pe-4 text-end text-white fs-4">
+                                <i class="fa-solid fa-xmark" data-bs-dismiss="modal"></i>
+                            </div>
+                        </div>
+                        <div id="story_img" class="row position-relative px-0 rounded" style="height: 33em; background-size: 100%; background-repeat: no-repeat; background-position: center; background-color: rgb(0, 0, 0); top: 1rem;">   
                             <div class="col px-0">
-                                <div class="row">
-                                    <div class="col">
-                                        <div id="barBox" class="mt-1 "> 
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row text-light mt-2">
-                                    <div class="col-auto">
-                                        <img id="storyStorageImg" class="rounded-circle ms-2"  alt="" style="aspect-ratio: 1/1; height: 2em;">
-                                    </div>
-                                    <div id="story_storage_name" class="col-auto align-self-center px-0">
-                                        
-                                    </div>
-                                    <div id="story_created_at" class="col-auto text-secondary align-self-center pt-1" style="font-size: 0.9em;">
-                                        
-                                    </div>
-                                    <div class="col pe-4 text-end text-white fs-4">
-                                        <i class="fa-solid fa-xmark" data-bs-dismiss="modal"></i>
-                                    </div>
-                                </div>
                             </div>
                             <div id="storyTextBox" class="col-auto px-0 position-absolute" style="cursor: pointer; top: 50%; left: 0%;">
                                 <div id="story_textAndColor" class="px-2">
@@ -1071,7 +1038,7 @@
                                 </div>
                                 <div class="row">
                                     <div id="viewCount" class="col align-self-center text-white text-center" style="font-size: 0.9em;">
-                                        13
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -1124,7 +1091,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="resetButton" class="col-auto align-self-center d-none">
+                                    <div id="resetButton" onclick="resetSearchInputBox()" class="col-auto align-self-center d-none">
                                         <i class="fa-solid fa-xmark"></i>
                                     </div>
                                 </div>

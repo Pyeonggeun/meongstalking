@@ -111,7 +111,7 @@ animation: huerotate 3s infinite linear;
 }
 }
 #itemShopMainImg{
-background: url('/public/image/mFollow/itemShop.png') center/contain no-repeat;
+/* background: url('/public/image/mFollow/itemShop.png') center/contain no-repeat; */
 height: 37em;
 }
 .itemBackground{

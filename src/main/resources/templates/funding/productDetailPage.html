@@ -111,6 +111,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://kit.fontawesome.com/feb61beef1.js" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
@@ -124,21 +125,54 @@
         <div class="row">
             <div class="col">
 
-                <div class="row py-3 my-2 mx-0 px-0"><div class="col py-0 fw-bold" style="font-size: 1.15em;">meongstalking</div><div class="col-1 fw-bold"><a href="../commons/mainPage"><i class="bi bi-house"></i></a></div><div class="col-1 fw-bold"><a href="./listPage"><i class="bi bi-arrow-left-square" style="color: black;"></i></a></div></div>
+                <div class="row border-bottom mb-4">
+                    <div class="col">
 
-                <!-- <div class="row"><div class="col">카테고리 들어갈 공간</div></div> -->
+                        <div class="row py-3 my-2 mx-0 px-0"><div class="col py-0 fw-bold" style="font-size: 1.15em;">meongstalking</div><div class="col-1 fw-bold"><a href="../commons/mainPage"><i class="bi bi-house"></i></a></div><div class="col-1 fw-bold"><a href="./listPage"><i class="bi bi-arrow-left-square" style="color: black;"></i></a></div></div>
+
+                        <div class="row"><div class="col d-grid"><img class="img-fluid px-0" th:src="@{'/uploadFiles/'+${product.detail.title_image}}" alt="등록된 이미지가 없습니다" style="width: 100%;"></div></div>
+                        <div class="row my-1"><div class="col"><span style="font-size: 0.85em; color: gray;"> 카테고리 ></span> <span style="color: black;">#</span></div><div class="col text-end" style="font-size: 0.85;"><i class="bi bi-share"></i></div></div>
+                        <div class="row mt-2 mx-1 mb-2"><div class="col fw-bold" style="font-size: 1.15em;" th:text="${product.detail.product_name}"></div></div>
+                        <div class="row py-1 mb-3"><div class="col preCol" style="font-size: 0.9em;" th:text="${product.detail.simple_explain}"></div> </div>
+
+                        <div class="row py-2 mb-1"><div class="col ps-4"><span style="font-size: 1.4em;" class="fw-bold" th:utext="|${product.percent}%|"></span><span style="font-size: 0.95em;"> 달성</span></div><div class="col" style="font-size: 1.15em;"><div class="badge text-wrap" style="background-color: burlywood"><span th:utext="${product.f_day}"></span><span>일 남음</span></div></div></div>
+                        <div class="row py-2 mb-4"><div class="col ps-4"><span style="font-size: 1.4em;" class="fw-bold" th:text="${product.t_sales}"></span> <span style="font-size: 0.95em;">원 달성</span></div><div class="col" style="font-size: 1.15em;"><div class="badge text-wrap" style="background-color: burlywood;"><span th:text="|${product.c_purchase}회 구매|"></span></div></div></div>
+
+                    </div>
+                </div>    
 
 
-                <div class="row"><div class="col d-grid"><img class="img-fluid px-0" th:src="@{'/uploadFiles/'+${product.detail.title_image}}" alt="등록된 이미지가 없습니다" style="width: 100%;"></div></div>
-                <div class="row my-1"><div class="col"><span style="font-size: 0.85em; color: gray;"> 카테고리 ></span> <span style="color: black;">#</span></div><div class="col text-end" style="font-size: 0.85;"><i class="bi bi-share"></i></div></div>
-                <div class="row mt-2 mx-1 mb-2"><div class="col fw-bold" style="font-size: 1.15em;" th:text="${product.detail.product_name}"></div></div>
-                <div class="row py-1 mb-3"><div class="col preCol" style="font-size: 0.9em;" th:text="${product.detail.simple_explain}"></div> </div>
+                <div class="row mx-2 mb-3 py-2 border border-0 rounded" style="background-color: lemonchiffon;">
+                    <div class="col pe-0" style="font-size: 0.85em;">
+                        <i class="bi bi-ticket-perforated" style="font-size: 1.15em; color:green;"></i>  <span class="fw-bold">첫 달 0원</span>으로 <span class="fw-bold">배송비 할인과 쿠폰팩</span> 지급
+                    </div>
+                    <div class="col-1 ps-0"> > </div>
+                </div>
 
-                <div class="row py-2 mb-1"><div class="col ps-4"><span style="font-size: 1.4em;" class="fw-bold" th:utext="|${product.percent}%|"></span><span style="font-size: 0.95em;"> 달성</span></div><div class="col" style="font-size: 1.15em;"><div class="badge text-wrap" style="background-color: burlywood"><span th:utext="${product.f_day}"></span><span>일 남음</span></div></div></div>
-                <div class="row py-2 mb-4"><div class="col ps-4"><span style="font-size: 1.4em;" class="fw-bold" th:text="${product.t_sales}"></span> <span style="font-size: 0.95em;">원 달성</span></div><div class="col" style="font-size: 1.15em;"><div class="badge text-wrap" style="background-color: burlywood;"><span th:text="|${product.c_purchase}회 구매|"></span></div></div></div>
+                <!--등록자 정보 뻥ui 시작 -->
+                <div class="row">
+                    <div class="col mx-3 mb-3 py-1 border rounded">
+                        <div class="row py-2 px-3">
+                                <div class="col-2 px-1 text-center d-grid">
+                                <!--    <img th:src="@{'/uploadFiles/'+${product.photo}}" alt="미등록" class="rounded-circle" style="width: 100%;">-->
+                                    <img th:src="@{/public/image/dog_img.png}" class="rounded-circle" style="width: 100%;">
+                                </div> 
+                            
+                            <div class="col">
+                                <div class="row"><div class="col fw-bold" style="font-size: 0.85em;"><span th:text="${product.user.userid}"></span></div></div>
+                                <div class="row"><div class="col" style="font-size: 0.7em;">제작자 팔로워 수</div></div>        
+                            </div>
+                            <div class="col"><div class="button text-center rounded" style="background-color:burlywood; color: white;"><i class="fa-solid fa-plus"></i> 팔로우</div></div>
+                        </div>
+                        <div class="row">
+                            <div class="col mx-3 my-2 border text-center" style="color: dimgray;"><i class="fa-solid fa-headset"></i> 문의하기</div>
+                        </div>
+                    </div>
+                </div>
+                <!--등록자 정보 뻥ui 끝-->
 
 
-                <div class="row py-1 mb-4 mx-2 rounded border-0" style="background-color: gainsboro"><div class="col" style="font-size: 0.85em; color: gray;"><i class="bi bi-shield-fill-exclamation"></i> 프로젝트에 문제가 있나요?</div><div class="col-4 text-end" style="font-size: 0.9em; color: lightslategrey;">신고하기 <i class="bi bi-caret-right-fill"></i></div></div>
+                <div class="row py-1 mb-4 mx-2 rounded border-0" style="background-color: ghostwhite"><div class="col" style="font-size: 0.85em; color: gray;"><i class="bi bi-shield-fill-exclamation"></i> 프로젝트에 문제가 있나요?</div><div class="col-4 text-end" style="font-size: 0.9em; color: lightslategrey;">신고하기 <i class="bi bi-caret-right-fill"></i></div></div>
                 
                 <div class="row mb-4 px-0">
                     <div class="col py-2 mx-4 border border-2 rounded">
@@ -148,6 +182,9 @@
                 </div>
 
                 <div class="row mt-4 mb-2"><div class="col fw-bold" style="font-size: 1.25em;">프로젝트 스토리</div></div>
+
+                <div class="row py-2 mb-4 mx-2 rounded border-0" style="background-color: ghostwhite"><div class="col" style="font-size: 0.85em; color: gray;"><i class="bi bi-shield-fill-exclamation"></i> 배송지가 도서산간에 해당하는 서포터님은 배송 가능 여부를 반드시 문의 후 참여해주세요</div></div>
+
                 <div class="row mb-4"><div class="col"><img th:src="@{'/uploadFiles/'+${product.detail.explain_image}}" alt="등록된 이미지가 없습니다" style="width: 100%;"></div></div>
 
                 <div class="row mb-1"><div class="col ms-1 fw-bold" style="font-size: 1em;">상품가격과 구성</div></div>
@@ -156,6 +193,16 @@
                 <div class="row pt-2"><div class="col-2" style="font-size: 0.85em; color: dimgray;">가격 </div><div class="col"><span th:text="${product.detail.price}" class="fw-bold" style="font-size: 1em;"></span> 원</div></div>
                 <div class="row pt-1 pb-2"><div class="col-2" style="font-size: 0.85em; color: dimgray;">구성 </div><div class="col"><span class="preCol" th:text="${product.detail.product_component}" style="font-size: 1em;"></span></div></div>
                 </div></div>
+
+                <!--광고창-->
+                <div clss="row">
+                    <div clss="col px-0">
+                        <img th:src="@{/public/image/commons/store4.jpg}" style="width: 100%;">
+                    </div>
+                </div>
+
+
+
                 
                 <div class="row my-3">
                     <div class="col">

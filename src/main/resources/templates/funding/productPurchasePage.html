@@ -46,13 +46,24 @@
     </script>
 
     <style>
-    body{
+        body{
             font-family: 'Noto Sans KR', sans-serif;
         }
 
         .mipbox{
             display: flex;
             justify-content: center;
+        }
+
+        .preCol{
+            max-width: 18em;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+        .explainCol{
+            vertical-align: middle;
+            font-size: 0.7em; 
+            color: gray;
         }
 
         input[type="radio"] {
@@ -93,37 +104,49 @@
 
                 <div class="row py-2"><div class="col"></div><div class="col text-end"><a href="./listPage" class="me-3"><i class="bi bi-shop" style="color: black;"></i></a><a href="../commons/mainPage"><i class="bi bi-house" style="color: black;"></i></a></div></div>
 
+                <!--진행상황 창 시작-->
                 <div class="row">
                     <div class="col text-center">
                         <span style="font-size: 3em;"><i class="bi bi-check-circle"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-dash-lg"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-circle"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-dash-lg"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-circle"></i></span>
                     </div>
                 </div>
                 <div class="row mb-3"><div class="col text-center" style="font-size: 0.7em;">펀딩 상품 확인 진행중 입니다.</div></div>
+                <!--진행상황 창 끝-->
 
-                <div class="row py-2 mb-2"><div class="col fw-bold" style="font-size: 1em;">펀딩 상품 정보 확인</div></div>
+                <!--펀딩 프로젝트 정보 확인-->
+                <div class="row py-2 mb-2"><div class="col fw-bold" style="font-size: 1.15em;">펀딩 프로젝트 정보 확인</div></div>
                 <form action="productPurchaseProcess" id="purchase" method="post">
                     <input name="product_pk" type="hidden" th:value="${product.detail.product_pk}">     
                         <div class="row mb-1"><div class="col" style="font-size: 1.25em;">
                             <lable for="justbutton"><input type="radio" id="justbutton"  th:text="${product.detail.price}">  <span style="font-size: 0.8em;">원</span></lable>
                         </div></div>
-                        <div class="row"><div class="col" style="font-size: 0.8em;" th:text="${product.detail.product_component}"></div></div>
+                        <div class="row"><div class="col preCol" style="font-size: 0.8em;" th:text="${product.detail.product_component}"></div></div>
+
+                        <div class="row py-2 mx-1 mt-2 border rounded"><div class="col" style="font-size: 0.85em; color: gray;">선택해야 하는 상세 옵션이 존재하지 않습니다.</div><div class="col-2 px-0 text-center"> <i class="bi bi-caret-right" style="font-size: 1em; color: gray;"></i></div></div>
+                        
+                        <div class="row py-2 mx-1">  
+                            <div class="col px-0">  
+                                <div class="row"><div class="col" style="font-size: 0.82em;"> <i class="bi bi-truck"></i> 배송비 무료</div></div>
+                                <div class="row mb-2"><div class="col" style="font-size: 0.82em; color: dimgray;">  정확한 배송일자는 상품별 새소식을 참고해주세요</div></div>
+                            </div>
+                        </div>
+
 
                         <div class="row mt-3">
                             <div class="mipbox px-0">
-                                <div class="col-7 ps-0" style="font-size: 0.7em; color: gray;">구매를 원하시는 수량만큼 입력해주세요</div>
-                                <button type="button" style="font-size: 1.55em;"  class="btn px-0 py-0 me-2" onclick="decreaseQuantity()"><i class="bi bi-dash-square"></i></button>
-                                <input class=form-control type="number" id="inputQuantity" name="quantity" placeholder="수량 입력" style="text-align:center; width: 4em; height: 2.25em;"> 
-                                <button type="button" style="font-size: 1.55em;" class="btn px-0 py-0 ms-2" onclick="increaseQuantity()"><i class="bi bi-plus-square"></i></button>
+                                <div class="col-7 explainCol" style="align-self: center;"> <span>구매를 원하시는 수량만큼 입력해주세요</span> </div>
+                                <button type="button" style="font-size: 1.55em;"  class="btn px-0 py-0 me-2" onclick="decreaseQuantity()"><i class="bi bi bi-dash-lg"></i></button>
+                                <input class=form-control type="number" id="inputQuantity" name="quantity" placeholder="0" style="text-align:center; width: 3em; height: 2.25em;"> 
+                                <button type="button" style="font-size: 1.55em;" class="btn px-0 py-0 ms-2" onclick="increaseQuantity()"><i class="bi bi-plus-lg"></i></button>
                             </div>
                         </div>
-                        <div class="row pt-1 mb-1"></div>   
                         
                         
-                    <div class="row"><div class="col" style="font-size: 0.82em;"> <i class="bi bi-truck" ></i> 배송비 무료</div></div>
-                    <div class="row mb-2"><div class="col" style="font-size: 0.82em;"> 정확한 배송일자는 상품별 새소식을 참고해주세요</div></div>
-                    <div class="row py-2 mx-1 mb-3 border rounded"><div class="col pe-0" style="font-size: 0.85em; color: gray;">선택해야 하는 옵션이 존재하지 않습니다.</div><div class="col-2 px-0 text-center"> <i class="bi bi-caret-right" style="font-size: 1em; color: gray;"></i></div></div>
+                        
+                    
+                    
                     <div class="row mb-2" style="background-color: gainsboro;"><div class="col"></div></div>
-                        <div class="row"><div class="col-3 px-0 mx-1 fw-bold text-center"><a th:href="@{./productDetailPage(id = ${product.detail.product_pk})}" class="btn text-white fw-bold rounded" style="font-size: 1em; background-color: lightcoral;">뒤로가기</a></div> <div class="col text-center d-grid" style="font-size: 1em;"><input class="border border-black rounded py-1" type="submit" onclick="nextSubmit()" style="background-color: white; border-color:black;" value="다음페이지 이동"></div></div>
+                        <div class="row"><div class="col-3 px-0 mx-1 fw-bold text-center"><a th:href="@{./productDetailPage(id = ${product.detail.product_pk})}" class="btn text-white fw-bold rounded" style="font-size: 1em; background-color: lightcoral;">뒤로가기</a></div> <div class="col text-center d-grid" style="font-size: 1em;"><input class="border border-black rounded py-1" type="button" onclick="nextSubmit()" style="background-color: white; border-color:black;" value="다음페이지 이동"></div></div>
                 </form>
                 <div class="row py-1"><div class="col text-center" style="font-size: 0.8em; color: gray;">다음 페이지에서 결제가 진행됩니다.</div></div>
 
