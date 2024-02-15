@@ -176,7 +176,7 @@ public class FundingController {
             }
 
         fundingService.insertNews(paraFundingNewsDto);
-        return "redirect:./productControlPage?id=" + paraFundingNewsDto.getProduct_pk();
+        return "redirect:/funding/productControlPage?id=" + paraFundingNewsDto.getProduct_pk();
     }
 
     @RequestMapping("newsReadPage")
@@ -323,7 +323,7 @@ public class FundingController {
 
         session.setAttribute("purchaseMap", purchaseMap);
 
-        return "redirect:./productPaymentPage"; 
+        return "redirect:/funding/productPaymentPage"; 
     }
 
     //상품 구매페이지에서 수량 체크 다 하고 넘어가서 결제하는 페이지 / 임시저장을 두자...?
@@ -355,7 +355,7 @@ public class FundingController {
 
         fundingService.insertOrder( fundingOrderDto);
 
-        return "redirect:./productPaymentCompletePage";
+        return "redirect:/funding/productPaymentCompletePage";
     }
 
     //상품결제 완료 알림창
@@ -444,7 +444,7 @@ public class FundingController {
         paraReviewDto.setProduct_pk(product_pkInt);
         fundingService.insertReview(paraReviewDto);
 
-        return "redirect:./purchaseProductManagePage?id="+product_pkInt;
+        return "redirect:/funding/purchaseProductManagePage?id="+product_pkInt;
     }
 }
 
