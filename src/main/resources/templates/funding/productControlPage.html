@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>펀딩 상품 개별 관리</title>
     <style>
-        body{
+        .container-fluid{
             font-family: 'Noto Sans KR', sans-serif;
         }
 
@@ -35,10 +35,14 @@
         }
 
         .btn{
+            
             box-shadow: 0 0.09em 0.09em 0.09em rgb(211, 211, 211);
             margin-bottom: 0.5em;
             font-size: 1em;
             border: solid 0.15em;
+        }
+        .btn{
+            background-color:  rgb(231, 229, 229);
         }
 
         .preCol{
@@ -57,7 +61,7 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <div class="col">
     <!--컨테이너 로우 콜 세팅 여기까지-->
@@ -93,10 +97,10 @@
                     </div>
 
 
-                    <div class="row mt-4"><div class="col px-0 mb-1 d-grid"><a th:href="@{./newsRgstrPage(id = ${product.detail.product_pk})}" class="btn px-0 py-2" >새소식 올리기     ></a></div></div>
-                    <div class="row"><div class="col px-0 mb-3 d-grid"><a th:href="@{./newsReadPage(id=${product.detail.product_pk})}"class="btn px-0 py-2" > 회원님께서 작성하신 새소식의 목록     ></a></div></div>
-                    <div class="row"><div class="col px-0 mb-3 d-grid"><a th:href="@{./cheeringPage(id=${product.detail.product_pk})}" class="btn px-0 py-2"  >응원글 보기  ></a></div></div>
-                    <div class="row"><div class="col px-0 mb-1 d-grid"><a th:href="@{./productDetailPage(id=${product.detail.product_pk})}" class="btn px-0 py-2" >프로젝트 게시 상태 및 리뷰 보기  ></a></div></div>
+                    <div class="row mt-4"><div class="col btnCol px-0 mb-1 d-grid"><a th:href="@{./newsRgstrPage(id = ${product.detail.product_pk})}" class="btn px-0 py-2">새소식 올리기     ></a></div></div>
+                    <div class="row"><div class="col btnCol px-0 mb-3 d-grid"><a th:href="@{./newsReadPage(id=${product.detail.product_pk})}"class="btn px-0 py-2"> 회원님께서 작성하신 새소식의 목록     ></a></div></div>
+                    <div class="row"><div class="col btnCol px-0 mb-3 d-grid"><a th:href="@{./cheeringPage(id=${product.detail.product_pk})}" class="btn px-0 py-2">응원글 보기  ></a></div></div>
+                    <div class="row"><div class="col btnCol px-0 mb-1 d-grid"><a th:href="@{./productDetailPage(id=${product.detail.product_pk})}" class="btn px-0 py-2">프로젝트 게시 상태 및 리뷰 보기  ></a></div></div>
                     
 
                     <div class="row"><div class="col"> </div></div>
