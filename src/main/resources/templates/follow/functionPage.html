@@ -169,7 +169,8 @@
                 marker = new kakao.maps.CustomOverlay({
                     position: position,
                     content: content,
-                    yAnchor: 0.95
+                    yAnchor: 0.95,
+                    zIndex: 1
                 });
 
                 marker.setMap(map);
@@ -755,21 +756,22 @@
                 .then(response => response.json())
                 .then(response => {
 
+                    const likeListBox = document.getElementById("likeListBox");
+                    likeListBox.innerHTML = "";
+
                     if(response.data.length == 0) {
                         console.log("getLikeList");
+                        const noLikeListWrapper = document.querySelector("#template .noLikeListWrapper").cloneNode(true);
+                        likeListBox.appendChild(noLikeListWrapper);
                         // empty list
-
+                        showLikeListModal();
                         return;
 
                     }
 
-                    // const likeListBox = document.getElementById("likeListBox");
-                    // likeListBox.innerHTML = "";
-
                     for(let e of response.data) {
                         console.log(e);
-                        // const likeListWrapper = document.querySelector("#template .likeListWrapper").cloneNode(true);
-
+                        const likeListWrapper = document.querySelector("#template .likeListWrapper").cloneNode(true);
                         likeListWrapper.querySelector(".likeListButton").onclick = () => {
                             console.log(e.user_pk + ": " + e.is_trace);
                             if(e.is_trace == "Y") {
@@ -801,14 +803,97 @@
 
                             }
 
+                            hideLikeListModal();
                             getClosestTrackMarker(e.user_pk);
 
                         };
 
-                        // likeListBox.appendChild(likeListWrapper);
-                        showLikeListModal();
+                        likeListWrapper.querySelector(".heartIcon").style.fontVariationSettings = "'FILL' 1";
+                        likeListWrapper.querySelector(".heartIcon").onclick = () => {
+
+                            toggleLike(e.user_pk, this);
+
+                        };
+
+                        switch(e.open_rating) {
+
+                            case 10 :
+                                likeListWrapper.querySelector(".likeListName").innerText = e.nick_name;
+                            case 9 :
+                                likeListWrapper.querySelector(".likeListImage").style.background = 
+                                    "url(/uploadFiles/" + e.profile_photo + ") no-repeat center";
+                                    likeListWrapper.querySelector(".likeListImage").style.backgroundSize =
+                                    "cover";
+                            case 8 : 
+                                likeListWrapper.querySelector(".likeListPreference").innerText = e.preference;
+                            case 7, 6 : 
+                                likeListWrapper.querySelector(".likeListMbtiType").innerText = e.blood_type;
+                                likeListWrapper.querySelector(".likeListHobby").innerText = e.hobby;
+                            case 5 :
+                                likeListWrapper.querySelector(".likeListSmoking").innerText = e.smoking;
+                                likeListWrapper.querySelector(".likeListDrinking").innerText = e.drinking;
+                            case 4, 3 : 
+                                likeListWrapper.querySelector(".likeListHeight").innerText = e.height;
+                                likeListWrapper.querySelector(".likeListWeight").innerText = e.weight;
+                                likeListWrapper.querySelector(".likeListBloodType").innerText = e.blood_type;
+                            case 2: 
+                                if(e.gender == 'W') {
+                                    likeListWrapper.querySelector(".likeListGender").innerText = "👱🏻‍♀️";
+                                }else {
+                                    likeListWrapper.querySelector(".likeListGender").innerText = "👱🏻‍♂️";
+                                }
+                            case 1:
+                                likeListWrapper.querySelector(".likeListPk").innerText = e.user_more_pk;
+                                likeListWrapper.querySelector(".likeListTemp").style.width = e.mstar_temp;
+                                likeListWrapper.querySelector(".likeListTempContent").innerText = e.mstar_temp;
+
+                        }
+
+                        if(e.open_rating == 10) {
+                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt + " / ∞ )";
+                        }else if(e.open_rating == 9) {
+                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + 100 - e.cnt + " / 20 )";
+                        }else if(e.open_rating == 8) {
+                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + 80 - e.cnt + " / 16 )";
+                        }else if(e.open_rating == 7) {
+                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + 64 - e.cnt + " / 15 )";
+                        }else if(e.open_rating == 6) {
+                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + 49 - e.cnt + " / 13 )";
+                        }else if(e.open_rating == 5) {
+                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + 36 - e.cnt + " / 12 )";
+                        }else if(e.open_rating == 4) {
+                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + 24 - e.cnt + " / 10 )";
+                        }else if(e.open_rating == 3) {
+                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + 14 - e.cnt + " / 7 )";
+                        }else if(e.open_rating == 2) {
+                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + 7 - e.cnt + " / 5 )";
+                        }else if(e.open_rating == 1) {
+                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + 2 - e.cnt + " / 2 )";
+                        }
+
+                        if(e.star_rating == "SSR") {
+                            likeListWrapper.querySelector(".likeListOuter").classList.add("SSROuter");
+                        }else if(e.star_rating == "SR") {
+                            likeListWrapper.querySelector(".likeListOuter").classList.add("SROuter");
+                        }else if(e.star_rating == "S") {
+                            likeListWrapper.querySelector(".likeListOuter").classList.add("SOuter");
+                        }else if(e.star_rating == "fiveStar") {
+                            likeListWrapper.querySelector(".likeListOuter").classList.add("FiveStarROuter");
+                        }else if(e.star_rating == "fourStar") {
+                            likeListWrapper.querySelector(".likeListOuter").classList.add("FourStarROuter");
+                        }else if(e.star_rating == "threeStar") {
+                            likeListWrapper.querySelector(".likeListOuter").classList.add("ThreeStarROuter");
+                        }else if(e.star_rating == "twoStar") {
+                            likeListWrapper.querySelector(".likeListOuter").classList.add("TwoStarOuter");
+                        }else if(e.star_rating == "oneStar") {
+                            likeListWrapper.querySelector(".likeListOuter").classList.add("OneStarOuter");
+                        }
+
+                        likeListBox.appendChild(likeListWrapper);
 
                     }
+                    
+                    showLikeListModal();
 
                 });
 
@@ -983,7 +1068,7 @@
                 .then(response => response.json())
                 .then(response => {
 
-                    // 채운 하트로 change
+                    target.style.fontVariationSettings = "'FILL' 1";
 
                 });
 
@@ -997,7 +1082,7 @@
                 .then(response => response.json())
                 .then(response => {
 
-                    // 빈하트로 change
+                    target.style.fontVariationSettings = "'FILL' 0";
 
                 });
 
@@ -1100,51 +1185,51 @@
                         const collectionProgress = collectionWrapper.querySelector(".collectionProgress");
 
                         if(e.star_rating == 'SSR') {
-                            collectionOuter.classList.add("collectionSSROuter");
-                            collectionInner.classList.add("collectionSSRInner");
+                            collectionOuter.classList.add("SSROuter");
+                            collectionInner.classList.add("SSRInner");
                         }else if(e.star_rating == 'SR') {
-                            collectionOuter.classList.add("collectionSROuter");
-                            collectionInner.classList.add("collectionSRInner");
+                            collectionOuter.classList.add("SROuter");
+                            collectionInner.classList.add("SRInner");
                         }else if(e.star_rating == 'S') {
-                            collectionOuter.classList.add("collectionSOuter");
-                            collectionInner.classList.add("collectionSInner");
+                            collectionOuter.classList.add("SOuter");
+                            collectionInner.classList.add("SInner");
                         }else if(e.star_rating == 'oneStar') {
-                            collectionOuter.classList.add("collectionOneStarOuter");
-                            collectionInner.classList.add("collectionOneStarInner");
+                            collectionOuter.classList.add("OneStarOuter");
+                            collectionInner.classList.add("OneStarInner");
                         }else if(e.star_rating == 'twoStar') {
-                            collectionOuter.classList.add("collectionTwoStarOuter");
-                            collectionInner.classList.add("collectionTwoStarInner");
+                            collectionOuter.classList.add("TwoStarOuter");
+                            collectionInner.classList.add("TwoStarInner");
                         }else if(e.star_rating == 'threeStar') {
-                            collectionOuter.classList.add("collectionThreeStarOuter");
-                            collectionInner.classList.add("collectionThreeStarInner");
+                            collectionOuter.classList.add("ThreeStarOuter");
+                            collectionInner.classList.add("ThreeStarInner");
                         }else if(e.star_rating == 'fourStar') {
-                            collectionOuter.classList.add("collectionFourStarOuter");
-                            collectionInner.classList.add("collectionFourStarInner");
+                            collectionOuter.classList.add("FourStarOuter");
+                            collectionInner.classList.add("FourStarInner");
                         }else {
-                            collectionOuter.classList.add("collectionFiveStarOuter");
-                            collectionInner.classList.add("collectionFiveInner");
+                            collectionOuter.classList.add("FiveStarOuter");
+                            collectionInner.classList.add("FiveInner");
                         }
 
                         if(e.open_rating == '10') {
                             collectionProgress.style.width = "100%";
                             collectionInner.style.background = "url(/uploadFiles/" + e.profile_photo + ") no-reapt center";
                         }else if(e.open_rating == '9') {
-                            collectionProgress.style.width = (20 - e.collection_count) / 20 * 100 + "%";
+                            collectionProgress.style.width = (100 - e.collection_count) / 20 * 100 + "%";
                             collectionInner.style.background = "url(/uploadFiles/" + e.profile_photo + ") no-reapt center";
                         }else if(e.open_rating == '8') {
-                            collectionProgress.style.width = (16 - e.collect_count) / 16 * 100 + "%";
+                            collectionProgress.style.width = (80 - e.collect_count) / 16 * 100 + "%";
                         }else if(e.open_rating == '7') {
-                            collectionProgress.style.width = (15 - e.collect_count) / 15 * 100 + "%";
+                            collectionProgress.style.width = (64 - e.collect_count) / 15 * 100 + "%";
                         }else if(e.open_rating == '6') {
-                            collectionProgress.style.width = (13 - e.collect_count) / 13 * 100 + "%";
+                            collectionProgress.style.width = (49 - e.collect_count) / 13 * 100 + "%";
                         }else if(e.open_rating == '5') {
-                            collectionProgress.style.width = (12 - e.collect_count) / 12 * 100 + "%";
+                            collectionProgress.style.width = (36 - e.collect_count) / 12 * 100 + "%";
                         }else if(e.open_rating == '4') {
-                            collectionProgress.style.width = (10 - e.collect_count) / 10 * 100 + "%";
+                            collectionProgress.style.width = (24 - e.collect_count) / 10 * 100 + "%";
                         }else if(e.open_rating == '3') {
-                            collectionProgress.style.width = (7 - e.collect_count) / 7 * 100 + "%";
+                            collectionProgress.style.width = (14 - e.collect_count) / 7 * 100 + "%";
                         }else if(e.open_rating == '2') {
-                            collectionProgress.style.width = (5 - e.collect_count) / 5 * 100 + "%";
+                            collectionProgress.style.width = (7 - e.collect_count) / 5 * 100 + "%";
                         }else {
                             collectionProgress.style.width = (2 - e.collect_count) / 2 * 100 + "%";
                         }
@@ -1449,7 +1534,13 @@
                 modal.show();
 
                 document.getElementById("likeListCarouselPrev").click();
-                document.getElementById("likeListCarouselNext").click();
+
+            }
+
+            function hideLikeListModal() {
+
+                const modal = bootstarp.Modal.getOrCreateInstance("#likeListModal");
+                modal.hide();
 
             }
 
@@ -1848,75 +1939,75 @@
                 }
             }
 
-            .collectionSSROuter {
+            .SSROuter {
                 background: radial-gradient(white, #ffff90ff);
                 border: 1px solid #ffdf00;
             }
 
-            .collectionSSRInner {
+            .SSRInner {
                 border: 1px solid #ffdf00;
             }
 
-            .collectionSROuter {
+            .SROuter {
                 background: radial-gradient(white, #cc4125ff);
                 border: 1px solid #980000;
             }
 
-            .collectionSRInner {
+            .SRInner {
                 border: 1px solid #980000;
             }
 
-            .collectionSOuter {
+            .SOuter {
                 background: radial-gradient(white, #c27ba0ff);
                 border: 1px solid #a64d79;
             }
 
-            .collectionSInner {
+            .SInner {
                 border: 1px solid #a64d79;
             }
 
-            .collectionFiveStarOuter {
+            .FiveStarOuter {
                 background: radial-gradient(white, #8e7cc3ff);
                 border: 1px solid #674ea7;
             }
 
-            .collectionFiveStarInner {
+            .FiveStarInner {
                 border: 1px solid #674ea7;
             }
 
-            .collectionFourStarOuter {
+            .FourStarOuter {
                 background: radial-gradient(white, #3c78d8ff);
                 border: 1px solid #0b5394;
             }
 
-            .collectionFourStarInner {
+            .FourStarInner {
                 border: 1px solid #0b5394;
             }
 
-            .collectionThreeStarOuter {
+            .ThreeStarOuter {
                 background: radial-gradient(white, #93c47dff);
                 border: 1px solid #38761d;
             }
 
-            .collectionThreeStarInner {
+            .ThreeStarInner {
                 border: 1px solid #38761d;
             }
 
-            .collectionTwoStarOuter {
+            .TwoStarOuter {
                 background: radial-gradient(white, #b7b7b7ff);
                 border: 1px solid #666666;
             }
 
-            .collectionTwoStarInner {
+            .TwoStarInner {
                 border: 1px solid #666666;
             }
 
-            .collectionOneStarOuter {
+            .OneStarOuter {
                 background: radial-gradient(white, #d9d9d9ff);
                 border: 1px solid #b7b7b7;
             }
 
-            .collectionOneStarInner {
+            .OneStarInner {
                 border: 1px solid #b7b7b7;
             }
 
@@ -2410,7 +2501,7 @@
                                             </div>
                                             <div class="rounded mt-2 overflow-auto" style="background: #C5A886; height: 51vh; border: 1px solid #f3ecdd;">
 
-                                                <div id="collectionLikeListBox" class="row row-cols-4 mx-auto py-2" style="width: 100%;">
+                                                <div id="collectionLikeListBox" class="row row-cols-5 mx-auto py-2" style="width: 100%;">
 
                                                     
 
@@ -2419,7 +2510,7 @@
                                                 <hr class="mx-2 mt-2 mb-0" style="border: 2px solid #81461A; border-style: dashed;">
                                                 <hr class="mx-2 mt-1 mb-0" style="border: 2px solid #81461A; border-style: dashed;">
 
-                                                <div id="collectionListBox" class="row row-cols-4 mx-auto py-2" style="width: 100%;">
+                                                <div id="collectionListBox" class="row row-cols-5 mx-auto py-2" style="width: 100%;">
 
 
 
@@ -2504,194 +2595,10 @@
                                         꾸욱
                                     </div>
                                     <div class="modal-body pb-1 px-0 pt-1 rounded" style="width: 100%; background: #f3ecdd; border: 2px solid rgba(241, 194, 92, 0.4);">
-                                        <div id="likeListCarousel" class="carousel slide">
-                                            <div class="carousel-inner">
+                                        <div id="likeListCarousel" class="carousel slide" data-bs-wrap="false">
+                                            <div id="likeListBox" class="carousel-inner">
                                                 
-                                                <div class="carousel-item px-1 active">
-                                                    <div class="likeListButton rounded px-3 py-2" style="width: 100%; background: #C5A886;">
-                                                        <div class="row my-auto align-items-center">
-                                                            <div class="col">No. <span class="likeListPk">777</span></div>
-                                                            <div class="col">
-                                                                <span class="heartIcon material-symbols-rounded d-flex align-items-center float-end" style="font-size: 1.3rem;">
-                                                                    favorite
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        <div>
-                                                            <hr class="mt-1 mb-2" style="color: #81461A;">
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-3">
-                                                                <div class="row">
-                                                                    <div class="col px-2">
-                                                                        <div class="likeListOuter d-flex align-items-center justify-content-center border-0" style="width: 100%; aspect-ratio: 1/1; border-radius: 50%;">
-                                                                            <div class="likeListImage" style="width: 90%; aspect-ratio: 1/1; border-radius: 50%; background: url('/public/image/follow/questionBlack.png') no-repeat center; background-size: cover; filter: opacity(85%);"></div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row mt-1">
-                                                                    <div class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                        <span class="likeListName">? ? ?</span>
-                                                                        <!-- 김아무 -->
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="likeListOpenRating col text-center fw-bold" style="font-size: 0.56rem;">
-                                                                        Lv ? ( ?? / ?? )
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col my-auto">
-                                                                <div class="row">
-                                                                    <div class="col">
-                                                                        <div class="row">
-                                                                            <div class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                                <span class="likeListHeight">? ? ?</span> cm
-                                                                                <!-- 163 cm -->
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                                키
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                                                    <div class="col-3">
-                                                                        <div class="row">
-                                                                            <div class="likeListGender col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                                ? ?
-                                                                                <!-- 👱🏻‍♀️ -->
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                                성별
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                                                    <div class="col">
-                                                                        <div class="row">
-                                                                            <div class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                                <span class="likeListWeight">? ? ?</span> kg
-                                                                                <!-- 50 kg -->
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                                몸무게
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col">
-                                                                        <div class="row">
-                                                                            <div class="likeListMbtiType col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                                ? ? ? ?
-                                                                                <!-- ISTJ -->
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                                MBTI
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                                                    <div class="col">
-                                                                        <div class="row">
-                                                                            <div class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                                <span class="likeListBloodType">? ?</span> 형
-                                                                                <!-- B 형 -->
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                                혈액형
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                                                    <div class="col">
-                                                                        <div class="row">
-                                                                            <div class="likeListDrinking col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                                ? ?
-                                                                                <!-- N -->
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                                음주여부
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                                                    <div class="col">
-                                                                        <div class="row">
-                                                                            <div class="likeListSmoking col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                                ? ?
-                                                                                <!-- N -->
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                                흡연여부
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col">
-                                                                        <div class="row">
-                                                                            <div class="likeListHobby col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                                ? ? ? ? ?
-                                                                                <!-- 집에서 뒹굴거리기 -->
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                                취미
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                                                    <div class="col">
-                                                                        <div class="row">
-                                                                            <div class="likeListPreference col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                                ? ? ? ? ?
-                                                                                <!-- 게이 -->
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                                성적지향
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row align-items-center">
-                                                            <div class="col-auto pe-0 text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                인스타 활동온도
-                                                            </div>
-                                                            <div class="col">
-                                                                <div class="row align-items-center">
-                                                                    <div class="col">
-                                                                        <div class="progress" style="height: 0.5rem;">
-                                                                            <div class="likeListTemp progress-bar rounded" style="background: #feb146; width: 36.5%;"></div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-auto ps-0 fw-bold text-end" style="font-size: 0.8rem; color: #000;">
-                                                                        <span class="likeListTempContent">36.5</span>℃
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                
 
                                             </div>
                                             <button id="likeListCarouselPrev" class="carousel-control-prev" type="button" data-bs-target="#likeListCarousel" data-bs-slide="prev" style="position: absolute; top: calc(50% - 5.3rem); left: -3rem;">
@@ -2732,15 +2639,222 @@
         <div id="template" class="d-none">
 
             <div class="collectionWrapper col mt-2 px-2">
-                <div class="collectionOuter d-grid align-items-center" style="width: 100%; aspect-ratio: 1/1; border-radius: 8%;">
+                <div class="collectionOuter d-flex align-items-center justify-content-center" style="width: 100%; aspect-ratio: 1/1; border-radius: 8%;">
                     <!-- <div class="d-flex justify-content-center" style="position: relative; width: 98%; aspect-ratio: 1/1; border: 1px solid #ffdf00; border-radius: 3%; background: url('/public/image/commons/list2.jpeg') no-repeat center; background-size: cover; filter: opacity(80%);"> -->
-                    <div class="collectionInner d-flex justify-content-center" style="position: relative; width: 98%; aspect-ratio: 1/1; border-radius: 3%; background: url('/public/image/follow/questionAnother.png') no-repeat center; background-size: cover; filter: opacity(80%);">
+                    <div class="collectionInner" style="position: relative; width: 98%; aspect-ratio: 1/1; border-radius: 3%; background: url('/public/image/follow/questionAnother.png') no-repeat center; background-size: cover; filter: opacity(80%);">
                         <div class="progress" role="progressbar" style="position: absolute; width: 95%; height: 0.5rem; border: 0.1px solid #E0C9A9; bottom: 0.1rem;">
                             <div class="collectionProgress progress-bar progress-bar-striped rounded-pill" style="background: #feb146; width: 75%;"></div>
                         </div>
                         <!-- <div class="fw-bold text-center" style="position: absolute; width: 1rem; height: 1rem; top: 0.2rem; left: 0.2rem; border-radius: 50%; background: #ffff90ff; border: 1px solid #feb146; font-size: 0.8rem;">
                             1
                         </div> -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="noLikeListWrapper carousel-item px-1 active">
+                <div class="rounded px-3 py-3" style="width: 100%; background: #C5A886;">
+                    <div class="row">
+                        <div class="col text-center py-5">
+                            <div class="row">
+                                <div class="col">
+                                    <span class="material-symbols-rounded">
+                                        ecg
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    목록이 없습니다
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="likeListWrapper carousel-item px-1">
+                <div class="likeListButton rounded px-3 py-2" style="width: 100%; background: #C5A886;">
+                    <div class="row my-auto align-items-center">
+                        <div class="col">No. <span class="likeListPk">777</span></div>
+                        <div class="col">
+                            <span class="heartIcon material-symbols-rounded d-flex align-items-center float-end" style="font-size: 1.3rem;">
+                                favorite
+                            </span>
+                        </div>
+                    </div>
+                    <div>
+                        <hr class="mt-1 mb-2" style="color: #81461A;">
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="row">
+                                <div class="col px-2">
+                                    <div class="likeListOuter d-flex align-items-center justify-content-center border-0" style="width: 100%; aspect-ratio: 1/1; border-radius: 50%;">
+                                        <div class="likeListImage" style="width: 90%; aspect-ratio: 1/1; border-radius: 50%; background: url('/public/image/follow/questionBlack.png') no-repeat center; background-size: cover; filter: opacity(85%);"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-1">
+                                <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                    <span class="likeListName">? ? ?</span>
+                                    <!-- 김아무 -->
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="likeListOpenRating col text-center fw-bold" style="font-size: 0.56rem;">
+                                    Lv ? ( ?? / ?? )
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col my-auto">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                            <span class="likeListHeight">? ? ?</span> cm
+                                            <!-- 163 cm -->
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                            키
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                <div class="col-3">
+                                    <div class="row">
+                                        <div class="likeListGender col text-center fw-bold" style="font-size: 0.8rem;">
+                                            ? ?
+                                            <!-- 👱🏻‍♀️ -->
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                            성별
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                            <span class="likeListWeight">? ? ?</span> kg
+                                            <!-- 50 kg -->
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                            몸무게
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="likeListMbtiType col text-center fw-bold" style="font-size: 0.8rem;">
+                                            ? ? ? ?
+                                            <!-- ISTJ -->
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                            MBTI
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                            <span class="likeListBloodType">? ?</span> 형
+                                            <!-- B 형 -->
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                            혈액형
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="likeListDrinking col text-center fw-bold" style="font-size: 0.8rem;">
+                                            ? ?
+                                            <!-- N -->
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                            음주여부
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="likeListSmoking col text-center fw-bold" style="font-size: 0.8rem;">
+                                            ? ?
+                                            <!-- N -->
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                            흡연여부
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="likeListHobby col text-center fw-bold" style="font-size: 0.8rem;">
+                                            ? ? ? ? ?
+                                            <!-- 집에서 뒹굴거리기 -->
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                            취미
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="likeListPreference col text-center fw-bold" style="font-size: 0.8rem;">
+                                            ? ? ? ? ?
+                                            <!-- 게이 -->
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                            성적지향
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-auto pe-0 text-body-tertiary text-center" style="font-size: 0.6rem;">
+                            인스타 활동온도
+                        </div>
+                        <div class="col">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <div class="progress" style="height: 0.5rem;">
+                                        <div class="likeListTemp progress-bar rounded" style="background: #feb146; width: 36.5%;"></div>
+                                    </div>
+                                </div>
+                                <div class="col-auto ps-0 fw-bold text-end" style="font-size: 0.8rem; color: #000;">
+                                    <span class="likeListTempContent">36.5</span>℃
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
