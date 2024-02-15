@@ -2,13 +2,13 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
 
 <div id="topNavi" th:fragment="topNavi" class="row border-bottom" style="font-family: 'omyu_pretty';">
-    <div class="col">
+    <div class="col py-1">
         <div class="row">
-            <div class="col py-1">
+            <div class="col py-2">
                 <div class="row">
                     <div class="col-3"></div>
                     <div class="col text-center">
-                        <img class="img-fluid" src="/public/image/mstar/logo1.png" alt="" style="height: 1.7em;">
+                        <img onclick="backToHome()" class="img-fluid" src="/public/image/mstar/logo1.png" alt="" style="height: 1.7em;">
                     </div>
                     <div class="col-3 text-end align-self-center">
                         <i th:onclick="location.href='/mstar/directListPage'" class="fa-regular fa-paper-plane fs-5"><i id="unReadDirect" class="fa-solid fa-circle position-absolute text-danger d-none" style="font-size: 0.3em; left: 75%;"></i></span></i>&nbsp;&nbsp;

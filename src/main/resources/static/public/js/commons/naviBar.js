@@ -164,6 +164,11 @@ function updateNotifyReadStatus(){
     });
 
 }
+
+function backToHome() {
+    location.href = "/commons/mainPage";
+}
+
 window.addEventListener("DOMContentLoaded",()=>{
     getNaviUserDto();
 })
