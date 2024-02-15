@@ -5,8 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>펀딩 내 정보(판매 회원)</title>
     
+    <script src="/public/js/commons/naviBar.js"></script>
+    <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://kit.fontawesome.com/feb61beef1.js" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
@@ -18,9 +21,12 @@
         overflow-y: auto;
         display: flex;
     }
-    body{
+    
+    
+    .container-fluid{
         font-family: 'Noto Sans KR', sans-serif;
-        }
+        background-color: ghostwhite;    
+    }
     
     a {
         text-decoration-line: none;
@@ -29,9 +35,29 @@
     ::-webkit-scrollbar { 
         display: none;
     }
+
+    .packtitleBox{
+        background-color: white;
+        border-bottom-left-radius: 1em;
+        border-bottom-right-radius: 1em;
+        margin: 0.7em;
+        margin-top: 0em;
+    }
+    .packBox{
+        background-color: white;
+        border-radius: 1em;
+        padding-top: 0.75em;
+        padding-bottom: 0.75em;
+        margin: 0.7em;
+    }
+
+
+
     .productBox{
         box-shadow: 0.09em 0.09em 0.09em 0.09em rgb(211, 211, 211);
         }
+    
+        
 
     .textBox{
         overflow: hidden;
@@ -44,98 +70,143 @@
         padding-bottom: 0.25em;
     }
 
+    .sevenDayData{
+        font-weight: bold;
+        color: coral;
+    }
+    .useridCol{
+        padding-top: 0.7em;
+        
+    }
+
+    .purchaseBtn{
+        padding-left: 0.5em;
+        border-radius: 0.5em;
+        padding-bottom: 0.5em;
+        text-align: center;
+        border: 0;
+        color: white;
+        font-weight: bold;
+        background-color: rgb(65,147,239);
+        box-shadow: 0 0.315em 0 0 rgb(49, 109, 176);
+        
+    }
+
+
 
 </style>
 
 <body>
-    <div class="container">
+    <div class="container-fluid">
+        <div th:insert="~{/commons/naviBar}"></div>
         <div class="row">
             <div class="col">
     <!--컨테이너 로우 콜 세팅 여기까지-->
-                    <div class="row py-3">
-                        <div class="col-2 pe-0 ps-3"><a class="px-0" href="./listPage"><i class="bi bi-arrow-left-square px-0" style="font-size: 1.35em; color: black;"></i></a></div>
-                        <div class="col ps-0 fw-bold text-start"><span style="font-size: 1.45em;">내 정보</span></div>
-                        <div class="col-4 px-0 me-2">
-                            <div class="row border border-0 rounded me-2" style="background-color: gainsboro;"><div class="col px-2 py-1 text-center border border-0 rounded" style="background-color: gainsboro; color: gray; font-size: 1em"><a href="./fundingUserMyPage" id="sponsorsBtn" class="link-underline-opacity-0" style="color: gray;">후원</a></div><div class="col px-2 py-1 rounded fw-bold text-white text-center" style="background-color: black; font-size: 1em;">등록</div></div>
-                        </div>
-                    </div>
-
-                    <div class="row py-1 mb-2 mx-1">
-                        <div class="col-2 px-1 text-center" style="font-size:1.3em;">
-                            <i class="bi bi-person-circle" style="font-size:1.5em;"></i>
-                        </div>         
-                        <div class="col px-0 pt-1" style="font-size: 0.85em;"><span  class="fw-bold" th:utext="${session.sessionUser.userid}" style="font-size: 1.25em;"></span> 님 안녕하세요</div>
-                    </div>
-
-                    <div class="row mb-2">
-                        <div class="col">
-                            <div class="row py-1 ps-1 mb-2"><div class="col fw-bold" style="font-size: 1em;"><span><i class="bi bi-bar-chart-line-fill"></i></span> 프로젝트 관련 데이터</div></div>
-
-                            <div class="row py-1 mx-1"><div class="col" style="font-size: 0.9em;"><i class="bi bi-calculator"></i> 7일간의 데이터</div></div>
-                            <div class="row border rounded mx-1 mb-4 py-1">
-                                <div class="col">
-                                        <div class="row py-2">
-                                            <div class="col pe-0" style="font-size: 0.9em;">주문</div><div class="col ps-0 fw-bold text-center" th:text="${stast.order}" style="font-size: 0.9em; color: coral;"></div>
-                                            <div class="col pe-0" style="font-size: 0.9em;">찜</div><div class="col ps-0 fw-bold text-center" th:text="${stast.wishlist}" style="font-size: 0.9em; color: coral;"></div>
-                                            <div class="col pe-0" style="font-size: 0.9em;">응원</div><div class="col ps-0 fw-bold text-center" th:text="${stast.cheering}" style="font-size: 0.9em; color: coral;"></div>
-                                            <div class="col pe-0" style="font-size: 0.9em;">리뷰</div><div class="col ps-0 fw-bold text-center" th:text="${stast.review}" style="font-size: 0.9em; color: coral;"></div>
-                                        </div>
-                                </div>        
+                    <div class="row">
+                        <div class="col packtitleBox">
+                            <div class="row py-3">
+                                <div class="col-2 pe-0 ps-3" style="align-self: center;"><a class="px-0" href="./listPage"><i class="fa-solid fa-chevron-left px-0" style="font-size: 1.35em; color: black;"></i></a></div>
+                                <div class="col ps-0 fw-bold text-start"><span style="font-size: 1.45em;">내 정보</span></div>
+                                <div class="col-4 px-0 me-2">
+                                    <div class="row border border-0 rounded me-2" style="background-color: gainsboro;"><div class="col px-2 py-1 text-center border border-0 rounded" style="background-color: gainsboro; color: gray; font-size: 1em"><a href="./fundingUserMyPage" id="sponsorsBtn" class="link-underline-opacity-0" style="color: gray;">후원</a></div><div class="col px-2 py-1 rounded fw-bold text-white text-center" style="background-color: black; font-size: 1em;">등록</div></div>
+                                </div>
                             </div>
 
-                            <div class="row py-1 mx-1"><div class="col" style="font-size: 0.9em;"><i class="bi bi-trophy"></i> 내가 등록한 프로젝트의 목표 펀딩률</div></div>
-                            <div class="row border rounded py-1 mx-1 mb-4">
-                                <div class="col">
-                                        <div class="row py-1"><div class="col ms-1" style="font-size: 0.85em;">달성 프로젝트</div><div class="col me-2 text-end fw-bold" th:text="${stast.success}" style="font-size: 0.85em; color:coral;"></div></div>
-                                        <div class="row py-1"><div class="col ms-1" style="font-size: 0.85em;">미달성 프로젝트</div><div class="col me-2 text-end fw-bold" th:text="${stast.fail}" style="font-size: 0.85em; color:coral;"></div></div>
-                                </div>        
+                            <div class="row py-1 mb-2 mx-1">
+                                <div class="col-2 px-1 text-center d-grid">
+                                    <!--<img th:src="@{'/uploadFiles/'+${photo}}" alt="미등록" class="rounded-circle" style="width: 100%;>-->
+                                    <img th:src="@{/public/image/dog_img.png}" class="rounded-circle" style="width: 100%;">
+                                </div>         
+                                <div class="col useridCol" style="font-size: 0.85em;"><span class="fw-bold" th:utext="${session.sessionUser.userid}" style="font-size: 1.3em;"></span> 님 안녕하세요</div>
                             </div>
-
                         </div>
                     </div>
 
 
-                    <div class="row pt-1 pb-3"><div class="col fw-bold" style="font-size: 1em;">내가 등록한 펀딩 프로젝트</div></div>
-                    <div class="row mb-4">
-                        <div class="col">
-                            <div class="container overflow-y-auto" style="white-space: nowrap; height: 20em;">
-                                <th:block th:each="listForPk : ${listForPk}">
-                                    <a th:href="@{./productControlPage(id = ${listForPk.product_pk})}">
-                                        <div class="row py-2" style="display: flex;">
-                                            <div class="col">
-                                                <div class="row productBox ms-2 me-3 border border-1 rounded">
-                                                    <div class="col-5 px-0 d-grid"><img th:src="@{'/uploadFiles/'+${listForPk.title_image}}" alt="이미지 등록 필요" style="width: 100%; height: 100%;" class="rounded"></div>
-                                                    <div class="col-7 textBox" style="overflow-x: hidden; color: black;" th:text="${listForPk.product_name}"></div>
+                    <!--데이터란 시작-->
+                    <div class="row">
+                        <div class="col packBox">
+
+                                    <div class="row ps-1"><div class="col fw-bold" style="font-size: 1.15em;"><span><i class="fa-solid fa-chart-pie"></i></span> 프로젝트 관련 데이터</div></div>
+                                    <div class="row mb-2"><div class="col" style="font-size: 0.85em; color: darkgray;">통계로 효율적인 관리를 해보세요!</div></div>
+
+                                    <div class="row py-1 mx-1"><div class="col" style="font-size: 0.9em;"><i class="bi bi-calculator"></i> 7일간의 데이터</div></div>
+                                    <div class="row border rounded mx-1 mb-4 py-1">
+                                        <div class="col">
+                                                <div class="row py-2">
+                                                    <div class="col" style="font-size: 0.9em;">주문 <span th:text="${stast.order}"  class="sevenDayData"><span></span></div>
+                                                    <div class="col" style="font-size: 0.9em;">찜 <span th:text="${stast.wishlist}"  class="sevenDayData"></span></div>
+                                                    <div class="col" style="font-size: 0.9em;">응원 <span th:text="${stast.cheering}"  class="sevenDayData"></div>
+                                                    <div class="col" style="font-size: 0.9em;">리뷰 <span th:text="${stast.review}"  class="sevenDayData"></div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </a>  
-                                </th:block>
+                                        </div>        
+                                    </div>
+
+                                    <div class="row py-1 mx-1"><div class="col" style="font-size: 0.9em;"><i class="bi bi-trophy"></i> 내가 등록한 프로젝트의 목표 펀딩률</div></div>
+                                    <div class="row border rounded py-1 mx-1 mb-4">
+                                        <div class="col">
+                                                <div class="row py-1"><div class="col ms-1" style="font-size: 0.85em;">달성 프로젝트</div><div class="col me-2 text-end fw-bold" th:text="${stast.success}" style="font-size: 0.85em; color:coral;"></div></div>
+                                                <div class="row py-1"><div class="col ms-1" style="font-size: 0.85em;">미달성 프로젝트</div><div class="col me-2 text-end fw-bold" th:text="${stast.fail}" style="font-size: 0.85em; color:coral;"></div></div>
+                                        </div>        
+                                    </div>
+
+                        </div>
+                    </div>
+                    <!--데이터란 끝-->
+                    <div class="row">
+                        <div class="col packBox">
+                            <div class="row mt-1"><div class="col fw-bold" style="font-size: 1.15em; ">내가 등록한 펀딩 프로젝트</div></div>
+                            <div class="row mb-1"><div class="col" style="font-size: 0.85em; color: darkgray;"> '펀딩 프로젝트 개별 관리'로 이동할 수 있습니다.</div></div>
+                               
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <div class="container overflow-y-auto" style="white-space: nowrap; height: 20em;">
+                                        <th:block th:each="listForPk : ${listForPk}">
+                                            <a th:href="@{./productControlPage(id = ${listForPk.product_pk})}">
+                                                <div class="row py-2" style="display: flex;">
+                                                    <div class="col">
+                                                        <div class="row productBox ms-2 me-3 border border-1 rounded" style="background-color: white;">
+                                                            <div class="col-5 px-0 d-grid"><img th:src="@{'/uploadFiles/'+${listForPk.title_image}}" alt="이미지 등록 필요" style="width: 100%; height: 100%;" class="rounded"></div>
+                                                            <div class="col-7 textBox" style="overflow-x: hidden; color: black;" th:text="${listForPk.product_name}"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>  
+                                        </th:block>
+                                    </div>
+                                </div>    
+                            </div>  
+
+                        </div>
+                    </div>
+
+
+
+                            <div class="row mt-1 mb-3"><div class="col d-grid"><a href="./productRgstrPage" class="btn purchaseBtn">프로젝트 등록 하러 가기</a></div></div>
+
+                <!--밑바닥 시작-->
+                    <div class="row pb-4">
+                        <div class="col packBox"> 
+
+                            <div class="row mb-2 border-bottom">
+                                <div class="col mx-2">
+                                    <div class="row"><div class="col my-2 fw-bold" style="font-size: 1em; color:#555c65;">문의</div></div>
+                                    <div class="row border-bottom pb-2"><div class="col" style="font-size: 0.85em; color:#555c65;"> <i class="i class= bi bi-envelope" style="font-size: 1.1em;"></i> 프로젝트 관련 상담</div> <div class="col-2 text-end" style="font-size:1em;"> > </div></div>
+                                </div>
                             </div>
-                        </div>    
+
+                            <div class="row mb-4 border-bottom">
+                                <div class="col mx-2" style="color:#555c65;">
+                                    <div class="row"><div class="col my-2 fw-bold" style="font-size: 1em;">고객센터</div></div>
+                                    <div class="row border-bottom pb-2"><div class="col" style="font-size: 0.85em;"> <i class="bi bi-chat-text" style="font-size: 1.1em;"></i> 1:1 채팅 상담</div> <div class="col-2 text-end" style="font-size:1em;"> > </div></div>
+                                    <div class="row border-bottom py-2"><div class="col" style="font-size: 0.85em;"> <i class="bi bi-journal-bookmark" style="font-size: 1.1em;"></i> 도움말 센터</div><div class="col-2 text-end" style="font-size:1em;"> > </div></div>
+                                    <div class="row border-bottom py-2"><div class="col" style="font-size: 0.85em;"> <i class="bi bi-megaphone" style="font-size: 1.1em;"></i> 공지사항</div><div class="col-2 text-end" style="font-size:1em;"> > </div></div>
+                                    <div class="row border-bottom py-2"><div class="col" style="font-size: 0.85em;"> <i class="bi bi-wrench-adjustable" style="font-size: 1.1em;"></i> 설정</div><div class="col-2 text-end" style="font-size:1em;"> > </div></div>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>        
-
-
-
-
-                    <div class="row mt-1 mb-3"><div class="col d-grid"><a href="./productRgstrPage" class="btn py-2 border border-black border-2 rounded text-center fw-bold" style="width:100%;">프로젝트 등록 하러 가기</a></div></div>
-
-                    <div class="row mb-2 border-bottom">
-                        <div class="col mx-2">
-                            <div class="row"><div class="col my-2 fw-bold" style="font-size: 1em; color:#555c65;;">문의</div></div>
-                            <div class="row border-bottom pb-2"><div class="col" style="font-size: 0.85em;"> <i class="i class= bi bi-envelope" style="font-size: 1.1em;"></i> 프로젝트 관련 상담</div> <div class="col-2 text-end" style="font-size:1em;"> > </div></div>
-                        </div>
-                    </div>
-
-                    <div class="row mb-4 border-bottom">
-                        <div class="col mx-2" style="color:#555c65;">
-                            <div class="row"><div class="col my-2 fw-bold" style="font-size: 1em;">고객센터</div></div>
-                            <div class="row border-bottom pb-2"><div class="col" style="font-size: 0.85em;"> <i class="bi bi-chat-text" style="font-size: 1.1em;"></i> 1:1 채팅 상담</div> <div class="col-2 text-end" style="font-size:1em;"> > </div></div>
-                            <div class="row border-bottom py-2"><div class="col" style="font-size: 0.85em;"> <i class="bi bi-journal-bookmark" style="font-size: 1.1em;"></i> 도움말 센터</div><div class="col-2 text-end" style="font-size:1em;"> > </div></div>
-                            <div class="row border-bottom py-2"><div class="col" style="font-size: 0.85em;"> <i class="bi bi-megaphone" style="font-size: 1.1em;"></i> 공지사항</div><div class="col-2 text-end" style="font-size:1em;"> > </div></div>
-                            <div class="row border-bottom py-2"><div class="col" style="font-size: 0.85em;"> <i class="bi bi-wrench-adjustable" style="font-size: 1.1em;"></i> 설정</div><div class="col-2 text-end" style="font-size:1em;"> > </div></div>
-                        </div>
-                    </div>
 
     <!--컨테이너 로우 콜 끝-->
             </div>

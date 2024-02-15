@@ -12,13 +12,17 @@
         <script>
             
             let user_pk = null;
-            function getUrlKey() {
-                const urlParams = new URLSearchParams(location.search);
-                const key = urlParams.get("user_pk");
-                user_pk = key;
-                loadMyProfileInfo(user_pk);
-                
+            function getUserDto(){
+                const url = "/mstar/getUserDto";
+                fetch(url)
+                .then(response => response.json())
+                .then((response) =>{
+                    user_pk = response.data.user_pk;
+                    console.log(user_pk)
+                    loadMyProfileInfo(user_pk);
+                });
             }
+
             let profile_info_pk = null;
             function loadMyProfileInfo(user_pk){
                 const url = "/mstar/myProfileInfoDto";
@@ -38,14 +42,15 @@
             //////////////////////////////////////////////////
             let another_info_pk = null;
             function showDirectModal(another_infoPk){
+                closeSearchModal();
                 another_info_pk = another_infoPk;
-                const directModal = bootstrap.Modal.getOrCreateInstance("#directModal");
                 updateDirectReadStatus();
-                directModal.show();
                 loadAnotherProfileInfo(profile_info_pk, another_info_pk);
                 loadDirectChatList(profile_info_pk, another_info_pk);
                 loadMyProfileInfoForFollow(profile_info_pk, another_info_pk);
                 inputDirectHandler();
+                const directModal = bootstrap.Modal.getOrCreateInstance("#directModal");
+                directModal.show();
                 
             }
             function closeDirectModal(){
@@ -95,7 +100,7 @@
             }
 
             function loadAnotherProfileInfo(profile_info_pk, another_info_pk){
-                const url = "./loadAnotherProfileInfo";
+                const url = "/mstar/loadAnotherProfileInfo";
                 fetch(url, {
                      method: "post",
                      headers: {
@@ -158,7 +163,7 @@
             let lastDirectPk = 0;
             function loadDirectChatList(profile_info_pk, another_info_pk){
                 
-                const url = "./loadDirectChatList";
+                const url = "/mstar/loadDirectChatList";
                 fetch(url, {
                      method: "post",
                      headers: {
@@ -262,7 +267,7 @@
 
             function loadNewChat(){
                 loadMyDirectReadStatus()
-                const url = "./loadNewChat";
+                const url = "/mstar/loadNewChat";
 
                 fetch(url, {
                      method: "post",
@@ -318,8 +323,7 @@
                         }
                         lastDirectPk = response.data[response.data.length - 1].directDto.direct_pk;
                         const scrollBox = document.querySelector("#scrollBox")
-                        console.log(scrollBox.scrollTop)
-                        console.log(scrollBox.scrollHeight)
+                        
                         scrollBox.scrollTop = scrollBox.scrollHeight;
                     }
                     
@@ -327,7 +331,7 @@
                 
             }
             function updateDirectReadStatus(){
-                const url = "./updateDirectReadStatus";
+                const url = "/mstar/updateDirectReadStatus";
 
                 fetch(url, {
                      method: "post",
@@ -338,7 +342,7 @@
             	})
             }
             function loadMyDirectReadStatus(){
-                const url = "./loadMyDirectReadStatus";
+                const url = "/mstar/loadMyDirectReadStatus";
 
                 fetch(url, {
                      method: "post",
@@ -369,7 +373,7 @@
 
             ///////////////////////////////////////////////
             function loadDirectUserList(){
-                const url = "./loadDirectUserList";
+                const url = "/mstar/loadDirectUserList";
                 
                 fetch(url, {
                      method: "post",
@@ -474,7 +478,7 @@
             function selectSearchUserList(text){
                 console.log(text)
                 console.log(profile_info_pk)
-                const url = "./searchUserInfo";
+                const url = "/mstar/searchUserInfo";
 
                 fetch(url, {
                      method: "post",
@@ -493,7 +497,7 @@
                     for(e of response.data){
                         const searchListWrapper = document.querySelector("#searchListTemplete .searchListWrapper").cloneNode(true);
                         const another_info_pk = e.profileInfoDto.profile_info_pk;
-                        searchListWrapper.setAttribute("onclick", "location.href='./directPage?profile_info_pk="+profile_info_pk+"&another_info_pk="+another_info_pk+"'" )
+                        searchListWrapper.setAttribute("onclick", "showDirectModal(another_info_pk="+another_info_pk+")");
                         
                         const searchProfile_photo = searchListWrapper.querySelector(".searchProfile_photo");
                         searchProfile_photo.src = e.profileInfoDto.profile_photo;
@@ -522,7 +526,7 @@
             }
          
             window.addEventListener("DOMContentLoaded", () =>{
-                getUrlKey();
+                getUserDto();
             });
 
         </script>

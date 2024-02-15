@@ -16,13 +16,13 @@ public class AuctionController {
     @RequestMapping("mainPage")
     public String mainPage(){
 
-        return "/auction/mainPage";
+        return "auction/mainPage";
     }
 
     @RequestMapping("registerGoodsArticleCategoryPage")
     public String registerGoodsArticleCategoryPage(){
 
-        return "/auction/registerGoodsArticleCategoryPage";
+        return "auction/registerGoodsArticleCategoryPage";
     }
     
 
@@ -30,52 +30,52 @@ public class AuctionController {
     public String registerGoodsArticleInfoPage(HttpSession session){
         session.setAttribute("auctionImageDtoList", null);
 
-        return "/auction/registerGoodsArticleInfoPage";
+        return "auction/registerGoodsArticleInfoPage";
     }
 
     @RequestMapping("registerGoodsArticleSalesInfoPage")
     public String registerGoodsArticleSalesInfoPage(){
 
 
-        return "/auction/registerGoodsArticleSalesInfoPage";
+        return "auction/registerGoodsArticleSalesInfoPage";
     }
 
     @RequestMapping("goodsListPage")
     public String goodsListPage(){
 
-        return "/auction/goodsListPage";
+        return "auction/goodsListPage";
     }
 
     @RequestMapping("goodsDetailPage")
     public String goodsDetailPage(Model model, int goodsPk){
         model.addAttribute("goodsPk", goodsPk);
 
-        return "/auction/goodsDetailPage";
+        return "auction/goodsDetailPage";
     }
 
     @RequestMapping("registerLogPage")
     public String registerLogPage(){
 
-        return "/auction/registerLogPage";
+        return "auction/registerLogPage";
     }
 
     @RequestMapping("myPage")
     public String myPage(){
 
-        return "/auction/myPage";
+        return "auction/myPage";
     }
 
     @RequestMapping("myBidHistoryPage")
     public String myBidHistoryPage(){
 
-        return "/auction/myBidHistoryPage";
+        return "auction/myBidHistoryPage";
     }
 
 
     @RequestMapping("test")
     public String test(){
 
-        return "/auction/test";
+        return "auction/test";
     }
 
 

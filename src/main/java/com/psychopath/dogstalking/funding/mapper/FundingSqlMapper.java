@@ -107,4 +107,10 @@ public interface FundingSqlMapper {
     //mainpage 펀딩 리스트
     public List<Map<String,Object>> selectFundingMainList();
 
+
+    //////타 dto//////////
+    
+    //프로필 사진 가져오기 
+    public String pickProfilePhoto(int user_pk);
+
 }

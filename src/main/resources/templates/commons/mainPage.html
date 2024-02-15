@@ -5,6 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <script src="/public/js/commons/naviBar.js"></script>
+    <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}" />
+
     <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
     <script src="/public/js/commons/lockLikeMobile.js"></script>
 
@@ -77,13 +80,15 @@
 
 <body>
     <div class="container-fluid">
+        <div th:insert="~{/commons/naviBar}"></div>
+
         <div class="row bg-img">
             <div class="col">
                 <div class="row">
                     <div class="col px-4 py-2">
                         <div class="row">
                             <div class="col-2">
-                                <img th:onclick="|location.href='@{../mstar/profilePage(user_pk=${session.sessionUser.user_pk})}'|"
+                                <img th:if="${session.sessionUser != null}" th:onclick="|location.href='@{../mstar/profilePage(user_pk=${session.sessionUser.user_pk})}'|"
                                     class="img-fluid rounded-circle float-start" th:src="${path}"
                                     style="aspect-ratio: 1/1; cursor: pointer;">
                             </div>
@@ -332,135 +337,6 @@
                 </div>
             </div>
 
-            <div class="row bg-white sticky-bottom border-top" style="width: auto;">
-                <div class="col py-2">
-                    <div id="menuBar" class="row d-none">
-                        <div onclick="" class="col text-center" style="font-size: 4vw; cursor: pointer;">
-                            <div class="row">
-                                <div class="col">
-                                    <i class="fa-solid fa-house"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    홈
-                                </div>
-                            </div>
-                        </div>
-                        <div onclick="" class="col text-center ps-0" style="font-size: 4vw; cursor: pointer;">
-                            <div class="row">
-                                <div class="col">
-                                    <i class="bi bi-person-hearts"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    동호회
-                                </div>
-                            </div>
-                        </div>
-                        <div onclick="" class="col text-center ps-0" style="font-size: 4vw; cursor: pointer;">
-                            <div class="row">
-                                <div class="col">
-                                    <i class="bi bi-geo-fill"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    토킹
-                                </div>
-                            </div>
-                        </div>
-                        <div onclick="" class="col text-center ps-0" style="font-size: 4vw; cursor: pointer;">
-                            <div class="row">
-                                <div class="col">
-                                    <i class="bi bi-person-hearts"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    펫시터
-                                </div>
-                            </div>
-                        </div>
-                        <div onclick="" class="col text-center ps-0" style="font-size: 4vw; cursor: pointer;">
-                            <div class="row">
-                                <div class="col">
-                                    <i class="fa-solid fa-house"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col ">
-                                    홈
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div id="homeBar" onclick="showHomeBar()" class="col text-center"
-                            style="font-size: 4vw; cursor: pointer;">
-                            <div class="row">
-                                <div class="col menu-trigger text-black">
-                                    <i id="menuIcon" class="fa-solid fa-bars"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col text-secondary">
-                                    메뉴
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col text-body-tertiary">
-                                    <i class="fa-solid fa-bolt"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col text-secondary">
-                                    먹거리
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col text-body-tertiary">
-                                    <i class="fa-solid fa-hand-holding-medical"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col text-secondary">
-                                    멍냥닥터
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col text-body-tertiary">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col text-secondary">
-                                    멍냥피드
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col text-center ps-0" style="font-size: 4vw;">
-                            <div class="row">
-                                <div class="col text-body-tertiary">
-                                    <i class="fa-solid fa-comment-dots"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col text-secondary">
-                                    커뮤니티
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
 

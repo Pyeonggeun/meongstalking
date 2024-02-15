@@ -74,6 +74,11 @@
         VALUES (#{name},#{content})
 	</insert>
 
+    <select id="getLastInsertClubId" resultType="int">
+        select MAX(club_pk) from ms_club
+    </select>
+
+
     <insert id="insertClubUser">
 		INSERT INTO ms_club_user(user_pk,club_pk,content)
         VALUES (#{user_pk},#{club_pk},"길드 개설자")
@@ -92,8 +97,13 @@
         SELECT MAX(club_pk) FROM ms_club;
     </select>
     
+
+    <select id="isClubMember" resultType="int">
+        SELECT COUNT(*) FROM ms_club_user WHERE user_pk = #{user_pk};
+    </select>
+
     <select id="selectClubPK" resultType="int">
-        SELECT ms_club_user.club_pk FROM ms_club_user WHERE user_pk = #{user_pk};
+        SELECT IFNULL(ms_club_user.club_pk, -1) FROM ms_club_user WHERE user_pk = #{user_pk};
     </select>
     
     <select id="selectClubList" resultType="map">

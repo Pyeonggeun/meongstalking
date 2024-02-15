@@ -62,7 +62,10 @@ public class ClubController {
         model.addAttribute("clublist", clublist);
 
         if (memberLank == 1 || memberLank == 3) {
-            return "redirect:./clubListPage";
+
+            int clubPk = clubService.selectClubPK(userDto.getUser_pk());
+
+            return "redirect:./clubListPage?clubPk=" + clubPk;
         } else {
             return "club/clubHomePage";
         }
@@ -72,6 +75,7 @@ public class ClubController {
     @RequestMapping("freeBoardPage")
     public String freeBoardPage(HttpSession session, Model model, ClubDto clubDto) {
         UserDto userDto = (UserDto) session.getAttribute("sessionUser");
+
         int useid = userDto.getUser_pk();
         int pk = clubService.selectClubPK(useid);
 
@@ -183,21 +187,26 @@ public class ClubController {
     }
 
     @RequestMapping("clubListPage")
-    public String clubListPage(HttpSession session, Model model) {
+    public String clubListPage(HttpSession session, Model model, int clubPk) {
 
-        UserDto userDto = (UserDto) session.getAttribute("sessionUser");
+
+
         List<Map<String, Object>> clublist = clubService.selectClubList();
         model.addAttribute("clublist", clublist);
-
-        // System.out.println("userDto.getUser_pk(): "+userDto.getUser_pk());
-
-        int clubPk = clubService.selectClubPK(userDto.getUser_pk());
-
-        // System.out.println("clubPk: "+clubPk);
-
         Map<String, Object> showclubpk = clubService.showclubpk(clubPk);
         model.addAttribute("showclubpk", showclubpk);
+        Map<String, Object> latestPost = clubService.selectLatestPost(clubPk);
+        model.addAttribute("latestPost", latestPost);
+        List<Map<String, Object>> latestAlbum = clubService.selectLatestAlbum(clubPk);
+        model.addAttribute("latestAlbum", latestAlbum);
+        List<Map<String, Object>> memberlist = clubService.selectMember(clubPk);
+        model.addAttribute("memberlist", memberlist);
 
+
+        UserDto userDto = (UserDto) session.getAttribute("sessionUser");
+        // System.out.println("userDto.getUser_pk(): "+userDto.getUser_pk());
+        // int clubPk = clubService.selectClubPK(userDto.getUser_pk());
+        // System.out.println("clubPk: "+clubPk);
         // System.out.println("showclubpk: "+showclubpk);
 
         Integer memberLank = null;
@@ -206,6 +215,10 @@ public class ClubController {
         if (memberLank == null || !(memberLank >= 1 && memberLank <= 3)) {
             memberLank = 9;
         }
+
+        session.setAttribute("checkMember", memberLank);
+
+
         // System.out.println("memberLank : " + memberLank);
         model.addAttribute("checkMember", memberLank);
 
@@ -216,14 +229,6 @@ public class ClubController {
         }
         model.addAttribute("ApplyStatus", ApplyStatus);
 
-        Map<String, Object> latestPost = clubService.selectLatestPost(clubPk);
-        model.addAttribute("latestPost", latestPost);
-
-        List<Map<String, Object>> latestAlbum = clubService.selectLatestAlbum(clubPk);
-        model.addAttribute("latestAlbum", latestAlbum);
-
-        List<Map<String, Object>> memberlist = clubService.selectMember(clubPk);
-        model.addAttribute("memberlist", memberlist);
 
        // System.out.println("memberlist: "+memberlist);
 
@@ -244,7 +249,8 @@ public class ClubController {
         }
         int checkb = clubService.checkb();
 
-        int clubPks = clubService.selectClubPK(userDto.getUser_pk());
+        //int clubPks = clubService.selectClubPK(userDto.getUser_pk());
+        int clubPks = clubService.getLastInsertClubId();
 
         clubUserDto.setClub_user_pk(clubpk + 1);
         clubUserDto.setUser_pk(userDto.getUser_pk());
@@ -313,19 +319,19 @@ public class ClubController {
 
         Map<String, Object> clubTF = clubService.applyClubUserTF(userDto.getUser_pk());
         model.addAttribute("clubTF", clubTF);
-        return "redirect:./clubListPage";
+        return "redirect:./clubListPage?clubPk=" + clubPk;
     }
 
     @RequestMapping("approve")
     public String approve(@RequestParam("user_pk") int userPk, ClubUserDto clubUserDto,
             ClubStatusLogDto clubStatusLogDto, ClubUserRanklogDto clubUserRanklogDto, HttpSession session) {
 
-        UserDto userDto = (UserDto) session.getAttribute("sessionUser");
+        // UserDto userDto = (UserDto) session.getAttribute("sessionUser");
 
         clubStatusLogDto.setClub_user_pk(userPk);
         clubService.updateApplyClub(clubStatusLogDto);
 
-        clubUserRanklogDto.setClub_user_pk(userDto.getUser_pk());
+        clubUserRanklogDto.setClub_user_pk(userPk);
         clubUserRanklogDto.setClubuserranklogcategory_pk(3);
         clubService.insertClubUserRank(clubUserRanklogDto);
 

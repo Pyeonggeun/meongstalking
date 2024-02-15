@@ -113,6 +113,10 @@ public class FundingServiceImpl {
     public Map<String,Object> selectProductInfo(int pk){
         //개별상품 정보 가져오기
         FundingProductDto fundingProductDto =fundingSqlMapper.selectProductInfo(pk);
+        //등록회원 정보 가져오기
+        UserDto userDto = fundingSqlMapper.selectUserInfo(fundingProductDto.getUser_pk());
+        //등록회원 사진 가져오기
+        String photo = fundingSqlMapper.pickProfilePhoto(fundingProductDto.getUser_pk());
         //상품 상세 페이지에서 보일 새소식 1개만 뽑아보내기
         String fundingNewsDto = fundingSqlMapper.selectNewsForDetail(pk);
         //상품 상세 페이지에서 보일 새소식 리스트 뽑아보내기
@@ -130,6 +134,8 @@ public class FundingServiceImpl {
 
         Map<String,Object> productInfo = new HashMap<>(); 
         productInfo.put("detail",fundingProductDto);
+        productInfo.put("user", userDto);
+        productInfo.put("photo",photo);
         productInfo.put("news",fundingNewsDto);
         productInfo.put("newsList",newsList);
         productInfo.put("c_news",c_news);
@@ -276,6 +282,14 @@ public class FundingServiceImpl {
 
     public List<Map<String, Object>> selectFundingMainList(){
         return fundingSqlMapper.selectFundingMainList();
+    }
+
+
+    //////////// 내가 만들지 않은 쪽 dto가져오기 ///////////////////
+
+    //mstar쪽에서 프로필 사진 가져오기
+    public String pickProfilePhoto(int user_pk){
+        return fundingSqlMapper.pickProfilePhoto(user_pk);
     }
 
 }

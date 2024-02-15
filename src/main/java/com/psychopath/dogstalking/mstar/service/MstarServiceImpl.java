@@ -775,6 +775,9 @@ public class MstarServiceImpl {
 
         return map;
     }
+    public int getArticleLikeCount(int article_pk){
+       return mstarSqlMapper.selectArticleLikeCount(article_pk);
+    }
 
     //다이렉트 리스트!!!!!!
     public List<Map<String, Object>> selectDirectList(int profile_info_pk){
