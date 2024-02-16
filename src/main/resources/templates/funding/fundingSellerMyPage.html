@@ -72,7 +72,7 @@
 
     .sevenDayData{
         font-weight: bold;
-        color: coral;
+        color: rgb(65,147,239);
     }
     .useridCol{
         padding-top: 0.7em;
@@ -104,9 +104,9 @@
     <!--컨테이너 로우 콜 세팅 여기까지-->
                     <div class="row">
                         <div class="col packtitleBox">
-                            <div class="row py-3">
-                                <div class="col-2 pe-0 ps-3" style="align-self: center;"><a class="px-0" href="./listPage"><i class="fa-solid fa-chevron-left px-0" style="font-size: 1.35em; color: black;"></i></a></div>
-                                <div class="col ps-0 fw-bold text-start"><span style="font-size: 1.45em;">내 정보</span></div>
+                            <div class="row py-2">
+                                <div class="col-2 pe-0 ps-3" style="align-self: center;"><a class="px-0" href="./listPage"><i class="fa-solid fa-chevron-left px-0" style="font-size: 1.2em; color: black;"></i></a></div>
+                                <div class="col ps-0 fw-bold text-start"><span style="font-size: 1.35em;">내 정보</span></div>
                                 <div class="col-4 px-0 me-2">
                                     <div class="row border border-0 rounded me-2" style="background-color: gainsboro;"><div class="col px-2 py-1 text-center border border-0 rounded" style="background-color: gainsboro; color: gray; font-size: 1em"><a href="./fundingUserMyPage" id="sponsorsBtn" class="link-underline-opacity-0" style="color: gray;">후원</a></div><div class="col px-2 py-1 rounded fw-bold text-white text-center" style="background-color: black; font-size: 1em;">등록</div></div>
                                 </div>
@@ -114,8 +114,8 @@
 
                             <div class="row py-1 mb-2 mx-1">
                                 <div class="col-2 px-1 text-center d-grid">
-                                    <!--<img th:src="@{'/uploadFiles/'+${photo}}" alt="미등록" class="rounded-circle" style="width: 100%;>-->
-                                    <img th:src="@{/public/image/dog_img.png}" class="rounded-circle" style="width: 100%;">
+                                    <img th:src="@{'/uploadFiles/'+${photo}}" alt="미등록" class="rounded-circle" style="width: 100%;">
+                                    <!-- <img th:src="@{/public/image/dog_img.png}" class="rounded-circle" style="width: 100%;"> -->
                                 </div>         
                                 <div class="col useridCol" style="font-size: 0.85em;"><span class="fw-bold" th:utext="${session.sessionUser.userid}" style="font-size: 1.3em;"></span> 님 안녕하세요</div>
                             </div>
@@ -145,8 +145,8 @@
                                     <div class="row py-1 mx-1"><div class="col" style="font-size: 0.9em;"><i class="bi bi-trophy"></i> 내가 등록한 프로젝트의 목표 펀딩률</div></div>
                                     <div class="row border rounded py-1 mx-1 mb-4">
                                         <div class="col">
-                                                <div class="row py-1"><div class="col ms-1" style="font-size: 0.85em;">달성 프로젝트</div><div class="col me-2 text-end fw-bold" th:text="${stast.success}" style="font-size: 0.85em; color:coral;"></div></div>
-                                                <div class="row py-1"><div class="col ms-1" style="font-size: 0.85em;">미달성 프로젝트</div><div class="col me-2 text-end fw-bold" th:text="${stast.fail}" style="font-size: 0.85em; color:coral;"></div></div>
+                                                <div class="row py-1"><div class="col ms-1" style="font-size: 0.85em;">달성 프로젝트</div><div class="col me-2 text-end fw-bold" th:text="${stast.success}" style="font-size: 0.85em; color:rgb(65,147,239)"></div></div>
+                                                <div class="row py-1"><div class="col ms-1" style="font-size: 0.85em;">미달성 프로젝트</div><div class="col me-2 text-end fw-bold" th:text="${stast.fail}" style="font-size: 0.85em; color:rgb(65,147,239)"></div></div>
                                         </div>        
                                     </div>
 

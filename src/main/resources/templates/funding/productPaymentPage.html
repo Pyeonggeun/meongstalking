@@ -6,9 +6,86 @@
     <title>펀딩 프로젝트 후원(결제) 페이지</title>
     
 <style>
-    body{
+    .container-fluid{
+            background-color: rgb(231, 229, 229);
             font-family: 'Noto Sans KR', sans-serif;
         }
+
+    .packtitleBox{
+        background-color: white;
+        border-bottom-left-radius: 1em;
+        border-bottom-right-radius: 1em;
+        margin: 0.7em;
+        margin-top: 0em;
+        padding-top: 0.5em;
+        padding-bottom: 0.25em;
+    }
+
+    .packBox{
+        background-color: white;
+        border-radius: 1em;
+        padding-top: 0.75em;
+        padding-bottom: 0.75em;
+        margin: 0.7em;
+    }
+
+    .packBoxForImg{
+        background-color: white;
+        border-radius: 1em;
+        margin: 0.7em;
+    }
+
+    #titleImg{
+        border-top-left-radius: 1em;
+        border-bottom-left-radius: 1em;
+    }
+
+    .preCol{
+            text-align: end;
+            max-width: 100%;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+    .packRow{
+        margin-top: 1em;
+        /* margin-bottom: 1em; */
+    }
+
+    .subTitleCol{
+        text-align: start;
+        font-size:1em; 
+        color:gray;  
+    } 
+
+    .cotentCol{
+        text-align: end;
+        font-size: 1em;   
+    }
+
+    .payBtn{
+        border: 0.2em solid #ddd;
+        opacity:75%;
+        border-radius: 0.25em;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    /* .payBtn:checked {
+        background-color: rgb(65,147,239) !important;
+        color: white;
+        } */
+
+    .paymentBtn{
+        padding-left: 0.5em;
+        border-radius: 0.5em;
+        text-align: center;
+        border: 0;
+        color: white;
+        font-weight: bold;
+        background-color: rgb(65,147,239);
+    }
+
 </style>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -20,66 +97,107 @@
 </head>
 
 <body>
-    <div class="container img-fluid">
+    <div class="container-fluid">
         <div class="row">
             <div class="col">
     <!--컨테이너 로우 콜 세팅 여기까지-->
                 
-                <div class="row py-2"><div class="col"></div><div class="col text-end"><a href="./listPage" class="me-3"><i class="bi bi-shop" style="color: black;"></i></a><a href="/commons/mainPage"><i class="bi bi-house" style="color: black;"></i></a></div></div>
-                
-                <div clas="row">
-                    <div class="col text-center">
-                        <span style="font-size: 3em; color: gainsboro;"><i class="bi bi-check-circle-fill"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-dash-lg"></i></span><span style="font-size: 3em;"><i class="bi bi-check-circle"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-dash-lg"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-circle"></i></span>
+            <!--상단 버튼과 진행도--> 
+                <div class="row">
+                    <div class="col packtitleBox">
+                        <!-- <div class="row py-2"><div class="col"></div><div class="col text-end"><a href="./listPage" class="me-3"><i class="bi bi-shop" style="color: black;"></i></a><a href="/commons/mainPage"><i class="bi bi-house" style="color: black;"></i></a></div></div> -->
+                        <div clas="row">
+                            <div class="col text-center">
+                                <span style="font-size: 3em; color: gainsboro;"><i class="bi bi-check-circle-fill"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-dash-lg"></i></span><span style="font-size: 3em;"><i class="bi bi-check-circle"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-dash-lg"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-circle"></i></span>
+                            </div>
+                        </div>                        
+                        <div class="row">
+                            <div class="col text-center" style="font-size: 0.7em;">결제 정보 확인이 진행중입니다.</div>
+                        </div>
                     </div>
-                </div>
-                <div class="row mb-3"><div class="col text-center" style="font-size: 0.7em;">결제 정보 확인이 진행중입니다.</div></div>
-
+                </div> 
+                
                 <form action="./productPaymentProcess" method="post">
 
-                <div class="row pb-2"><div class="col" th:text="${product.detail.product_name}" style="font-size: 0.85em"></div></div>
-                <div class="row pb-2"><div class="col ms-1" th:text="${product.detail.product_component}" style="font-size: 1em"></div></div>
-                <div class="row pb-2"><div class="col ms-1" style="font-size: 0.7em; color:gray">옵션 - 선택할 수 있는 옵션이 없습니다.</div></div>
-                <div class="row mb-2"><div class="col text-end">수량 : <span th:text="${session.purchaseMap.quantity}"></span> 개 <span th:text="${session.purchaseMap.quantity * product.detail.price}"></span>원</div></div>
-                
-                <div clas="row py-2 my-2">
-                    <div class="col py-2" style="background-color: gainsboro;">
-                        <div class="row mb-1"><div class="col-4" style="font-size: 0.8em;"> 쿠폰 사용</div><div class="col text-end" style="font-size: 0.8em;">사용가능한 쿠폰이 없습니다.</div></div>
-                        <div class="row"><div class="col-4" style="font-size: 0.8em;"> 포인트 사용</div><div class="col text-end" style="font-size: 0.8em;"><input type="checkbox"> 모두사용(보유 포인트0P) <input type="text"></div></div>
+                <!--결제 대상 정보-->    
+                <div class="row packRow">
+                    <div class="col packBoxForImg">
+
+                        <div class="row">
+                            <div class="col-4 px-0 d-grid">
+                                <img th:src="'/uploadFiles/'+${product.detail.title_image}" id="titleImg" class="img-fluid">
+                            </div>
+                            <div class="col-8 py-1 text-end" style="font-size: 0.85em; align-self: center;">
+                                <div class="row pb-1"><div class="col preCol" th:text="${product.detail.product_component}"></div></div>
+                                <div class="row pb-1"><div class="col" style="color:gray">선택할 수 있는 옵션이 없습니다.</div></div>
+                                <div class="row"><div class="col" style="font-size: 1.15em;">수량 : <span th:text="${session.purchaseMap.quantity}"></span> 개 <span th:text="${session.purchaseMap.quantity * product.detail.price}"></span>원</div></div>
+                            </div> 
+                        </div>
+
+                    </div>
+                </div>    
+                        
+                <!-- 쿠폰란-->
+                <div class="row packRow">
+                    <div class="col packBox">
+
+                        <div class="row pb-2">
+                            <div class="col-4 subTitleCol"> 쿠폰 사용</div>
+                            <div class="col cotentCol">사용가능한 쿠폰이 없습니다.</div>
+                        </div>
+                        
+                        <div class="row pb-2">
+                            <div class="col-4 subTitleCol"> 포인트 사용</div>
+                            <div class="col cotentCol">
+                                <div class="row mb-2"><div class="col"><input type="checkbox"> 모두사용(보유 포인트 0 P)</div></div> 
+                                <div class="row mb-2"><div class="col-8" style="margin: auto;"><input type="text" style="width: 10em" class="form-control"></div></div>
+                            </div>    
+                        </div>
+
                     </div>
                 </div>
 
-                <div clas="row">
-                    <div class="col pt-1 pb-2 mt-1 mb-2">
-                        <div class="row py-2"><div class="col fw-bold" style="font-size:1.05em">결제 금액</div></div>
-                        <div class="row"><div class="col ps-4" style="font-size:0.9em; color:gray;">펀딩상품 금액</div> <div class="col pe-4 text-end" style="font-size:1em;">0원</div></div>
-                        <div class="row"><div class="col ps-4" style="font-size:0.9em; color:gray;">쿠폰 할인 금액</div> <div class="col pe-4 text-end" style="font-size:1em;">0원</div></div>
-                        <div class="row"><div class="col ps-4" style="font-size:0.9em; color:gray;">포인트 할인 금액</div> <div class="col pe-4 text-end" style="font-size:1em;">0원</div></div>
-                        <div class="row"><div class="col ps-4" style="font-size:0.9em; color:gray;">배송비</div> <div class="col pe-4 text-end" style="font-size:1em;">0원</div></div>
-                        <div class="row py-2 mb-2"><div class="col ps-4 fw-bold" style="font-size:1.05em;">총 결제 금액</div> <div class="col pe-4 fw-bold text-end" style="font-size:1.15em;"><span th:text="${session.purchaseMap.quantity * product.detail.price}"></span>원</div></div>
+                <!--결제금액-->
+                <div class="row packRow">
+                    <div class="col packBox">
+                        <div class="row pb-2"><div class="col fw-bold" style="font-size:1.05em">결제 금액</div></div>
+                        <div class="row pb-1"><div class="col subTitleCol">펀딩상품 금액</div> <div class="col cotentCol">0원</div></div>
+                        <div class="row pb-1"><div class="col subTitleCol">쿠폰 할인 금액</div> <div class="col cotentCol">0원</div></div>
+                        <div class="row pb-1"><div class="col subTitleCol">포인트 할인 금액</div> <div class="col cotentCol">0원</div></div>
+                        <div class="row pb-1"><div class="col subTitleCol">배송비</div> <div class="col cotentCol">0원</div></div>
+                        <div class="row py-2"><div class="col fw-bold" style="font-size:1.05em;">총 결제 금액</div> <div class="col fw-bold text-end" style="font-size:1.15em;"><span style="color: rgb(65,147,239);" th:text="${session.purchaseMap.quantity * product.detail.price}"></span>원</div></div>
                     </div>
                 </div>
-
-                <div class="row"><div class="col fw-bold" style="font-size:1.05em">회원님 정보</div></div>
-                <div class = "row">
-                    <div class="col pt-1 pb-2 mt-1 mb-2 mx-2" style="background-color: gainsboro;">
-                        <div class="row"><div class="col"><span style="font-size: 0.85em;">이름</span></div></div>
-                        <div class="row"><div class="col"><span style="font-size: 0.9em; color: gray;" th:text="${session.sessionUser.name}"></span></div></div>
-                        <div class="row"><div class="col"><span style="font-size: 0.85em;">이메일</span></div></div>
-                        <div class="row"><div class="col"><span style="font-size: 0.9em; color: gray;" th:text="${session.sessionUser.email}"></span></div></div>
-                        <div class="row"><div class="col"><span style="font-size: 0.85em;">연락처</span></div></div>
-                        <div class="row"><div class="col"><span style="font-size: 0.9em; color: gray;" th:text="${session.sessionUser.phone}"></span></div></div>
-                        <div class="row"><div class="col"></div></div>
+                <!--회원정보-->
+                <div class = "row packRow">
+                    <div class="col packBox">
+                        <div class="row pb-2"><div class="col fw-bold" style="font-size:1.05em">회원님 정보</div></div>
+                        <div class="row pb-2">
+                            <div class="col subTitleCol"><span>이름</span></div>
+                            <div class="col cotentCol"><span th:text="${session.sessionUser.name}"></span></div>
+                        </div>
+                        
+                        <div class="row pb-2">
+                            <div class="col subTitleCol"><span>이메일</span></div>
+                            <div class="col cotentCol"><span th:text="${session.sessionUser.email}"></span></div>
+                        </div>
+                    
+                        <div class="row pb-2">
+                            <div class="col subTitleCol"><span>연락처</span></div>
+                            <div class="col cotentCol"><span th:text="${session.sessionUser.phone}"></span></div>
+                        </div>
                         
                     </div>
                 </div>
                 
-                <div class="row mt-3"><div class="col fw-bold" style="font-size:1.05em">배송지 정보</div></div>
-                <div class = "row">
-                    <div class="col pt-1 pb-2 mt-1 mb-2 mx-2">
+                <!--회원정보-->
+                <div class = "row packRow">
+                    <div class="col packBox">
                         
+                        <div class="row py-2"><div class="col fw-bold" style="font-size:1.05em">배송지 정보</div></div>
                         <div class="row pt-1 py-3 mb-2 border-bottom">
                             <div class="col-1"><input type="radio" name="selectDestination"></div>
-                            <div class="col">
+                            <div class="col" style="background-color: white;">
                                 <div class="row"><div class="col" style="font-size: 0.85em;">기존 설정 배송지</div></div>
                                 <div class="row"><div class="col"><span style="font-size: 0.75em; color: gray;" th:text="${session.sessionUser.name}"></span> <span style="font-size: 0.75em; color: gray;" th:text="${session.sessionUser.phone}"></span></div></div>
                                 <div class="row"><div class="col" style="font-size: 0.75em; color: gray;">상세주소지는 회원기본정보에 입력된 주소를 따릅니다</div></div>
@@ -88,47 +206,74 @@
 
                         <div class="row py-1 mb-2">
                             <div class="col-1 pt-1"><input type="radio" name="selectDestination"></div>
-                            <div class="col pt-1">
+                            <div class="col" style="background-color: white;">
                                 <div class="row"><div class="col" style="font-size: 0.85em;">새로입력</div></div>
-                                <div class="row py-1"><div class="col" style="font-size: 0.85em;">이름</div></div>
-                                <div class="row pb-2"><div class="col" style="font-size: 0.75em;"><input type="text" class="border border-none" style="width: 15em; height: 2em;"></div></div>
-                                <div class="row pb-1"><div class="col" style="font-size: 0.85em;">연락처</div></div>
-                                <div class="row pb-2"><div class="col" style="font-size: 0.75em;"><input type="text" class="border border-none" style="width: 15em; height: 2em;"></div></div>
-                                <div class="row pb-1"><div class="col" style="font-size: 0.85em;">주소</div></div>
-                                <div class="row pb-2"><div class="col" style="font-size: 0.75em;"><input type="text" class="border border-none" style="width: 23em; height: 2.1em;" placeholder="상세주소"></div></div>
+                                <div class="row py-1">
+                                    <div class="col-3 subTitleCol pe-0" >이름</div>
+                                    <div class="col cotentCol"><input type="text" class="border border-none" style="width: 13em; height: 1.5em;"></div>
+                                </div>
+                                <div class="row pb-1">
+                                    <div class="col-3 subTitleCol pe-0">연락처</div>
+                                    <div class="col cotentCol"><input type="text" class="border border-none" style="width: 13em; height: 1.5em;"></div>
+                                </div>
+                                <div class="row pb-1">
+                                    <div class="col-3 subTitleCol pe-0">주소</div>
+                                    <div class="col cotentCol"><textarea class="border border-none" style="width: 13em; height: 4em;" placeholder="상세주소"></textarea></div>
+                                </div>
+                                
                                 
                             </div>
                         </div>
 
                         <div class="row py-1">
                             <div class="col">
-                                <div class="row pb-1"><div class="col" style="font-size: 0.85em;">배송 시 요청사항(선택)</div></div>
-                                <div class="row"><div class="col"><input type="text" class="border border-none form-control py-1" style="width: 20em; height: 2em;" placeholder="ex)부재시 경비실에 보관해주세요."></div></div>
+                                <div class="row pb-1"><div class="col subTitleCol">배송 시 요청사항(선택)</div></div>
+                                <div class="row"><div class="col"><textarea class="border border-none form-control py-1" style="width: 20em; height: 2em;" placeholder="ex)부재시 경비실에 보관해주세요."></textarea></div></div>
                             </div>
                         </div>
-
-
-                        
+            
                     </div>
                 </div>
 
-                <div class="row"><div class="col"></div></div>
+            
+            <!--지금결제-->    
+            <div class = "row packRow">
+                <div class="col packBox">
+                        <div class="row py-1"><div class="col fw-bold" style="font-size: 1.05em;">지금 결제</div></div>
+                        <div class="row py-1">
+                            <div class="col-4 px-2 d-grid">
+                                <input type="radio" class="btn-check" name="options" id="option1" autocomplete="off">
+                                <label class="btn payBtn btn-outline-primary" for="option1">카드</label>
+                            </div>
+                            <div class="col-4 px-2 d-grid">
+                                <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off">
+                                <label class="btn payBtn btn-outline-primary" for="option2">가상계좌</label>
+                            </div>
+                            <div class="col-4 px-2 d-grid">
+                                <input type="radio" class="btn-check" name="options" id="option3" autocomplete="off" disabled>
+                                <label class="btn payBtn btn-outline-primary" for="option3">휴대폰</label>
+                            </div>
+                        </div>
+                        <div class="row pt-1 pb-2">
+                            <div class="col-4 px-2 d-grid">
+                                <input type="radio" class="btn-check" name="options" id="option4" autocomplete="off">
+                                <label class="btn payBtn btn-outline-primary" for="option4">카카오페이</label>
+                            </div>
+                            <div class="col-4 px-2 d-grid">
+                                <input type="radio" class="btn-check" name="options" id="option5" autocomplete="off">
+                                <label class="btn payBtn btn-outline-primary" for="option5">네이버페이</label>
+                            </div>
 
-                <div class="row my-2">
-                    <div class="col">
-                        <div class="row"><div class="col fw-bold" style="font-size: 1.1em;">지금 결제</div></div>
-                        <div class="row py-2"><div class="col-1"></div><div class="col border-bottom"><i class="bi bi-paypal"></i></div><div class="col border-bottom"></div><div class="col-1"></div></div>
-                        <div class="row py-2"><div class="col-1"></div><div class="col border-bottom border-4" style="font-size: 0.85em;">신용 / 체크카드</div><div class="col py-1 border-bottom border-4" style="font-size: 0.85em;"> 무이자 할부 안내 > </div><div class="col-1"></div></div>
-                    </div>
+                        </div> 
+                    </div>                      
                 </div>
                 
-
-
-                <div class="row text-center"><div class="col-3 px-0 mx-1 fw-bold text-center"><a th:href="@{./productPurchasePage(id=${product.detail.product_pk})}" class="btn text-white fw-bold rounded" style="font-size: 1em; background-color: lightcoral;">뒤로가기</a></div><div class="col d-grid"><input type="submit" value="결제하기" class="border border-2 border-black rounded" style="background-color: white;"></div></div>
+                <div class="row text-center py-2" style="background-color: white;">
+                    <div class="col-3 px-0 ms-2 fw-bold text-center"><a th:href="@{./productPurchasePage(id=${product.detail.product_pk})}" class="btn border fw-bold rounded" style="font-size: 1em;">뒤로가기</a></div>
+                    <div class="col d-grid"><input type="submit" value="결제하기" class="border paymentBtn"></div>
+                </div>
             </form>
                 
-                
-            <div class="row"><div class="col py-4"></div></div>
     <!--컨테이너 로우 콜 끝-->
             </div>
         </div>

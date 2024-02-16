@@ -183,6 +183,7 @@ public class FundingController {
     public String newsReadPage(Model model,@RequestParam("id") int product_pk){
         model.addAttribute("newsList", fundingService.selectNewsById(product_pk));
         model.addAttribute("c_news", fundingService.countNewsByPk(product_pk));
+        model.addAttribute("product_pk", product_pk);
         return "funding/newsReadPage";
     }
 
