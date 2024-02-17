@@ -18,10 +18,12 @@
             font-weight: normal;
             font-style: normal;
         }
+
         body {
             font-family: 'omyu_pretty';
             min-width: 320px;
         }
+
         .scrollable-menu {
             overflow-x: auto;
             white-space: nowrap;
@@ -175,7 +177,7 @@
     </script>
     <script src="/public/js/commons/naviBar.js"></script>
     <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}" />
-    
+
 </head>
 
 <body>
@@ -260,29 +262,53 @@
                         </div>
                     </div>
                 </div>
-                <p class="ms-3 mb-0 text-center" style="display: flex; align-items: center;">원하는 동호회를 찾지 못했나요?</p>
+                <div class="row-auto">
+                    <div class="col">
+                        <div class="row pt-2">
+                            <p class="text-center" style="display: flex; align-items: center;">원하는 동호회를 찾지
+                                못했나요?</p>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <a th:href="@{./createClubPage}" class="col-auto btn btn-primary p-3"
+                                style="font-size: 0.8rem; border-radius: 12px; opacity: 0.8; display: flex; align-items: center; justify-content: space-between;">
+                                <span style="font-size: 0.8rem;">관심사에 맞는 동호회를<br>직접 운영해 보시는 건 어때요?</span>
+                                <button type="button" class="btn btn-light mx-2"
+                                    style="border-radius: 12px; opacity: 0.9; font-size: 0.7rem; padding: 5px 10px; color: #007bff;">
+                                    동호회 만들기
+                                </button>
+                            </a>
 
-                <a th:href="@{./createClubPage}" class="col-10 btn btn-primary py-3 my-2"
-                    style="font-size: 0.8rem; border-radius: 12px; opacity: 0.8; display: flex; align-items: center; justify-content: space-between;">
-                    <span style="font-size: 0.6rem;">관심사에 맞는 동호회를<br>직접 운영해 보시는 건 어때요?</span>
-                    <button type="button" class="btn btn-light mx-2"
-                        style="border-radius: 12px; opacity: 0.9; font-size: 0.5rem; padding: 3px 10px; color: #007bff;">
-                        동호회 만들기
-                    </button>
-                </a>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div id="aaa" class="row pt-2 fw-bold justify-content-center">
-                <p class="ms-3 mb-0 text-center" style="display: flex; align-items: center;">원하는 동호회를 찾지 못했나요?</p>
+            <div id="aaa" class="row pt-2 fw-bold justify-content-center px-3">
+                <div class="row-auto">
+                    <div class="col">
+                        <div class="row pt-2">
+                            <p class="text-center" style="display: flex; align-items: center;">원하는 동호회를 찾지
+                                못했나요?</p>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <a th:href="@{./createClubPage}" class="col-auto btn btn-primary p-3"
+                                style="font-size: 0.8rem; border-radius: 12px; opacity: 0.8; display: flex; align-items: center; justify-content: space-between;">
+                                <span style="font-size: 0.7 rem;">관심사에 맞는 동호회를<br>직접 운영해 보시는 건 어때요?</span>
+                                <button type="button" class="btn btn-light mx-2"
+                                    style="border-radius: 12px; opacity: 0.9; font-size: 0.7rem; padding: 5px 10px; color: #007bff;">
+                                    동호회 만들기
+                                </button>
+                            </a>
 
-                <a th:href="@{./createClubPage}" class="col-10 btn btn-primary py-3 my-2"
-                    style="font-size: 0.8rem; border-radius: 12px; opacity: 0.8; display: flex; align-items: center; justify-content: space-between;">
-                    <span style="font-size: 0.6rem;">관심사에 맞는 동호회를<br>직접 운영해 보시는 건 어때요?</span>
-                    <button type="button" class="btn btn-light mx-2"
-                        style="border-radius: 12px; opacity: 0.9; font-size: 0.5rem; padding: 3px 10px; color: #007bff;">
-                        동호회 만들기
-                    </button>
-                </a>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

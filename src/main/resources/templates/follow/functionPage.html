@@ -48,7 +48,7 @@
             let scanMarkerEffectiveDistance = 250;
             let scanMarkerUpTo = 5;
             
-            let collectMarkerUpTo = 3;
+            let collectMarkerUpTo = 100; // ...
 
             let traceMarkerUpTo = 3;
 
@@ -613,7 +613,23 @@
                             "url(/uploadFiles/" + e.profile_photo + ") no-repeat center";
                             document.getElementById("previewTrackMarkerImage").style.backgroundSize = "cover";
                     case "8" : 
-                        document.getElementById("previewTrackMarkerPreference").innerText = e.preference;
+                        if(e.preference == "L") {
+                            document.getElementById("previewTrackMarkerPreference").innerText = "이성애";
+                        }else if(e.preference == "B") {
+                            document.getElementById("previewTrackMarkerPreference").innerText = "게이";
+                        }else if(e.preference == "G") {
+                            document.getElementById("previewTrackMarkerPreference").innerText = "레즈비언";
+                        }else if(e.preference == "V") {
+                            document.getElementById("previewTrackMarkerPreference").innerText = "바이섹슈얼";
+                        }else if(e.preference == "A") {
+                            document.getElementById("previewTrackMarkerPreference").innerText = "에이섹슈얼";
+                        }else if(e.preference == "D") {
+                            document.getElementById("previewTrackMarkerPreference").innerText = "데미섹슈얼";
+                        }else if(e.preference == "P") {
+                            document.getElementById("previewTrackMarkerPreference").innerText = "팬섹슈얼";
+                        }else if(e.preference == "Q") {
+                            document.getElementById("previewTrackMarkerPreference").innerText = "퀘스처닝";
+                        }
                     case "7", "6" : 
                         document.getElementById("previewTrackMarkerMbtiType").innerText = e.blood_type;
                         document.getElementById("previewTrackMarkerHobby").innerText = e.hobby;
@@ -646,21 +662,21 @@
                     if(e.open_rating == 10) {
                         document.getElementById("previewTrackMarkerOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt + " / ∞ )";
                     }else if(e.open_rating == 9) {
-                        document.getElementById("previewTrackMarkerOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt - 16 + " / 20 )";
+                        document.getElementById("previewTrackMarkerOpenRating").innerText = "Lv " + e.open_rating + " ( " + (18 - e.cnt) + " / 2 )";
                     }else if(e.open_rating == 8) {
-                        document.getElementById("previewTrackMarkerOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt - 15 + " / 16 )";
+                        document.getElementById("previewTrackMarkerOpenRating").innerText = "Lv " + e.open_rating + " ( " + (16 - e.cnt) + " / 2 )";
                     }else if(e.open_rating == 7) {
-                        document.getElementById("previewTrackMarkerOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt - 13 + " / 15 )";
+                        document.getElementById("previewTrackMarkerOpenRating").innerText = "Lv " + e.open_rating + " ( " + (14 - e.cnt) + " / 2 )";
                     }else if(e.open_rating == 6) {
-                        document.getElementById("previewTrackMarkerOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt - 12 + " / 13 )";
+                        document.getElementById("previewTrackMarkerOpenRating").innerText = "Lv " + e.open_rating + " ( " + (12 - e.cnt) + " / 2 )";
                     }else if(e.open_rating == 5) {
-                        document.getElementById("previewTrackMarkerOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt - 10 + " / 12 )";
+                        document.getElementById("previewTrackMarkerOpenRating").innerText = "Lv " + e.open_rating + " ( " + (10 - e.cnt) + " / 2 )";
                     }else if(e.open_rating == 4) {
-                        document.getElementById("previewTrackMarkerOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt - 7 + " / 10 )";
+                        document.getElementById("previewTrackMarkerOpenRating").innerText = "Lv " + e.open_rating + " ( " + (8 - e.cnt) + " / 2 )";
                     }else if(e.open_rating == 3) {
-                        document.getElementById("previewTrackMarkerOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt - 5 + " / 7 )";
+                        document.getElementById("previewTrackMarkerOpenRating").innerText = "Lv " + e.open_rating + " ( " + (6 - e.cnt) + " / 2 )";
                     }else if(e.open_rating == 2) {
-                        document.getElementById("previewTrackMarkerOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt - 2 + " / 5 )";
+                        document.getElementById("previewTrackMarkerOpenRating").innerText = "Lv " + e.open_rating + " ( " + (4 - e.cnt) + " / 2 )";
                     }else if(e.open_rating == 1) {
                         document.getElementById("previewTrackMarkerOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt + " / 2 )";
                     }
@@ -995,7 +1011,23 @@
                                     likeListWrapper.querySelector(".likeListImage").style.backgroundSize =
                                     "cover";
                             case "8" : 
-                                likeListWrapper.querySelector(".likeListPreference").innerText = e.preference;
+                                if(e.preference == "L") {
+                                    likeListWrapper.querySelector(".likeListPreference").innerText = "이성애";
+                                }else if(e.preference == "B") {
+                                    likeListWrapper.querySelector(".likeListPreference").innerText = "게이";
+                                }else if(e.preference == "G") {
+                                    likeListWrapper.querySelector(".likeListPreference").innerText = "레즈비언";
+                                }else if(e.preference == "V") {
+                                    likeListWrapper.querySelector(".likeListPreference").innerText = "바이섹슈얼";
+                                }else if(e.preference == "A") {
+                                    likeListWrapper.querySelector(".likeListPreference").innerText = "에이섹슈얼";
+                                }else if(e.preference == "D") {
+                                    likeListWrapper.querySelector(".likeListPreference").innerText = "데미섹슈얼";
+                                }else if(e.preference == "P") {
+                                    likeListWrapper.querySelector(".likeListPreference").innerText = "팬섹슈얼";
+                                }else if(e.preference == "Q") {
+                                    likeListWrapper.querySelector(".likeListPreference").innerText = "퀘스처닝";
+                                }
                             case "7", "6" : 
                                 likeListWrapper.querySelector(".likeListMbtiType").innerText = e.blood_type;
                                 likeListWrapper.querySelector(".likeListHobby").innerText = e.hobby;
@@ -1028,21 +1060,21 @@
                         if(e.open_rating == 10) {
                             likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt + " / ∞ )";
                         }else if(e.open_rating == 9) {
-                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt - 16 + " / 20 )";
+                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + (18 - e.cnt) + " / 2 )";
                         }else if(e.open_rating == 8) {
-                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt - 15 + " / 16 )";
+                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + (16 - e.cnt) + " / 2 )";
                         }else if(e.open_rating == 7) {
-                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt - 13 + " / 15 )";
+                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + (14 - e.cnt) + " / 2 )";
                         }else if(e.open_rating == 6) {
-                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt - 12 + " / 13 )";
+                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + (12 - e.cnt) + " / 2 )";
                         }else if(e.open_rating == 5) {
-                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt - 10 + " / 12 )";
+                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + (10 - e.cnt) + " / 2 )";
                         }else if(e.open_rating == 4) {
-                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt - 7 + " / 10 )";
+                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + (8 - e.cnt) + " / 2 )";
                         }else if(e.open_rating == 3) {
-                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt - 5 + " / 7 )";
+                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + (6 - e.cnt) + " / 2 )";
                         }else if(e.open_rating == 2) {
-                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt - 2 + " / 5 )";
+                            likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + (4 - e.cnt) + " / 2 )";
                         }else if(e.open_rating == 1) {
                             likeListWrapper.querySelector(".likeListOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt + " / 2 )";
                         }
@@ -1356,7 +1388,7 @@
 
             function getCollectionList() {
 
-                // resetCollectionModal();
+                resetCollectionModal();
 
                 const url = "./getCollectionList?user_pk=" + user_pk;
 
@@ -1412,29 +1444,29 @@
                             collectionOpenRatngContent.innerText = e.collect_count + " / ∞";
                         }else if(e.open_rating == '9') {
                             collectionInner.style.background = "url(/uploadFiles/" + e.profile_photo + ") no-reapt center";
-                            collectionProgress.style.width = (e.collect_count - 16) / 20 * 100 + "%";
-                            collectionOpenRatngContent.innerText = (e.collect_count - 16) + " / 20";
+                            collectionProgress.style.width = (18 - e.collect_count) / 2 * 100 + "%";
+                            collectionOpenRatngContent.innerText = (18 - e.collect_count) + " / 2";
                         }else if(e.open_rating == '8') {
-                            collectionProgress.style.width = (e.collect_count - 15) / 16 * 100 + "%";
-                            collectionOpenRatngContent.innerText = (e.collect_count - 15) + " / 16";
+                            collectionProgress.style.width = (16 - e.collect_count) / 2 * 100 + "%";
+                            collectionOpenRatngContent.innerText = (16 - e.collect_count) + " / 2";
                         }else if(e.open_rating == '7') {
-                            collectionProgress.style.width = (e.collect_count - 13) / 15 * 100 + "%";
-                            collectionOpenRatngContent.innerText = (e.collect_count - 13) + " / 15";
+                            collectionProgress.style.width = (14 - e.collect_count) / 2 * 100 + "%";
+                            collectionOpenRatngContent.innerText = (14 - e.collect_count) + " / 2";
                         }else if(e.open_rating == '6') {
-                            collectionProgress.style.width = (e.collect_count - 12) / 13 * 100 + "%";
-                            collectionOpenRatngContent.innerText = (e.collect_count - 12) + " / 13";
+                            collectionProgress.style.width = (12 - e.collect_count) / 2 * 100 + "%";
+                            collectionOpenRatngContent.innerText = (12 - e.collect_count) + " / 2";
                         }else if(e.open_rating == '5') {
-                            collectionProgress.style.width = (e.collect_count - 10) / 12 * 100 + "%";
-                            collectionOpenRatngContent.innerText = (e.collect_count - 10) + " / 12";
+                            collectionProgress.style.width = (10 - e.collect_count) / 2 * 100 + "%";
+                            collectionOpenRatngContent.innerText = (10 - e.collect_count) + " / 2";
                         }else if(e.open_rating == '4') {
-                            collectionProgress.style.width = (e.collect_count - 7) / 10 * 100 + "%";
-                            collectionOpenRatngContent.innerText = (e.collect_count - 7) + " / 10";
+                            collectionProgress.style.width = (8 - e.collect_count) / 2 * 100 + "%";
+                            collectionOpenRatngContent.innerText = (8 - e.collect_count) + " / 2";
                         }else if(e.open_rating == '3') {
-                            collectionProgress.style.width = (e.collect_count - 5) / 7 * 100 + "%";
-                            collectionOpenRatngContent.innerText = (e.collect_count - 5) + " / 7";
+                            collectionProgress.style.width = (6 - e.collect_count) / 2 * 100 + "%";
+                            collectionOpenRatngContent.innerText = (6 - e.collect_count) + " / 2";
                         }else if(e.open_rating == '2') {
-                            collectionProgress.style.width = (e.collect_count - 2) / 5 * 100 + "%";
-                            collectionOpenRatngContent.innerText = (e.collect_count - 2) + " / 5";
+                            collectionProgress.style.width = (4 - e.collect_count) / 2 * 100 + "%";
+                            collectionOpenRatngContent.innerText = (4 - e.collect_count) + " / 2";
                         }else {
                             collectionProgress.style.width = e.collect_count / 2 * 100 + "%";
                             collectionOpenRatngContent.innerText = e.collect_count + " / 2";
@@ -1469,7 +1501,99 @@
 
             function reloadDetailCollection(e) {
 
-                // 나머지 값 붙이기
+                switch(e.open_rating) {
+
+                    case "10" :
+                        document.getElementById("collectionDetailName").innerText = e.nick_name;
+                    case "9" :
+                        document.getElementById("collectionDetailModalImage").style.background = 
+                            "url(/uploadFiles/" + e.profile_photo + ") no-repeat center";
+                        document.getElementById("collectionDetailModalImage").style.backgroundSize = "cover";
+                    case "8" : 
+                        if(e.preference == "L") {
+                            document.getElementById("likeListPreference").innerText = "이성애";
+                        }else if(e.preference == "B") {
+                            document.getElementById("likeListPreference").innerText = "게이";
+                        }else if(e.preference == "G") {
+                            document.getElementById("likeListPreference").innerText = "레즈비언";
+                        }else if(e.preference == "V") {
+                            document.getElementById("likeListPreference").innerText = "바이섹슈얼";
+                        }else if(e.preference == "A") {
+                            document.getElementById("likeListPreference").innerText = "에이섹슈얼";
+                        }else if(e.preference == "D") {
+                            document.getElementById("likeListPreference").innerText = "데미섹슈얼";
+                        }else if(e.preference == "P") {
+                            document.getElementById("likeListPreference").innerText = "팬섹슈얼";
+                        }else if(e.preference == "Q") {
+                            document.getElementById("likeListPreference").innerText = "퀘스처닝";
+                        }
+                    case "7", "6" : 
+                        document.getElementById("collectionDetailMbtiType").innerText = e.blood_type;
+                        document.getElementById("collectionDetailHobby").innerText = e.hobby;
+                    case "5" :
+                        document.getElementById("collectionDetailSmoking").innerText = e.smoking;
+                        document.getElementById("collectionDetailDrinking").innerText = e.drinking;
+                    case "4", "3" : 
+                        document.getElementById("collectionDetailHeight").innerText = e.height;
+                        document.getElementById("collectionDetailWeight").innerText = e.weight;
+                        document.getElementById("collectionDetailBloodType").innerText = e.blood_type;
+                    case "2": 
+                        if(e.gender == 'W') {
+                            document.getElementById("collectionDetailGender").innerText = "👱🏻‍♀️";
+                        }else {
+                            document.getElementById("collectionDetailGender").innerText = "👱🏻‍♂️";
+                        }
+                    case "1":
+
+                        if(e.mstar_temp < 100) {
+                            document.getElementById("collectionDetailTemp").style.width = e.mstar_temp;
+                            document.getElementById("collectionDetailTempContent").innerText = e.mstar_temp;
+                        }else {
+                            document.getElementById("collectionDetailTemp").style.width = 100;
+                            document.getElementById("collectionDetailTempContent").innerText = 100;
+                        }
+
+                }
+
+                if(e.open_rating == 10) {
+                    document.getElementById("collectionDetailOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.collect_count + " / ∞ )";
+                }else if(e.open_rating == 9) {
+                    document.getElementById("collectionDetailOpenRating").innerText = "Lv " + e.open_rating + " ( " + (18 - e.collect_count) + " / 2 )";
+                }else if(e.open_rating == 8) {
+                    document.getElementById("collectionDetailOpenRating").innerText = "Lv " + e.open_rating + " ( " + (16 - e.collect_count) + " / 2 )";
+                }else if(e.open_rating == 7) {
+                    document.getElementById("collectionDetailOpenRating").innerText = "Lv " + e.open_rating + " ( " + (14 - e.collect_count) + " / 2 )";
+                }else if(e.open_rating == 6) {
+                    document.getElementById("collectionDetailOpenRating").innerText = "Lv " + e.open_rating + " ( " + (12 - e.collect_count) + " / 2 )";
+                }else if(e.open_rating == 5) {
+                    document.getElementById("collectionDetailOpenRating").innerText = "Lv " + e.open_rating + " ( " + (10 - e.collect_count) + " / 2 )";
+                }else if(e.open_rating == 4) {
+                    document.getElementById("collectionDetailOpenRating").innerText = "Lv " + e.open_rating + " ( " + (8 - e.collect_count) + " / 2 )";
+                }else if(e.open_rating == 3) {
+                    document.getElementById("collectionDetailOpenRating").innerText = "Lv " + e.open_rating + " ( " + (6 - e.collect_count) + " / 2 )";
+                }else if(e.open_rating == 2) {
+                    document.getElementById("collectionDetailOpenRating").innerText = "Lv " + e.open_rating + " ( " + (4 - e.collect_count) + " / 2 )";
+                }else if(e.open_rating == 1) {
+                    document.getElementById("collectionDetailOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.collect_count + " / 2 )";
+                }
+
+                if(e.star_rating == "SSR") {
+                    document.getElementById("collectionDetailOuter").classList.add("SSROuter");
+                }else if(e.star_rating == "SR") {
+                    document.getElementById("collectionDetailOuter").classList.add("SROuter");
+                }else if(e.star_rating == "S") {
+                    document.getElementById("collectionDetailOuter").classList.add("SOuter");
+                }else if(e.star_rating == "fiveStar") {
+                    document.getElementById("collectionDetailOuter").classList.add("FiveStarROuter");
+                }else if(e.star_rating == "fourStar") {
+                    document.getElementById("collectionDetailOuter").classList.add("FourStarROuter");
+                }else if(e.star_rating == "threeStar") {
+                    document.getElementById("collectionDetailOuter").classList.add("ThreeStarROuter");
+                }else if(e.star_rating == "twoStar") {
+                    document.getElementById("collectionDetailOuter").classList.add("TwoStarOuter");
+                }else if(e.star_rating == "oneStar") {
+                    document.getElementById("collectionDetailOuter").classList.add("OneStarOuter");
+                }
 
                 // 큐피트화살 일단 랜덤으로 한 개 수집 > 여기서 있는걸로 // 확정 한개면 getCollectionLogList 여기에서 쿼리부터 다시 짜기 ghgh > 확정 1개 라신다,,,
                 // 버튼 onclick > cupidArrows(e.user_pk);
@@ -1542,6 +1666,9 @@
                 .then(response => response.json())
                 .then(response => {
 
+                    const collectionDetailCardListBox = document.getElementById("collectionDetailCardListBox");
+                    collectionDetailCardListBox.innerHTML = "";
+
                     if(response.data.length == 0) {
 
                         return;
@@ -1549,8 +1676,27 @@
 
                     for(e of response.data) {
 
-                        // 카드에 e 붙이기
-                        // 값 붙이기
+                        let wrapper;
+
+                        if(e.card_rating == "common") {
+                            wrapper = document.querySelector("#template .collectionDetailCardCommonWrapper").cloneNode(true);
+                        }else if(e.card_rating == "rare") {
+                            wrapper = document.querySelector("#template .collectionDetailCardRareWrapper").cloneNode(true);
+                        }else {
+                            wrapper = document.querySelector("#template .collectionDetailCardLegendaryWrapper").cloneNode(true);
+                        }
+
+                        if(e.is_collect == "N") {
+                            wrapper.querySelector(".collectionDetailCardFilter").style.filter = "brightness(50%)";
+                        }else {
+                            wrapper.querySelector(".collectionDetailCardFilter").onclick = () => {
+                                reloadCollectionCard(e);
+                            };
+                        }
+
+                        wrapper.querySelector(".collectionDetailLogPk").innerText = e.log_pk;
+                        
+                        collectionDetailCardListBox.appendChild(wrapper);
 
                     }
 
@@ -1588,8 +1734,8 @@
 
                     }
 
-                    // showmodal;
-
+                    // showmodal; asdf
+                    showCollectionCardModal();
 
                 });
 
@@ -1597,7 +1743,7 @@
 
             function openMyPage() {
 
-                getMyPageInfo();
+                // getMyPageInfo();
                 showMyPageModal();
 
             }
@@ -1748,27 +1894,34 @@
             
             function showCollectionModal() {
 
-                document.getElementById("collectionModalHeight").style.height = mapHeight * 0.75 + "px";
+                document.getElementById("collectionModalHeight").style.height = mapHeight * 0.9 + "px";
                 // document.getElementById("collectionListColorBox").style.height = mapHeight * 0.625;
-                document.getElementById("collectionListBoxHeight").style.height = mapHeight * 0.55 + "px";
+                document.getElementById("collectionListBoxHeight").style.height = mapHeight * 0.9 * 0.77 + "px";
 
                 const modal = bootstrap.Modal.getOrCreateInstance("#collectionModal");
                 modal.show();
 
+                // setTimeout(() => window.scrollTo(0,0), 1000);
+
             }
 
             function showCollectionDetailModal() {
-
-                document.getElementById("collectionDetailModalHeight").style.height = mapHeight * 0.75 + "px";
-
                 const modal = bootstrap.Modal.getOrCreateInstance("#collectionDetailModal");
                 modal.show();
+
+
+                document.getElementById("collectionDetailModalHeight").style.height = mapHeight * 0.9 + "px";
+                //document.getElementById("collectionDetailInfoHeight").style.height;
+
+                const collectionDetailInfoHeight = parseFloat(getComputedStyle(document.getElementById("collectionDetailInfoHeight")).height.replace("px",""));
+
+                document.getElementById("collectionDetailModalCardHeight").style.height = (mapHeight * 0.9 - collectionDetailInfoHeight - 100) + "px";
 
             }
 
             function showMyPageModal() {
 
-                document.getElementById("myPageModalHeight").style.height = mapHeight * 0.75 + "px";
+                document.getElementById("myPageModalHeight").style.height = mapHeight * 0.9 + "px";
 
                 const modal = bootstrap.Modal.getOrCreateInstance("#myPageModal");
                 modal.show();
@@ -1788,6 +1941,15 @@
 
                 const modal = bootstrap.Modal.getOrCreateInstance("#likeListModal");
                 modal.hide();
+
+            }
+
+            function showCollectionCardModal() {
+
+                const modal = bootstrap.Modal.getOrCreateInstance("#collectionCardModal");
+                modal.show();
+
+                document.getElementById("collectionCardModalHeight").style.height = mapHeight * 0.9 * 0.85 + "px";
 
             }
 
@@ -1836,7 +1998,7 @@
             }
 
             function resetCollectionModal() {
-                // 꾸욱 개수
+                document.getElementById("collectionLikeCnt").innerText = "0";
                 document.getElementById("collectionLikeListBox").innerHTML = "";
                 document.getElementById("collectionListBox").innerHTML = "";
             }
@@ -1859,8 +2021,8 @@
                 const bottomNaviHeight = parseFloat(getComputedStyle(document.getElementById("bottomNavi")).height.replace("px", ""));
                 const bodyHeight = parseFloat(getComputedStyle(document.body).height.replace("px", ""));
                 const bodyBottomMargin = parseFloat(getComputedStyle(document.body).marginBottom.replace("px", ""));
-
                 // alert(screen.availHeight);
+                // alert(window.innerHeight);
                 // alert(screen.height);
                 // alert(bodyHeight);
 
@@ -1868,7 +2030,8 @@
 
                 // const xxx = parseFloat(getComputedStyle(document.getElementById("map")).height.replace("px", ""));
 
-                mapHeight = screen.availHeight - topNaviHeight - bottomNaviHeight;
+                // mapHeight = screen.availHeight - topNaviHeight - bottomNaviHeight;
+                mapHeight = window.innerHeight - topNaviHeight - bottomNaviHeight;
                 document.getElementById("map").style.height = mapHeight  + "px";
                 // document.getElementById("map").style.height = xxx - topNaviHeight - bottomNaviHeight + "px";
 
@@ -1876,6 +2039,7 @@
                 createMap();
                 getMyLocation();
 
+                // window.scrollTo(0,0);
             });
 
         </script>
@@ -2440,7 +2604,7 @@
                                                 <option value="A">에이섹슈얼</option>
                                                 <option value="D">데미섹슈얼</option>
                                                 <option value="P">팬섹슈얼</option>
-                                                <option value="q">퀘스처닝</option>
+                                                <option value="Q">퀘스처닝</option>
                                             </select>
                                         </div>
 
@@ -2521,7 +2685,7 @@
                                         시향&nbsp;&nbsp;No. <span id="previewTrackMarkerPk">777</span>
                                     </div>
                                     <div class="modal-body pb-1 px-1 pt-2 rounded" style="background: #f3ecdd; border: 2px solid rgba(241, 194, 92, 0.4);">
-                                        <div class="rounded-top px-3 py-2" style="width: 100%; border: 1px solid #C5A886;">
+                                        <div class="rounded-top px-3 py-2" style="width: 100%; border: 3px solid #C5A886;">
                                             <div class="row">
                                                 <div class="col-3">
                                                     <div class="row">
@@ -2871,8 +3035,385 @@
                                         </div>
                                     </button>
                                     <div class="modal-body rounded" style="padding: 0.2rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
-                                        <div id="collectionDetailModalHeight" class="rounded" style="padding: 0.5rem; padding-top: 1rem; background: #E0C9A9; border: 2px solid rgba(241, 194, 92, 0.4);">
+                                        <div id="collectionDetailModalHeight" class="rounded" style="padding: 0.5rem; padding-top: 1.3rem; background: #E0C9A9; border: 2px solid rgba(241, 194, 92, 0.4);">
+
+                                            <div class="rounded px-3 py-2" style="width: 100%;" id="collectionDetailInfoHeight">
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <div class="row">
+                                                            <div class="col px-2">
+                                                                <div id="collectionDetailOuter" class="d-flex align-items-center justify-content-center border-0" style="width: 100%; aspect-ratio: 1/1; border-radius: 50%;">
+                                                                    <div id="collectionDetailImage" style="width: 90%; aspect-ratio: 1/1; border-radius: 50%; background: url('/public/image/follow/questionBlack.png') no-repeat center; background-size: cover; filter: opacity(85%);"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mt-1">
+                                                            <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                <span id="collectionDetailName">? ? ?</span>
+                                                                <!-- 김아무 -->
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div id="collectionDetailOpenRating" class="col text-center fw-bold" style="font-size: 0.56rem;">
+                                                                Lv ? ( ?? / ?? )
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col my-auto">
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <div class="row">
+                                                                    <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                        <span id="collectionDetailHeight">? ? ?</span> cm
+                                                                        <!-- 163 cm -->
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                        키
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                            <div class="col-3">
+                                                                <div class="row">
+                                                                    <div id="collectionDetailGender" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                        ? ?
+                                                                        <!-- 👱🏻‍♀️ -->
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                        성별
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                            <div class="col">
+                                                                <div class="row">
+                                                                    <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                        <span id="collectionDetailWeight">? ? ?</span> kg
+                                                                        <!-- 50 kg -->
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                        몸무게
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <div class="row">
+                                                                    <div id="collectionDetailMbtiType" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                        ? ? ? ?
+                                                                        <!-- ISTJ -->
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                        MBTI
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                            <div class="col">
+                                                                <div class="row">
+                                                                    <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                        <span id="collectionDetailBloodType">? ?</span> 형
+                                                                        <!-- B 형 -->
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                        혈액형
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                            <div class="col">
+                                                                <div class="row">
+                                                                    <div id="collectionDetailDrinking" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                        ? ?
+                                                                        <!-- N -->
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                        음주여부
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                            <div class="col">
+                                                                <div class="row">
+                                                                    <div id="collectionDetailSmoking" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                        ? ?
+                                                                        <!-- N -->
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                        흡연여부
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <div class="row">
+                                                                    <div id="collectionDetailHobby" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                        ? ? ? ? ?
+                                                                        <!-- 집에서 뒹굴거리기 -->
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                        취미
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                            <div class="col">
+                                                                <div class="row">
+                                                                    <div id="collectionDetailPreference" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                        ? ? ? ? ?
+                                                                        <!-- 게이 -->
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                        성적지향
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row align-items-center">
+                                                    <div class="col-auto pe-0 text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                        인스타 활동온도
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="row align-items-center">
+                                                            <div class="col">
+                                                                <div class="progress" style="height: 0.5rem;">
+                                                                    <div id="collectionDetailTemp" class="progress-bar rounded" style="background: #feb146; width: 36.5%;"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-auto ps-0 fw-bold text-end" style="font-size: 0.8rem; color: #000;">
+                                                                <span id="collectionDetailTempContent">36.5</span>℃
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div style="position: relative;">
+                                                <hr class="my-2" style="color: #81461A;">
+                                                <span class="px-3" style="position: absolute; top: -0.65rem; left: calc(50% - 2rem); font-size: 0.9rem; background: #E0C9A9; color: #81461A;">체취도감</span>
+                                            </div>
+
+                                            <!-- ... -->
+                                            <div class="row mt-2">
+                                                <div class="col fw-bold">전체 카드목록</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col text-seconday" style="font-size: 0.8em;">다른 사람들의 카드를 수집해 봐요!!</div>
+                                            </div>
+
+                                            <div id="collectionDetailModalCardHeight" class="rounded mt-1" style="background: #C5A886;">
+                                                <div class="overflow-auto px-3" style="height: 100%;">
+                                                    <div id="collectionDetailCardListBox" class="row row-cols-4 mt-1 pb-2">
+
+                                                        
+                                                        <!-- <div class="col">
+                                                            <div class="row">
+                                                                <div class="col-3">
+                                                                    <img src="/public/image/commons/list1.jpeg" class="img-fluid" style="height: 100%;">
+                                                                </div>
+                                                                <div class="col">
+        
+                                                                    <div class="row">
+                                                                        <div  style="font-size: 0.8em;" class="col fw-bold">no.3</div>
+                                                                    </div>
+                
+                                                                    <div class="row">
+                                                                        <div class="col">
+                                                                            <span class="text-secondary" style="font-size: 0.8em;">수집</span>
+                                                                            <span class="text-danger fw-bold">3</span><span class="text-secondary" style="font-size: 0.8em;">회</span>
+                                                                        </div>
+                                                                        <div class="col">
+                                                                            <span class="text-secondary" style="font-size: 0.8em;">댓글</span>
+                                                                            <span class="text-danger fw-bold">7</span><span class="text-secondary" style="font-size: 0.8em;">개</span>
+                                                                        </div>
+                                                                        <div class="col">
+                                                                            <span class="text-secondary" style="font-size: 0.8em;">추행</span>
+                                                                            <span class="text-danger fw-bold">2</span><span class="text-secondary" style="font-size: 0.8em;">회</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div style="font-size: 0.8em;" class="col text-secondary">2024-01-03</div>
+                                                                        <div style="font-size: 0.8em;" class="col text-success">수집 완료</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="collectionCardModal" class="modal fade" tabindex="-1" style="position: absolute;">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 2.5rem; padding-right: 2.5rem;">
+                                    <div class="modal-body rounded" style="border: 1px solid #81461A; padding: 0;">
+                                        <div class="rounded" style="border: 2px solid #f3ecdd;">
+                                            <div id="collectionCardModalHeight" class="rounded px-2" style="width: 100%; background: rgb(45, 23, 11, 0.95);">
+                                                <div class="row" style="color: #f3ecdd;">
+                                                    <div class="col">
+                                                        <div class="row py-2">
+                                                            <div class="col">no.13</div>
+                                                            <div class="col-auto ms-auto">
+                                                                <span style="font-size: 0.8em;" class="text-secondary">수집일</span>
+                                                                <span>2024.07.07</span>
+                                                            </div>
+                                                        </div>                                                       
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <img src="/public/image/commons/list2.jpeg" class="img-fluid" style="width: 100%; aspect-ratio: 16/9;" >
+                                                            </div>
+                                                        </div>                                                       
+
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <span style="color: #ce742f;; font-size: 0.8em;">당신의 하루는 어땠나요?</span>
+                                                            </div>
+                                                        </div>                                                       
+
+
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <span >오늘 하루 너무 즐거운 하루였다... 근데 얼빵이는 어딧을까...ㅠㅠ</span>
+                                                                <span style="font-size: 0.8em;" class="text-secondary">(2024.05.05)</span>
+                                                            </div>
+                                                        </div>                                                       
+
+
+                                                        <div class="row mt-2">
+                                                            <div class="col">
+                                                                <span style="color: #ce742f;; font-size: 0.8em;">정보 어쩌고.. 저쩌고..</span>
+                                                            </div>
+                                                        </div>                                                       
+
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <span style="font-size: 0.8em;" class="text-secondary">수집</span>
+                                                                <span>10</span>
+                                                                <span style="font-size: 0.8em;" class="text-secondary">회</span>
+                                                            </div>
+                                                            <div class="col">
+                                                                <span style="font-size: 0.8em;" class="text-secondary">관심</span>
+                                                                <span>17</span>
+                                                                <span style="font-size: 0.8em;" class="text-secondary">회</span>
+                                                            </div>
+                                                            <div class="col">
+                                                                <span style="font-size: 0.8em;" class="text-secondary">추행</span>
+                                                                <span>7</span>
+                                                                <span style="font-size: 0.8em;" class="text-secondary">회</span>
+                                                            </div>
+                                                        </div>                                                       
+
+
+
+
+
+                                                        <div class="row mt-2">
+                                                            <div class="col">
+                                                                <span style="color: #ce742f;; font-size: 0.8em;">관심을 나타는 글들이여요...</span>
+                                                            </div>
+                                                        </div>                                                       
+
+                                                        <div class="row row-cols-1 overflow-auto" style="height: 5rem;">
+                                                            
+                                                            <div class="col">
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <span style="color: #b2db5e;">얼빵이</span>
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <span style="font-size: 0.8em;" class="text-secondary">(2024.05.05)</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <span>저 여기 있어요....!!!</span>        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col">
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <span style="color: #b2db5e;">얼빵이</span>
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <span style="font-size: 0.8em;" class="text-secondary">(2024.05.05)</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <span>저 여기 있어요....!!!</span>        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col">
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <span style="color: #b2db5e;">얼빵이어딧나</span>
+                                                                    </div>
+                                                                    <div class="col-auto ms-auto">
+                                                                        <span style="font-size: 0.8em;" class="text-secondary">(2024.05.05)</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <span>저 여기 있어요....!!!저 여기 있어요....!!!저 여기 있어요....!!!저 여기 있어요....!!!저 여기 있어요....!!!저 여기 있어요....!!!저 여기 있어요....!!!저 여기 있어요....!!!저 여기 있어요....!!!저 여기 있어요....!!!저 여기 있어요....!!!저 여기 있어요....!!!저 여기 있어요....!!!저 여기 있어요....!!!</span>        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col">
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <span style="color: #b2db5e;">얼빵이으아아</span>
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <span style="font-size: 0.8em;" class="text-secondary">(2024.05.05)</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <span>저 여기 있어요....!!!저 여기 있어요....!!!저 여기 있어요....!!!저 여기 있어요....!!!</span>        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+
                                             
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -2895,20 +3436,265 @@
                                     </button>
                                     <div class="modal-body rounded" style="padding: 0.2rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
                                         <div id="myPageModalHeight" class="rounded" style="padding: 0.5rem; padding-top: 3.5rem; background:#E0C9A9; border: 2px solid rgba(241, 194, 92, 0.4);">
-                                            <div class="rounded" style="position: relative; background: #C5A886; height: 7rem; border: 1px solid #f3ecdd;">
-                                                <div class="d-flex gap-2 justify-content-end" style="position: absolute; left: 4.7rem; top: -1.7rem;">
+                                            <div class="rounded" style="position: relative; background: #C5A886; height: 8rem; border: 1px solid #f3ecdd;">
+                                                <div class="d-flex gap-2 justify-content-end" style="position: absolute; left: 5.2rem; top: -1.7rem;">
                                                     <button onclick="showMyTrackMarkersInfo()" class="btn text-white py-0" style="background: #81461A; font-size: 0.8rem;">내 체취 / 흔적</button>
                                                     <button onclick="showAchievementModal()" class="btn text-white py-0" style="background: #81461A; font-size: 0.8rem;">업적</button>
                                                 </div>
-                                                <div class="d-grid align-items-center justify-content-center" style="position: absolute; width: 4rem; height: 4rem; top: -2rem; left: 0.5rem; border-radius: 50%; background: #81461A;">
+                                                <div class="d-grid align-items-center justify-content-center" style="position: absolute; width: 4rem; height: 4rem; top: -2rem; left: 1rem; border-radius: 50%; background: #81461A;">
                                                     <div style="width: 3.5rem; height: 3.5rem; border-radius: 50%; background: #f3ecdd;"></div>
                                                 </div>
+                                                <div style="width: 100%;">
+                                                    <div class="row px-2 align-items-center">
+                                                        <div class="col-4 px-0">
+                                                            <div class="row">
+                                                                <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                    <span id="previewTrackMarkerName">? ? ?</span>
+                                                                    <!-- 김아무 -->
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div id="previewTrackMarkerOpenRating" class="col text-center fw-bold" style="font-size: 0.56rem;">
+                                                                    Lv ?&nbsp;&nbsp;( ?? / ?? )
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col my-auto ps-0">
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="row">
+                                                                        <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                            <span id="previewTrackMarkerHeight">? ? ?</span> cm
+                                                                            <!-- 163 cm -->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                            키
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                                <div class="col-3">
+                                                                    <div class="row">
+                                                                        <div id="previewTrackMarkerGender" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                            ? ?
+                                                                            <!-- 👱🏻‍♀️ -->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                            성별
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                                <div class="col">
+                                                                    <div class="row">
+                                                                        <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                            <span id="previewTrackMarkerWeight">? ? ?</span> kg
+                                                                            <!-- 50 kg -->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                            몸무게
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="row">
+                                                                        <div id="previewTrackMarkerMbtiType" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                            ? ? ? ?
+                                                                            <!-- ISTJ -->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                            MBTI
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                                <div class="col">
+                                                                    <div class="row">
+                                                                        <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                            <span id="previewTrackMarkerBloodType">? ?</span> 형
+                                                                            <!-- B 형 -->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                            혈액형
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                                <div class="col">
+                                                                    <div class="row">
+                                                                        <div id="previewTrackMarkerDrinking" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                            ? ?
+                                                                            <!-- N -->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                            음주여부
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                                <div class="col">
+                                                                    <div class="row">
+                                                                        <div id="previewTrackMarkerSmoking" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                            ? ?
+                                                                            <!-- N -->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                            흡연여부
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="row">
+                                                                        <div id="previewTrackMarkerHobby" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                            ? ? ? ? ?
+                                                                            <!-- 집에서 뒹굴거리기 -->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                            취미
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                                <div class="col">
+                                                                    <div class="row">
+                                                                        <div id="previewTrackMarkerPreference" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                            ? ? ? ? ?
+                                                                            <!-- 게이 -->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                            성적지향
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row align-items-center px-2">
+                                                        <div class="col-auto pe-0 text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                            인스타 활동온도
+                                                        </div>
+                                                        <div class="col">
+                                                            <div class="row align-items-center">
+                                                                <div class="col">
+                                                                    <div class="progress" style="height: 0.5rem;">
+                                                                        <div id="previewTrackMarkerTemp" class="progress-bar rounded" style="background: #feb146; width: 36.5%;"></div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-auto ps-0 fw-bold text-end" style="font-size: 0.8rem; color: #000;">
+                                                                    <span id="previewTrackMarkerTempContent">36.5</span>℃
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
                                             </div>
-                                            <div style="position: relative;">
-                                                <hr style="color: #81461A;">
-                                                <span class="px-3" style="position: absolute; top: -0.65rem; left: calc(50% - 1.5rem); font-size: 0.9rem; background: #E0C9A9; color: #81461A;">활동</span>
+
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div style="position: relative;">
+                                                        <hr style="color: #81461A;">
+                                                        <span class="px-1" style="position: absolute; top: -0.65rem; left: calc(50% - 1.5rem); font-size: 0.9rem; background: #E0C9A9; color: #81461A;">내가 당한 짓</span>
+                                                    </div>
+
+                                                    <div class="row text-start row-cols-1">
+                                                        <div class="col">
+                                                            <span style="font-size: 0.8em;" class="text-danger">추행</span>
+                                                            <span >4</span>
+                                                            <span style="font-size: 0.8em;" class="text-secondary">회</span>
+                                                        </div>
+                                                        <div class="col">
+                                                            <span style="font-size: 0.8em;" class="text-danger">착취</span>
+                                                            <span >217</span>
+                                                            <span style="font-size: 0.8em;" class="text-secondary">회</span>
+                                                        </div>
+                                                        <div class="col">
+                                                            <span style="font-size: 0.8em;" class="text-danger">꾸욱</span>
+                                                            <span >8</span>
+                                                            <span style="font-size: 0.8em;" class="text-secondary">회</span>
+                                                        </div>
+                                                        <div class="col">
+                                                            <span style="font-size: 0.8em;" class="text-danger">관심</span>
+                                                            <span >8</span>
+                                                            <span style="font-size: 0.8em;" class="text-secondary">회</span>
+                                                        </div>
+                                                    </div>
+    
+                                                </div>
+                                                <div class="col">
+                                                    <div style="position: relative;">
+                                                        <hr style="color: #81461A;">
+                                                        <span class="px-1" style="position: absolute; top: -0.65rem; left: calc(50% - 1.5rem); font-size: 0.9rem; background: #E0C9A9; color: #81461A;">내가 한 짓</span>
+                                                    </div>
+    
+                                                    <div class="row text-start row-cols-1">
+                                                        <div class="col">
+                                                            <span style="font-size: 0.8em;" class="text-danger">추행</span>
+                                                            <span >4</span>
+                                                            <span style="font-size: 0.8em;" class="text-secondary">회</span>
+                                                        </div>
+                                                        <div class="col">
+                                                            <span style="font-size: 0.8em;" class="text-danger">착취</span>
+                                                            <span >217</span>
+                                                            <span style="font-size: 0.8em;" class="text-secondary">회</span>
+                                                        </div>
+                                                        <div class="col">
+                                                            <span style="font-size: 0.8em;" class="text-danger">꾸욱</span>
+                                                            <span >8</span>
+                                                            <span style="font-size: 0.8em;" class="text-secondary">회</span>
+                                                        </div>
+                                                        <div class="col">
+                                                            <span style="font-size: 0.8em;" class="text-danger">관심</span>
+                                                            <span >8</span>
+                                                            <span style="font-size: 0.8em;" class="text-secondary">회</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row text-center">
+                                                        <div class="col">
+                                                            <span style="font-size: 0.8em;" class="text-danger">유혹</span>
+                                                            <span >17</span>
+                                                            <span style="font-size: 0.8em;" class="text-secondary">회</span>
+                                                        </div>
+                                                    </div>
+    
+    
+
+                                                </div>
                                             </div>
-                                            <div></div>
+
+
+
+
+
+
+
+
+
+
+
                                         </div>
                                     </div>
                                 </div>
@@ -2950,8 +3736,8 @@
             </div>
         </div>
 
-        <div th:insert="~{/commons/item/itemShop}"></div>
-        <div th:insert="~{/commons/item/achievement}"></div>
+        <div th:insert="~{commons/item/itemShop}"></div>
+        <div th:insert="~{commons/item/achievement}"></div>
 
         <!-- fetch(url)
                 .then(response => response.json())
@@ -3202,6 +3988,66 @@
                                     <span class="likeListTempContent">36.5</span>℃
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collectionDetailCardCommonWrapper col mt-2 px-2">
+                <div class="row">
+                    <div class="col">
+                        <div class="collectionDetailCardFilter d-flex justify-content-center align-items-center" style="position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 3%; background: #AD6B33;">
+                            <div class="d-flex justify-content-center align-items-center" style="width: 83%; aspect-ratio: 1/1; border-radius: 30%; background: #AD6B33; z-index: 1;">
+                                <div class="d-flex justify-content-center align-items-center" style="position: absolute; width: 85%; aspect-ratio: 1/1; border-radius: 50%; background: linear-gradient(-45deg, #E0A159, #F5C45C);">
+                                    <div class="d-flex justify-content-center align-items-center" style="width: 90%; aspect-ratio: 1/1; border-radius: 50%; background: #AD6B33;">
+                                        <span class="fw-bold" style="font-size: 0.7rem; color: #ededed;"><span style="font-size: 0.6rem;">No.</span> <span class="collectionDetailLogPk">48</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="position: absolute; width: 35%; aspect-ratio: 1/1; border-radius: 8%; background: linear-gradient(-45deg, #E0A159, #F5C45C); top: 5%; left: 5%;"></div>
+                            <div style="position: absolute; width: 35%; aspect-ratio: 1/1; border-radius: 8%; background: #E0A159; top: 5%; right: 5%;"></div>
+                            <div style="position: absolute; width: 35%; aspect-ratio: 1/1; border-radius: 8%; background: #E0A159; bottom: 5%; left: 5%;"></div>
+                            <div style="position: absolute; width: 35%; aspect-ratio: 1/1; border-radius: 8%; background: #E0A159; bottom: 5%; right: 5%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collectionDetailCardLegendaryWrapper col mt-2 px-2">
+                <div class="row">
+                    <div class="col">
+                        <div class="collectionDetailCardFilter d-flex justify-content-center align-items-center" style="position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 3%; background: #808080;">
+                            <div class="d-flex justify-content-center align-items-center" style="width: 83%; aspect-ratio: 1/1; border-radius: 30%; background: #808080; z-index: 1;">
+                                <div class="d-flex justify-content-center align-items-center" style="position: absolute; width: 85%; aspect-ratio: 1/1; border-radius: 50%; background: linear-gradient(-45deg, #AFADA7, #E0DBC1);">
+                                    <div class="d-flex justify-content-center align-items-center" style="width: 90%; aspect-ratio: 1/1; border-radius: 50%; background: linear-gradient(-20deg, #0E3759, #30759D);">
+                                        <span class="fw-bold" style="font-size: 0.7rem; color: #ededed;"><span style="font-size: 0.6rem;">No.</span> <span class="collectionDetailLogPk">48</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="position: absolute; width: 35%; aspect-ratio: 1/1; border-radius: 8%; background: linear-gradient(-45deg, #AFADA7, #E0DBC1); top: 5%; left: 5%;"></div>
+                            <div style="position: absolute; width: 35%; aspect-ratio: 1/1; border-radius: 8%; background: #AFADA7; top: 5%; right: 5%;"></div>
+                            <div style="position: absolute; width: 35%; aspect-ratio: 1/1; border-radius: 8%; background: #AFADA7; bottom: 5%; left: 5%;"></div>
+                            <div style="position: absolute; width: 35%; aspect-ratio: 1/1; border-radius: 8%; background: #AFADA7; bottom: 5%; right: 5%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collectionDetailCardRareWrapper col mt-2 px-2">
+                <div class="row">
+                    <div class="col">
+                        <div class="collectionDetailCardFilter d-flex justify-content-center align-items-center" style="position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 3%; background: #808080;">
+                            <div class="d-flex justify-content-center align-items-center" style="width: 83%; aspect-ratio: 1/1; border-radius: 30%; background: #808080; z-index: 1;">
+                                <div class="d-flex justify-content-center align-items-center" style="position: absolute; width: 85%; aspect-ratio: 1/1; border-radius: 50%; background: linear-gradient(-45deg, #AFADA7, #E0DBC1);">
+                                    <div class="d-flex justify-content-center align-items-center" style="width: 90%; aspect-ratio: 1/1; border-radius: 50%; background: linear-gradient(-20deg, #4E1E1A, #873028);">
+                                        <span class="fw-bold" style="font-size: 0.7rem; color: #ededed;"><span style="font-size: 0.6rem;">No.</span> <span class="collectionDetailLogPk">48</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="position: absolute; width: 35%; aspect-ratio: 1/1; border-radius: 8%; background: linear-gradient(-45deg, #AFADA7, #E0DBC1); top: 5%; left: 5%;"></div>
+                            <div style="position: absolute; width: 35%; aspect-ratio: 1/1; border-radius: 8%; background: #AFADA7; top: 5%; right: 5%;"></div>
+                            <div style="position: absolute; width: 35%; aspect-ratio: 1/1; border-radius: 8%; background: #AFADA7; bottom: 5%; left: 5%;"></div>
+                            <div style="position: absolute; width: 35%; aspect-ratio: 1/1; border-radius: 8%; background: #AFADA7; bottom: 5%; right: 5%;"></div>
                         </div>
                     </div>
                 </div>

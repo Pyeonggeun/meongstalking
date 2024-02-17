@@ -106,4 +106,12 @@ public interface ClubSqlMapper {
     
 
     public int isClubMember(int user_pk);
+
+    //댓글 수
+    public Integer countImgComment(int imgcomment_pk);
+    public Integer countFreeboardComment(int comment_pk);
+
+    //멤버검색
+    public List<Map<String, Object>> searchMember(String name);
+       
 }

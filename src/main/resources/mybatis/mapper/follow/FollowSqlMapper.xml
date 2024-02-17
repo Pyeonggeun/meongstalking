@@ -221,14 +221,14 @@
                 SELECT t4.*, (
                     CASE
                         <![CDATA[
-                            when cnt >= 100 then '10'
-                            when cnt >= 80 then '9'
-                            when cnt >= 64 then '8'
-                            when cnt >= 49 then '7'
-                            when cnt >= 36 then '6'
-                            when cnt >= 24 then '5'
-                            when cnt >= 14 then '4'
-                            when cnt >= 7 then '3'
+                            when cnt >= 18 then '10'
+                            when cnt >= 16 then '9'
+                            when cnt >= 14 then '8'
+                            when cnt >= 12 then '7'
+                            when cnt >= 10 then '6'
+                            when cnt >= 8 then '5'
+                            when cnt >= 6 then '4'
+                            when cnt >= 4 then '3'
                             when cnt >= 2 then '2'
                             else '1'
                         ]]>
@@ -347,14 +347,14 @@
                 SELECT t4.*, (
                     CASE
                         <![CDATA[
-                            when cnt >= 100 then '10'
-                            when cnt >= 80 then '9'
-                            when cnt >= 64 then '8'
-                            when cnt >= 49 then '7'
-                            when cnt >= 36 then '6'
-                            when cnt >= 24 then '5'
-                            when cnt >= 14 then '4'
-                            when cnt >= 7 then '3'
+                            when cnt >= 18 then '10'
+                            when cnt >= 16 then '9'
+                            when cnt >= 14 then '8'
+                            when cnt >= 12 then '7'
+                            when cnt >= 10 then '6'
+                            when cnt >= 8 then '5'
+                            when cnt >= 6 then '4'
+                            when cnt >= 4 then '3'
                             when cnt >= 2 then '2'
                             else '1'
                         ]]>
@@ -452,14 +452,14 @@
             SELECT mfl.user_pk, count(*) as collect_count, (
                 CASE
                     <![CDATA[
-                        when count(*) >= 100 then '10'
-                        when count(*) >= 80 then '9'
-                        when count(*) >= 64 then '8'
-                        when count(*) >= 49 then '7'
-                        when count(*) >= 36 then '6'
-                        when count(*) >= 24 then '5'
-                        when count(*) >= 14 then '4'
-                        when count(*) >= 7 then '3'
+                        when count(*) >= 18 then '10'
+                        when count(*) >= 16 then '9'
+                        when count(*) >= 14 then '8'
+                        when count(*) >= 12 then '7'
+                        when count(*) >= 10 then '6'
+                        when count(*) >= 8 then '5'
+                        when count(*) >= 6 then '4'
+                        when count(*) >= 4 then '3'
                         when count(*) >= 2 then '2'
                         else '1'
                     ]]>

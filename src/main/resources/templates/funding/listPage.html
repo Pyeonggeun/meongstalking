@@ -182,7 +182,7 @@
         .categoryCircle{
             width: 3.5em;
             height: 3.5em;
-            background-color: #e9ecef;
+            /* background-color: #e9ecef; */
             border-radius: 50%;
             padding: 0%;
             place-items: center;
@@ -214,7 +214,7 @@
             justify-content: space-between;
             white-space: nowrap;
             padding-top: 1em;
-            border-bottom: solid 0.45em;
+            border-bottom: solid 0.1em;
             border-color:  #e9ecef;
 
         }
@@ -237,7 +237,7 @@
 
 <body>
     <!--새로 시작-->
-    <div class="container img-fluid">
+    <div class="container img-fluid pb-5">
         <div th:insert="~{commons/naviBar}"></div>
         <div class="row">
             <div class="col">
@@ -261,37 +261,37 @@
                     <div class="row pb-3 text-center">
                                 <div class="col-3">
                                     <div class="row"><div class="col boxCol"><div class="box categoryCircle"><i class="fa-solid fa-paw categoryIcon"></i></div></div></div>
-                                    <div class="row"><span class="px-0" style="font-size: 0.85em;">전체</span></div>
+                                    <div class="row"><span class="px-0 text-secondary" style="font-size: 0.85em;">전체</span></div>
                                 </div>
 
                                 <div class="col-3">
                                     <div class="row"><div class="col boxCol"><div class="box categoryCircle"><i class="fa-solid fa-bone categoryIcon"></i></div></div></div>
-                                    <div class="row"><span class="px-0" style="font-size: 0.85em;">먹이</span></div>
+                                    <div class="row"><span class="px-0  text-secondary" style="font-size: 0.85em;">먹이</span></div>
                                 </div>
 
                                 <div class="col-3">
                                     <div class="row"><div class="col boxCol"><div class="box categoryCircle"><i class="fa-solid fa-tents categoryIcon"></i></div></div></div>
-                                    <div class="row"><span style="font-size: 0.85em;" class="px-0">리빙</span></div>
+                                    <div class="row"><span style="font-size: 0.85em;" class="px-0 text-secondary">리빙</span></div>
                                 </div>
 
                                 <div class="col-3">
                                     <div class="row"><div class="col boxCol"><div class="box categoryCircle"><i class="fa-solid fa-shirt categoryIcon"></i></div></div></div>
-                                    <div class="row"><span style="font-size: 0.85em;" class="px-0">의류</span></div>
+                                    <div class="row"><span style="font-size: 0.85em;" class="px-0 text-secondary">의류</span></div>
                                 </div>
 
                                 <div class="col-3">
                                     <div class="row"><div class="col boxCol"><div class="box categoryCircle"><i class="bi bi-scissors categoryIcon"></i> </div></div></div>
-                                    <div class="row"><span style="font-size: 0.85em;" class="px-0">미용</span></div>
+                                    <div class="row"><span style="font-size: 0.85em;" class="px-0 text-secondary">미용</span></div>
                                 </div>
 
                                 <div class="col-3">
                                     <div class="row"><div class="col boxCol"><div class="box categoryCircle"><i class="fa-solid fa-shower categoryIcon"></i></div></div></div>
-                                    <div class="row"><span style="font-size: 0.85em;" class="px-0">위생</span></div>
+                                    <div class="row"><span style="font-size: 0.85em;" class="px-0 text-secondary">위생</span></div>
                                 </div>
 
                                 <div class="col-3">
                                     <div class="row"><div class="col boxCol"><div class="box categoryCircle"><i class="fa-solid fa-bucket categoryIcon"></i></div></div></div>
-                                    <div class="row"><span style="font-size: 0.85em;" class="px-0">기타</span></div>
+                                    <div class="row"><span style="font-size: 0.85em;" class="px-0 text-secondary">기타</span></div>
                                 </div>        
                     </div>        
                 </div>   
@@ -314,7 +314,7 @@
                                 </div>
                                 <div class="row mx-1">
                                     <div class="col">
-                                        <div class="row py-1"><div class="col"><span class="percent fw-bold" style="font-size: 1.15em;"></span ><span class="fw-bold" style="font-size: 1.1em;">% 달성 중이에요</span></div></div>
+                                        <div class="row py-1"><div class="col py-2"><span class="percent fw-bold" style="font-size: 1.15em;"></span ><span class="fw-bold" style="font-size: 1.1em;">% 달성 중이에요</span></div></div>
                                         <div class="row pb-1"><div class="simpleExplain col" style="font-size: 0.95em; color:dimgray"></div></div>
                                         <div class="row"><div class="userid col" style="font-size: 0.85em; color: darkgray"></div></div>
                                         <div class="row pb-3">
