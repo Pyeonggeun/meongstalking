@@ -67,7 +67,6 @@
         border: 0.2em solid #ddd;
         opacity:75%;
         border-radius: 0.25em;
-        font-weight: bold;
         text-align: center;
     }
 
@@ -150,7 +149,7 @@
                             <div class="col-4 subTitleCol"> 포인트 사용</div>
                             <div class="col cotentCol">
                                 <div class="row mb-2"><div class="col"><input type="checkbox"> 모두사용(보유 포인트 0 P)</div></div> 
-                                <div class="row mb-2"><div class="col-8" style="margin: auto;"><input type="text" style="width: 10em" class="form-control"></div></div>
+                                <div class="row"><div class="col-8" style="margin: auto;"><input type="text" style="width: 10em; height: 1.525em;" class="form-control"></div></div>
                             </div>    
                         </div>
 
@@ -161,7 +160,7 @@
                 <div class="row packRow">
                     <div class="col packBox">
                         <div class="row pb-2"><div class="col fw-bold" style="font-size:1.05em">결제 금액</div></div>
-                        <div class="row pb-1"><div class="col subTitleCol">펀딩상품 금액</div> <div class="col cotentCol">0원</div></div>
+                        <div class="row pb-1"><div class="col subTitleCol">펀딩상품 금액</div> <div class="col cotentCol" th:utext="${session.purchaseMap.quantity * product.detail.price}+'원'"></div></div>
                         <div class="row pb-1"><div class="col subTitleCol">쿠폰 할인 금액</div> <div class="col cotentCol">0원</div></div>
                         <div class="row pb-1"><div class="col subTitleCol">포인트 할인 금액</div> <div class="col cotentCol">0원</div></div>
                         <div class="row pb-1"><div class="col subTitleCol">배송비</div> <div class="col cotentCol">0원</div></div>
@@ -243,25 +242,25 @@
                         <div class="row py-1">
                             <div class="col-4 px-2 d-grid">
                                 <input type="radio" class="btn-check" name="options" id="option1" autocomplete="off">
-                                <label class="btn payBtn btn-outline-primary" for="option1">카드</label>
+                                <label class="btn payBtn btn-outline-primary" for="option1" style="font-size: 0.9em;">카드</label>
                             </div>
                             <div class="col-4 px-2 d-grid">
                                 <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off">
-                                <label class="btn payBtn btn-outline-primary" for="option2">가상계좌</label>
+                                <label class="btn payBtn btn-outline-primary" for="option2" style="font-size: 0.9em;">가상계좌</label>
                             </div>
                             <div class="col-4 px-2 d-grid">
                                 <input type="radio" class="btn-check" name="options" id="option3" autocomplete="off" disabled>
-                                <label class="btn payBtn btn-outline-primary" for="option3">휴대폰</label>
+                                <label class="btn payBtn btn-outline-primary" for="option3" style="font-size: 0.9em;">휴대폰</label>
                             </div>
                         </div>
                         <div class="row pt-1 pb-2">
                             <div class="col-4 px-2 d-grid">
                                 <input type="radio" class="btn-check" name="options" id="option4" autocomplete="off">
-                                <label class="btn payBtn btn-outline-primary" for="option4">카카오페이</label>
+                                <label class="btn payBtn btn-outline-primary" for="option4" style="font-size: 0.9em;">카카오페이</label>
                             </div>
                             <div class="col-4 px-2 d-grid">
                                 <input type="radio" class="btn-check" name="options" id="option5" autocomplete="off">
-                                <label class="btn payBtn btn-outline-primary" for="option5">네이버페이</label>
+                                <label class="btn payBtn btn-outline-primary" for="option5" style="font-size: 0.9em;">네이버페이</label>
                             </div>
 
                         </div> 

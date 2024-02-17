@@ -48,6 +48,8 @@
     <style>
         body{
             font-family: 'Noto Sans KR', sans-serif;
+            padding-left: 0.35em;
+            padding-right: 0.35em;
         }
 
         .mipbox{
@@ -68,13 +70,13 @@
 
         input[type="radio"] {
             appearance: none; /* 기본 스타일 제거 */
-            width: 1.03em;
-            height: 1.03em;
+            width: 1.2em;
+            height: 1.2em;
             border: 0.1em solid #ccc;
             border-radius: 50%;
             outline: none;
             cursor: pointer;
-            margin-right: 0.5em;
+            margin-right: 0.43em;
             vertical-align: middle;
             }
 
@@ -115,11 +117,11 @@
                         <span style="font-size: 3em;"><i class="bi bi-check-circle"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-dash-lg"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-circle"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-dash-lg"></i></span><span style="font-size: 3em; color:gainsboro;"><i class="bi bi-circle"></i></span>
                     </div>
                 </div>
-                <div class="row"><div class="col text-center" style="font-size: 0.7em;">펀딩 상품 확인 진행중 입니다.</div></div>
+                <div class="row"><div class="col text-center" style="font-size: 0.7em;"> 펀딩 프로젝트의 구성에 관한 확인을 진행 중 입니다.</div></div>
                 <!--진행상황 창 끝-->
 
                 <!--펀딩 프로젝트 정보 확인-->
-                <div class="row py-2 mt-3 mb-1"><div class="col fw-bold" style="font-size: 1.15em;">펀딩 프로젝트 정보 확인</div></div>
+                <div class="row py-2 mt-4"><div class="col fw-bold" style="font-size: 1.15em;">펀딩 프로젝트 정보 확인</div></div>
                 <form action="productPurchaseProcess" id="purchase" method="post">
                     <input name="product_pk" type="hidden" th:value="${product.detail.product_pk}">     
                         <lable for="justbutton">    
@@ -128,29 +130,29 @@
                                     <input type="radio" id="justbutton">
                                 </div>
                                 <div class="col ps-0">
-                                    <div class="row"><div class="col" style="font-size: 1.1em;" th:utext="${#numbers.formatInteger(product.detail.price, 3, 'COMMA')+'원'}"></div></div>
-                                    <div class="row"><div class="col preCol" style="font-size: 0.85em;" th:text="${product.detail.product_component}"></div></div>
+                                    <div class="row py-1"><div class="col" style="font-size: 1.1em;" th:utext="${#numbers.formatInteger(product.detail.price, 3, 'COMMA')+'원'}"></div></div>
+                                    <div class="row pb-2"><div class="col preCol" style="font-size: 0.85em;" th:text="${product.detail.product_component}"></div></div>
                                 </div>
                             </div>
                         </lable>    
                         
 
-                        <div class="row py-2 mx-2 mt-2 border rounded"><div class="col" style="font-size: 0.85em; color: gray;">선택해야 하는 상세 옵션이 존재하지 않습니다.</div><div class="col-1 px-0 text-center"> <i class="bi bi-caret-right" style="font-size: 1em; color: gray;"></i></div></div>
+                        <div class="row py-2 mx-2 mt-2 border rounded"><div class="col" style="font-size: 0.85em; color: gray; align-self: center;">선택하실 세부 옵션이 존재하지 않습니다.</div><div class="col-1 px-0 text-center"> <i class="bi bi-caret-right" style="font-size: 1em; color: gray;"></i></div></div>
                         
                         <div class="row py-2 mx-2">  
                             <div class="col px-0">  
                                 <div class="row"><div class="col" style="font-size: 0.82em;"> <i class="bi bi-truck"></i> 배송비 무료</div></div>
-                                <div class="row mb-2"><div class="col" style="font-size: 0.82em; color: dimgray;">  정확한 배송일자는 상품별 새소식을 참고해주세요</div></div>
+                                <div class="row mb-2"><div class="col" style="font-size: 0.82em; color: dimgray;">  정확한 배송 일자는 프로젝트별 새소식을 참고해주세요.</div></div>
                             </div>
                         </div>
 
 
                         <div class="row mt-1">
                             <div class="mipbox px-0">
-                                <div class="col-7 explainCol" style="align-self: center;"> <span>구매를 원하시는 수량만큼 입력해주세요</span> </div>
-                                <button type="button" style="font-size: 1.55em;"  class="btn px-0 py-0 me-2" onclick="decreaseQuantity()"><i class="bi bi bi-dash-lg"></i></button>
+                                <div class="col-7 explainCol" style="align-self: center;"> <span>후원을 원하시는 수량만큼 입력해주세요</span> </div>
+                                <button type="button" style="font-size: 1.5em;"  class="btn px-0 py-0 me-2" onclick="decreaseQuantity()"><i class="bi bi bi-dash-lg"></i></button>
                                 <input class=form-control type="number" id="inputQuantity" name="quantity" placeholder="0" style="text-align:center; border:none; width: 3.5em; height: 2.25em;"> 
-                                <button type="button" style="font-size: 1.55em;" class="btn px-0 py-0 ms-2" onclick="increaseQuantity()"><i class="bi bi-plus-lg"></i></button>
+                                <button type="button" style="font-size: 1.5em;" class="btn px-0 py-0 ms-2" onclick="increaseQuantity()"><i class="bi bi-plus-lg"></i></button>
                             </div>
                         </div>
                         
@@ -159,7 +161,7 @@
                     
                     
                     <div class="row mb-2" style="background-color: gainsboro;"><div class="col"></div></div>
-                        <div class="row"><div class="col-3 px-0 mx-1 fw-bold text-center"><a th:href="@{./productDetailPage(id = ${product.detail.product_pk})}" class="btn text-white fw-bold rounded" style="font-size: 1em; background-color: lightcoral;">뒤로가기</a></div> <div class="col text-center d-grid" style="font-size: 1em;"><input class="border border-black rounded py-1" type="button" onclick="nextSubmit()" style="background-color: white; border-color:black;" value="다음페이지 이동"></div></div>
+                        <div class="row"><div class="col-3 px-0 ms-2 me-1 fw-bold text-center"><a th:href="@{./productDetailPage(id = ${product.detail.product_pk})}" class="btn text-white fw-bold rounded" style="font-size: 0.9em; background-color: lightcoral;">뒤로가기</a></div> <div class="col text-center d-grid" style="font-size: 1em;"><input class="border border-black rounded py-1" type="button" onclick="nextSubmit()" style="background-color: white; border-color:black;" value="다음페이지 이동"></div></div>
                 </form>
                 <div class="row py-3"><div class="col text-center" style="font-size: 0.8em; color: gray;">다음 페이지에서 결제가 진행됩니다.</div></div>
 

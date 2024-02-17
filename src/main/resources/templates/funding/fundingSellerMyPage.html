@@ -100,7 +100,7 @@
     <div class="container-fluid">
         <div th:insert="~{commons/naviBar}"></div>
         <div class="row">
-            <div class="col">
+            <div class="col pb-5">
     <!--컨테이너 로우 콜 세팅 여기까지-->
                     <div class="row">
                         <div class="col packtitleBox">
@@ -167,7 +167,7 @@
                                                     <div class="col">
                                                         <div class="row productBox ms-2 me-3 border border-1 rounded" style="background-color: white;">
                                                             <div class="col-5 px-0 d-grid"><img th:src="@{'/uploadFiles/'+${listForPk.title_image}}" alt="이미지 등록 필요" style="width: 100%; height: 100%;" class="rounded"></div>
-                                                            <div class="col-7 textBox" style="overflow-x: hidden; color: black;" th:text="${listForPk.product_name}"></div>
+                                                            <div class="col-7 textBox" style="overflow-x: hidden; color: rgb(55, 55, 55); align-self: center;" th:text="${listForPk.product_name}"></div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -191,7 +191,7 @@
                             <div class="row mb-2 border-bottom">
                                 <div class="col mx-2">
                                     <div class="row"><div class="col my-2 fw-bold" style="font-size: 1em; color:#555c65;">문의</div></div>
-                                    <div class="row border-bottom pb-2"><div class="col" style="font-size: 0.85em; color:#555c65;"> <i class="i class= bi bi-envelope" style="font-size: 1.1em;"></i> 프로젝트 관련 상담</div> <div class="col-2 text-end" style="font-size:1em;"> > </div></div>
+                                    <div class="row pb-2"><div class="col" style="font-size: 0.85em; color:#555c65;"> <i class="i class= bi bi-envelope" style="font-size: 1.1em;"></i> 프로젝트 관련 상담</div> <div class="col-2 text-end" style="font-size:1em;"> > </div></div>
                                 </div>
                             </div>
 
@@ -201,7 +201,7 @@
                                     <div class="row border-bottom pb-2"><div class="col" style="font-size: 0.85em;"> <i class="bi bi-chat-text" style="font-size: 1.1em;"></i> 1:1 채팅 상담</div> <div class="col-2 text-end" style="font-size:1em;"> > </div></div>
                                     <div class="row border-bottom py-2"><div class="col" style="font-size: 0.85em;"> <i class="bi bi-journal-bookmark" style="font-size: 1.1em;"></i> 도움말 센터</div><div class="col-2 text-end" style="font-size:1em;"> > </div></div>
                                     <div class="row border-bottom py-2"><div class="col" style="font-size: 0.85em;"> <i class="bi bi-megaphone" style="font-size: 1.1em;"></i> 공지사항</div><div class="col-2 text-end" style="font-size:1em;"> > </div></div>
-                                    <div class="row border-bottom py-2"><div class="col" style="font-size: 0.85em;"> <i class="bi bi-wrench-adjustable" style="font-size: 1.1em;"></i> 설정</div><div class="col-2 text-end" style="font-size:1em;"> > </div></div>
+                                    <div class="row py-2"><div class="col" style="font-size: 0.85em;"> <i class="bi bi-wrench-adjustable" style="font-size: 1.1em;"></i> 설정</div><div class="col-2 text-end" style="font-size:1em;"> > </div></div>
                                 </div>
                             </div>
 

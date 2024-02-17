@@ -47,13 +47,17 @@
                 percent.innerText = e.percent;
 
                 const simpleExplain = productListWrapper.querySelector(".simpleExplain");
-                simpleExplain.innerText = e.list.simple_explain;
+                const maxLen = 80; // 최대 길이
+                simpleExplain.innerText = e.list.simple_explain.substring(0,maxLen);
+                if (e.list.simple_explain.length > maxLen) {
+                simpleExplain.innerText += "...";
+                }
 
                 const fDay = productListWrapper.querySelector(".fDay");
                 fDay.innerText = e.f_day;
 
                 const tSales = productListWrapper.querySelector(".tSales");
-                tSales.innerText = e.t_sales;
+                tSales.innerText = e.t_sales.toLocaleString();;
 
                 productListWrapper.classList.remove("d-none");
                 productListElement.appendChild(productListWrapper);
