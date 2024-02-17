@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.psychopath.dogstalking.dto.UserDto;
@@ -17,6 +18,7 @@ import com.psychopath.dogstalking.mstar.dto.ArtPhotoDto;
 import com.psychopath.dogstalking.mstar.dto.ArticleDto;
 import com.psychopath.dogstalking.mstar.dto.ArticleLikeDto;
 import com.psychopath.dogstalking.mstar.dto.ArticleScrapDto;
+import com.psychopath.dogstalking.mstar.dto.ArticleTagDto;
 import com.psychopath.dogstalking.mstar.dto.BlockDto;
 import com.psychopath.dogstalking.mstar.dto.BookmarkDto;
 import com.psychopath.dogstalking.mstar.dto.CmtLikeDto;
@@ -165,55 +167,63 @@ public class MstarServiceImpl {
         }
         mstarSqlMapper.updateProfileInfoDto(profileInfoDto);
     }
-
-    public void insertArticleInfoAndPhoto(List<MultipartFile> imageFiles, ArticleDto articleDto){
-        
+    public int insertArticleInfo(ArticleDto articleDto){
         mstarSqlMapper.insertArticle(articleDto);
         int article_pk = mstarSqlMapper.selectMaxArticlePk();
+        return article_pk;
+    }
+    
+    @Transactional
+    public void insertArticlePhotoAndTag(MultipartFile imageFiles,int article_pk,int view_order, int[] tag_info_pk, double[] x_coordinates, double[] y_coordinates){
 
-        
-        
-        if(imageFiles != null) {
-			for(MultipartFile multipartFile : imageFiles) {
-				if(multipartFile.isEmpty()) {
-					continue;
-				}
-				
-                ArtPhotoDto artPhotoDto = new ArtPhotoDto();
-                artPhotoDto.setArticle_pk(article_pk);
-				
-                
-				String rootPath = "/Users/joinchun/uploadFiles/";
-				
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM//dd/");
-				String todayPath = sdf.format(new Date());
-				
-				File todayFolderForCreate = new File(rootPath + todayPath);
-				
-				if(!todayFolderForCreate.exists()) {
-					todayFolderForCreate.mkdirs();
-				}
-				
-				String originalFileName = multipartFile.getOriginalFilename();
-				
-				
-				String uuid = UUID.randomUUID().toString();
-				long currentTime = System.currentTimeMillis();
-				String fileName = uuid + "_"+ currentTime;
-				
-				
-				String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
-				
-				fileName += ext;
-				
-				try {
-					multipartFile.transferTo(new File(rootPath+todayPath+fileName));
-				}catch(Exception e) {
-					e.printStackTrace();
-				}
-				String macName = "/uploadFiles/";
-                artPhotoDto.setPhoto_path(macName+todayPath+fileName);
-                mstarSqlMapper.insertArticlePhoto(artPhotoDto);
+        if(imageFiles != null) {				
+            ArtPhotoDto artPhotoDto = new ArtPhotoDto();
+            artPhotoDto.setArticle_pk(article_pk);
+            artPhotoDto.setView_order(view_order);
+            
+            String rootPath = "/Users/joinchun/uploadFiles/";
+            
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM//dd/");
+            String todayPath = sdf.format(new Date());
+            
+            File todayFolderForCreate = new File(rootPath + todayPath);
+            
+            if(!todayFolderForCreate.exists()) {
+                todayFolderForCreate.mkdirs();
+            }
+            
+            String originalFileName = imageFiles.getOriginalFilename();
+            
+            
+            String uuid = UUID.randomUUID().toString();
+            long currentTime = System.currentTimeMillis();
+            String fileName = uuid + "_"+ currentTime;
+            
+            
+            String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
+            
+            fileName += ext;
+            
+            try {
+                imageFiles.transferTo(new File(rootPath+todayPath+fileName));
+            }catch(Exception e) {
+                e.printStackTrace();
+            }
+            String macName = "/uploadFiles/";
+            artPhotoDto.setPhoto_path(macName+todayPath+fileName);
+            mstarSqlMapper.insertArticlePhoto(artPhotoDto);
+            if(tag_info_pk != null){
+                for(int x = 0; x < tag_info_pk.length; x++ ){
+                    int art_photo_pk = mstarSqlMapper.selectMaxArticlePhotoPk();
+                    System.out.println("서비스단"+ art_photo_pk);
+                    ArticleTagDto articleTagDto = new ArticleTagDto();
+                    articleTagDto.setArt_photo_pk(art_photo_pk);
+                    articleTagDto.setTag_info_pk(tag_info_pk[x]);
+                    articleTagDto.setX_coordinates(x_coordinates[x]);
+                    articleTagDto.setY_coordinates(y_coordinates[x]);
+                    System.out.println("서비스단 실행됨"+ art_photo_pk);
+                    mstarSqlMapper.insertArticleTag(articleTagDto);
+                }
             }
         }
     }
@@ -358,6 +368,26 @@ public class MstarServiceImpl {
             UserDto userDto = mstarSqlMapper.selectUserDto(user_pk);
             int article_pk = articleDto.getArticle_pk();
             List<ArtPhotoDto> photoList = mstarSqlMapper.selectArticlePhotoList(article_pk);
+            List<Map<String, Object>> photoAndTagList = new ArrayList<>();
+            for(ArtPhotoDto artPhotoDto : photoList){
+                Map<String , Object> photoAndTagMap = new HashMap<>();
+                int art_photo_pk = artPhotoDto.getArt_photo_pk();
+                List<ArticleTagDto> tagList = mstarSqlMapper.selectArticleTagList(art_photo_pk);
+                List<Map<String, Object>> userTagList = new ArrayList<>();
+                if(tagList.size() != 0){
+                    for(ArticleTagDto articleTagDto : tagList){
+                        Map<String , Object> userTagMap = new HashMap<>();
+                        int tag_info_pk = articleTagDto.getTag_info_pk();
+                        String userid = mstarSqlMapper.selectUserDtoByPIP(tag_info_pk).getUserid();
+                        userTagMap.put("userid", userid);
+                        userTagMap.put("articleTagDto", articleTagDto);
+                        userTagList.add(userTagMap);
+                    }
+                }
+                photoAndTagMap.put("artPhotoDto", artPhotoDto);
+                photoAndTagMap.put("userTagList", userTagList);
+                photoAndTagList.add(photoAndTagMap);
+            }
 
             int followStatus = mstarSqlMapper.checkFollowStatus(profile_info_pk, another_info_pk);
             int scrapStatus = mstarSqlMapper.selectScrapStatus(article_pk, profile_info_pk);
@@ -394,7 +424,7 @@ public class MstarServiceImpl {
             map.put("userDto", userDto);
             map.put("profileInfoDto", profileInfoDto);
             map.put("articleDto", articleDto);
-            map.put("photoList", photoList);
+            map.put("photoAndTagList", photoAndTagList);
 
             
             list.add(map);
@@ -1095,7 +1125,14 @@ public class MstarServiceImpl {
         return mstarSqlMapper.selectUnReadDirect(user_pk);
     }
 
-
+    public Map<String,Object> getUserProfileInfo(int profile_info_pk){
+        Map<String, Object> map = new HashMap<>();
+        ProfileInfoDto profileInfoDto = mstarSqlMapper.selectProfileInfoDtoByPIP(profile_info_pk);
+        UserDto userDto = mstarSqlMapper.selectUserDtoByPIP(profile_info_pk);
+        map.put("profileInfoDto", profileInfoDto);
+        map.put("userDto", userDto);
+        return map;
+    }
 
 
 }

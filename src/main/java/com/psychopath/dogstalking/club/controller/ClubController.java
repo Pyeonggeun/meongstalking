@@ -86,11 +86,18 @@ public class ClubController {
 
         Map<String, Object> clubTF = clubService.applyClubUserTF(userDto.getUser_pk());
         model.addAttribute("clubTF", clubTF);
+
+
+        int countImgComment = clubService.countImgComment(pk);
+
         return "club/freeBoardPage";
     }
 
     @RequestMapping("freeBoardWritePage")
-    public String freeBoardWritePage(HttpSession session) {
+    public String freeBoardWritePage(HttpSession session, Model model) {
+        UserDto userDto = (UserDto) session.getAttribute("sessionUser");
+        Map<String, Object> clubTF = clubService.applyClubUserTF(userDto.getUser_pk());
+        model.addAttribute("clubTF", clubTF);
 
         return "club/freeBoardWritePage";
     }
@@ -407,6 +414,9 @@ public class ClubController {
         int clubPk = clubService.selectClubPK(userDto.getUser_pk());
         List<Map<String, Object>> memberlist = clubService.selectMember(clubPk);
         model.addAttribute("memberlist", memberlist);
+
+        Map<String, Object> clubTF = clubService.applyClubUserTF(userDto.getUser_pk());
+        model.addAttribute("clubTF", clubTF);
 
         return "club/clubMemberPage";
     }

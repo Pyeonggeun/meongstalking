@@ -1,10 +1,12 @@
 package com.psychopath.dogstalking.club.controller;
 
+import org.apache.ibatis.javassist.compiler.ast.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +18,8 @@ import com.psychopath.dogstalking.club.dto.ImgCommentDto;
 import com.psychopath.dogstalking.club.service.ClubServiceImpl;
 import com.psychopath.dogstalking.dto.RestResponseDto;
 import com.psychopath.dogstalking.dto.UserDto;
+import java.util.List;
+import java.util.Map;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -37,7 +41,7 @@ public class ClubRestController {
 		return response;
 	}
 
-	//freeboard
+	// freeboard
 	@RequestMapping("writeComment")
 	public RestResponseDto writeComment(HttpSession session, CommentDto params) {
 		RestResponseDto restResponseDto = new RestResponseDto();
@@ -88,7 +92,7 @@ public class ClubRestController {
 		}
 	}
 
-	//imgfreeboard
+	// imgfreeboard
 	@RequestMapping("writeImgComment")
 	public RestResponseDto writeImgComment(HttpSession session, ImgCommentDto params) {
 		RestResponseDto restResponseDto = new RestResponseDto();
@@ -107,7 +111,7 @@ public class ClubRestController {
 		RestResponseDto restResponseDto = new RestResponseDto();
 
 		restResponseDto.setData(clubService.getImgCommentList(articleId));
-		
+
 		// System.out.println("articleId: "+articleId);
 		// System.out.println("결과: "+clubService.getImgCommentList(articleId));
 
@@ -118,9 +122,9 @@ public class ClubRestController {
 	@RequestMapping("updateImgComment")
 	public RestResponseDto updateImgComment(ImgCommentDto params) {
 		RestResponseDto restResponseDto = new RestResponseDto();
-		
+
 		clubService.updateImgComment(params);
-		
+
 		restResponseDto.setResult("success");
 		return restResponseDto;
 	}
@@ -128,12 +132,27 @@ public class ClubRestController {
 	@RequestMapping("deleteImgComment")
 	public RestResponseDto deleteImgComment(int comment_id) {
 		RestResponseDto restResponseDto = new RestResponseDto();
-		
+
 		clubService.deleteImgComment(comment_id);
-		
+
 		restResponseDto.setResult("success");
 		return restResponseDto;
 	}
-	
+
+	// @RequestMapping("performSearch")
+	@RequestMapping(value = "/performSearch", method = RequestMethod.GET)
+	public RestResponseDto performSearch(@RequestParam("searchQuery") String searchQuery) {
+
+		//System.out.println("searchQuery : " + searchQuery);
+
+		RestResponseDto restResponseDto = new RestResponseDto();
+
+		clubService.searchMember(searchQuery);
+		List<Map<String, Object>> searchResults = clubService.searchMember(searchQuery);
+		//System.out.println("Search results from server: " + searchResults);
+		restResponseDto.setResult("success");
+		restResponseDto.setData(searchResults);
+		return restResponseDto;
+	}
 
 }
