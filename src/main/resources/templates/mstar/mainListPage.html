@@ -374,8 +374,6 @@
 
                         const articleImgBox = articleListWrapper.querySelector(".articleImgBox");
 
-                        
-
                         const carouselWrapper = document.querySelector("#carouselTemplete .carouselWrapper").cloneNode(true);
                         
                         carouselWrapper.setAttribute("id","carouselId"+e.articleDto.article_pk);
@@ -395,7 +393,10 @@
                         //         <i class="fa-solid fa-circle ps-0 point"></i>
                         //     </div>
                         // </div>
-                        for(p of e.photoList){
+                        
+                        
+
+                        for(p of e.photoAndTagList){
                             const articleImgWrapper =  document.querySelector("#articleImgTemplete .articleImgWrapper").cloneNode(true);
                             const articleSizeWrapper = document.querySelector("#articleSizeTemplete .articleSizeWrapper").cloneNode(true);
                             const point = articleSizeWrapper.querySelector(".point");
@@ -408,10 +409,30 @@
                                 point.classList.remove("text-secondary");
                                 articleImgWrapper.classList.add("active");
                             }
+                            const photoCount = articleImgWrapper.querySelector(".photoCount");
+                            if(!(e.photoAndTagList <= 1)){
+                                photoCount.classList.remove("d-none");
+                                photoCount.innerText = count+"/"+e.photoAndTagList.length;
+                            }
                             count +=1;
-                        
-                            img.src = p.photo_path;
+                            if(p.userTagList.length !=0){
+                                const checkTag = articleImgWrapper.querySelector(".checkTag");
+                                checkTag.classList.remove("d-none");
+                            }
+                          
                             
+                            
+                            
+                            img.src = p.artPhotoDto.photo_path;
+                            for(i of p.userTagList){
+                                const tagWrapper = document.querySelector("#tagTemplete .tagWrapper").cloneNode(true);
+                                const tag = tagWrapper.querySelector(".tag");
+                                tag.innerText = i.userid
+                                tagWrapper.setAttribute("style", "left:" +i.articleTagDto.x_coordinates+ "%; top:"+i.articleTagDto.y_coordinates + "%;");
+                                articleImgWrapper.appendChild(tagWrapper);
+                            }
+                            articleImgWrapper.setAttribute("onclick", "showTagUser(this)");
+
                             articleImg.appendChild(articleImgWrapper);
                             
                         }
@@ -490,7 +511,31 @@
                     }
 
                 });
-            }  
+            }
+            function showTagUser(target){
+                
+                const articleImgWrapper = target.closest(".articleImgWrapper");
+                const tagWrapper = articleImgWrapper.querySelectorAll(".tagWrapper");
+                for(let i = 0; i < tagWrapper.length; i++ ){
+                    tagWrapper[i].classList.remove("d-none")
+                    tagWrapper[i].classList.add("animate");
+                }
+                const checkTag = articleImgWrapper.querySelector(".checkTag");
+                checkTag.classList.add("d-none");
+                articleImgWrapper.setAttribute("onclick","hideTagUser(this)");
+            }
+            function hideTagUser(target){
+                
+                const articleImgWrapper = target.closest(".articleImgWrapper");
+                const tagWrapper = articleImgWrapper.querySelectorAll(".tagWrapper");
+                for(let i = 0; i < tagWrapper.length; i++ ){
+                    tagWrapper[i].classList.add("d-none")
+                }
+                const checkTag = articleImgWrapper.querySelector(".checkTag");
+                checkTag.classList.remove("d-none");
+                articleImgWrapper.setAttribute("onclick","showTagUser(this)");
+            }
+
             function followingUser(another_info_pk, target){
                 const url = "/mstar/followingAnotherUser";
 
@@ -1448,6 +1493,40 @@
             .modal-fullscreen {
                 width: 100%;
             }
+            .tag {
+                position: relative;
+                display: inline-block;
+                padding: 0.2em 0.4em;
+                background-color: #4f5152;
+                color: #fff;
+                font-size: 0.8em;
+                border-radius: 4px;
+            }
+            .tag::before {
+                content: '';
+                position: absolute;
+                top: 100%; /* 말풍선이 아래로 향하도록 변경 */
+                left: 50%;
+                margin-left: -0.2em; /* 말풍선 너비의 반으로 설정 */
+                border-width: 5px;
+                border-style: solid;
+                border-color: #4f5152 transparent transparent transparent;
+            }
+            .sizeUP {
+                /* 초기 스타일 설정 (애니메이션이 시작되기 전 스타일) */
+                transform: scale(1);
+            }
+
+            .sizeUP.animate {
+                /* 애니메이션 클래스가 추가되었을 때의 스타일 설정 */
+                animation: zoom 0.5s linear;
+            }
+
+            @keyframes zoom {
+                50% {
+                    transform: scale(1.1);
+                }
+            }
         </style>
     </head>
 
@@ -1864,6 +1943,18 @@
         <div id="articleImgTemplete" class="d-none">
             <div class="carousel-item articleImgWrapper">
                 <img class="d-block w-100 img" alt="..." style="height: 21em;">
+                <div class="col-auto position-absolute fs-3" style="color: #3f4041; position: absolute; top: 90%; left: 3%; opacity: 0.7">
+                    <i id="" class="fa-solid fa-circle-user rounded-circle checkTag d-none" style="background-color: rgb(165, 163, 163);"></i>
+                </div>
+                <div  class="col-auto position-absolute rounded-pill px-2 photoCount d-none" style="color: #dbd5d5;background-color: #636262; position: absolute; top: 3%; left: 87%; opacity: 0.7;">
+                    
+                </div>
+            </div>
+        </div>
+
+        <div id="tagTemplete" class="d-none">
+            <div class="col-auto sizeUP tagWrapper position-absolute d-none" style="position: absolute; top: 45%; left: 45%;">
+                <div class="tag">jo_in_chun</div>
             </div>
         </div>
 

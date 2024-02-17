@@ -8,6 +8,7 @@
         <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+        <script src="/public/js/commons/lockLikeMobile.js"></script>
 
         <script th:inline="javascript">
             let user_pk = null;
@@ -27,88 +28,420 @@
                 
             }
             
+
+            let upLoadImgList = [];
             function articlePhotoUpload(){
                 const photeUpload = document.querySelector("#photeUpload");
                 photeUpload.click();
                 const photoListBox = document.getElementById("photoListBox");
                 const handleFiles = (e) => {
-                    const selectedFile = [...photeUpload.files];
-                    
+                    const imageFiles = photeUpload.files;
                         if (e.target.files.length === 0) {  
                             return   
                         }else{
-                            const existingPhotos = document.querySelectorAll(".photo-item");
-                            existingPhotos.forEach(photo => {
-                                photoListBox.appendChild(photo);
-                            });
                             const addButton = document.querySelector("#addButton");
                             addButton.remove();
                             const addButtonDiv = document.createElement("div");
-                            addButtonDiv.classList.add("col-auto", "fs-3", "ms-2", "fw-bold", "py-4","align-self-center", "rounded", "text-center")
+                            addButtonDiv.classList.add("col-auto", "fs-3", "mx-2", "fw-bold", "py-4","px-4","align-self-center", "rounded", "text-center")
                             addButtonDiv.setAttribute("onclick","articlePhotoUpload()");
-                            addButtonDiv.setAttribute("style","border: 1px dashed rgb(0, 0, 0)","cursor: pointer","width: 20vw");
+                            addButtonDiv.setAttribute("style","border: 1px dashed rgb(0, 0, 0)","cursor: pointer","width: auto");
                             addButtonDiv.setAttribute("id","addButton");
                             const itag = document.createElement("i");
                             itag.classList.add("bi", "bi-plus-lg");
                             addButtonDiv.appendChild(itag);
 
                             
+                            for (let i = 0; i < imageFiles.length; i++) {
+                                let upLoadImgInfo = [];
+                                upLoadImgInfo.push(imageFiles[i]);
+                                upLoadImgList.push(upLoadImgInfo);
+                            }
+                            for(let f = 0; f <= e.target.files.length-1 ; f++){
+                                const photoListWrapper = document.querySelector("#photoListTemplete .photoListWrapper").cloneNode(true);  
+                                const photoList = photoListWrapper.querySelector(".photoList");
 
-                            for(let f = 0; f <= e.target.files.length-1; f++){
                                 const fileReader = new FileReader();
                                 
-                                fileReader.readAsDataURL(selectedFile[f]);
-                                const div = document.createElement("div");
-                                div.classList.add("col-auto","ms-2", "rounded","border", "px-0","align-self-center" );
-                                div.setAttribute("id","photo"+0);
+                                fileReader.readAsDataURL(imageFiles[f]);
 
-                                
-                                const img = document.createElement("img");
-                                img.classList.add("img-fluid", "h-auto");
-                                img.setAttribute("style", "width: 30vw");
-                                div.appendChild(img);
-                                photoListBox.appendChild(div);
-                                photoListBox.appendChild(addButtonDiv);
-                                
                                 fileReader.onload = function () {
-                                    img.setAttribute("src",fileReader.result )
+                                    photoList.src = fileReader.result;
                                 }
-                                
+                                photoListBox.appendChild(photoListWrapper);
                             }
+                            photoListBox.appendChild(addButtonDiv);
+
+                            photeUpload.value ="";
                             const photoCount = document.querySelector("#photoCount");
-                            photoCount.innerText = e.target.files.length+"/ 6";
-                           
+                            photoCount.innerText = (upLoadImgList.length)+"/ 6";
+                            
                         }; 
                     };
                     photeUpload.addEventListener("change", handleFiles);
-                    
-            }
 
+            }
 
             function insertArticleInfo(){
-                const photeUpload = document.querySelector("#photeUpload");
+                const url = "/mstar/insertArticleInfo"
 
-                const imageFiles = photeUpload.files;
-                const formData = new FormData();
-
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', './insertArticleInfo', true);
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        console.log(xhr.responseText);
-                    }
-                };
-                for (let i = 0; i < imageFiles.length; i++) {
-                    formData.append("imageFiles", imageFiles[i]);
-                }
                 const content = document.querySelector("#content").value;            
                 const profile_info_pk = profileInfoDto.profile_info_pk;
-                formData.append("profile_info_pk", profile_info_pk);
-                formData.append("content", content);
-                 xhr.send(formData);
-
-                location.href='./profilePage?user_pk='+user_pk;
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profileInfoDto.profile_info_pk+"&content="+content
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    inserArticlePhotoTag(response.data);
+                });
+                
             }
+            function inserArticlePhotoTag(article_pk){
+                let view_order = 1;
+                for (let i = 0; i < upLoadImgList.length; i++) {
+                    const formData = new FormData();
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', './inserArticlePhotoTag', true);
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            console.log(xhr.responseText);
+                        }
+                    };
+                    formData.append("article_pk", article_pk);
+                    formData.append("imageFiles", upLoadImgList[i][0]);
+                    formData.append("view_order",view_order);
+                    console.log("viewOrder1"+view_order)
+                    view_order +=1;
+                    console.log("viewOrder2"+view_order)
+                    if((upLoadImgList[i].length-1) !=0){
+                        
+                        for(let e = 1; e < upLoadImgList[i].length; e++){
+                            console.log("viewOrder"+view_order)
+                            const tagBox = document.querySelector("#tagInfo"+upLoadImgList[i][e]);
+                            const tagWrapper = tagBox.closest(".tagWrapper");
+                            const selectImgWrapper1 = tagBox.closest(".selectImgWrapper");
+                            const selectImgWrapper = selectImgWrapper1.querySelector(".selectImg")
+                            const x_coordinates = parseFloat(tagWrapper.style.left);
+                            const y_coordinates = parseFloat(tagWrapper.style.top);
+                        
+                            formData.append("tag_info_pk" ,upLoadImgList[i][e]);
+                            formData.append("x_coordinates" ,x_coordinates);
+                            formData.append("y_coordinates" ,y_coordinates);
+                            formData.append("view_order", view_order); // view_order 값을 formData에 추가
+                       }
+                       
+                    }else{
+                        formData.append("tag_info_pk" ,[]);
+                        formData.append("x_coordinates" , []);
+                        formData.append("y_coordinates" , []);
+                    }
+                    
+                    xhr.send(formData);
+                   
+                }
+                location.href = '/mstar/profilePage';
+                
+            }
+
+            function showUserTagModal(){
+                const userTagModal = bootstrap.Modal.getOrCreateInstance("#userTagModal");
+                showSelectImg();
+                userTagModal.show();
+            }
+
+            let tagPhotoNumber = null;
+            let firstCount = 0;
+            function showSelectImg(){
+                const tagePhotoListBox = document.querySelector("#tagePhotoListBox");
+                if(firstCount == 0){
+                    for (let i = 0; i < upLoadImgList.length; i++) {
+                        const selectImgWrapper = document.querySelector("#selectImgTemplete .selectImgWrapper").cloneNode(true);  
+                        const selectImg = selectImgWrapper.querySelector(".selectImg");
+                        
+                        const fileReader = new FileReader();
+                        
+                        fileReader.readAsDataURL(upLoadImgList[i][0]);
+
+                        fileReader.onload = function () {
+                            selectImg.src = fileReader.result;
+                        }
+                        if(i == 0){
+                            selectImgWrapper.classList.add("active");
+                            tagPhotoNumber = 0;
+                        }
+                        tagePhotoListBox.appendChild(selectImgWrapper);
+                        
+                    };
+                    const carouselWrapper = document.querySelector(".carouselWrapper");
+                    var carousel = new bootstrap.Carousel(carouselWrapper);
+                    carousel.prev();
+
+                    var carouselElement = document.querySelector('.carouselWrapper'); // 여기에는 카로셀의 ID를 사용하세요.
+                    var carouselInstance = new bootstrap.Carousel(carouselElement);
+
+                    carouselElement.addEventListener('slide.bs.carousel', function (event) {
+                        // 슬라이드 변경 이벤트가 발생했을 때 실행될 코드
+                        var fromSlideIndex = event.from; // 이전 슬라이드 인덱스
+                        var toSlideIndex = event.to;   // 현재 슬라이드 인덱스
+                        tagPhotoNumber = event.to;
+                        loadTagUserList(tagPhotoNumber);
+                        console.log('슬라이드 변경됨: 이전 슬라이드', fromSlideIndex, '현재 슬라이드', toSlideIndex);
+
+                    });
+                    firstCount++;
+                }
+                
+
+            }
+            function showSearchModal(){
+                const searchModal = bootstrap.Modal.getOrCreateInstance("#searchModal");
+                selectSearchUserList("");
+                searchModal.show();
+
+                const resetButton = document.querySelector("#resetButton");
+
+                const searchInputBox = document.querySelector("#searchInputBox");
+                searchInputBox.focus();
+                searchInputBox.addEventListener("input", function() {
+                    // 입력된 글자의 유무에 따라 버튼 활성화/비활성화 처리
+                    if(searchInputBox.value.trim() === ""){
+                        resetButton.classList.add("d-none");
+                    }else{
+                        resetButton.classList.remove("d-none");
+                    }
+                    
+                    selectSearchUserList(searchInputBox.value);
+                });
+            }
+            function closeSearchModal(){
+                const searchModal = bootstrap.Modal.getOrCreateInstance("#searchModal");
+                searchModal.hide();
+            }
+            function selectSearchUserList(text){
+                const url = "/mstar/searchUserInfo";
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profileInfoDto.profile_info_pk+"&search_text="+text
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    // if(response.data.length == 0){
+                    //     return;
+                    // }
+                    const searchListBox = document.querySelector("#searchListBox");
+                    searchListBox.innerHTML = "";
+                    for(e of response.data){
+                        const searchListWrapper = document.querySelector("#searchListTemplete .searchListWrapper").cloneNode(true);
+                        const another_info_pk = e.profileInfoDto.profile_info_pk;
+
+                        searchListWrapper.setAttribute("onclick", "tagUser("+e.profileInfoDto.profile_info_pk+")");
+                        
+                        const searchProfile_photo = searchListWrapper.querySelector(".searchProfile_photo");
+                        searchProfile_photo.src = e.profileInfoDto.profile_photo;
+
+                        const search_nick_nameAndFollow = searchListWrapper.querySelector(".search_nick_nameAndFollow");
+                        if(e.followingFollowingCount != 0){
+                          if(e.followingFollowingCount-1 == 0){
+                            search_nick_nameAndFollow.innerHTML = e.profileInfoDto.nick_name+" &middot; " +e.followUserDto.userid+ "님이 팔로우합니다.";
+                          }else{
+                            search_nick_nameAndFollow.innerHTML = e.profileInfoDto.nick_name+" &middot; "+e.followUserDto.userid+"님 외"+e.followingFollowingCount-1+"명이 팔로우합니다.";
+                          } 
+                        }else{
+                            search_nick_nameAndFollow.innerText = e.profileInfoDto.nick_name;
+                        }
+
+                        const search_userid = searchListWrapper.querySelector(".search_userid");
+                        search_userid.innerText = e.userDto.userid;
+                        
+                        
+
+                        searchListBox.appendChild(searchListWrapper);
+                    }
+
+                });
+
+            }
+            function tagUser(profile_info_pk){
+                closeSearchModal();
+                const url ="/mstar/loadUserProfileInfo"
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    const explainBox = document.querySelector("#explainBox");
+                    explainBox.classList.add("d-none");
+
+                    const tagUserListBox = document.querySelector("#tagUserListBox");
+
+                    const tagUserListWrapper = document.querySelector("#tagUserListTemplete .tagUserListWrapper").cloneNode(true);
+                    const tagProfile_photo = tagUserListWrapper.querySelector(".tagProfile_photo");
+                    tagProfile_photo.src = response.data.profileInfoDto.profile_photo;
+
+                    const tag_userid = tagUserListWrapper.querySelector(".tag_userid");
+                    tag_userid.innerText = response.data.userDto.userid;
+
+                    const tag_nick_name = tagUserListWrapper.querySelector(".tag_nick_name");
+                    tag_nick_name.innerText = response.data.profileInfoDto.nick_name;
+                    
+                    const profile_pk = tagUserListWrapper.querySelector(".tag_nick_name");
+                    profile_pk.value = response.data.profileInfoDto.profile_info_pk;
+                    
+                    tagUserListBox.appendChild(tagUserListWrapper);
+
+                    upLoadImgList[tagPhotoNumber].push(profile_info_pk);
+
+                    var carousel = new bootstrap.Carousel(document.querySelector('.carouselWrapper'));
+                     
+                    // 현재 액티브된 carousel-item에 접근
+                    var activeItem = document.querySelector('.carouselWrapper .carousel-item.active');
+                    console.log('현재 액티브된 carousel-item:', activeItem);
+
+                    const tagWrapper = document.querySelector("#tagTemplete .tagWrapper").cloneNode(true);
+                    const tag = tagWrapper.querySelector(".tag");
+                    tag.setAttribute("id", "tagInfo"+response.data.profileInfoDto.profile_info_pk);
+                    tag.innerText = response.data.userDto.userid;
+
+                    activeItem.appendChild(tagWrapper);
+
+                });
+            }
+
+            function tagPhotoUser(profile_info_pk){
+                const url ="/mstar/loadUserProfileInfo"
+
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                     body: "profile_info_pk="+profile_info_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    const tagUserListBox = document.querySelector("#tagUserListBox");
+
+                    const tagUserListWrapper = document.querySelector("#tagUserListTemplete .tagUserListWrapper").cloneNode(true);
+                    const tagProfile_photo = tagUserListWrapper.querySelector(".tagProfile_photo");
+                    tagProfile_photo.src = response.data.profileInfoDto.profile_photo;
+
+                    const tag_userid = tagUserListWrapper.querySelector(".tag_userid");
+                    tag_userid.innerText = response.data.userDto.userid;
+
+                    const tag_nick_name = tagUserListWrapper.querySelector(".tag_nick_name");
+                    tag_nick_name.innerText = response.data.profileInfoDto.nick_name;
+                    
+                    const profile_pk = tagUserListWrapper.querySelector(".tag_nick_name");
+                    profile_pk.value = response.data.profileInfoDto.profile_info_pk;
+                    
+                    tagUserListBox.appendChild(tagUserListWrapper);
+
+                });
+            }
+            function loadTagUserList(number){
+                const tagUserListBox = document.querySelector("#tagUserListBox");
+                tagUserListBox.innerHTML ="";
+                const explainBox = document.querySelector("#explainBox");
+                if(upLoadImgList[number].length -1 !=0){
+                    for(let i = 1; i <= upLoadImgList[number].length-1 ; i++){
+                        console.log(upLoadImgList[number][i])
+                        tagPhotoUser(upLoadImgList[number][i]);
+                    }
+                    explainBox.classList.add("d-none");
+                }else{
+                    explainBox.classList.remove("d-none");
+                }
+                
+            }
+            function moveTextBox(target){
+                const activeItem = document.querySelector('.carouselWrapper .carousel-item.active');
+                
+                const tagWrapper = target.closest(".tagWrapper");
+                const {width: activeItemWidth, height: activeItemHeight} = activeItem.getBoundingClientRect();
+                const {width: tagWrapperWidth, height: tagWrapperHeight} = tagWrapper.getBoundingClientRect();
+                
+                let isDragging = null;
+                let originLeft = null;
+                let originTop = null;
+                let originX = null;
+                let originY = null;
+
+                tagWrapper.addEventListener("mousedown" , (e)=>{
+                    console.log("실행")
+                    isDragging = true;
+                    var startX = e.clientX;
+                    var startY = e.clientY;
+                
+                    
+                    originX = startX;
+                    originY = startY;
+                    originLeft = tagWrapper.offsetLeft;
+                    originTop = tagWrapper.offsetTop;
+                    
+
+                });
+
+                document.addEventListener("mouseup",(e)=>{
+                    console.log("마우스 업")
+                    isDragging = false;
+                    
+                });
+
+                document.addEventListener("mousemove", (e)=>{
+                    if(isDragging){
+                        var moveX = e.clientX;
+                        var moveY = e.clientY;
+                        
+
+                        const diffX = moveX - originX;
+                        const diffY = moveY - originY;
+                        const endOfXPoint = activeItemWidth - tagWrapperWidth;
+                        const endOfYPoint = activeItemHeight - tagWrapperHeight;
+                       
+                       
+                        tagWrapper.setAttribute("style", "left:" + (Math.min(Math.max(0, originLeft + diffX), endOfXPoint) / activeItemWidth * 100) + "%; top:" + (Math.min(Math.max(0, originTop + diffY), endOfYPoint) / activeItemHeight * 100) + "%;");
+                       // tagWrapper.setAttribute("style", "left:"+Math.min(Math.max(0, originLeft+diffX), endOfXPoint)+"px; top:"+Math.min(Math.max(0, originTop+diffY), endOfYPoint)+"px;");
+                    }
+                });
+                
+
+            }
+            function getTagInfo(){
+                
+                const tagInfoCount = document.querySelectorAll(".tagWrapper").length-1;
+                if(tagInfoCount != 0){
+                    const tagCount = document.querySelector("#tagCount");
+                    tagCount.innerText = tagInfoCount+"명 태그됨";
+                    
+                }
+                closeUserTagModal()
+
+            }
+            function closeUserTagModal(){
+                const userTagModal = bootstrap.Modal.getOrCreateInstance("#userTagModal");
+                userTagModal.hide();
+            }
+            function removeSearchBox(){
+                const searchInputBox = document.querySelector("#searchInputBox");
+                searchInputBox.value ="";
+                const resetButton = document.querySelector("#resetButton");
+                resetButton.classList.add("d-none");
+                selectSearchUserList("");
+            }
+
+
             window.addEventListener("DOMContentLoaded", () =>{
                 getUrlKey();
                 getProfileInfoDto();
@@ -126,12 +459,42 @@
 
             body {
                 font-family: 'omyu_pretty';
-                min-width: 320px;
             }
             #d-none-scroll::-webkit-scrollbar {
                 display: none;
             }
-
+            #photoListBox, #tagePhotoListBox {
+                overflow-y: scroll;
+                white-space: nowrap;
+                display: flex;
+                flex-wrap: nowrap;
+            }
+            #photoListBox, #tagePhotoListBox .col{
+                flex: 0 0 auto;
+                white-space: normal;
+            }
+            .modal-fullscreen{
+                width: 100%;
+            }
+            .tag {
+                position: relative;
+                display: inline-block;
+                padding: 0.2em 0.4em;
+                background-color: #4f5152;
+                color: #fff;
+                font-size: 0.8em;
+                border-radius: 4px;
+            }
+            .tag::before {
+                content: '';
+                position: absolute;
+                top: 100%; /* 말풍선이 아래로 향하도록 변경 */
+                left: 50%;
+                margin-left: -0.2em; /* 말풍선 너비의 반으로 설정 */
+                border-width: 5px;
+                border-style: solid;
+                border-color: #4f5152 transparent transparent transparent;
+            }
         </style>
         
     </head>
@@ -157,55 +520,41 @@
                     순서편집 0/6
                 </div>
             </div>
-            <div id="d-none-scroll" class="row border-bottom border-top py-2 overflow-x-auto">
+            <div id="d-none-scroll" class="row border-bottom border-top py-2 overflow-x-scroll">
                 <div class="col">
-                    <div id="photoListBox" class="row" style="height: 50vw; cursor: pointer; width: 160vw;">
+                    <div id="photoListBox" class="row" style="height: 20em;">
                         <input id="photeUpload" name="imageFiles" class="d-none" type="file" accept="image/*" multiple="multiple">
-                        <div id="addButton" onclick="articlePhotoUpload()" class="col-auto fs-3 ms-2 fw-bold py-4 align-self-center rounded text-center" style="border: 1px dashed rgb(0, 0, 0); cursor: pointer; width: 20vw;">
+                        <div id="addButton" onclick="articlePhotoUpload()" class="col-auto fs-3 mx-2 fw-bold py-4 px-4 align-self-center rounded text-center" style="border: 1px dashed rgb(0, 0, 0); cursor: pointer;">
                             <i class="bi bi-plus-lg"></i>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- <div class="row">
-                <div class="col">
-                    동영상 등록
-                </div>
-                <div class="col text-secondary text-end">
-                    순서편집 0/2
-                </div>
-            </div>
-            <div class="row border-bottom border-top py-2">
-                <div class="col">
-                    <div  class="row" style="height: 30vw; cursor: pointer;">
-                        <div class="col-2 fs-3 ms-2 fw-bold align-self-center py-4 rounded text-center" style="border: 1px dashed rgb(0, 0, 0);">
-                            <i class="bi bi-plus-lg"></i>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
             <div class="row">
                 <div class="col">
                     <textarea  class="form-control" name="" id="content" rows="3" placeholder="작성할 내용을 입력하세요."></textarea>
                 </div>
             </div>
-            <div class="row">
+            <div onclick="showUserTagModal()" class="row mt-2">
                 <div class="col">
                     사람 태그
                 </div>
-                <div class="col text-end">
+                <div id="tagCount" class="col text-end text-secondary pe-0">
+
+                </div>
+                <div class="col-auto text-end ps-0">
                     <i class="bi bi-chevron-right"></i>
                 </div>
             </div>
-            <div class="row">
+            <div class="row mt-2">
                 <div class="col">
                     공개 대상
                 </div>
                 <div class="col text-end">
-                   <span class="text-secondary">모든 사람</span> <i class="bi bi-chevron-right" style="font-size: small;"></i>
+                   <span class="text-secondary">모든 사람</span> <i class="bi bi-chevron-right"></i>
                 </div>
             </div>
-            <div class="row">
+            <div class="row mt-2">
                 <div class="col">
                     위치 추가
                 </div>
@@ -214,6 +563,182 @@
                 </div>
             </div>
         </div>
+
+        <div id="photoListTemplete" class="d-none">
+            <div class="col-auto photoListWrapper align-self-center">
+                <img class="img-fluid rounded photoList" src="" alt="" style="height: 16em;">
+            </div>
+        </div>
+
+        <div id="userTagModal" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content ">
+                    <div class="modal-body">
+                        <div class="row border-bottom mt-2">
+                            <div data-bs-dismiss="modal" class="col">
+                                <i class="bi bi-arrow-left"></i>
+                            </div>
+                            <div class="col text-center">
+                                게시물 태그
+                            </div>
+                            <div onclick="getTagInfo()" class="col text-end">
+                                완료
+                            </div>
+                        </div>
+                        <div class="row border-bottom border-top py-2 overflow-x-scroll">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="carousel slide carouselWrapper" data-bs-wrap="false" >
+                                        <div id="tagePhotoListBox" class="carousel-inner articleImg">
+                                            
+                                        </div>
+                                        <button class="carousel-control-prev" type="button" data-bs-target=".carouselWrapper" data-bs-slide="prev" style="z-index: 999;">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target=".carouselWrapper" data-bs-slide="next" style="z-index: 999;">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div onclick="showSearchModal()" class="row px-3 mt-2">
+                            <div class="col rounded text-center" style="background-color: rgb(230, 230, 230);">
+                                태그하기
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col">
+                                태그
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="tagUserListBox" class="col">
+                                
+                            </div>
+                        </div>
+                        <div id="explainBox" class="row">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col text-center">
+                                        원하는 사람을 태그하려면 태그하기 버튼을 누르세요 
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-center">
+                                        더보려면 사진을 옆으로 밀어주세요.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+        </div>
+
+        <div id="selectImgTemplete" class="d-none">
+            <div class="carousel-item selectImgWrapper" style="position: relative;">
+                <img class="d-block w-100 selectImg" alt="..." style="height: 21em;">
+                
+            </div>
+        </div>
+        <div id="tagTemplete" class="d-none">
+            <div onmousedown="moveTextBox(this)" class="col-auto tagWrapper position-absolute" style="position: absolute; top: 45%; left: 45%;">
+                <div class="tag"></div>
+            </div>
+        </div>
+
+        <div id="searchModal" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="row mt-2">
+                            <div class="col mx-2 rounded" style="background-color: rgb(218, 217, 217);">
+                                <div class="row position-relative">
+                                    <div class="col-auto pe-0 align-self-center">
+                                        <i class="fa-solid fa-magnifying-glass text-secondary"></i>
+                                    </div>
+                                    <div class="col-10">
+                                        <div class="row">
+                                            <div class="col">
+                                                <input id="searchInputBox" class="form-control ps-0 py-1" type="text" placeholder="검색" style="box-shadow: none; background-color: transparent; border: none;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div onclick="removeSearchBox()" id="resetButton" class="col px-0 align-self-center d-none">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div data-bs-dismiss="modal" class="col-auto fw-bold ps-0 align-self-center">
+                                취소
+                            </div>
+                        </div>
+                        <div class="row" style="overflow-y: scroll;">
+                            <div id="searchListBox" class="col">
+
+                            </div>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+        </div>
+
+        <div id="searchListTemplete" class="d-none">
+            <div class="row searchListWrapper mt-3">
+                <div class="col-auto pe-0 align-self-center">
+                    <div class="row">
+                        <div class="col-auto ">
+                            <img class="img-fluid rounded-circle searchProfile_photo" alt="" style="height: 3em; aspect-ratio: 1/1;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <div class="col search_userid">
+                            
+                        </div>
+                    </div>
+                    <div class="row text-secondary" style="font-size: 0.8em;">
+                        <div class="col search_nick_nameAndFollow">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tagUserListTemplete" class="d-none">
+            <div class="row tagUserListWrapper mt-3">
+                <input class="profile_pk" type="hidden">
+                <div class="col-auto pe-0 align-self-center">
+                    <div class="row">
+                        <div class="col-auto ">
+                            <img class="img-fluid rounded-circle tagProfile_photo" alt="" style="height: 3em; aspect-ratio: 1/1;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <div class="col tag_userid">
+                            
+                        </div>
+                    </div>
+                    <div class="row text-secondary" style="font-size: 0.8em;">
+                        <div class="col tag_nick_name">
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <i class="fa-solid fa-x"></i>
+                </div>
+            </div>
+        </div>
+
+
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     </body>
