@@ -11,6 +11,36 @@
     <script src="/public/js/commons/naviBar.js"></script>
     <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}"/>
 
+    <script>
+
+
+
+
+        function navigateToMyBidHistoryPage(){
+            const myBidHistoryPageUrl = `./myBidHistoryPage`;
+            window.location.href = myBidHistoryPageUrl;
+        }
+
+
+        function navigateToMyPaymentPage(){
+            const myPaymentPageUrl = `./myPaymentPage`;
+            window.location.href = myPaymentPageUrl;
+        }
+
+
+        function navigateToMySalePage(){
+            const mySalePageUrl = `./mySalePage`;
+            window.location.href = mySalePageUrl;
+        }
+
+
+
+
+
+    </script>
+
+
+
     <style>
         .container-fluid{
             background-color: #f5f5f5;
@@ -288,6 +318,7 @@
             </div>
         </div>
 
+        
 
 
         <div class="row" style="height: 2em;"></div>
@@ -296,7 +327,7 @@
                 <img class="paw-image" style="left: 5%;" th:src = "@{/public/image/trade/dogpawblack.png}">
                 <div class="box-title2">My Sales</div>
                 <div class="box-title">판매 내역</div>
-                <div class="arrow-icon"><i class="fa-solid fa-angle-right"></i></div>
+                <div class="arrow-icon" onclick="navigateToMySalePage()"><i class="fa-solid fa-angle-right"></i></div>
             </div>
         </div>
         <div class="row box-row bidhistory-box-row" style="margin-top: 0.5em;">
@@ -305,7 +336,7 @@
                 <img class="paw-image" style="left: 15%; transform: rotate(30deg);" th:src = "@{/public/image/trade/dogpawblack.png}">
                 <div class="box-title2">My Bid</div>
                 <div class="box-title">응찰 내역</div>
-                <div class="arrow-icon"><i class="fa-solid fa-angle-right"></i></div>
+                <div class="arrow-icon" onclick="navigateToMyBidHistoryPage()"><i class="fa-solid fa-angle-right"></i></div>
             </div>
         </div>
         <div class="row box-row paymenthistory-box-row" style="margin-top: 0.5em;">
@@ -315,7 +346,7 @@
                 <img class="paw-image" style="left: 25%; transform: rotate(60deg);" th:src = "@{/public/image/trade/dogpawblack.png}">
                 <div class="box-title2">My Payment</div>
                 <div class="box-title">결제 내역</div>
-                <div class="arrow-icon"><i class="fa-solid fa-angle-right"></i></div>
+                <div class="arrow-icon" onclick="navigateToMyPaymentPage()"><i class="fa-solid fa-angle-right"></i></div>
             </div>
         </div>
         <div class="row" style="height: 2em;"></div>
