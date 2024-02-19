@@ -10,7 +10,10 @@
 
 
     <select id="selectFreeBoardAll" resultType="map">
-        SELECT *
+        SELECT ms_club_freeboard.*, ms_user.*, 
+        (SELECT COUNT(*) 
+            FROM ms_club_freeboard_comment 
+            WHERE clubfreeboard_pk = ms_club_freeboard.clubfreeboard_pk) AS comment_count
         FROM ms_club_freeboard
         JOIN ms_user ON ms_user.USER_PK = ms_club_freeboard.user_pk
         WHERE ms_club_freeboard.club_pk = #{club_pk}
@@ -22,11 +25,23 @@
         <!-- SELECT * FROM ms_club_imgboard
         JOIN ms_club_imgboard_imgs ON ms_club_imgboard.clubimgboard_pk = ms_club_imgboard_imgs.clubimgboard_pk
         WHERE ms_club_imgboard.club_pk=#{club_pk}; -->
-        SELECT mci.*, mci_img.*
+        <!-- SELECT mci.*, mci_img.*
         FROM ms_club_imgboard mci
         JOIN ms_club_imgboard_imgs mci_img ON mci.clubimgboard_pk = mci_img.clubimgboard_pk
         WHERE mci.club_pk = #{club_pk}
-        GROUP BY mci.clubimgboard_pk;
+        GROUP BY mci.clubimgboard_pk; -->
+        SELECT 
+            mci.*,
+            mci_img.*,
+            (SELECT COUNT(*) FROM ms_club_imgboard_comment mcc WHERE mcc.clubimgboard_pk = mci.clubimgboard_pk) AS comment_count
+        FROM 
+            ms_club_imgboard mci
+        JOIN 
+            ms_club_imgboard_imgs mci_img ON mci.clubimgboard_pk = mci_img.clubimgboard_pk
+        WHERE 
+            mci.club_pk = #{club_pk}
+        GROUP BY 
+            mci.clubimgboard_pk;
     </select>
 
     <!-- 댓글 -->
@@ -73,6 +88,11 @@
 		INSERT INTO ms_club(name,content)
         VALUES (#{name},#{content})
 	</insert>
+
+    <select id="getLastInsertClubId" resultType="int">
+        select MAX(club_pk) from ms_club
+    </select>
+
 
     <insert id="insertClubUser">
 		INSERT INTO ms_club_user(user_pk,club_pk,content)
@@ -227,7 +247,7 @@
 
     <!--이미지 게시판-->
     <insert id="insertClubImgFreeBoard">
-        INSERT INTO ms_club_imgboard(,club_user_pk,club_pk,views)
+        INSERT INTO ms_club_imgboard(img,club_user_pk,club_pk,views)
         VALUES (#{img},#{club_user_pk},#{club_pk},0); 
     </insert>
 
@@ -300,4 +320,33 @@
         ORDER BY ms_club_freeboard.created_at DESC
         LIMIT 5;
     </select>
+
+    <!--이미지 댓글 수-->
+    <select id="countImgComment" resultType="Integer">
+        SELECT COUNT(*) FROM ms_club_imgboard_comment WHERE imgcomment_pk=#{imgcomment_pk};
+    </select>
+
+    <!--방문록 댓글 수-->
+    <select id="countFreeboardComment" resultType="Integer">
+        SELECT COUNT(*) FROM ms_club_freeboard_comment WHERE comment_pk =#{comment_pk};
+    </select>
+
+    <!--멤버 서치-->
+    <select id="searchMember" resultType="map">
+    <![CDATA[
+        SELECT *
+        FROM 
+            ms_club_user
+            JOIN ms_user ON ms_user.user_pk = ms_club_user.user_pk
+            JOIN ms_club ON ms_club.club_pk = ms_club_user.club_pk 
+            JOIN ms_club_user_statuslog ON ms_club_user_statuslog.club_user_pk = ms_club_user.club_user_pk
+            JOIN ms_club_user_ranklog ON ms_club_user_ranklog.club_user_pk = ms_club_user.club_user_pk
+        WHERE 
+            ms_club_user_statuslog.clubcategory_pk = 1 
+            AND ms_club_user.club_pk = 1 
+            AND ms_user.name LIKE CONCAT('%', #{name}, '%');
+
+    ]]>
+    </select>
+
 </mapper>

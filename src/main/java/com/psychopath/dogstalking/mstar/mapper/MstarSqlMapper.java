@@ -10,6 +10,7 @@ import com.psychopath.dogstalking.mstar.dto.ArtPhotoDto;
 import com.psychopath.dogstalking.mstar.dto.ArticleDto;
 import com.psychopath.dogstalking.mstar.dto.ArticleLikeDto;
 import com.psychopath.dogstalking.mstar.dto.ArticleScrapDto;
+import com.psychopath.dogstalking.mstar.dto.ArticleTagDto;
 import com.psychopath.dogstalking.mstar.dto.BlockDto;
 import com.psychopath.dogstalking.mstar.dto.BookmarkDto;
 import com.psychopath.dogstalking.mstar.dto.CmtLikeDto;
@@ -72,6 +73,8 @@ public interface MstarSqlMapper{
     public List<ArtPhotoDto> selectArticlePhotoList(int article_pk);
 
     public List<StorageDto> selectStoryStorageList(int profile_info_pk);
+
+    public int selectStoryCount(int profile_info_pk);
 
     public void insertStoryStroageDto(StorageDto storageDto);
     public int selectStoragePk();
@@ -207,4 +210,7 @@ public interface MstarSqlMapper{
     
     public void updateNotificationStatus(int user_pk);
     
+    public int selectMaxArticlePhotoPk();
+    public void insertArticleTag(ArticleTagDto articleTagDto);
+    public List<ArticleTagDto> selectArticleTagList(int art_photo_pk);
 }

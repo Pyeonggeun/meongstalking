@@ -1,20 +1,29 @@
 package com.psychopath.dogstalking.mstar.controller;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.management.Notification;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.psychopath.dogstalking.auction.dto.AuctionImageDto;
 import com.psychopath.dogstalking.dto.RestResponseDto;
 import com.psychopath.dogstalking.dto.UserDto;
+import com.psychopath.dogstalking.mstar.dto.ArtPhotoDto;
 import com.psychopath.dogstalking.mstar.dto.ArticleDto;
 import com.psychopath.dogstalking.mstar.dto.ArticleLikeDto;
+import com.psychopath.dogstalking.mstar.dto.ArticleTagDto;
 import com.psychopath.dogstalking.mstar.dto.CmtLikeDto;
 import com.psychopath.dogstalking.mstar.dto.CommentDto;
 import com.psychopath.dogstalking.mstar.dto.DirectDto;
@@ -42,6 +51,16 @@ public class RestMstarController {
         ProfileInfoDto profileInfoDto = mstarService.getMyProfileInfoDto(user_pk);
         responseDto.setResult("success");
         responseDto.setData(profileInfoDto);
+
+        return responseDto;
+    }
+    @RequestMapping("myStoryCount")
+    public RestResponseDto myStoryCount(int profile_info_pk){
+        RestResponseDto responseDto = new RestResponseDto();
+
+        int storyCount = mstarService.getMyStoryCount(profile_info_pk);
+        responseDto.setResult("success");
+        responseDto.setData(storyCount);
 
         return responseDto;
     }
@@ -90,8 +109,19 @@ public class RestMstarController {
 		
     }
     @RequestMapping("insertArticleInfo")
-    public void insertArticleInfo(List<MultipartFile> imageFiles, ArticleDto articleDto){
-        mstarService.insertArticleInfoAndPhoto(imageFiles, articleDto);
+    public RestResponseDto insertArticleInfo(ArticleDto articleDto){
+        RestResponseDto responseDto = new RestResponseDto();
+       
+        int article_pk = mstarService.insertArticleInfo(articleDto);
+
+        responseDto.setResult("success");
+        responseDto.setData(article_pk);
+
+        return responseDto;
+    }
+    @RequestMapping("inserArticlePhotoTag")
+    public void inserArticlePhotoTag(MultipartFile imageFiles ,int article_pk,int view_order, int[] tag_info_pk, double[] x_coordinates, double[] y_coordinates){
+        mstarService.insertArticlePhotoAndTag(imageFiles,article_pk,view_order, tag_info_pk, x_coordinates, y_coordinates);
     }
     @RequestMapping("loadMyArticeleList")
     public RestResponseDto loadMyArticeleList(int profile_info_pk){
@@ -604,8 +634,16 @@ public class RestMstarController {
     public void updateNotifyReadStatus(int user_pk){
         mstarService.changeNotifyReadStatus(user_pk);
     }
-    
-    
+    @RequestMapping("loadUserProfileInfo")
+    public RestResponseDto loadUserProfileInfo(int profile_info_pk){
+        RestResponseDto responseDto = new RestResponseDto();
+        Map<String,Object> map = mstarService.getUserProfileInfo(profile_info_pk);
 
+        responseDto.setResult("success");
+        responseDto.setData(map);
+ 
+         return responseDto;
+    }
     
+   
 }

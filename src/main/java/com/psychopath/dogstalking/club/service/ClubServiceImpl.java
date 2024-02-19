@@ -63,6 +63,10 @@ public class ClubServiceImpl {
 		clubSqlMapper.insertClub(clubDto);
 	}
 
+	public int getLastInsertClubId(){
+		return clubSqlMapper.getLastInsertClubId();
+	}
+
 	public void insertClubUser(ClubUserDto clubUserDto) {
 		clubSqlMapper.insertClubUser(clubUserDto);
 	}
@@ -199,4 +203,18 @@ public class ClubServiceImpl {
 		return clubSqlMapper.isClubMember(user_pk);
 	}
 
+	//댓글 수
+	public Integer countFreeboardComment(int comment_pk){
+		return clubSqlMapper.countFreeboardComment(comment_pk);
+	}
+
+	public Integer countImgComment(int imgcomment_pk){
+		return clubSqlMapper.countImgComment(imgcomment_pk);
+	}
+
+	public List<Map<String, Object>> searchMember(String name){
+		return clubSqlMapper.searchMember(name);
+	}
+
 }
+

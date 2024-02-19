@@ -90,7 +90,7 @@
         }
 
         .thumbnail.selected {
-            border: 2px solid #8cc665;
+            border: 0.35em solid #8cc665;
         }
 
         h1 {
@@ -120,13 +120,18 @@
                 var reader = new FileReader();
 
                 reader.onload = function (e) {
+                    var col = document.createElement('div');
+                    col.classList.add("col");
+
                     var img = document.createElement('img');
                     img.className = 'thumbnail';
                     img.src = e.target.result;
                     img.onclick = function () {
                         selectImage(this);
                     };
-                    preview.appendChild(img);
+
+                    col.appendChild(img);
+                    preview.appendChild(col);
                 };
 
                 reader.readAsDataURL(files[i]);
@@ -178,13 +183,11 @@
 </head>
 
 <body>
-    <div class="container">
-        <div th:insert="~{/commons/naviBar}"></div>
+    <div class="container pb-5">
+        <div th:insert="~{commons/naviBar}"></div>
         <div class="row">
-            <div class="col-2 my-2 ms-1">
-                <button class="btn" onclick="goBack()">
-                    <i class="bi bi-arrow-left"></i>
-                </button>
+            <div class="col-auto my-2 ms-1" onclick="goBack()">
+                <i class="bi bi-arrow-left"></i>
             </div>
             <div th:text="${clubTF.clubname}" class="col d-flex align-items-center px-0">
             </div>
@@ -205,7 +208,7 @@
         </div>
         <div class="row">
             <div class="col">
-                <div id="image-preview"></div>
+                <div id="image-preview" class="row row-cols-3"></div>
                 <!-- <form action="./registerImagePage" method="post" enctype="multipart/form-data">
                     <div class="upload-btn-wrapper">
                         <button class="btn text-center">

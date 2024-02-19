@@ -8,3 +8,9 @@
 body {
     margin-bottom: 2.5em;
 }
+.modal-fullscreen{
+    width: 100%;
+}
+#notifyModal{
+    --bs-gutter-x: 0rem;
+}

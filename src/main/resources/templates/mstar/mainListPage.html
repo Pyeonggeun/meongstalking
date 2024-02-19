@@ -31,7 +31,10 @@
                     myCommentProfileImg.src = profileInfoDto.profile_photo;
                     const myStoryListProfileImg = document.querySelector("#myStoryListProfileImg");
                     myStoryListProfileImg.src= profileInfoDto.profile_photo;
-                    myStoryListProfileImg.setAttribute("onclick","showMyStoryModal("+profileInfoDto.profile_info_pk+")")
+                    //count가지고 와서 있으면 보여주고 없으면 스토리 등록페이지로;;;;;
+                    myStoryCount(profile_info_pk);
+
+                   
                    
                    // goDirectPage.setAttribute("onclick" , "location.href='./directListPage?profile_info_pk="+profile_info_pk+"'");
 
@@ -40,6 +43,27 @@
                     
                 });
             }
+            function myStoryCount(profile_info_pk){
+                const url ="/mstar/myStoryCount"
+                fetch(url, {
+                     method: "post",
+                     headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                      body: "profile_info_pk="+profile_info_pk
+            	})
+                .then(response => response.json())
+                .then((response) =>{
+                    const myStoryListProfileImg = document.querySelector("#myStoryListProfileImg");
+                    if(response.data != 0){
+                        myStoryListProfileImg.setAttribute("onclick","showMyStoryModal("+profile_info_pk+")");
+                    }else{
+                        myStoryListProfileImg.setAttribute("onclick","location.href='/mstar/uploadStoryPage?user_pk=+"+user_pk+"'");
+                    }
+                    
+                });
+            }
+
             let storyProfileInPkList = [];
             let currentUser = 0 ;
             function loadStoryProfileList(profile_info_pk){
@@ -371,10 +395,9 @@
                             }
                         }
                         
+                        
 
                         const articleImgBox = articleListWrapper.querySelector(".articleImgBox");
-
-                        
 
                         const carouselWrapper = document.querySelector("#carouselTemplete .carouselWrapper").cloneNode(true);
                         
@@ -395,7 +418,10 @@
                         //         <i class="fa-solid fa-circle ps-0 point"></i>
                         //     </div>
                         // </div>
-                        for(p of e.photoList){
+                        
+                        
+
+                        for(p of e.photoAndTagList){
                             const articleImgWrapper =  document.querySelector("#articleImgTemplete .articleImgWrapper").cloneNode(true);
                             const articleSizeWrapper = document.querySelector("#articleSizeTemplete .articleSizeWrapper").cloneNode(true);
                             const point = articleSizeWrapper.querySelector(".point");
@@ -408,10 +434,30 @@
                                 point.classList.remove("text-secondary");
                                 articleImgWrapper.classList.add("active");
                             }
+                            const photoCount = articleImgWrapper.querySelector(".photoCount");
+                            if(!(e.photoAndTagList.length <= 1)){
+                                photoCount.classList.remove("d-none");
+                                photoCount.innerText = count+"/"+e.photoAndTagList.length;
+                            }
                             count +=1;
-                        
-                            img.src = p.photo_path;
+                            if(p.userTagList.length !=0){
+                                const checkTag = articleImgWrapper.querySelector(".checkTag");
+                                checkTag.classList.remove("d-none");
+                            }
+                          
                             
+                            
+                            
+                            img.src = p.artPhotoDto.photo_path;
+                            for(i of p.userTagList){
+                                const tagWrapper = document.querySelector("#tagTemplete .tagWrapper").cloneNode(true);
+                                const tag = tagWrapper.querySelector(".tag");
+                                tag.innerText = i.userid
+                                tagWrapper.setAttribute("style", "left:" +i.articleTagDto.x_coordinates+ "%; top:"+i.articleTagDto.y_coordinates + "%;");
+                                articleImgWrapper.appendChild(tagWrapper);
+                            }
+                            articleImgWrapper.setAttribute("onclick", "showTagUser(this)");
+
                             articleImg.appendChild(articleImgWrapper);
                             
                         }
@@ -423,15 +469,46 @@
                         carousel.prev();
 
                         const contentUserId = articleListWrapper.querySelector(".contentUserId");
-                        const useridSpan = document.createElement("span");
-                        useridSpan.classList.add("fw-bold","pe-2");
-                        useridSpan.innerText = e.userDto.userid;
+                        // const useridSpan = document.createElement("span");
+                        // useridSpan.classList.add("fw-bold","pe-2");
+                        // useridSpan.innerText = e.userDto.userid;
                         const contentSpan = document.createElement("span");
-                        contentSpan.innerText = e.articleDto.content;
                         
-                        contentUserId.appendChild(useridSpan);
+                        contentSpan.innerText = e.userDto.userid +" "+ e.articleDto.content;
+                        
+                        
+
+                        const showMoreContent = document.createElement("span");
+
+                        //contentUserId.appendChild(useridSpan);
                         contentUserId.appendChild(contentSpan);
-                        
+                        console.log(e.articleDto.content.length)
+                        if(e.articleDto.content.length > 40){
+                            contentSpan.classList.add("content_ellipsis" ,"content");
+                            const moreContent =  document.createElement("span");
+                            moreContent.setAttribute("onclick", "showMoreContent(this)");
+                            moreContent.innerText = "더보기"
+                            moreContent.classList.add("text-primary");
+                            contentUserId.appendChild(moreContent);
+                        }
+            
+            
+            
+                        const emotion = articleListWrapper.querySelector(".emotion");
+                        if(e.articleDto.emotion == "POSITIVE"){
+                            emotion.innerText =  "☀️";
+                            emotion.classList.add("rotating-icon")
+                        }else if(e.articleDto.emotion == "NEGATIVE"){
+                            emotion.innerText =  "⛈️";
+                            emotion.classList.add("blinking-icon")
+                        }else if(e.articleDto.emotion == "MIXED"){
+                            emotion.innerText =  "🌦️";
+                            emotion.classList.add("movingupdown-icon")
+                        }else if(e.articleDto.emotion == "NEUTRAL"){
+                            emotion.innerText =  "🌤️";
+                            emotion.classList.add("movingleftright-icon")
+                            
+                        }
                         
 
                         const followStatus = articleListWrapper.querySelector(".followStatus");
@@ -490,7 +567,39 @@
                     }
 
                 });
-            }  
+            }
+            function showMoreContent(target){
+                const  contentUserId = target.closest(".contentUserId");
+                const content =  contentUserId.querySelector(".content");
+                content.classList.remove("content_ellipsis");
+                target.remove();
+            }
+           
+
+            function showTagUser(target){
+                
+                const articleImgWrapper = target.closest(".articleImgWrapper");
+                const tagWrapper = articleImgWrapper.querySelectorAll(".tagWrapper");
+                for(let i = 0; i < tagWrapper.length; i++ ){
+                    tagWrapper[i].classList.remove("d-none")
+                    tagWrapper[i].classList.add("animate");
+                }
+                const checkTag = articleImgWrapper.querySelector(".checkTag");
+                checkTag.classList.add("d-none");
+                articleImgWrapper.setAttribute("onclick","hideTagUser(this)");
+            }
+            function hideTagUser(target){
+                
+                const articleImgWrapper = target.closest(".articleImgWrapper");
+                const tagWrapper = articleImgWrapper.querySelectorAll(".tagWrapper");
+                for(let i = 0; i < tagWrapper.length; i++ ){
+                    tagWrapper[i].classList.add("d-none")
+                }
+                const checkTag = articleImgWrapper.querySelector(".checkTag");
+                checkTag.classList.remove("d-none");
+                articleImgWrapper.setAttribute("onclick","showTagUser(this)");
+            }
+
             function followingUser(another_info_pk, target){
                 const url = "/mstar/followingAnotherUser";
 
@@ -1063,8 +1172,24 @@
                 .then((response) =>{
                     const articleListWrapper = target.closest(".articleListWrapper");
                     const likeCount = articleListWrapper.querySelector(".likeCount");
+                    if(likeCount != null){
+                        if(response.data != 0){
+                            likeCount.innerText = response.data+"명";
+                        }else{
+                            likeCount.innerText = "";
+                        }
+                    }else{
+                        const likeCountAndUserId = articleListWrapper.querySelector(".likeCountAndUserId");
+                        if(response.data != 0){
+                            likeCountAndUserId.innerText = response.data+"명이 좋아합니다.";
+                        }else{
+                            likeCountAndUserId.innerText = "";
+                        }
+                    }
+                    
+                   
                     console.log(likeCount)
-                    likeCount.innerText = response.data+"명";
+                    
                 });
             }
 
@@ -1079,16 +1204,19 @@
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
                       body: "article_pk="+article_pk+"&profile_info_pk="+profileInfoDto.profile_info_pk
-            	});
+            	})
+                .then((response) =>{
+                    const articleListWrapper = target.closest(".articleListWrapper");
                 
-                const articleListWrapper = target.closest(".articleListWrapper");
+                    const articleLike = articleListWrapper.querySelector(".articleLike");
+                    
+                    articleLike.src = "/public/image/mstar/like.png";
+                    articleLike.setAttribute("onclick","deleteArticleLike("+article_pk+", this)");
+                    
+                    reloadArticleLikeCount(article_pk, target)
+                });
                 
-                const articleLike = articleListWrapper.querySelector(".articleLike");
                 
-                articleLike.src = "/public/image/mstar/like.png";
-                articleLike.setAttribute("onclick","deleteArticleLike("+article_pk+", this)");
-                
-                reloadArticleLikeCount(article_pk, target)
 
             }
 
@@ -1101,11 +1229,15 @@
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
                       body: "article_pk="+article_pk+"&profile_info_pk="+profileInfoDto.profile_info_pk
-            	});
-                const articleListWrapper = target.closest(".articleListWrapper");
-                const articleLike = articleListWrapper.querySelector(".articleLike");
-                articleLike.src = "/public/image/mstar/unLike.png";
-                articleLike.setAttribute("onclick","insertArticleLike("+article_pk+", this)");
+            	})
+                .then((response) =>{
+                    const articleListWrapper = target.closest(".articleListWrapper");
+                    const articleLike = articleListWrapper.querySelector(".articleLike");
+                    articleLike.src = "/public/image/mstar/unLike.png";
+                    articleLike.setAttribute("onclick","insertArticleLike("+article_pk+", this)");
+                    reloadArticleLikeCount(article_pk, target)
+                });
+                
             }
 
             function insertArticleScrap(article_pk, target){
@@ -1448,12 +1580,104 @@
             .modal-fullscreen {
                 width: 100%;
             }
+            .tag {
+                position: relative;
+                display: inline-block;
+                padding: 0.2em 0.4em;
+                background-color: #4f5152;
+                color: #fff;
+                font-size: 0.8em;
+                border-radius: 4px;
+            }
+            .tag::before {
+                content: '';
+                position: absolute;
+                top: 100%; /* 말풍선이 아래로 향하도록 변경 */
+                left: 50%;
+                margin-left: -0.2em; /* 말풍선 너비의 반으로 설정 */
+                border-width: 5px;
+                border-style: solid;
+                border-color: #4f5152 transparent transparent transparent;
+            }
+            .sizeUP {
+                /* 초기 스타일 설정 (애니메이션이 시작되기 전 스타일) */
+                transform: scale(1);
+            }
+
+            .sizeUP.animate {
+                /* 애니메이션 클래스가 추가되었을 때의 스타일 설정 */
+                animation: zoom 0.5s linear;
+            }
+
+            @keyframes zoom {
+                50% {
+                    transform: scale(1.1);
+                }
+            }
+            @keyframes rotate {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+            .rotating-icon {
+                
+                animation: rotate 8s linear infinite;
+            }
+            @keyframes blink {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+           
+            }
+
+            .blinking-icon {
+                animation: blink 1s linear infinite;
+            }
+            @keyframes moveLeftRight {
+                0% {
+                    transform: translateX(0);
+                }
+                50% {
+                    transform: translateX(0.2em); /* 이동할 거리를 조절할 수 있습니다. */
+                    opacity: 0.8;
+                }
+            }
+            
+            .movingleftright-icon {
+                animation: moveLeftRight 2s ease-in-out infinite;
+            }
+            @keyframes moveupdown {
+                0% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(0.2em); /* 이동할 거리를 조절할 수 있습니다. */
+                    opacity: 0.8;
+                }
+            }
+
+            .movingupdown-icon {
+                animation: moveupdown 2s ease-in-out infinite;
+            }
+            .content_ellipsis {
+                text-overflow: ellipsis;/* 말줄임 css */
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 2;
+                overflow: hidden;
+            }
         </style>
     </head>
 
     <body>
         <div class="container-fluid">
-            <div th:insert="~{/commons/naviBar}"></div>
+            <div th:insert="~{commons/naviBar}"></div>
             <div class="row">
                 <div class="col">
                     <div class="row mt-1 fs-4">
@@ -1518,7 +1742,7 @@
                                 </div>
                                 <div class="col my-auto ps-0" style="font-size: 0.95rem;">
                                     <div class="row">
-                                        <div class="col articleUserId">
+                                        <div class="col-auto pe-0 articleUserId">
                                             
                                         </div>
                                     </div>      
@@ -1577,10 +1801,7 @@
                     <div class="row">
                         <div class="col pb-0">
                             <div class="row">
-                                <div class="col-auto pe-0 contentUserId fw-bold">
-                                    
-                                </div>
-                                <div class="col articleContent text-start">
+                                <div class="col pe-0 contentUserId fw-bold">
                                     
                                 </div>
                             </div>
@@ -1592,19 +1813,19 @@
                                 <div class="col px-4">
                                     <div class="row row-cols-auto">
                                         <div class="col ps-0 pe-1">
-                                            <span style="color: #95B372;">#</span><span style="color: #687795;">견생</span>
+                                            <span style="color: #95B372;">#</span><span style="color: #687795;">멍스타</span>
                                         </div>
                                         <div class="col ps-0 pe-1">
-                                            <span style="color: #95B372;">#</span><span style="color: #687795;">쳐즥</span>
+                                            <span style="color: #95B372;">#</span><span style="color: #687795;">멍스토킹</span>
                                         </div>
                                         <div class="col ps-0 pe-1">
-                                            <span style="color: #95B372;">#</span><span style="color: #687795;">벚꽃</span>
+                                            <span style="color: #95B372;">#</span><span style="color: #687795;">강아지</span>
                                         </div>
                                         <div class="col ps-0 pe-1">
-                                            <span style="color: #95B372;">#</span><span style="color: #687795;">상남자</span>
+                                            <span style="color: #95B372;">#</span><span style="color: #687795;">중앙</span>
                                         </div>
                                         <div class="col ps-0 pe-1">
-                                            <span style="color: #95B372;">#</span><span style="color: #687795;">남아</span>
+                                            <span style="color: #95B372;">#</span><span style="color: #687795;">해쉬태그</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1864,6 +2085,21 @@
         <div id="articleImgTemplete" class="d-none">
             <div class="carousel-item articleImgWrapper">
                 <img class="d-block w-100 img" alt="..." style="height: 21em;">
+                <div class="col-auto position-absolute fs-3" style="color: #3f4041; position: absolute; top: 87%; left: 3%; opacity: 0.7">
+                    <i id="" class="fa-solid fa-circle-user rounded-circle checkTag d-none" style="background-color: rgb(165, 163, 163);"></i>
+                </div>
+                <div  class="col-auto position-absolute rounded-pill px-2 photoCount d-none" style="color: #dbd5d5;background-color: #636262; position: absolute; top: 3%; left: 90%; opacity: 0.7;">
+                    
+                </div>
+                <div class="col-auto ps-0 text-start emotion" style="position: absolute; top: 3%; left: 3%;">
+                                            
+                </div>
+            </div>
+        </div>
+
+        <div id="tagTemplete" class="d-none">
+            <div class="col-auto sizeUP tagWrapper position-absolute d-none" style="position: absolute; top: 45%; left: 45%;">
+                <div class="tag">jo_in_chun</div>
             </div>
         </div>
 

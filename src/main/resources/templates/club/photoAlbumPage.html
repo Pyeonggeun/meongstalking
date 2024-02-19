@@ -28,6 +28,7 @@
             font-size: 0.8em;
             /* 원하는 크기로 조정 */
         }
+
         .scrollable-menu {
             overflow-x: auto;
             white-space: nowrap;
@@ -233,18 +234,16 @@
 
     </script>
     <script src="/public/js/commons/naviBar.js"></script>
-    <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}" />    
+    <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}" />
 
 </head>
 
 <body>
-    <div class="container">
-        <div th:insert="~{/commons/naviBar}"></div>
+    <div class="container pb-5">
+        <div th:insert="~{commons/naviBar}"></div>
         <div class="row">
-            <div class="col-2 my-2 ms-1">
-                <button class="btn" onclick="goBack()">
-                    <i class="bi bi-arrow-left"></i>
-                </button>
+            <div class="col-auto my-2 ms-1" onclick="goBack()">
+                <i class="bi bi-arrow-left"></i>
             </div>
             <div th:text="${clubTF.clubname}" class="col d-flex align-items-center px-0">
             </div>
@@ -265,7 +264,7 @@
         <div class="row row-cols-1 row-cols-3 mt-1">
             <div class="col border border-white px-0" th:each="board : ${freeBoardList}">
                 <div class="row">
-                    <div class="col" style="position: relative;">
+                    <div class="col text-center" style="position: relative;">
                         <a href="#" th:attr="onclick='openOffcanvas(event, \'' + ${board.clubimgboard_pk} + '\')'"
                             aria-controls="offcanvasBottom">
                             <img style="height: 7.5em;" class="img-fluid" th:src="@{'/uploadFiles/'+${board.location}}"
@@ -275,8 +274,8 @@
                                     <i class="text-black bi bi-heart"></i>
                                     1
                                     <i class="text-black bi bi-chat-left"></i>
-                                    2
-                                </span>
+                                    <span th:th:text="${board.comment_count}">
+                                    </span>
                             </div>
                         </a>
                     </div>
@@ -285,9 +284,9 @@
         </div>
         <div class="offcanvas offcanvas-bottom position-fixed" tabindex="-1" id="offcanvasBottom"
             aria-labelledby="offcanvasBottomLabel" style="width: 100%; max-width: 600px; height: auto;">
-            <div class="row offcanvas-header">
+            <div class="row offcanvas-header">   
                 <div class="col">
-                    Likes 10 • Comments 5
+                    Likes • Comments
                 </div>
                 <div class="col-2 text-end">
                     <button type="button" class="btn-close text-end" data-bs-dismiss="offcanvas"
@@ -302,12 +301,12 @@
                 <div id="commentListBox" class="row">
                 </div>
             </div>
-            <div class="offcanvas-bottom" style=" padding: 10px;">
+            <div class="offcanvas-bottom p-2">
                 <div class="row align-items-center">
-                    <div class="col-8">
+                    <div class="col-9 d-grid pe-0"  style="height: 3em;">
                         <textarea id="inputComment" class="form-control" placeholder="댓글을 입력하세요"></textarea>
                     </div>
-                    <div class="col d-grid">
+                    <div class="col-3 d-grid ps-0" style="height: 3em;">
                         <button onclick="writeImgComment()" class="btn btn-secondary comment-btn">전송</button>
                     </div>
                 </div>
@@ -352,7 +351,7 @@
         </div>
 
 
-        <div class="position-fixed bottom-0 end-0 m-3">
+        <div class="position-fixed end-0 m-3" style="bottom: 5em;">
             <a href="./photoAlbumWritePage" class="btn btn-secondary rounded-circle p-3">
                 <i class="bi bi-pencil"></i>
             </a>

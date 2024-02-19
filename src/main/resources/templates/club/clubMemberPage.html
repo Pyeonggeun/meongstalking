@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@latest/font/bootstrap-icons.css">
 
     <style>
-         @font-face {
+        @font-face {
             font-family: 'omyu_pretty';
             src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
             font-weight: normal;
@@ -44,6 +44,7 @@
         .scrollable-menu span:hover {
             border-color: #000;
         }
+
         .member-card {
             margin-bottom: 5px;
         }
@@ -112,7 +113,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
-
     <script>
         function confirmWithdrawal(user_pk) {
             var userConfirmed = confirm('정말 탈퇴하시겠습니까?');
@@ -124,6 +124,53 @@
             }
         }
 
+        function searchMembers() {
+            const resultContainer = document.getElementById('search-results');
+            const searchQuery = document.getElementById('search-query').value;
+            console.log('Search Query:', searchQuery);
+            const url = './performSearch?searchQuery=' + searchQuery;
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(searchResults => {
+                    console.log(JSON.stringify(searchResults));
+
+                    resultContainer.innerHTML = '';
+
+                    if (searchResults.data && Array.isArray(searchResults.data)) {
+                        searchResults.data.forEach(member => {
+                            const cardDiv = createMemberCard(member);
+                            resultContainer.appendChild(cardDiv);
+                        });
+                    } else {
+                        console.error('Search results data is not an array or is null:', searchResults.data);
+                    }
+                })
+                .catch(error => console.error('Error fetching search results:', error));
+        }
+
+        function createMemberCard(member) {
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'col-md-4';  // Adjust the class if needed
+            cardDiv.innerHTML = `
+        <div class="col text-center">
+            <div class="row d-flex justify-content-center align-items-center">
+                <img src="/public/image/dog_img.png" class="rounded-circle profile-image" style="max-width: 4.5em; max-height: 4.5em;">
+            </div>
+
+                <div class="row">
+                    <span class="fw-bold">${member.name}</span>
+                </div>
+
+        </div>
+    `;
+            return cardDiv;
+        }
 
 
         function withdrawalModal(user_pk) {
@@ -155,35 +202,78 @@
             selectedPermission = permission;
             console.log("Selected Permission: " + selectedPermission);
             $('#gearModal').modal('hide');
-        }
-
-        $('#confirmPermissionBtn').click(function () {
-            console.log("Selected Permission: " + selectedPermission);
-            $('#gearModal').modal('hide');
-            if (selectedPermission === 'leader') {
+            if (selectedPermission === 'leaderPermission') {
                 $('#leadershipModal').modal('show');
+            } else {
+                $('#gearModal').modal('hide');
             }
-        });
+        }
     </script>
     <script src="/public/js/commons/naviBar.js"></script>
     <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}" />
 </head>
 
 <body>
-    <div class="container">
-        <div th:insert="~{/commons/naviBar}"></div>
-        <th:block th:replace="~{club/clubTopNavi.html :: topNavi}"></th:block>
-
+    <div class="container pb-5">
+        <div th:insert="~{commons/naviBar}"></div>
+        <div class="row">
+            <div class="col-auto my-2 ms-1" onclick="goBack()">
+                <i class="bi bi-arrow-left"></i>
+            </div>
+            <div th:text="${clubTF.clubname}" class="col d-flex align-items-center px-0">
+            </div>
+        </div>
+        <div class="row scrollable-menu px-0">
+            <div class="col justify-content-between fw-bold">
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">게시판</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./photoAlbumPage'">사진첩</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubMemberPage'">멤버</span>
+            </div>
+        </div>
+        <div class="row mt-4" style="color: #323232;">
+            <div class="col fw-bold fs-4">회원 검색</div>
+        </div>
         <div class="mt-3">
-            <form id="search-form" action="/searchMember" method="GET" class="input-group">
-                <input type="text" id="search-query" name="q" class="form-control" placeholder="검색">
+            <form id="search-form" class="input-group" onsubmit="event.preventDefault(); searchMembers();">
+                <input type="text" id="search-query" name="q" class="form-control" placeholder="Search">
                 <div class="input-group-append">
-                    <button id="search-button" class="btn btn-icon" type="submit">
+                    <button id="search-button" class="btn btn-icon" type="button" onclick="searchMembers()">
                         <span class="bi bi-search"></span>
                     </button>
                 </div>
             </form>
-            <div class="row px-2 mb-3 bottom-line">
+
+
+            <!-- 검색 부분 -->
+            <div class="row p-3 row-cols-3 bottom-line" id="search-results" style="overflow-x: auto;">
+                <div class="col" th:each="member : ${searchResults}">
+                    <div class="row">
+                        <div class="col  text-center">
+                            <img th:src="@{/public/image/dog_img.png}" class="img-fluid rounded-circle profile-image "
+                                style="max-width: 3em; max-height: 3em; ">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div th:if="${leaderRank == 1}" class="col d-flex align-items-center">
+                            <div th:if="${member.user_pk == user_pk}" style="display: flex; align-items: center;">
+                                <span class="fw-bold" th:text="${member.name}" style="margin: auto;"></span>
+                                <span
+                                    style="font-size: 0.8em; color: gold; margin-left: 5px; margin-bottom: 3px;">👑</span>
+                            </div>
+                            <div th:unless="${member.user_pk == user_pk}" style="display: flex; align-items: center;">
+                                <span class="fw-bold" th:text="${member.name}" style="margin: auto;"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row mt-3" style="color: #323232;">
+                <div class="col fw-bold fs-4">전체 회원</div>
+            </div>
+            <div class="row px-2 mb-3">
                 <a href="링크 주소" target="_blank">
                     <span class="small-text" style="color: black;">
                         리더를 위한 멤버 관리 가이드 <br>
@@ -205,6 +295,7 @@
                                             style="max-width: 40px; max-height: 40px;">
                                     </div>
                                     <div th:if="${leaderRank == 1}" class="col-5 d-flex align-items-center">
+
                                         <div th:if="${member.user_pk == user_pk}"
                                             style="display: flex; align-items: center;">
                                             <span class="fw-bold" th:text="${member.name}" style="margin: auto;"></span>
@@ -235,7 +326,8 @@
                                         </div>
                                         <button class="btn btn-secondary btn-sm text-end btn-no-background"
                                             th:unless="${member.user_pk == user_pk}"
-                                            th:onclick="confirmWithdrawal([[${member.user_pk}]]);" th:text="'강퇴'">강퇴</button>
+                                            th:onclick="confirmWithdrawal([[${member.user_pk}]]);"
+                                            th:text="'강퇴'">강퇴</button>
                                     </div>
                                 </div>
                             </div>
@@ -256,24 +348,19 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <div class="form-check permission-label">
-                        <label class="form-check-label" for="normalPermission"
-                            onclick="selectPermission('normalPermission')">
-                            <input type="radio" id="normalPermission" name="permission" value="normal"
-                                class="form-check-input">
-                            멤버 권한 설정
-                        </label>
-
+                <div class="modal-body p-3">
+                    <div class="permission-label">
+                        <button class="btn" onclick="selectPermission('leaderPermission')">
+                            - 멤버 권한 설정
+                        </button>
                     </div>
-                    <div class="form-check permission-label">
-                        <label class="form-check-label" for="leaderPermission" onclick="">
-                            <input type="radio" id="leaderPermission" name="permission" value="leader"
-                                class="form-check-input">
-                            차단 멤버 관리
-                        </label>
+                    <div class="permission-label">
+                        <button class="btn" onclick="selectPermission('leaderPermission')">
+                            - 차단 멤버 관리
+                        </button>
                     </div>
                 </div>
+
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
@@ -284,7 +371,7 @@
 
 
     <!-- 탈퇴/차단 모달 -->
-    <!-- <div class="modal fade" id="withdrawalModal" tabindex="-1" role="dialog" aria-labelledby="withdrawalModalLabel"
+    <!--/* <div class="modal fade" id="withdrawalModal" tabindex="-1" role="dialog" aria-labelledby="withdrawalModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -306,13 +393,14 @@
                 </div>
             </div>
         </div>
-    </div> -->
+    </div> */-->
 
 
     <!-- 리더위임 모달 -->
     <div class="modal fade" id="leadershipModal" tabindex="-1" role="dialog" aria-labelledby="leadershipModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="leadershipModalLabel">리더 위임</h5>

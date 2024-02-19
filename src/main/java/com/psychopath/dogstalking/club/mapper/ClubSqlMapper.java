@@ -33,6 +33,8 @@ public interface ClubSqlMapper {
 
     //개설
     public void insertClub(ClubDto clubDto);
+    public int getLastInsertClubId();
+
     public void insertClubUser(ClubUserDto clubUserDto);
     public void insertClubUsers(ClubUserDto clubUserDto);
     
@@ -104,4 +106,12 @@ public interface ClubSqlMapper {
     
 
     public int isClubMember(int user_pk);
+
+    //댓글 수
+    public Integer countImgComment(int imgcomment_pk);
+    public Integer countFreeboardComment(int comment_pk);
+
+    //멤버검색
+    public List<Map<String, Object>> searchMember(String name);
+       
 }

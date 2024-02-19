@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>동호회 관리자 페이지</title>
     <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
     <script src="/public/js/commons/lockLikeMobile.js"></script>
-    
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
         @font-face {
@@ -19,10 +21,33 @@
             font-weight: normal;
             font-style: normal;
         }
+
         body {
             font-family: 'omyu_pretty';
             min-width: 320px;
         }
+
+        .scrollable-menu {
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .scrollable-menu .col {
+            display: flex;
+            flex-basis: auto;
+            flex-wrap: nowrap;
+        }
+
+        .scrollable-menu span {
+            border-bottom: 2px solid transparent;
+            padding-bottom: 2px;
+            transition: border-color 0.3s;
+        }
+
+        .scrollable-menu span:hover {
+            border-color: #000;
+        }
+
         .card-header h3 {
             display: inline-block;
             margin-bottom: 0;
@@ -46,26 +71,52 @@
         .admin-list a:hover {
             text-decoration: underline;
         }
+
+        .justify-content-around {
+            justify-content: space-around !important;
+        }
     </style>
     <script>
         function goBack() {
-        window.history.back();
-    }
+            window.history.back();
+        }
+        
     </script>
 
     <script src="/public/js/commons/naviBar.js"></script>
     <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}" />
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 </head>
 
 <body>
-    <div class="container">
-        <div th:insert="~{/commons/naviBar}"></div>
-        <th:block th:replace="~{club/clubTopNavi.html :: leaderTopNavi}"></th:block>
+    <div class="container pb-5">
+        <div th:insert="~{commons/naviBar}"></div>
+        <div class="row">
+            <div class="col-auto my-2 ms-1" onclick="goBack()">
+                <i class="bi bi-arrow-left"></i>
+            </div>
 
-      ㅎㅎ 어캐 구성 해야할지 몰겟닿 
+            <div class="col d-flex align-items-center px-0">
+                동호회 관리
+            </div>
+           
+        </div>
+        <div class="row scrollable-menu px-0">
+            <div class="col justify-content-around fw-bold">
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubLeaderPage'">홈</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubChangeMainPage'">동호회 정보
+                    수정</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubSignupPage'">가입 승인</span>
+            </div>
+        </div>
+
+        ㅎㅎ 어캐 구성 해야할지 몰겟닿
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
 </body>
+
 </html>

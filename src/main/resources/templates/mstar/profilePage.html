@@ -120,7 +120,7 @@
                         return;
                     }
                     articleListBox.innerHTML ="";
-
+                    articleListBox.classList.add("row-cols-3");
                     const scrapArticleListButton = document.querySelector("#scrapArticleListButton");
                     scrapArticleListButton.classList.remove("border-bottom" , "border-black");
                     scrapArticleListButton.classList.add("text-secondary");
@@ -182,7 +182,7 @@
                     tagArticleListButton.classList.add("text-secondary");
 
                     if(response.data.length != 0){
-                        articleListBox.classList.add("row-cols-3")
+                        articleListBox.classList.add("row-cols-3");
                         for(e of response.data){
                             const articleListWrapper = document.querySelector("#articleListTemplete .articleListWrapper").cloneNode(true);
                             const articleFirstImg = articleListWrapper.querySelector(".articleFirstImg");
@@ -492,7 +492,7 @@
                         searchProfile_photo.setAttribute("onclick", "location.href='/mstar/anotherProfilePage?profile_info_pk="+profileInfoDto.profile_info_pk+"&another_info_pk="+another_info_pk+"'");
                         search_nick_name.setAttribute("onclick", "location.href='/mstar/anotherProfilePage?profile_info_pk="+profileInfoDto.profile_info_pk+"&another_info_pk="+another_info_pk+"'");
                         search_userid.setAttribute("onclick", "location.href='/mstar/anotherProfilePage?profile_info_pk="+profileInfoDto.profile_info_pk+"&another_info_pk="+another_info_pk+"'");
-                        
+
                         searchListBox.appendChild(searchListWrapper);
                     }
 
@@ -827,7 +827,7 @@
 
     <body>
         <div class="container-fluid">
-            <div th:insert="~{/commons/naviBar}"></div>
+            <div th:insert="~{commons/naviBar}"></div>
             <div class="row">
                 <div class="col">
                     <div class="row mt-2">

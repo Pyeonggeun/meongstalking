@@ -181,17 +181,19 @@
 
             #writebutton{
                 position: fixed;
-                bottom: 3em;
-                left: 32%;
+                bottom: 12%;
+                left: 35%;
                 
             }
     
         </style>
-    
+    <script src="/public/js/commons/naviBar.js"></script>
+    <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://kit.fontawesome.com/feb61beef1.js" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -202,12 +204,12 @@
 
 <!--새로 짜는 응원글 페이지 -->
     <div class="container img-fluid">
+        <div th:insert="~{commons/naviBar}"></div>
         <div class="row">
             <div class="col">
                 
                 <div class="row" >
                     <div class="col">
-                        <div class="row py-2"><div class="col"><a href="./fundingUserMyPage"><i class="bi bi-arrow-left-square" style="color: black;"></i></a></div><div class="col text-end"><a href="./listPage" class="me-3"><i class="bi bi-shop" style="color: black;"></i></a><a href="../commons/mainPage"><i class="bi bi-house" style="color: black;"></i></a></div></div>
                         <!-- 응원글 작성 오프캔버스 시작-->
                         <button id="writebutton" class="btn text-white border border-3 border-white" style="font-size: 0.9em; background-color:black;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">응원글 작성<i class="bi bi-vector-pen"></i></button>
 
@@ -258,7 +260,14 @@
                 </div>
 
                 <!--본문 리스팅 시작-->
-                <div class="row py-2 mb-2"><div class="col py-1 mx-1 border-bottom" style="font-size: 1.1em;">응원글 <span th:text="${countByPk}" class="px-2 py-1" style="font-size: 1.25em;"></span></div></div>
+
+                
+                <div class="row mx-2 py-2 mb-2 border-bottom">
+                    
+                    <div class="col-1" style="align-self: center;"><button onclick="history.back()" style="background-color: transparent; border: none;"><i class="fa-solid fa-chevron-left px-0" style="font-size: 1.15em; color: black;"></i></button></div>
+                    <!-- <div class="col-1" style="align-self: center;"><i class="fa-solid fa-chevron-left px-0" style="font-size: 1.15em; color: black;"></i></div> -->
+                    <div class="col" style="font-size: 1.1em;">응원글 <span th:text="${countByPk}" class="px-2 py-1" style="font-size: 1.25em;"></span></div>
+                </div>
 
                 <div class="row">
                     <div id="cheeringList" class="col"></div>
@@ -275,7 +284,7 @@
     <!--템플릿과 히든-->
 
     <div id="cheeringTemplate" class="d-none"> 
-        <div class="row mb-4 cheeringWrapper">
+        <div class="row mb-4 mx-1 cheeringWrapper">
             <div class="col">
                 <div class="row mb-1">
                     <div class="col"><span class="userid" style="font-size: 0.9em;"></span> <span class="created_at" style="font-size: 0.8em; color: gray;"></span></div>

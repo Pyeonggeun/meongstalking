@@ -110,10 +110,10 @@ animation: huerotate 3s infinite linear;
     filter: hue-rotate(360deg);
 }
 }
-#itemShopMainImg{
-/* background: url('/public/image/mFollow/itemShop.png') center/contain no-repeat; */
+/* #itemShopMainImg{
+background: url('/public/image/mFollow/itemShop.png') center/contain no-repeat; 
 height: 37em;
-}
+} */
 .itemBackground{
 background: url('/public/image/mFollow/itmBackground1.png') center/cover no-repeat;
 }
