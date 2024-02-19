@@ -133,9 +133,9 @@ public class FollowServiceImpl {
         return followSqlMapper.getPermanentItemLv(user_pk);
     }
 
-    public int getItemCount(int user_pk, int item_pk) {
+    public List<Map<String, Object>> getItemCount(int user_pk) {
 
-        return followSqlMapper.getItemCount(user_pk, item_pk);
+        return followSqlMapper.getItemCount(user_pk);
     }
     
     public void insertUserItemInfo(UseItemDto useItemDto) {
@@ -146,6 +146,21 @@ public class FollowServiceImpl {
     public void sendMessage() {
 
         followSqlMapper.sendMessage();
+    }
+
+    public Map<String, Object> getMyPageInfo(int user_pk) {
+
+        return followSqlMapper.getMyPageInfo(user_pk);
+    }
+
+    public List<Map<String, Object>> getMyTrackMarkersInfo(int user_pk, int trackMarkerDateValidity) {
+
+        return followSqlMapper.getMyTrackMarkersInfo(user_pk, trackMarkerDateValidity);
+    }
+
+    public int getTracingTrackMarkerLogPk(int user_pk, int user_writer_pk) {
+
+        return followSqlMapper.getTracingTrackMarkerLogPk(user_pk, user_writer_pk);
     }
 
 }

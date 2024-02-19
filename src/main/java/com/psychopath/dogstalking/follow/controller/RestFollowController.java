@@ -341,11 +341,11 @@ public class RestFollowController {
     }
 
     @RequestMapping("getItemCount")
-    public RestResponseDto getItemCount(int user_pk, int item_pk) {
+    public RestResponseDto getItemCount(int user_pk) {
 
         RestResponseDto restResponseDto = new RestResponseDto();
 
-        restResponseDto.setData(followService.getItemCount(user_pk, item_pk));
+        restResponseDto.setData(followService.getItemCount(user_pk));
         restResponseDto.setResult("success");
         
         return restResponseDto;
@@ -370,6 +370,39 @@ public class RestFollowController {
 
         followService.sendMessage();
         
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
+    @RequestMapping("getMyPageInfo")
+    public RestResponseDto getMyPageInfo(int user_pk) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(followService.getMyPageInfo(user_pk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+    
+    @RequestMapping("getMyTrackMarkersInfo")
+    public RestResponseDto getMyTrackMarkersInfo(int user_pk, int trackMarkerDateValidity) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(followService.getMyTrackMarkersInfo(user_pk, trackMarkerDateValidity));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+
+    @RequestMapping("getTracingTrackMarkerLogPk")
+    public RestResponseDto getTracingTrackMarkerLogPk(int user_pk, int user_writer_pk) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(followService.getTracingTrackMarkerLogPk(user_pk, user_writer_pk));
         restResponseDto.setResult("success");
         
         return restResponseDto;

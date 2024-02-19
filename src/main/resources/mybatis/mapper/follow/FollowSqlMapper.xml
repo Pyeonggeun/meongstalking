@@ -539,7 +539,7 @@
     </select>
 
     <select id="getCollectionLogList" resultType="map">
-        SELECT mfl.*, (
+        SELECT mfl.log_pk, mfl.user_pk, mfl.image_link, mfl.content, DATE_FORMAT(mfl.created_date, '%Y.%m.%d') as created_date, (
             CASE
                 when mfl.log_pk in (
                     SELECT mfc.log_pk FROM ms_follow_collection mfc
@@ -558,7 +558,7 @@
             where mfll.log_pk = mfl.log_pk
             <![CDATA[
                 and (
-                    SELECT mfc4.log_pk from ms_follow_collection mfc4
+                    SELECT COUNT(*) from ms_follow_collection mfc4
                     where mfll.user_pk = mfc4.user_pk
                     and mfll.log_pk = mfc4.log_pk
                 ) > 0
@@ -583,7 +583,7 @@
             END
         ) as card_rating, IFNULL(
             (
-                SELECT mfc6.created_date from ms_follow_collection mfc6
+                SELECT DATE_FORMAT(mfc6.created_date, '%Y.%m.%d') from ms_follow_collection mfc6
                 where mfc6.log_pk = mfl.log_pk
                 and mfc6.user_pk = #{user_pk}
             ), 'null'
@@ -592,7 +592,7 @@
     </select>
 
     <select id="getCommentList" resultType="map">
-        SELECT * FROM ms_follow_comment mfc
+        SELECT mfc.content, DATE_FORMAT(mfc.created_date, "%Y.%m.%d") as created_date FROM ms_follow_comment mfc
         where mfc.log_pk = #{log_pk}
     </select>
 
@@ -616,18 +616,188 @@
         LIMIT 1
     </select>
 
-    <select id="getItemCount" resultType="int">
-        SELECT (
+    <select id="getItemCount" resultType="map">
+        SELECT mmfi.item_pk, (
             SELECT COUNT(mmfoi.quantity) FROM ms_mFollow_order_item mmfoi
             where mmfoi.user_pk = #{user_pk}
-            AND mmfoi.item_pk = #{item_pk}
+            AND mmfoi.item_pk = mmfi.item_pk
         )
         -
         (
             SELECT COUNT(*) FROM ms_follow_use_item mfui
             WHERE mfui.user_pk = #{user_pk}
-            AND mfui.item_pk = #{item_pk}
-        ) as item_cnt
+            AND mfui.item_pk = mmfi.item_pk
+        ) as item_cnt FROM ms_mFollow_item mmfi
+        where mmfi.item_pk BETWEEN 5 AND 8
+    </select>
+
+    <select id="getMyPageInfo" resultType="map">
+        SELECT mfum.*, (
+            SELECT mu.gender FROM ms_user mu
+            where mu.user_pk = #{user_pk}
+        ) as gender, (
+            SELECT mmpi.profile_photo from ms_mstar_profile_info mmpi
+            where mmpi.user_pk = #{user_pk}
+        ) as profile_photo , (
+            SELECT mmpi.nick_name from ms_mstar_profile_info mmpi
+            where mmpi.user_pk = #{user_pk}
+        ) as nick_name, (
+            36.5 + (
+                SELECT (COUNT(*) / 10 * 0.1) as follow_temp FROM ms_mstar_follow mmf
+                where mmf.follow_user_pk = (
+                    SELECT mmpi.profile_info_pk FROM ms_mstar_profile_info mmpi
+                    where mmpi.user_pk = mfum.user_pk
+                )
+            )
+            + (
+                SELECT (COUNT(*) / 10 * 0.1) as article_temp FROM ms_mstar_article mma
+                WHERE mma.profile_info_pk = (
+                    SELECT mmpi.profile_info_pk FROM ms_mstar_profile_info mmpi
+                    where mmpi.user_pk = mfum.user_pk
+                )
+            )
+            + (
+                SELECT (COUNT(*) / 10 * 0.1) as story_temp FROM ms_mstar_story mms
+                where mms.profile_info_pk = (
+                    SELECT mmpi.profile_info_pk FROM ms_mstar_profile_info mmpi
+                    where mmpi.user_pk = mfum.user_pk
+                )
+            )
+            - (
+                SELECT COUNT(*) as block_temp FROM ms_mstar_block mmb
+                where mmb.block_user_pk = mfum.user_pk
+            )
+        ) as mstar_temp, (
+            SELECT COUNT(*) FROM ms_follow_like_log mfll
+            inner join ms_follow_log mfl on mfll.log_pk = mfl.log_pk
+            where mfl.user_pk = #{user_pk}
+            <![CDATA[
+                and (
+                    SELECT COUNT(*) from ms_follow_collection mfc
+                    where mfc.user_pk = mfll.user_pk
+                    and mfc.log_pk = mfll.log_pk
+                ) > 0
+            ]]>
+        ) as sombody_trace_cnt, (
+            SELECT COUNT(*) from ms_follow_collection mfc2
+            inner join ms_follow_log mfl2 on mfc2.log_pk = mfl2.log_pk
+            where mfl2.user_pk = #{user_pk}
+        ) as sombody_collect_cnt, (
+            SELECT COUNT(*) from ms_follow_like mfl3
+            where mfl3.user_writer_pk = #{user_pk}
+        ) as sombody_like_cnt, (
+            SELECT COUNT(*) from ms_follow_comment mfc3
+            inner join ms_follow_log mfl4 on mfc3.log_pk = mfl4.log_pk
+            where mfl4.user_pk = #{user_pk}
+        ) as sombody_comment_cnt, (
+            SELECT COUNT(*) from ms_follow_like_log mfll2
+            where mfll2.user_pk = #{user_pk}
+            and mfll2.log_pk in (
+                SELECT mfc4.log_pk FROM ms_follow_collection mfc4
+                where mfc4.user_pk = #{user_pk}
+            )
+        ) as my_trace_cnt, (
+            SELECT COUNT(*) from ms_follow_collection mfc5
+            where mfc5.user_pk = #{user_pk}
+        ) as my_collect_cnt, (
+            SELECT COUNT(*) from ms_follow_like mfl5
+            where mfl5.user_collector_pk = #{user_pk}
+        ) as my_like_cnt, (
+            SELECT COUNT(*) from ms_follow_comment mfc6
+            where mfc6.user_pk = #{user_pk}
+        ) as my_comment_cnt, (
+            SELECT COUNT(*) from ms_follow_log mfl6
+            where mfl6.user_pk = #{user_pk}
+        ) as my_track_cnt, (
+            SELECT (
+                CASE
+                    <![CDATA[
+                        when (t2.rnum / t2.max_count) <= 0.36 then 'oneStar'
+                        when (t2.rnum / t2.max_count) <= 0.61 then 'twoStar'
+                        when (t2.rnum / t2.max_count) <= 0.76 then 'threeStar'
+                        when (t2.rnum / t2.max_count) <= 0.87 then 'fourStar'
+                        when (t2.rnum / t2.max_count) <= 0.94 then 'fiveStar'
+                        when (t2.rnum / t2.max_count) <= 0.994 then 'S'
+                        when (t2.rnum / t2.max_count) <= 0.999 then 'SR'
+                        else 'SSR'
+                    ]]>
+                END
+            ) as star_rating
+            from (
+                SELECT mfum.*, RANK() over (order by (
+                    (
+                        SELECT COUNT(*) FROM ms_follow_collection mfc
+                        inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
+                        where mfl.user_pk = mfum.user_pk
+                        GROUP BY mfl.user_pk
+                    ) * 0.8 + (
+                        SELECT COUNT(*) FROM ms_follow_comment mfc
+                        inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
+                        where mfl.user_pk = mfum.user_pk
+                        GROUP BY mfl.user_pk
+                    ) * 0.1 + (
+                        SELECT COUNT(*) FROM ms_follow_like mfl
+                        where user_writer_pk = mfum.user_pk
+                        GROUP BY mfl.user_writer_pk		
+                    ) * 0.1
+                ) desc) as rnum, (
+                    SELECT COUNT(*) FROM ms_follow_user_more
+                ) as max_count
+                FROM ms_follow_user_more mfum
+            )t2
+            where t2.user_pk = #{user_pk}
+        ) as star_rating FROM ms_follow_user_more mfum
+        where mfum.user_pk = #{user_pk}
+    </select>
+
+    <select id="getMyTrackMarkersInfo" resultType="map">
+        SELECT mfl.log_pk, mfl.image_link, mfl.content, DATE_FORMAT(mfl.created_date, '%Y.%m.%d') as created_date, (
+            SELECT COUNT(*) from ms_follow_log mfl3
+            where mfl3.user_pk = #{user_pk}
+        ) as my_track_cnt, (
+            SELECT COUNT(*) from ms_follow_collection mfc2
+            where mfc2.log_pk = mfl.log_pk
+        ) as collect_cnt, (
+            SELECT COUNT(*) from ms_follow_comment mfc3
+            where mfc3.log_pk = mfl.log_pk
+        ) as comment_cnt, (
+            SELECT COUNT(*) from ms_follow_like_log mfll
+            where mfll.log_pk = mfl.log_pk
+            <![CDATA[
+                and (
+                    SELECT COUNT(*) from ms_follow_collection mfc4
+                    where mfll.user_pk = mfc4.user_pk
+                    and mfll.log_pk = mfc4.log_pk
+                ) > 0
+            ]]>
+        ) as trace_cnt, (
+            CASE
+                <![CDATA[
+                    when (
+                        SELECT COUNT(*) from ms_follow_collection mfc5
+                        inner join ms_follow_log mfl2 on mfc5.log_pk = mfl2.log_pk
+                        where mfc5.log_pk = mfl.log_pk
+                        and date(now()) - date(mfl2.created_date) > #{trackMarkerDateValidity}
+                    ) >= 20 then 'common'
+                    when (
+                        SELECT COUNT(*) from ms_follow_collection mfc5
+                        inner join ms_follow_log mfl2 on mfc5.log_pk = mfl2.log_pk
+                        where mfc5.log_pk = mfl.log_pk
+                        and date(now()) - date(mfl2.created_date) > #{trackMarkerDateValidity}
+                    ) >= 10 then 'rare'
+                    else 'legend'
+                ]]>
+            END
+        ) as card_rating FROM ms_follow_log mfl
+        where mfl.user_pk = #{user_pk}
+    </select>
+
+    <select id="getTracingTrackMarkerLogPk" resultType="int">
+        SELECT mfll.log_pk FROM ms_follow_like_log mfll
+        inner join ms_follow_log mfl on mfll.log_pk = mfl.log_pk
+        where mfll.user_pk = #{user_pk}
+        and mfl.user_pk = #{user_writer_pk}
+        LIMIT 1
     </select>
 
     <!-- <select id="" resultType=""></select> -->

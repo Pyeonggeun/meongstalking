@@ -54,6 +54,11 @@
 
             let plusTrackMarkerProbability = 0;
 
+            let scanUpItemCnt;
+            let rainbowHandItemCnt;
+            let megaPhoneItemCnt;
+            let cupidoItemCnt;
+
             let mapHeight;
 
             function getMyUserPk() {
@@ -75,6 +80,7 @@
                     getMyTrackMarkers();
                     getTracingTrackMarkers();
                     getPermanentItemLv();
+                    getItemCount();
 
                 });
 
@@ -204,7 +210,7 @@
                     center : position,  // 원의 중심좌표 입니다 
                     radius: 1000, // 미터 단위의 원의 반지름입니다 
                     strokeWeight: 5, // 선의 두께입니다 
-                    strokeColor: '#75B8FA', // 선의 색깔입니다
+                    // strokeColor: '#75B8FA', // 선의 색깔입니다
                     strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
                     strokeStyle: 'dashed', // 선의 스타일 입니다
                     fillColor: '#CFE7FF', // 채우기 색깔입니다
@@ -214,15 +220,45 @@
                 // 지도에 원을 표시합니다 
                 circle.setMap(map);
 
-                var marker = new kakao.maps.Marker({
-                    position: position
+                const content = document.createElement("div");
+                content.classList.add("traceMarkerBox");
+
+                const div1 = document.createElement("div");
+                div1.classList.add("traceMarkerImage");
+
+                if(e.star_rating == 'oneStar') {
+                    div1.style.background = "url('/public/image/follow/onestar.png') no-repeat center";
+                }else if(e.star_rating == 'twoStar') {
+                    div1.style.background = "url('/public/image/follow/twostar.png') no-repeat center";
+                }else if(e.star_rating == 'threeStar') {
+                    div1.style.background = "url('/public/image/follow/threestar.png') no-repeat center";
+                }else if(e.star_rating == 'fourStar') {
+                    div1.style.background = "url('/public/image/follow/fourstar.png') no-repeat center";
+                }else if(e.star_rating == 'fiveStar') {
+                    div1.style.background = "url('/public/image/follow/fivestar.png') no-repeat center";
+                }else if(e.star_rating == 'S') {
+                    div1.style.background = "url('/public/image/follow/sixstar.png') no-repeat center";
+                }else if(e.star_rating == 'SR') {
+                    div1.style.background = "url('/public/image/follow/sevenstar.png') no-repeat center";
+                }else {
+                    div1.style.background = "url('/public/image/follow/eightstar.png') no-repeat center";
+                }
+
+                div1.style.backgroundSize = "cover";
+
+                content.appendChild(div1);
+
+                var customOverlay = new kakao.maps.CustomOverlay({
+                    position: position,
+                    content: content,
+                    yAnchor: 0.9,
+                    zIndex: 1
                 });
 
-                // 마커가 지도 위에 표시되도록 설정합니다
-                marker.setMap(map);
+                customOverlay.setMap(map);
 
                 tracingTrackMarkers.push(circle);
-                tracingTrackInfoMarkers.push(marker);
+                tracingTrackInfoMarkers.push(customOverlay);
 
             }
 
@@ -283,7 +319,7 @@
                     div2.style.top = "0.7rem";
                     div2.style.left = "1.2rem";
 
-                    div2.style.background = "url('/uploadFiles/ " + e.profile_photo + " ') no-repeat center";
+                    div2.style.background = "url('" + e.profile_photo + " ') no-repeat center";
                 }
 
                 content.appendChild(div1);
@@ -393,9 +429,49 @@
                 });
 
             }
+
+            function getItemCount() {
+
+                const url = "./getItemCount?user_pk=" + user_pk;
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+
+                    for(let e of response.data) {
+
+                        if(e.item_pk == 5) {
+                        rainbowHandItemCnt = e.item_cnt;
+                        }else if(e.item_pk == 6) {
+                            scanUpItemCnt = e.item_cnt;
+                        }else if(e.item_pk == 7) {
+                            megaPhoneItemCnt = e.item_cnt;
+                        }else if(e.item_pk == 8) {
+                            cupidoItemCnt = e.item_cnt;
+                        }
+
+                    }
+
+                });
+
+            }
+
+            function saveItemInfo(itemPk) {
+
+                const url = "./insertUserItemInfo?user_pk=" + user_pk + "&item_pk=" + itemPk;
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+
+                    getItemCount();
+
+                });
+
+            }
             
             function marking() {
-                // poiu
+
                 hideAction();
                 getMyLocation();
                 isFirstTimeLeavingTrackMark();
@@ -412,7 +488,6 @@
 
                     if(response.data) {
                         console.log("isFirstTimeLeavingTrackMark : " + response.data);
-                        // 처음 마커 남김
                         document.getElementById("alertWithCancelContent").innerText = "처음 체취를 남기실 경우 추가 정보를 입력해주셔야 합니다";
                         document.getElementById("alertWithCancelCheckButton").onclick = () => {
                             hideAlertWithCancelModal();
@@ -425,7 +500,6 @@
 
                     console.log("isFirstTimeLeavingTrackMark : " + response.data);
 
-                    // 전에 남긴 적 있음
                     getCurrentMyTrackMarkerCount();
 
                 });
@@ -560,7 +634,7 @@
             }
 
             function scanning() {
-                // poiu
+
                 hideAction();
                 getMyLocation();
                 removeScanningTrackMarkers();
@@ -610,7 +684,7 @@
                         document.getElementById("previewTrackMarkerName").innerText = e.nick_name;
                     case "9" :
                         document.getElementById("previewTrackMarkerImage").style.background = 
-                            "url(/uploadFiles/" + e.profile_photo + ") no-repeat center";
+                            "url(" + e.profile_photo + ") no-repeat center";
                             document.getElementById("previewTrackMarkerImage").style.backgroundSize = "cover";
                     case "8" : 
                         if(e.preference == "L") {
@@ -732,7 +806,35 @@
                         document.getElementById("alertWithCancelContent").innerText = `횟수를 모두 사용하셨습니다\n아이템을 사용하시겠습니까?`;
                         document.getElementById("alertWithCancelCheckButton").onclick = () => {
                             hideAlertWithCancelModal();
-                            getPlusCollectTrackMarkerItemCount(e);
+
+                            const itemBox = document.getElementById("itemBox");
+                            itemBox.innerHTML = "";
+
+                            const itemScanUpWrapper = document.querySelector("#template .itemScanUpWrapper").cloneNode(true);
+                            itemScanUpWrapper.querySelector(".itemCount").innerText = scanUpItemCnt;
+                            itemScanUpWrapper.onclick = () => {
+
+                                if(scanUpItemCnt <= 0) {
+
+                                    document.getElementById("alertContent").innerText = "사용할 수 있는 아이템이 없습니다";
+                                    document.getElementById("alertCheckButton").onclick = () => {
+                                        hideAlertModal();
+                                    };
+                                    showAlertModal();
+
+                                    return;
+
+                                }
+
+                                hideAlertItemModal();
+                                saveItemInfo(6);
+                                collectTrackMarkerInfo(e);
+                            
+                            };
+
+                            itemBox.appendChild(itemScanUpWrapper);
+                            showAlertItemModal();
+
                         };
                         showAlertWithCancelModal();
 
@@ -745,47 +847,6 @@
                 });
 
             }
-
-            function getPlusCollectTrackMarkerItemCount(e) {
-
-                const url = "./getItemCount?user_pk=" + user_pk + "&item_pk=6";
-
-                fetch(url)
-                .then(response => response.json())
-                .then(response => {
-                    
-                    if(response.data <= 0) {
-
-                        document.getElementById("alertContent").innerText = "사용할 수 있는 아이템이 없습니다";
-                        document.getElementById("alertCheckButton").onclick = () => {
-                            hideAlertModal();
-                        };
-                        showAlertModal();
-
-                        return;
-
-                    }
-
-                    savePlusCollectTrackMarkerItemUse(e);
-
-                });
-
-            }
-
-            function savePlusCollectTrackMarkerItemUse(e) {
-
-                const url = "./insertUserItemInfo?user_pk=" + user_pk + "&item_pk=6";
-
-                fetch(url)
-                .then(response => response.json())
-                .then(response => {
-
-                    collectTrackMarkerInfo(e);
-
-                });
-
-            }
-
             // qwer
             function collectTrackMarkerInfo(e) {
 
@@ -840,7 +901,7 @@
 
                 if(e.open_rating == 9) {
                     document.getElementById("trackMarkerInner").style.background = 
-                        "url(/uploadFiles/" + e.profile_photo + ") no-repeat center";
+                        "url(" + e.profile_photo + ") no-repeat center";
                     document.getElementById("trackMarkerInner").style.backgroundSize = "cover";
                 }
 
@@ -936,7 +997,7 @@
                         console.log("getLikeList");
                         const noLikeListWrapper = document.querySelector("#template .noLikeListWrapper").cloneNode(true);
                         likeListBox.appendChild(noLikeListWrapper);
-                        // empty list
+
                         showLikeListModal();
                         return;
 
@@ -955,15 +1016,66 @@
                             if(e.is_trace == "Y") {
                                 // ghgh
 
-                                // document.getElementById("alertContent").innerText = "이미 추행하고 있습니다";
-                                // document.getElementById("alertCheckButton").onclick = () => {
-                                //     hideAlertModal();
-                                // };
-                                // showAlertModal();
+                                document.getElementById("alertContent").innerText = `이미 추행하고 있습니다\n아이템을 사용하시겠습니까?`;
+                                document.getElementById("alertCheckButton").onclick = () => {
 
-                                // 버튼 2개있는 모달 띄워서 item기능이랑 연결시키기 > 아이템을 사용하시겠습니까?
-                                // getImmediateCollectTrackMarkerItemCount();
-                                // getSendMessageItemCount(e.user_pk);
+                                    const itemBox = document.getElementById("itemBox");
+                                    itemBox.innerHTML = "";
+
+                                    const itemRainbowHandWrapper = document.querySelector("#template .itemRainbowHandWrapper").cloneNode(true);
+                                    itemRainbowHandWrapper.querySelector(".itemCount").innerText = rainbowHandItemCnt;
+                                    itemRainbowHandWrapper.onclick = () => {
+
+                                        if(rainbowHandItemCnt <= 0) {
+
+                                            document.getElementById("alertContent").innerText = "사용할 수 있는 아이템이 없습니다";
+                                            document.getElementById("alertCheckButton").onclick = () => {
+                                                hideAlertModal();
+                                            };
+                                            showAlertModal();
+
+                                            return;
+
+                                        }
+
+                                        hideAlertItemModal();
+                                        saveItemInfo(5);
+                                        getTracingTrackMarkerLogPk(e.user_pk);
+                                    
+                                    };
+
+                                    const itemMegaPhoneWrapper = document.querySelector("#template .itemMegaPhoneWrapper").cloneNode(true);
+                                    itemMegaPhoneWrapper.querySelector(".itemCount").innerText = megaPhoneItemCnt;
+                                    itemMegaPhoneWrapper.onclick = () => {
+
+                                        if(megaPhoneItemCnt <= 0) {
+
+                                            document.getElementById("alertContent").innerText = "사용할 수 있는 아이템이 없습니다";
+                                            document.getElementById("alertCheckButton").onclick = () => {
+                                                hideAlertModal();
+                                            };
+                                            showAlertModal();
+
+                                            return;
+
+                                        }
+
+                                        hideAlertItemModal();
+                                        document.getElementById("sendMessageButton").onclick = () => {
+                                            sendMessage(e.user_pk);
+                                        }
+                                        showAlertItemMessageModal();
+                                        
+                                    
+                                    };
+
+                                    itemBox.appendChild(itemRainbowHandWrapper);
+                                    itemBox.appendChild(itemMegaPhoneWrapper);
+                                    showAlertItemModal();
+
+                                    hideAlertModal();
+                                };
+                                showAlertModal();
 
                                 return;
 
@@ -1007,7 +1119,7 @@
                                 likeListWrapper.querySelector(".likeListName").innerText = e.nick_name;
                             case "9" :
                                 likeListWrapper.querySelector(".likeListImage").style.background = 
-                                    "url(/uploadFiles/" + e.profile_photo + ") no-repeat center";
+                                    "url(" + e.profile_photo + ") no-repeat center";
                                     likeListWrapper.querySelector(".likeListImage").style.backgroundSize =
                                     "cover";
                             case "8" : 
@@ -1109,79 +1221,24 @@
 
             }
 
-            function getImmediateCollectTrackMarkerItemCount() {
+            function getTracingTrackMarkerLogPk(userWriterPk) {
 
-                const url = "./getItemCount?user_pk=" + user_pk + "&item_pk=5";
+                const url = "./getTracingTrackMarkerLogPk?user_pk=" + user_pk + "&user_writer_pk=" + userWriterPk;
 
                 fetch(url)
                 .then(response => response.json())
                 .then(response => {
+
+                    saveCollectionInfo(response.data);
                     
-                    if(response.data <= 0) {
-
-                        document.getElementById("alertContent").innerText = "사용할 수 있는 아이템이 없습니다";
-                        document.getElementById("alertCheckButton").onclick = () => {
-                            hideAlertModal();
-                        };
-                        showAlertModal();
-
-                        return;
-
-                    }
-
-                    saveImmediateCollectTrackMarkerItemUse();
-
-                });
-
-            }
-
-            function saveImmediateCollectTrackMarkerItemUse() {
-
-                const url = "./insertUserItemInfo?user_pk=" + user_pk + "&item_pk=5";
-
-                fetch(url)
-                .then(response => response.json())
-                .then(response => {
-
-                    // collectTrackMarkerInfo(e); > 이거 실행되는 처음부분 e에 채워지는 값이 전부 있는지 확인하기 아마 log부분이 없을 듯
-
-                });
-
-            }
-
-            function getSendMessageItemCount(userWriterPk) {
-
-                const url = "./getItemCount?user_pk=" + user_pk + "&item_pk=7";
-
-                fetch(url)
-                .then(response => response.json())
-                .then(response => {
-                    
-                    if(response.data <= 0) {
-
-                        document.getElementById("alertContent").innerText = "사용할 수 있는 아이템이 없습니다";
-                        document.getElementById("alertCheckButton").onclick = () => {
-                            hideAlertModal();
-                        };
-                        showAlertModal();
-
-                        return;
-
-                    }
-
-                    // 메세지 적을 수 있는 모달 띄우기
-                    // show SendMessageItemModal();
-                    // 보내기 버튼 > sendMessage(userWriterPk);
-
                 });
 
             }
 
             function sendMessage(userWriterPk) {
 
-                // message 내용 가져오기 asdf
-                const message = "Asdf";
-                const title = "누군가가 메세지를 보냈어요!";
+                const message = document.getElementById("sendMessageContent").value;
+                const title = "누군가 메세지를 보냈어요!";
                 const linkPath = "/follow/gamePage";
                 const notifyImg = "N";
 
@@ -1192,25 +1249,8 @@
                 .then(response => response.json())
                 .then(response => {
 
-                    saveSendMessageItemUse();
-
-                });
-
-            }
-
-            function saveSendMessageItemUse() {
-
-                const url = "./insertUserItemInfo?user_pk=" + user_pk + "&item_pk=7";
-
-                fetch(url)
-                .then(response => response.json())
-                .then(response => {
-
-                    document.getElementById("alertContent").innerText = "메세지 전달이 완료되었습니다";
-                    document.getElementById("alertCheckButton").onclick = () => {
-                        hideAlertModal();
-                    };
-                    showAlertModal();
+                    hideAlertItemMessageModal();
+                    saveItemInfo(7);
 
                 });
 
@@ -1399,7 +1439,7 @@
                     const collectionLikeListBox = document.getElementById("collectionLikeListBox");
                     const collectionListBox = document.getElementById("collectionListBox");
 
-                    for(e of response.data) {
+                    for(let e of response.data) {
 
                         const collectionWrapper = document.querySelector("#template .collectionWrapper").cloneNode(true);
 
@@ -1439,11 +1479,11 @@
                         }
 
                         if(e.open_rating == '10') {
-                            collectionInner.style.background = "url(/uploadFiles/" + e.profile_photo + ") no-reapt center";
+                            collectionInner.style.background = "url(" + e.profile_photo + ") no-reapt center";
                             collectionProgress.style.width = "100%";
                             collectionOpenRatngContent.innerText = e.collect_count + " / ∞";
                         }else if(e.open_rating == '9') {
-                            collectionInner.style.background = "url(/uploadFiles/" + e.profile_photo + ") no-reapt center";
+                            collectionInner.style.background = "url(" + e.profile_photo + ") no-reapt center";
                             collectionProgress.style.width = (18 - e.collect_count) / 2 * 100 + "%";
                             collectionOpenRatngContent.innerText = (18 - e.collect_count) + " / 2";
                         }else if(e.open_rating == '8') {
@@ -1507,7 +1547,7 @@
                         document.getElementById("collectionDetailName").innerText = e.nick_name;
                     case "9" :
                         document.getElementById("collectionDetailModalImage").style.background = 
-                            "url(/uploadFiles/" + e.profile_photo + ") no-repeat center";
+                            "url(" + e.profile_photo + ") no-repeat center";
                         document.getElementById("collectionDetailModalImage").style.backgroundSize = "cover";
                     case "8" : 
                         if(e.preference == "L") {
@@ -1595,77 +1635,18 @@
                     document.getElementById("collectionDetailOuter").classList.add("OneStarOuter");
                 }
 
-                // 큐피트화살 일단 랜덤으로 한 개 수집 > 여기서 있는걸로 // 확정 한개면 getCollectionLogList 여기에서 쿼리부터 다시 짜기 ghgh > 확정 1개 라신다,,,
-                // 버튼 onclick > cupidArrows(e.user_pk);
-
-                getCollectionLogList(e.user_pk);
+                getCollectionLogList(e.user_pk, e.star_rating);
 
             }
 
-            function cupidArrows(userWriterPk) {
-
-                document.getElementById("alertWithCancelContent").innerText = `아이템을 사용하시겠습니까?`;
-                document.getElementById("alertWithCancelCheckButton").onclick = () => {
-                    hideAlertWithCancelModal();
-                    getCupidArrowsItemCount(userWriterPk);
-                    saveCupidArrowsItemUse();
-                };
-                showAlertWithCancelModal();
-
-            }
-            
-            function getCupidArrowsItemCount(userWriterPk) {
-
-                const url = "./getItemCount?user_pk=" + user_pk + "&item_pk=8";
-
-                fetch(url)
-                .then(response => response.json())
-                .then(response => {
-                    
-                    if(response.data <= 0) {
-
-                        document.getElementById("alertContent").innerText = "사용할 수 있는 아이템이 없습니다";
-                        document.getElementById("alertCheckButton").onclick = () => {
-                            hideAlertModal();
-                        };
-                        showAlertModal();
-
-                        return;
-
-                    }
-
-                    getPlusTrackMarker(userWriterPk);
-
-                });
-
-            }
-
-            function saveCupidArrowsItemUse() {
-
-                const url = "./insertUserItemInfo?user_pk=" + user_pk + "&item_pk=8";
-
-                fetch(url)
-                .then(response => response.json())
-                .then(response => {
-
-                    document.getElementById("alertContent").innerText = "수집이 완료되었습니다";
-                    document.getElementById("alertCheckButton").onclick = () => {
-                        hideAlertModal();
-                    };
-                    showAlertModal();
-
-                });
-
-            }
-
-            function getCollectionLogList(userWriterPk) {
+            function getCollectionLogList(userWriterPk, starRating) {
 
                 const url = "./getCollectionLogList?user_pk=" + user_pk + "&user_writer_pk=" + userWriterPk + "&trackMarkerDateValidity=" + trackMarkerDateValidity;
-
+                console.log(userWriterPk);
                 fetch(url)
                 .then(response => response.json())
                 .then(response => {
-
+                    console.log(response.data);
                     const collectionDetailCardListBox = document.getElementById("collectionDetailCardListBox");
                     collectionDetailCardListBox.innerHTML = "";
 
@@ -1674,23 +1655,70 @@
                         return;
                     }
 
-                    for(e of response.data) {
+                    for(let e of response.data) {
 
                         let wrapper;
 
-                        if(e.card_rating == "common") {
+                        if(starRating == "oneStar" || starRating == "twoStar") {
+
                             wrapper = document.querySelector("#template .collectionDetailCardCommonWrapper").cloneNode(true);
-                        }else if(e.card_rating == "rare") {
-                            wrapper = document.querySelector("#template .collectionDetailCardRareWrapper").cloneNode(true);
+
                         }else {
-                            wrapper = document.querySelector("#template .collectionDetailCardLegendaryWrapper").cloneNode(true);
+
+                            if(e.card_rating == "common") {
+                                wrapper = document.querySelector("#template .collectionDetailCardCommonWrapper").cloneNode(true);
+                            }else if(e.card_rating == "rare") {
+                                wrapper = document.querySelector("#template .collectionDetailCardRareWrapper").cloneNode(true);
+                            }else {
+                                wrapper = document.querySelector("#template .collectionDetailCardLegendaryWrapper").cloneNode(true);
+                            }
+                            
                         }
 
                         if(e.is_collect == "N") {
                             wrapper.querySelector(".collectionDetailCardFilter").style.filter = "brightness(50%)";
+                            wrapper.querySelector(".collectionDetailCardFilter").onclick = () => {
+                                
+                                document.getElementById("alertWithCancelContent").innerText = `아이템을 사용하시겠습니까?`;
+                                document.getElementById("alertWithCancelCheckButton").onclick = () => {
+                                    hideAlertWithCancelModal();
+
+                                    const itemBox = document.getElementById("itemBox");
+                                    itemBox.innerHTML = "";
+
+                                    const itemCupidoWrapper = document.querySelector("#template .itemCupidoWrapper").cloneNode(true);
+                                    itemCupidoWrapper.querySelector(".itemCount").innerText = cupidoItemCnt;
+                                    itemCupidoWrapper.onclick = () => {
+
+                                        if(cupidoItemCnt <= 0) {
+
+                                            document.getElementById("alertContent").innerText = "사용할 수 있는 아이템이 없습니다";
+                                            document.getElementById("alertCheckButton").onclick = () => {
+                                                hideAlertModal();
+                                            };
+                                            showAlertModal();
+
+                                            return;
+
+                                        }
+
+                                        hideAlertItemModal();
+                                        saveItemInfo(8);
+                                        saveCollectionInfoByItem(e.log_pk, userWriterPk, starRating);
+                                    
+                                    };
+
+                                    itemBox.appendChild(itemCupidoWrapper);
+                                    showAlertItemModal();
+
+                                };
+                                showAlertWithCancelModal();
+
+                            };
                         }else {
                             wrapper.querySelector(".collectionDetailCardFilter").onclick = () => {
                                 reloadCollectionCard(e);
+                                console.log(e);
                             };
                         }
 
@@ -1706,11 +1734,31 @@
                 
             }
 
-            function reloadCollectionCard(e) {
+            function saveCollectionInfoByItem(logPk, userWriterPk, starRating) {
                 
-                // resetmodal
+                const url = "./insertCollectionInfo?user_pk=" + user_pk + "&log_pk=" + logPk;
 
-                // 값 붙이기
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+
+                    getCollectionLogList(userWriterPk, starRating);
+
+                });
+
+            }
+
+            function reloadCollectionCard(e) {
+                console.log(e);
+                document.getElementById("collectionCardLogPk").innerText = e.log_pk;
+                document.getElementById("collectionCardCollectDate").innerText = e.collect_date;
+                document.getElementById("collectionCardImage").style.background = "url('/uploadFiles/" + e.image_link + "') no-repeat center";
+                document.getElementById("collectionCardDate").innerText = e.created_date;
+                document.getElementById("collectionCardContent").innerText = e.content;
+                document.getElementById("collectionCardCollectCount").innerText = e.collect_cnt;
+                document.getElementById("collectionCardCommentCount").innerText = e.comment_cnt;
+                document.getElementById("collectionCardTraceCount").innerText = e.trace_cnt;
+
                 getCommentList(e.log_pk);
 
             }
@@ -1723,18 +1771,27 @@
                 .then(response => response.json())
                 .then(response => {
 
+                    const collectionCardCommentBox = document.querySelector(".collectionCardCommentBox");
+                    collectionCardCommentBox.innerHTML = "";
+                    console.log(response.data);
                     if(response.data.length == 0) {
 
+                        showCollectionCardModal();
                         return;
+
                     }
 
                     for(e of response.data) {
 
-                        // 값 붙이기
+                        const collectionCardCommentWrapper = document.querySelector("#template .collectionCardCommentWrapper").cloneNode(true);
+
+                        collectionCardCommentWrapper.querySelector(".collectionCardCommentDate").innerText = e.created_date;
+                        collectionCardCommentWrapper.querySelector(".collectionCardCommentContent").innerText = e.content;
+
+                        collectionCardCommentBox.appendChild(collectionCardCommentWrapper);
 
                     }
 
-                    // showmodal; asdf
                     showCollectionCardModal();
 
                 });
@@ -1743,8 +1800,7 @@
 
             function openMyPage() {
 
-                // getMyPageInfo();
-                showMyPageModal();
+                getMyPageInfo();
 
             }
 
@@ -1754,27 +1810,168 @@
 
                 fetch(url)
                 .then(response => response.json())
-                .then(resposne => {
+                .then(response => {
 
-                    // asdf
+                    document.getElementById("myPageModalImage").style.background = "url('" + response.data.profile_photo + "') no-repeat center";
+                    document.getElementById("myPageModalImage").style.backgroundSize = "cover";
+                    document.getElementById("myPageName").innerText = response.data.nick_name;
+                    document.getElementById("myPageHeight").innerText = response.data.height;
+
+                    if(response.data.gender == "M") {
+                        document.getElementById("myPageGender").innerText = "👱🏻‍♀️";
+                    }else {
+                        document.getElementById("myPageGender").innerText = "👱🏻‍♂️";
+                    }
+                    
+                    document.getElementById("myPageWeight").innerText = response.data.weight;
+                    document.getElementById("myPageMbtiType").innerText = response.data.mbti_type;
+                    document.getElementById("myPageBloodType").innerText = response.data.blood_type;
+                    document.getElementById("myPageDrinking").innerText = response.data.drinking;
+                    document.getElementById("myPageSmoking").innerText = response.data.smoking;
+                    document.getElementById("myPageHobby").innerText = response.data.hobby;
+
+                    if(response.data.preference == "L") {
+                        document.getElementById("myPagePreference").innerText = "이성애";
+                    }else if(response.data.preference == "B") {
+                        document.getElementById("myPagePreference").innerText = "게이";
+                    }else if(response.data.preference == "G") {
+                        document.getElementById("myPagePreference").innerText = "레즈비언";
+                    }else if(response.data.preference == "V") {
+                        document.getElementById("myPagePreference").innerText = "바이섹슈얼";
+                    }else if(response.data.preference == "A") {
+                        document.getElementById("myPagePreference").innerText = "에이섹슈얼";
+                    }else if(response.data.preference == "D") {
+                        document.getElementById("myPagePreference").innerText = "데미섹슈얼";
+                    }else if(response.data.preference == "P") {
+                        document.getElementById("myPagePreference").innerText = "팬섹슈얼";
+                    }else if(response.data.preference == "Q") {
+                        document.getElementById("myPagePreference").innerText = "퀘스처닝";
+                    }
+
+                    document.getElementById("mypageTemp").style.width = response.data.mstar_temp + "%";
+                    document.getElementById("myPageTempContent").innerText = response.data.mstar_temp;
+                    document.getElementById("myPageSombodyTraceCount").innerText = response.data.sombody_trace_cnt;
+                    document.getElementById("myPageSombodyCollectCount").innerText = response.data.sombody_collect_cnt;
+                    document.getElementById("myPageSombodyLikeCount").innerText = response.data.sombody_like_cnt;
+                    document.getElementById("myPageSombodyCommentCount").innerText = response.data.sombody_comment_cnt;
+                    document.getElementById("myPageMyTraceCount").innerText = response.data.my_trace_cnt;
+                    document.getElementById("myPageMyCollectCount").innerText = response.data.my_collect_cnt;
+                    document.getElementById("myPageMyLikeCount").innerText = response.data.my_like_cnt;
+                    document.getElementById("myPageMyCommentCount").innerText = response.data.my_comment_cnt;
+                    document.getElementById("myPageMyTrackCount").innerText = response.data.my_track_cnt;
+
+                    document.getElementById("myPageTrackButton").onclick = () => {
+                        getMyTrackMarkersInfo(response.data.star_rating);
+                    };
+
+                    showMyPageModal();
 
                 });
 
             }
 
-            function showMyTrackMarkersInfo() {
+            function getMyTrackMarkersInfo(starRating) {
 
-                getMyTrackMarkersInfo();
-
-            }
-
-            function getMyTrackMarkersInfo() {
-//asdf
-                const url = "./getMyTrackMarkersInfo?user_pk=" + user_pk;
+                const url = "./getMyTrackMarkersInfo?user_pk=" + user_pk + "&trackMarkerDateValidity=" + trackMarkerDateValidity;
 
                 fetch(url)
                 .then(response => response.json())
                 .then(response => {
+
+                    const myTrackListBox = document.getElementById("myTrackListBox");
+                    myTrackListBox.innerHTML = "";
+
+                    if(response.data.length == 0) {
+
+                        document.getElementById("myTrackCnt").innerText = "0";
+                        return;
+                        
+                    }
+
+                    for(let e of response.data) {
+
+                        let wrapper;
+
+                        if(starRating == "oneStar" || starRating == "twoStar") {
+
+                            wrapper = wrapper = document.querySelector("#template .collectionDetailCardCommonWrapper").cloneNode(true);
+
+                        }else {
+
+                            if(e.card_rating == "common") {
+                                wrapper = document.querySelector("#template .collectionDetailCardCommonWrapper").cloneNode(true);
+                            }else if(e.card_rating == "rare") {
+                                wrapper = document.querySelector("#template .collectionDetailCardRareWrapper").cloneNode(true);
+                            }else {
+                                wrapper = document.querySelector("#template .collectionDetailCardLegendaryWrapper").cloneNode(true);
+                            }
+                            
+                        }
+                        
+                        document.getElementById("myTrackCnt").innerText = e.my_track_cnt;
+                        wrapper.querySelector(".collectionDetailLogPk").innerText = e.log_pk;
+                        wrapper.querySelector(".collectionDetailCardFilter").onclick = () => {
+                            reloadMyTrackCard(e);
+                            console.log(e);
+                        }
+
+                        myTrackListBox.appendChild(wrapper);
+
+                    }
+
+                    showMyTrackModal();
+
+                });
+
+            }
+
+            function reloadMyTrackCard(e) {
+
+                document.getElementById("myTrackCardLogPk").innerText = e.log_pk;
+                document.getElementById("myTrackCardImage").style.background = "url('/uploadFiles/" + e.image_link + "') no-repeat center";
+                document.getElementById("myTrackCardImage").style.backgroundSize = "cover";
+                document.getElementById("myTrackCardContent").innerText = e.content;
+                document.getElementById("myTrackCardDate").innerText = e.created_date;
+                document.getElementById("myTrackCardCollectCount").innerText = e.collect_cnt;
+                document.getElementById("myTrackCardCommentCount").innerText = e.comment_cnt;
+                document.getElementById("myTrackCardTraceCount").innerText = e.trace_cnt;
+
+                getMyTrackCommentList(e.log_pk);
+                
+                
+
+            }
+
+            function getMyTrackCommentList(logPk) {
+
+                const url = "./getCommentList?log_pk=" + logPk;
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+                   
+                    const myTrackCardCommentBox = document.querySelector(".myTrackCardCommentBox");
+                    myTrackCardCommentBox.innerHTML = "";
+                    console.log(response.data);
+                    if(response.data.length == 0) {
+
+                        showMyTrackCardModal();
+                        return;
+
+                    }
+
+                    for(e of response.data) {
+
+                        const myTrackCardCommentWrapper = document.querySelector("#template .myTrackCardCommentWrapper").cloneNode(true);
+
+                        myTrackCardCommentWrapper.querySelector(".myTrackCardCommentDate").innerText = e.created_date;
+                        myTrackCardCommentWrapper.querySelector(".myTrackCardCommentContent").innerText = e.content;
+
+                        myTrackCardCommentBox.appendChild(myTrackCardCommentWrapper);
+
+                    }
+
+                    showMyTrackCardModal();
 
                 });
 
@@ -1839,6 +2036,34 @@
 
             }
 
+            function showAlertItemModal() {
+                
+                const modal = bootstrap.Modal.getOrCreateInstance("#alertItemModal");
+                modal.show();
+
+            }
+
+            function hideAlertItemModal() {
+                
+                const modal = bootstrap.Modal.getOrCreateInstance("#alertItemModal");
+                modal.hide();
+
+            }
+
+            function showAlertItemMessageModal() {
+                
+                const modal = bootstrap.Modal.getOrCreateInstance("#alertItemMessageModal");
+                modal.show();
+
+            }
+
+            function hideAlertItemMessageModal() {
+                
+                const modal = bootstrap.Modal.getOrCreateInstance("#alertItemMessageModal");
+                modal.hide();
+
+            }
+            
             function showWriteMoreInfoModal() {
 
                 resetWriteMoreInfoModal();
@@ -1921,9 +2146,32 @@
 
             function showMyPageModal() {
 
-                document.getElementById("myPageModalHeight").style.height = mapHeight * 0.9 + "px";
+                // document.getElementById("myPageModalHeight").style.height = mapHeight * 0.6 + "px";
+                document.getElementById("myPageModalHeight").style.height = "31.5rem";
 
                 const modal = bootstrap.Modal.getOrCreateInstance("#myPageModal");
+                modal.show();
+
+            }
+            
+            function showMyTrackModal() {
+
+                document.getElementById("myTrackModalHeight").style.height = "31.5rem";
+
+                const modal = bootstrap.Modal.getOrCreateInstance("#myTrackModal");
+                modal.show();
+
+            }
+
+            function showMyTrackCardModal() {
+
+                document.getElementById("myTrackCardModalHeight").style.height = mapHeight * 0.9 * 0.85 + "px";
+
+                const myTrackCardInfoHeight = parseFloat(getComputedStyle(document.getElementById("myTrackCardInfoHeight")).height.replace("px", ""));
+                console.log(myTrackCardInfoHeight);
+                document.getElementById("myTrackCardCommentHeight").style.height = ((mapHeight * 0.9 * 0.85) - myTrackCardInfoHeight - 30) + "px";
+
+                const modal = bootstrap.Modal.getOrCreateInstance("#myTrackCardModal");
                 modal.show();
 
             }
@@ -1950,6 +2198,11 @@
                 modal.show();
 
                 document.getElementById("collectionCardModalHeight").style.height = mapHeight * 0.9 * 0.85 + "px";
+
+                const collectionCardInfoHeight = parseFloat(getComputedStyle(document.getElementById("collectionCardInfoHeight")).height.replace("px", ""));
+                console.log(collectionCardInfoHeight);
+                document.getElementById("collectionCardCommentHeight").style.height = ((mapHeight * 0.9 * 0.85) - collectionCardInfoHeight - 30) + "px";
+
 
             }
 
@@ -2038,7 +2291,6 @@
                 getMyUserPk();
                 createMap();
                 getMyLocation();
-
                 // window.scrollTo(0,0);
             });
 
@@ -2159,10 +2411,22 @@
                 height: 4rem;
             }
 
+            .traceMarkerBox {
+                position: relative;
+                width: 2rem;
+                height: 2rem;
+            }
+
             .scanMarkerImage {
                 position: absolute;
                 width: 4rem;
                 height: 4rem;
+            }
+
+            .traceMarkerImage {
+                position: absolute;
+                width: 2rem;
+                height: 2rem;
             }
 
             .scanMarkerContent {
@@ -2462,11 +2726,11 @@
     <body>
 
         <div class="container-fluid">
-            <div th:replace="~{/commons/naviBar.html :: topNavi}"></div>
-            <div th:replace="~{/commons/naviBar.html :: bottomNavi}"></div>
-            <div th:replace="~{/commons/naviBar.html :: motifyModal}"></div>
-            <div th:replace="~{/commons/naviBar.html :: unReadNotifyListTemplate}"></div>
-            <div th:replace="~{/commons/naviBar.html :: readNotifyListTeplate}"></div>
+            <div th:insert="~{/commons/naviBar.html :: topNavi}"></div>
+            <div th:insert="~{/commons/naviBar.html :: bottomNavi}"></div>
+            <div th:insert="~{/commons/naviBar.html :: motifyModal}"></div>
+            <div th:insert="~{/commons/naviBar.html :: unReadNotifyListTemplate}"></div>
+            <div th:insert="~{/commons/naviBar.html :: readNotifyListTeplate}"></div>
             <div class="row">
                 <div class="col px-0">
                     <div id="map">
@@ -2515,6 +2779,52 @@
                                             <button class="d-grid btn py-0 px-4 text-white" style="background: #a6a6a6; border: 2px solid rgba(91, 91, 91, 0.4); font-size: 0.9rem;" data-bs-dismiss="modal">취소</button>
                                             <!-- <button id="alertWithCancelCheckButton" class="d-grid btn py-0 px-4 text-white" style="background: #5D81B7; border: 2px solid rgba(78, 106, 150, 0.4);">확인</button> -->
                                             <button id="alertWithCancelCheckButton" class="d-grid btn py-0 px-4 text-white" style="background: #fdb96b; border: 2px solid rgba(188, 136, 46, 0.4); font-size: 0.9rem;">확인</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="alertItemModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute; z-index: 2000;">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content fw-bold mx-auto rounded" style="width: auto; padding: 0.25rem; font-size: 0.85rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
+                                    <div class="modal-header text-white fw-bold py-1 px-1 border-0" style="font-size: 1rem;">
+                                        아이템
+                                    </div>
+                                    <div class="modal-body pb-1 text-center rounded" style="background: #f3ecdd; border: 2px solid rgba(241, 194, 92, 0.4);">
+                                        <div id="itemBox" class="d-flex justify-content-center" style="color: #81461A;">
+
+                                        </div>
+                                        <div class="modal-footer pb-0 border-0 justify-content-center">
+                                            <button class="d-grid btn py-0 px-4 text-white" style="background: #fdb96b; border: 2px solid rgba(188, 136, 46, 0.4); font-size: 0.9rem;" data-bs-dismiss="modal">닫기</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="alertItemMessageModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute; z-index: 2000;">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content fw-bold mx-auto rounded" style="width: 80%; padding: 0.25rem; font-size: 0.85rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
+                                    <div class="modal-header text-white fw-bold py-1 px-1 border-0" style="font-size: 1rem;">
+                                        메세지
+                                    </div>
+                                    <div class="modal-body pb-1 text-center rounded" style="background: #f3ecdd; border: 2px solid rgba(241, 194, 92, 0.4);">
+                                        <div style="color: #81461A;">
+                                            <div class="row">
+                                                <div class="col" style="font-size: 0.8rem;">
+                                                    당신의 마음이 닿기를
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col">
+                                                    <textarea id="sendMessageContent" class="form-control py-1" style="font-size: 0.8rem; resize: none;" max="500"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer pb-0 border-0 justify-content-center">
+                                            <button class="d-grid btn py-0 px-4 text-white" style="background: #a6a6a6; border: 2px solid rgba(91, 91, 91, 0.4); font-size: 0.9rem;" data-bs-dismiss="modal">취소</button>
+                                            <button id="sendMessageButton" class="d-grid btn py-0 px-4 text-white" style="background: #fdb96b; border: 2px solid rgba(188, 136, 46, 0.4); font-size: 0.9rem;">보내기</button>
                                         </div>
                                     </div>
                                 </div>
@@ -2663,7 +2973,7 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col">
-                                                        <textarea id="writeTrackMarkContent" class="form-control" rows="2" maxlength="50" placeholder="체취와 함께하는 흔적" style="font-size: 0.8rem;"></textarea>
+                                                        <textarea id="writeTrackMarkContent" class="form-control" rows="2" maxlength="50" placeholder="체취와 함께하는 흔적" style="font-size: 0.8rem; resize: none;"></textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -3275,7 +3585,72 @@
                                     <div class="modal-body rounded" style="border: 1px solid #81461A; padding: 0;">
                                         <div class="rounded" style="border: 2px solid #f3ecdd;">
                                             <div id="collectionCardModalHeight" class="rounded px-2" style="width: 100%; background: rgb(45, 23, 11, 0.95);">
-                                                <div class="row" style="color: #f3ecdd;">
+                                                <div class="row px-2" style="color: #f3ecdd;">
+                                                    <div class="col">
+                                                        <div class="row">
+                                                            <div id="collectionCardInfoHeight" class="col">
+                                                                <div class="row mt-2">
+                                                                    <div class="col" style="font-size: 0.9rem;">
+                                                                        No.<span id="collectionCardLogPk">13</span>
+                                                                    </div>
+                                                                    <div class="col text-end">
+                                                                        <span style="font-size: 0.7rem; color: #ce742f;">수집일</span>
+                                                                        &nbsp;<span id="collectionCardCollectDate" style="font-size: 0.9rem;">2024.07.07</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mt-2">
+                                                                    <div class="col">
+                                                                        <div id="collectionCardImage" class="rounded" style="width: 100%; aspect-ratio: 16/9; background-size: cover;"></div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mt-3">
+                                                                    <div class="col" style="color: #ce742f;; font-size: 0.8em;">
+                                                                        체취에 어울리는 흔적
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <span id="collectionCardContent">이쁜 벚꽃과 귀여운 강아지와 함께하는 기분 좋은 하루~</span>
+                                                                        &nbsp;&nbsp;<span id="collectionCardDate" class="text-secondary" style="font-size: 0.7rem;">2024.07.01</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mt-2">
+                                                                    <div class="col" style="color: #ce742f;; font-size: 0.8em;">
+                                                                        타인의 집계
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <span style="font-size: 0.8em;" class="text-secondary">수집</span>
+                                                                        <span id="collectionCardCollectCount">10</span>
+                                                                        <span style="font-size: 0.8em;" class="text-secondary">회</span>
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <span style="font-size: 0.8em;" class="text-secondary">관심</span>
+                                                                        <span id="collectionCardCommentCount">10</span>
+                                                                        <span style="font-size: 0.8em;" class="text-secondary">회</span>
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <span style="font-size: 0.8em;" class="text-secondary">추행</span>
+                                                                        <span id="collectionCardTraceCount">10</span>
+                                                                        <span style="font-size: 0.8em;" class="text-secondary">회</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mt-2">
+                                                                    <div class="col" style="color: #ce742f;; font-size: 0.8em;">
+                                                                        누군가의 관심표현
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div id="collectionCardCommentHeight" class="collectionCardCommentBox row row-cols-1 overflow-auto mt-1">
+
+                                                            
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- <div class="row" style="color: #f3ecdd;">
                                                     <div class="col">
                                                         <div class="row py-2">
                                                             <div class="col">no.13</div>
@@ -3410,7 +3785,7 @@
 
 
                                                     </div>
-                                                </div>
+                                                </div> -->
 
                                             
                                             </div>
@@ -3436,157 +3811,139 @@
                                     </button>
                                     <div class="modal-body rounded" style="padding: 0.2rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
                                         <div id="myPageModalHeight" class="rounded" style="padding: 0.5rem; padding-top: 3.5rem; background:#E0C9A9; border: 2px solid rgba(241, 194, 92, 0.4);">
-                                            <div class="rounded" style="position: relative; background: #C5A886; height: 8rem; border: 1px solid #f3ecdd;">
+                                            <div class="rounded" style="position: relative; background: #C5A886; height: 11rem; border: 1px solid #f3ecdd;">
                                                 <div class="d-flex gap-2 justify-content-end" style="position: absolute; left: 5.2rem; top: -1.7rem;">
-                                                    <button onclick="showMyTrackMarkersInfo()" class="btn text-white py-0" style="background: #81461A; font-size: 0.8rem;">내 체취 / 흔적</button>
+                                                    <button id="myPageTrackButton" class="btn text-white py-0" style="background: #81461A; font-size: 0.8rem;">내 체취 / 흔적</button>
                                                     <button onclick="showAchievementModal()" class="btn text-white py-0" style="background: #81461A; font-size: 0.8rem;">업적</button>
                                                 </div>
                                                 <div class="d-grid align-items-center justify-content-center" style="position: absolute; width: 4rem; height: 4rem; top: -2rem; left: 1rem; border-radius: 50%; background: #81461A;">
-                                                    <div style="width: 3.5rem; height: 3.5rem; border-radius: 50%; background: #f3ecdd;"></div>
+                                                    <div style="width: 3.5rem; height: 3.5rem; border-radius: 50%; background: #f3ecdd;">
+                                                        <div id="myPageModalImage" style="width: 3.5rem; height: 3.5rem; border-radius: 50%;"></div>
+                                                    </div>
                                                 </div>
                                                 <div style="width: 100%;">
-                                                    <div class="row px-2 align-items-center">
-                                                        <div class="col-4 px-0">
+                                                    <div class="row" style="padding-left: 6rem; margin-top: 0.8rem;">
+                                                        <div class="col fw-bold" style="font-size: 0.8rem;">
+                                                            <span class="text-body-tertiary" style="font-size: 0.6rem;">이름</span>&nbsp;&nbsp;
+                                                            <span id="myPageName">? ? ?</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row" style="margin-top: 0.8rem;">
+                                                        <div class="col">
                                                             <div class="row">
                                                                 <div class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                    <span id="previewTrackMarkerName">? ? ?</span>
-                                                                    <!-- 김아무 -->
+                                                                    <span id="myPageHeight">? ? ?</span> cm
                                                                 </div>
                                                             </div>
                                                             <div class="row">
-                                                                <div id="previewTrackMarkerOpenRating" class="col text-center fw-bold" style="font-size: 0.56rem;">
-                                                                    Lv ?&nbsp;&nbsp;( ?? / ?? )
+                                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                    키
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col my-auto ps-0">
+                                                        <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                        <div class="col-3">
                                                             <div class="row">
-                                                                <div class="col">
-                                                                    <div class="row">
-                                                                        <div class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                            <span id="previewTrackMarkerHeight">? ? ?</span> cm
-                                                                            <!-- 163 cm -->
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="row">
-                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                            키
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                                                <div class="col-3">
-                                                                    <div class="row">
-                                                                        <div id="previewTrackMarkerGender" class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                            ? ?
-                                                                            <!-- 👱🏻‍♀️ -->
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="row">
-                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                            성별
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                                                <div class="col">
-                                                                    <div class="row">
-                                                                        <div class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                            <span id="previewTrackMarkerWeight">? ? ?</span> kg
-                                                                            <!-- 50 kg -->
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="row">
-                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                            몸무게
-                                                                        </div>
-                                                                    </div>
+                                                                <div id="myPageGender" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                    ? ?
                                                                 </div>
                                                             </div>
                                                             <div class="row">
-                                                                <div class="col">
-                                                                    <div class="row">
-                                                                        <div id="previewTrackMarkerMbtiType" class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                            ? ? ? ?
-                                                                            <!-- ISTJ -->
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="row">
-                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                            MBTI
-                                                                        </div>
-                                                                    </div>
+                                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                    성별
                                                                 </div>
-                                                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                                                <div class="col">
-                                                                    <div class="row">
-                                                                        <div class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                            <span id="previewTrackMarkerBloodType">? ?</span> 형
-                                                                            <!-- B 형 -->
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="row">
-                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                            혈액형
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                                                <div class="col">
-                                                                    <div class="row">
-                                                                        <div id="previewTrackMarkerDrinking" class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                            ? ?
-                                                                            <!-- N -->
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="row">
-                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                            음주여부
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                                                <div class="col">
-                                                                    <div class="row">
-                                                                        <div id="previewTrackMarkerSmoking" class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                            ? ?
-                                                                            <!-- N -->
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="row">
-                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                            흡연여부
-                                                                        </div>
-                                                                    </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                        <div class="col">
+                                                            <div class="row">
+                                                                <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                    <span id="myPageWeight">? ? ?</span> kg
                                                                 </div>
                                                             </div>
                                                             <div class="row">
-                                                                <div class="col">
-                                                                    <div class="row">
-                                                                        <div id="previewTrackMarkerHobby" class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                            ? ? ? ? ?
-                                                                            <!-- 집에서 뒹굴거리기 -->
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="row">
-                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                            취미
-                                                                        </div>
-                                                                    </div>
+                                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                    몸무게
                                                                 </div>
-                                                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                                                <div class="col">
-                                                                    <div class="row">
-                                                                        <div id="previewTrackMarkerPreference" class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                            ? ? ? ? ?
-                                                                            <!-- 게이 -->
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="row">
-                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                            성적지향
-                                                                        </div>
-                                                                    </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="row">
+                                                                <div id="myPageMbtiType" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                    ? ? ? ?
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                    MBTI
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                        <div class="col">
+                                                            <div class="row">
+                                                                <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                    <span id="myPageBloodType">? ?</span> 형
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                    혈액형
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                        <div class="col">
+                                                            <div class="row">
+                                                                <div id="myPageDrinking" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                    ? ?
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                    음주여부
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                        <div class="col">
+                                                            <div class="row">
+                                                                <div id="myPageSmoking" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                    ? ?
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                    흡연여부
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="row">
+                                                                <div id="myPageHobby" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                    ? ? ? ? ?
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                    취미
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                        <div class="col">
+                                                            <div class="row">
+                                                                <div id="myPagePreference" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                    ? ? ? ? ?
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                    성적지향
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -3599,20 +3956,118 @@
                                                             <div class="row align-items-center">
                                                                 <div class="col">
                                                                     <div class="progress" style="height: 0.5rem;">
-                                                                        <div id="previewTrackMarkerTemp" class="progress-bar rounded" style="background: #feb146; width: 36.5%;"></div>
+                                                                        <div id="mypageTemp" class="progress-bar rounded" style="background: #feb146; width: 36.5%;"></div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-auto ps-0 fw-bold text-end" style="font-size: 0.8rem; color: #000;">
-                                                                    <span id="previewTrackMarkerTempContent">36.5</span>℃
+                                                                    <span id="myPageTempContent">36.5</span>℃
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+                                            </div>
+                                            <div style="position: relative;">
+                                                <hr style="color: #81461A;">
+                                                <span class="px-1" style="position: absolute; top: -0.65rem; left: calc(50% - 2.5rem); font-size: 0.9rem; background: #E0C9A9; color: #81461A;">내가 당한 짓</span>
+                                            </div>
+                                            <div class="row px-4 py-1">
+                                                <div class="col">
+                                                    <div class="row">
+                                                        <div class="col text-center" style="font-size: 0.7rem; color: #980000;">
+                                                            <span class="material-symbols-rounded" style="font-variation-settings: 'FILL' 1;">
+                                                                footprint
+                                                            </span>
+                                                            <span>추행</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                            <span id="myPageSombodyTraceCount" class="fw-bold text-dark" style="font-size: 1rem;">4</span>
+                                                            <span class="text-secondary">회</span>
+                                                        </div>
+                                                        <div class="col text-center" style="font-size: 0.8rem; color: #980000;">
+                                                            <span class="material-symbols-rounded" style="font-variation-settings: 'FILL' 1;">
+                                                                wash
+                                                            </span>
+                                                            <span>착취</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                            <span id="myPageSombodyCollectCount" class="fw-bold text-dark" style="font-size: 1rem;">17</span>
+                                                            <span class="text-secondary">회</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mt-1">
+                                                        <div class="col text-center" style="font-size: 0.8rem; color: #980000;">
+                                                            <span class="material-symbols-rounded" style="font-variation-settings: 'FILL' 1;">
+                                                                favorite
+                                                            </span>
+                                                            <span>꾸욱</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                            <span id="myPageSombodyLikeCount" class="fw-bold text-dark" style="font-size: 1rem;">40</span>
+                                                            <span class="text-secondary">회</span>
+                                                        </div>
+                                                        <div class="col text-center" style="font-size: 0.8rem; color: #980000;">
+                                                            <span class="material-symbols-rounded" style="font-variation-settings: 'FILL' 1;">
+                                                                visibility
+                                                            </span>
+                                                            <span>관심</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                            <span id="myPageSombodyCommentCount" class="fw-bold text-dark" style="font-size: 1rem;">100</span>
+                                                            <span class="text-secondary">회</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
 
-                                            <div class="row">
+                                            <div style="position: relative;">
+                                                <hr style="color: #81461A;">
+                                                <span class="px-1" style="position: absolute; top: -0.65rem; left: calc(50% - 2.5rem); font-size: 0.9rem; background: #E0C9A9; color: #81461A;">내가 한 짓</span>
+                                            </div>
+                                            <div class="row px-4 py-1">
+                                                <div class="col">
+                                                    <div class="row">
+                                                        <div class="col text-center" style="font-size: 0.7rem; color: #980000;">
+                                                            <span class="material-symbols-rounded">
+                                                                footprint
+                                                            </span>
+                                                            <span>추행</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                            <span id="myPageMyTraceCount" class="fw-bold text-dark" style="font-size: 1rem;">4</span>
+                                                            <span class="text-secondary">회</span>
+                                                        </div>
+                                                        <div class="col text-center" style="font-size: 0.8rem; color: #980000;">
+                                                            <span class="material-symbols-rounded">
+                                                                wash
+                                                            </span>
+                                                            <span>착취</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                            <span id="myPageMyCollectCount" class="fw-bold text-dark" style="font-size: 1rem;">17</span>
+                                                            <span class="text-secondary">회</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mt-1">
+                                                        <div class="col text-center" style="font-size: 0.8rem; color: #980000;">
+                                                            <span class="material-symbols-rounded">
+                                                                favorite
+                                                            </span>
+                                                            <span>꾸욱</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                            <span id="myPageMyLikeCount" class="fw-bold text-dark" style="font-size: 1rem;">40</span>
+                                                            <span class="text-secondary">회</span>
+                                                        </div>
+                                                        <div class="col text-center" style="font-size: 0.8rem; color: #980000;">
+                                                            <span class="material-symbols-rounded">
+                                                                visibility
+                                                            </span>
+                                                            <span>관심</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                            <span id="myPageMyCommentCount" class="fw-bold text-dark" style="font-size: 1rem;">100</span>
+                                                            <span class="text-secondary">회</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mt-2">
+                                                        <div class="col text-center" style="font-size: 0.8rem; color: #980000;">
+                                                            <span class="material-symbols-rounded">
+                                                                sentiment_very_satisfied
+                                                            </span>
+                                                            <span>유혹</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                            <span id="myPageMyTrackCount" class="fw-bold text-dark" style="font-size: 1rem;">126</span>
+                                                            <span class="text-secondary">회</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- <div class="row">
                                                 <div class="col">
                                                     <div style="position: relative;">
                                                         <hr style="color: #81461A;">
@@ -3683,18 +4138,116 @@
     
 
                                                 </div>
+                                            </div> -->
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="myTrackModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute;">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 1rem; padding-right: 1rem; padding-top: 1rem;">
+                                    <div style="position: absolute; width: 12rem; height: 3rem; z-index: 1; top: -0.4rem;">
+                                        <img class="img-fluid" th:src="@{/public/image/follow/banner.png}" style="width: 12rem; height: 3rem;">
+                                    </div>
+                                    <span class="text-white fw-bold" style="position: absolute; z-index: 1; font-size: 1rem; left: 4.5rem; top: 0.3rem; color: #f3ecdd;">내 체취 / 흔적</span>
+                                    <button type="button" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" data-bs-dismiss="modal" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.7rem; top: 0.6rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
+                                        <div style="border-radius: 50%; background: #ac5e23; width: 1.3rem; height: 1.3rem; border: 1px solid #7D3A05;">
+                                            <span id="collectionModalCloseIcon" class="material-symbols-rounded" style="position: absolute; font-size: 1.2rem; left: 0.2rem; color: #f3ecdd;">
+                                                close
+                                            </span>
+                                        </div>
+                                    </button>
+                                    <div class="modal-body rounded" style="padding: 0.2rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
+                                        <div id="myTrackModalHeight" class="rounded" style="padding: 0.5rem; padding-top: 1rem; background:#E0C9A9; border: 2px solid rgba(241, 194, 92, 0.4);">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <span class="ps-1 pe-5 rounded" style="color: #81461A; background: #CEB597; font-size: 0.9rem;">&nbsp;전체: <span id="myTrackCnt">0</span></span>
+                                                </div>
                                             </div>
+                                            <div class="rounded mt-2" style="background: #C5A886; height: 27rem;">
+                                                <div class="overflow-auto px-3" style="height: 100%;">
+                                                    <div id="myTrackListBox" class="row row-cols-5 mt-1 pb-2">
 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
+                        <div id="myTrackCardModal" class="modal fade" tabindex="-1" style="position: absolute;">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 2.5rem; padding-right: 2.5rem;">
+                                    <div class="modal-body rounded" style="border: 1px solid #81461A; padding: 0;">
+                                        <div class="rounded" style="border: 2px solid #f3ecdd;">
+                                            <div id="myTrackCardModalHeight" class="rounded px-2" style="width: 100%; background: rgb(45, 23, 11, 0.95);">
+                                                <div class="row px-2" style="color: #f3ecdd;">
+                                                    <div class="col">
+                                                        <div class="row">
+                                                            <div id="myTrackCardInfoHeight" class="col">
+                                                                <div class="row mt-2">
+                                                                    <div class="col" style="font-size: 0.9rem;">
+                                                                        No.<span id="myTrackCardLogPk">13</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mt-2">
+                                                                    <div class="col">
+                                                                        <div id="myTrackCardImage" class="rounded" style="width: 100%; aspect-ratio: 16/9; background-size: cover;"></div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mt-3">
+                                                                    <div class="col" style="color: #ce742f;; font-size: 0.8em;">
+                                                                        체취에 어울리는 흔적
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <span id="myTrackCardContent">이쁜 벚꽃과 귀여운 강아지와 함께하는 기분 좋은 하루~</span>
+                                                                        &nbsp;&nbsp;<span id="myTrackCardDate" class="text-secondary" style="font-size: 0.7rem;">2024.07.01</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mt-2">
+                                                                    <div class="col" style="color: #ce742f;; font-size: 0.8em;">
+                                                                        타인의 집계
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <span style="font-size: 0.8em;" class="text-secondary">수집</span>
+                                                                        <span id="myTrackCardCollectCount">10</span>
+                                                                        <span style="font-size: 0.8em;" class="text-secondary">회</span>
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <span style="font-size: 0.8em;" class="text-secondary">관심</span>
+                                                                        <span id="myTrackCardCommentCount">10</span>
+                                                                        <span style="font-size: 0.8em;" class="text-secondary">회</span>
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <span style="font-size: 0.8em;" class="text-secondary">추행</span>
+                                                                        <span id="myTrackCardTraceCount">10</span>
+                                                                        <span style="font-size: 0.8em;" class="text-secondary">회</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mt-2">
+                                                                    <div class="col" style="color: #ce742f;; font-size: 0.8em;">
+                                                                        누군가의 관심표현
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div id="myTrackCardCommentHeight" class="myTrackCardCommentBox row row-cols-1 overflow-auto mt-1">
 
+                                                            
 
-
-
-
-
-
-
-
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -4051,6 +4604,58 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="collectionCardCommentWrapper col">
+                <div class="row">
+                    <div class="col-auto pe-0">
+                        <span style="color: #b2db5e; font-size: 0.8rem;">???</span>
+                    </div>
+                    <div class="col">
+                        <span style="font-size: 0.7em;" class="collectionCardCommentDate text-secondary">2024.07.02</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col" style="font-size: 0.9rem;">
+                        <span class="collectionCardCommentContent">저 여기 있어요....!!!</span>      
+                    </div>
+                </div>
+            </div>
+
+            <div class="myTrackCardCommentWrapper col">
+                <div class="row">
+                    <div class="col-auto pe-0">
+                        <span class="myTrackCardNickName" style="color: #b2db5e; font-size: 0.8rem;">???</span>
+                    </div>
+                    <div class="col">
+                        <span style="font-size: 0.7em;" class="myTrackCardCommentDate text-secondary">2024.07.02</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col" style="font-size: 0.9rem;">
+                        <span class="myTrackCardCommentContent">저 여기 있어요....!!!</span>      
+                    </div>
+                </div>
+            </div>
+
+            <div class="itemScanUpWrapper">
+                <div class="mx-3" style="width: 4rem; height: 4rem; background: url('/public/image/mFollow/scanUp.png') no-repeat center; background-size: cover;"></div>
+                <div><span class="itemCount">0</span> 개</div>
+            </div>
+            
+            <div class="itemMegaPhoneWrapper">
+                <div class="mx-3" style="width: 4rem; height: 4rem; background: url('/public/image/mFollow/megaPhone.png') no-repeat center; background-size: cover;"></div>
+                <div><span class="itemCount">0</span> 개</div>
+            </div>
+
+            <div class="itemCupidoWrapper">
+                <div class="mx-3" style="width: 4rem; height: 4rem; background: url('/public/image/mFollow/cupido.png') no-repeat center; background-size: cover;"></div>
+                <div><span class="itemCount">0</span> 개</div>
+            </div>
+
+            <div class="itemRainbowHandWrapper">
+                <div class="mx-3" style="width: 4rem; height: 4rem; background: url('/public/image/mFollow/rainbowHand.png') no-repeat center; background-size: contain;"></div>
+                <div><span class="itemCount">0</span> 개</div>
             </div>
 
         </div>
