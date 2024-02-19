@@ -83,6 +83,9 @@ public class UserController {
 		List<Map<String, Object>> selectMstarUserMainPage = userService.selectMstarUserMainPage();
 		model.addAttribute("selectMstarUserMainPage", selectMstarUserMainPage);
 
+		List<Map<String, Object>> clublist = clubService.selectClubList();
+        model.addAttribute("clublist", clublist);
+
 		UserDto userDto = (UserDto) session.getAttribute("sessionUser");
 		if(userDto != null){
 

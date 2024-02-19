@@ -31,6 +31,11 @@ public class DiagnosisController {
     public String diagnosisSkinResultPage(HttpSession session) {
         return "diagnosis/diagnosisSkinResultPage";
     }
-    
 
+    @RequestMapping("questionMainPage")
+    public String questionMainPage(HttpSession session) {
+        return "diagnosis/questionMainPage";
+    }
+    
+    
 }
