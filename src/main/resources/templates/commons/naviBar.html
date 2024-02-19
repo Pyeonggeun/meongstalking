@@ -11,8 +11,8 @@
                         <img onclick="backToHome()" class="img-fluid" src="/public/image/mstar/logo1.png" alt="" style="height: 1.7em;">
                     </div>
                     <div class="col-3 text-end align-self-center">
-                        <i th:onclick="location.href='/mstar/directListPage'" class="fa-regular fa-paper-plane fs-5"><i id="unReadDirect" class="fa-solid fa-circle position-absolute text-danger d-none" style="font-size: 0.3em; left: 75%;"></i></span></i>&nbsp;&nbsp;
-                        <i th:onclick="showNotifyModal()" class="fa-sharp fa-regular fa-bell position-relative fs-5"><i id="unReadNotify" class="fa-solid fa-circle position-absolute text-danger d-none" style="font-size: 0.3em; left: 75%;"></i></span></i>
+                        <i th:onclick="location.href='/mstar/directListPage'" class="fa-regular fa-paper-plane position-relative fs-5"><i id="unReadDirect" class="fa-solid fa-circle position-absolute text-danger d-none" style="font-size: 0.3em; left: 99%;"></i></span></i>&nbsp;&nbsp;
+                        <i th:onclick="showNotifyModal()" class="fa-sharp fa-regular fa-bell position-relative fs-5"><i id="unReadNotify" class="fa-solid fa-circle position-absolute text-danger d-none" style="font-size: 0.3em; left: 80%;"></i></span></i>
                     </div>
                 </div>
             </div>
@@ -96,14 +96,14 @@
 
 
 <div th:fragment="motifyModal" id="notifyModal" class="modal" tabindex="-1" style="font-family: 'omyu_pretty';">
-    <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
+    <div class="modal-dialog modal-fullscreen modal-dialog-scrollable" style="width: 100%;">
         <div class="modal-content">
             <div class="row mt-1 border-bottom" style="font-size: 1.3em;">
                 <div class="col-2"></div>
                 <div class="col text-center align-self-center">
                     알림
                 </div>
-                <div onclick="closeNotifyModal()" class="col-2 align-self-center">
+                <div onclick="closeNotifyModal()" class="col-2 text-center align-self-center">
                     <i class="fa-solid fa-xmark"></i>
                 </div>
             </div>

@@ -109,8 +109,8 @@
     </update>
     <!--게시물 인서트 -->
     <insert id="insertArticle">
-        INSERT into ms_mstar_article(profile_info_pk, content)
-        values(#{profile_info_pk}, #{content})
+        INSERT into ms_mstar_article(profile_info_pk, content, emotion)
+        values(#{profile_info_pk}, #{content}, #{emotion})
     </insert>
     <!--게시물 pk값 가지고 오기-->
     <select id="selectMaxArticlePk" resultType="int">
@@ -216,6 +216,11 @@
     <select id="selectMyStoryList" resultType="com.psychopath.dogstalking.mstar.dto.StoryDto">
         SELECT * from ms_mstar_story
         where profile_info_pk  = #{profile_info_pk}
+    </select>
+    <!---->
+    <select id="selectStoryCount" resultType="int">
+        SELECT count(*) from ms_mstar_story
+        where profile_info_pk = #{profile_info_pk}
     </select>
     <!--스토리DTO-->
     <select id="selectStoryDto" resultType="com.psychopath.dogstalking.mstar.dto.StoryDto">

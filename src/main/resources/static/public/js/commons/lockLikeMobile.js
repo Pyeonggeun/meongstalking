@@ -60,12 +60,17 @@ window.addEventListener("DOMContentLoaded", () => {
     if (/Mobi|Android/i.test(navigator.userAgent)) {
         return;
     }
-
+    backGroundImg();
     initializeBody();
     createMoblieWrapper();
     createLeftSummary();
     createRightSummary();
 });
+function backGroundImg(){
+    document.body.style.backgroundImage = "url('/public/image/commons/webCover.png')";
+    document.body.style.backgroundSize = "cover";
+}
+
 
 function createLeftSummary() {
     const summaryWrapper = document.createElement("div");

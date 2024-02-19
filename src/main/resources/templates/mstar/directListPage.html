@@ -559,28 +559,16 @@
             .modal-fullscreen{
                 width: 100%;
             }
+            .custom-row{
+                --bs-gutter-x: 2rem;
+            }
         </style>
         
     </head>
 
     <body>
         <div class="container-fluid bg-white" style="width: 100%;">
-            <div class="row border-bottom">
-                <div class="col px-4 py-2">
-                    <div class="row">
-                        <div class="col">
-                            <i class="fa-solid fa-bars"></i>
-                        </div>
-                        <div class="col text-center fw-bold">
-                            멍's토킹
-                        </div>
-                        <div class="col text-end">
-                            <i class="fa-regular fa-bell"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row fs-4">
+            <div class="row fs-5 mt-2">
                 <div class="col-auto">
                     <i onclick="window.history.back()" class="fa-solid fa-chevron-left"></i>
                 </div>
@@ -726,11 +714,11 @@
             <div  class="modal-dialog modal-fullscreen">
                 <div class="modal-content" >
                     <div id="scrollBox" class="modal-body" style="overflow-y: scroll; height: 100vh;">
-                        <div class="row fixed-top bg-white border-bottom">   
-                            <div class="col px-0">
+                        <div class="row custom-row fixed-top bg-white border-bottom">   
+                            <div class="col">
                                 <div class="row my-2">
-                                    <div onclick="closeDirectModal()" class="col-auto align-self-center">
-                                        <i class="fa-solid fa-chevron-left ps-2"></i>
+                                    <div onclick="closeDirectModal()" class="col-auto align-self-center ps-4">
+                                        <i class="fa-solid fa-chevron-left"></i>
                                     </div>
                                     <div class="col-auto align-self-center">   
                                         <img id="topAnotherUserProfilePhoto" class="img-fluid rounded-circle align-self-center" alt="" style="aspect-ratio: 1/1; height: 2em;">
@@ -788,7 +776,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row bg-white fixed-bottom border-top pt-2">
+                        <div class="row bg-white custom-row fixed-bottom border-top pt-2">
                             <div class="col">
                                 <div class="row pb-2">
                                     <div class="col-auto ms-2">
