@@ -92,7 +92,7 @@
 
                             <div class="row py-1 mb-2 ps-3" style="background-color: white;">
                                 <div class="col-2 px-1 text-center d-grid">
-                                    <!--<img th:src="@{'/uploadFiles/'+${photo}}" alt="미등록">-->
+                                    <!--<img th:src="@{${photo}}" alt="미등록">-->
                                     <img th:src="@{/public/image/dog_img.png}" class="rounded-circle" style="width: 100%;">
                                 </div>         
                                 <div class="col useridCol" style="font-size: 0.85em;"><span class="fw-bold" th:utext="${session.sessionUser.userid}" style="font-size: 1.3em;"></span> 님 안녕하세요</div>
