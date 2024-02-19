@@ -19,7 +19,10 @@
         )
 	</insert> 
 
-
+    <select id="getDogList" resultType="com.psychopath.dogstalking.dto.DogDto">
+        select * from ms_dog
+        where userpk=#{userPk}
+    </select>
 	
 
 </mapper>

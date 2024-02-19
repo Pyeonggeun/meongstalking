@@ -15,9 +15,13 @@ import com.psychopath.dogstalking.auction.dto.AuctionGoodsDto;
 import com.psychopath.dogstalking.auction.dto.AuctionImageDto;
 import com.psychopath.dogstalking.auction.dto.BidDto;
 import com.psychopath.dogstalking.auction.dto.ChatDto;
+import com.psychopath.dogstalking.auction.dto.DeliveryDto;
+import com.psychopath.dogstalking.auction.dto.PaymentDto;
+import com.psychopath.dogstalking.auction.dto.WishlistDto;
 import com.psychopath.dogstalking.auction.mapper.AuctionSqlMapper;
 import com.psychopath.dogstalking.dto.UserDto;
 import com.psychopath.dogstalking.follow.dto.CollectionDto;
+import com.psychopath.dogstalking.trade.dto.WishListDto;
 
 @Service
 public class AuctionServiceImpl {
@@ -53,7 +57,7 @@ public class AuctionServiceImpl {
 
     }
 
-    public List<Map<String, Object>> getGoodsListByCategoryPk(int category_pk){
+    public List<Map<String, Object>> getGoodsListByCategoryPk(int category_pk, int user_pk){
 
         List<AuctionGoodsDto> goodsList = auctionMapper.getGoodsListByCategoryPk(category_pk);
         List<Map<String, Object>> list = new ArrayList<>();
@@ -64,8 +68,20 @@ public class AuctionServiceImpl {
             int userPk = auctionGoodsDto.getUser_pk();
             UserDto userDto = auctionMapper.getUserInfoByPk(userPk);
 
+            WishlistDto wishlistDto = new WishlistDto();
+            wishlistDto.setUser_pk(user_pk);
+            wishlistDto.setGoods_pk(auctionGoodsDto.getPk());
+
+            int wishlistCount = auctionMapper.getCountWishlist(wishlistDto);
+            int wishlistAllCount = auctionMapper.getCountWishlistByGoods(wishlistDto);
+
+            int bidCount = auctionMapper.getCountBidByGoods(auctionGoodsDto.getPk());
+
             map.put("auctionGoodsDto", auctionGoodsDto);
             map.put("userDto", userDto);
+            map.put("wishlistCount", wishlistCount);
+            map.put("wishlistAllCount", wishlistAllCount);
+            map.put("bidCount", bidCount);
 
             list.add(map);
         }
@@ -263,6 +279,15 @@ public class AuctionServiceImpl {
 
                 if(myHighestBidDto.getPk() == highestBidDto.getPk()){
                     isSuccessfulBid = true;
+                    int countPayment = auctionMapper.getCountPayment(myHighestBidDto.getPk());
+                    boolean isPayment = false;
+
+                    if(countPayment == 0){
+                        map.put("isPayment", isPayment);
+                    }else{
+                        isPayment = true;
+                        map.put("isPayment", isPayment);
+                    }
                 }
             }
 
@@ -297,6 +322,169 @@ public class AuctionServiceImpl {
         return list;
     }
 
+    public Map<String, Object> getPaymentInfo(int bidPk){
+        BidDto bidDto = auctionMapper.getBidDto(bidPk);
+        
+        AuctionGoodsDto goodsDto = auctionMapper.getGoodsDto(bidDto.getGoods_pk());
+
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("bidDto", bidDto);
+        map.put("goodsDto", goodsDto);
+
+        return map;
+    }
+
+
+
+    public void insertPayment(PaymentDto paymentDto){
+        auctionMapper.insertPayment(paymentDto);
+    }
+
+
+    public List<Map<String, Object>> getMyPayment(int userPk){
+        List<AuctionGoodsDto> goodsList = auctionMapper.getMyBidGoodsList(userPk);
+        List<Map<String, Object>> list = new ArrayList<>();
+
+        for(AuctionGoodsDto e : goodsList){
+            Map<String, Object> map = new HashMap<>();
+
+
+            BidDto bidDto = new BidDto();
+            bidDto.setUser_pk(userPk);
+            bidDto.setGoods_pk(e.getPk());
+
+            BidDto myHighestBidDto = auctionMapper.getMyHighestBidByGoods(bidDto);            
+            BidDto highestBidDto = auctionMapper.getHighestBidByGoods(bidDto);            
+
+            LocalDateTime expiryDate = e.getExpiry_date();
+            LocalDateTime now = LocalDateTime.now();
+            Duration duration = Duration.between(now, expiryDate);
+
+            if(duration.isNegative()){
+
+                if(myHighestBidDto.getPk() == highestBidDto.getPk()){
+                    int countPayment = auctionMapper.getCountPayment(myHighestBidDto.getPk());
+
+
+                    if(countPayment != 0){
+
+                        boolean isDelivery = false;
+                        boolean isSuccess = false;
+
+
+                        PaymentDto paymentDto = auctionMapper.getPaymentDto(myHighestBidDto.getPk());
+
+                        int countDelivery = auctionMapper.getCountDeliveryDto(paymentDto.getPk());
+                        
+                        if(countDelivery == 0){
+
+                        }else{
+                            isDelivery = true;
+
+                            DeliveryDto deliveryDto = auctionMapper.getDeliveryDto(paymentDto.getPk());
+
+                            LocalDateTime deliveryDate = deliveryDto.getCreated_at();
+
+                            if(now.isAfter(deliveryDate.plusDays(1))){
+                                isSuccess = true;
+                            }
+                            map.put("deliveryDto", deliveryDto);
+                            
+                        }
+
+                        map.put("auctionGoodsDto", e);
+                        map.put("paymentDto", paymentDto);
+                        map.put("isDelivery", isDelivery);
+                        map.put("isSuccess", isSuccess);
+            
+                        list.add(map);
+    
+                    }
+
+                }
+            }
+        }
+
+        return list;
+    }
+
+   public List<Map<String, Object>> getMySale(int userPk){
+        List<AuctionGoodsDto> goodsList = auctionMapper.getSaleGoodsList(userPk);
+        List<Map<String, Object>> list = new ArrayList<>();
+
+
+        String isState = null;
+        for(AuctionGoodsDto auctionGoodsDto : goodsList){
+            Map<String, Object> map = new HashMap<>();
+
+            BidDto bidDto = new BidDto();
+            bidDto.setGoods_pk(auctionGoodsDto.getPk());
+
+            BidDto highestBidDto = auctionMapper.getHighestBidByGoods(bidDto);
+            int bidPk = highestBidDto.getPk();
+            
+            UserDto userDto = auctionMapper.getUserInfoByPk(highestBidDto.getUser_pk());
+            
+            int countPayment = auctionMapper.getCountPayment(bidPk);
+
+
+            if(countPayment == 0){
+                isState = "결제대기";
+            }else{
+
+                PaymentDto paymentDto = auctionMapper.getPaymentDto(bidPk);
+                int countDelivery = auctionMapper.getCountDeliveryDto(paymentDto.getPk());
+    
+                map.put("paymentDto", paymentDto);
+
+                if(countDelivery == 0){
+                    isState = "결제완료";
+                }else{
+
+                    DeliveryDto deliveryDto = auctionMapper.getDeliveryDto(paymentDto.getPk());
+
+                    LocalDateTime now = LocalDateTime.now();
+                    LocalDateTime deliveryDate = deliveryDto.getCreated_at();
+
+                    if(now.isAfter(deliveryDate.plusDays(1))){
+                        isState = "배송완료";
+                    }else{
+                        isState = "배송중";
+                    }
+
+                    map.put("deliveryDto", deliveryDto);
+                }
+
+            }
+            map.put("auctionGoodsDto", auctionGoodsDto);
+            map.put("isState", isState);
+            map.put("bidDto", highestBidDto);
+            map.put("userDto", userDto);
+
+            list.add(map);
+        }
+
+        return list;
+    }
+
+
+    public void insertDelivery(DeliveryDto deliveryDto){
+
+        auctionMapper.insertDelivery(deliveryDto);
+    }
+
+    public void toggleLike(WishlistDto wishlistDto){
+
+        int count = auctionMapper.getCountWishlist(wishlistDto);
+
+        if(count == 0){
+            auctionMapper.insertWishlist(wishlistDto);
+        }else{
+            auctionMapper.deleteWishlist(wishlistDto);
+        }
+
+    }
 
 
 }

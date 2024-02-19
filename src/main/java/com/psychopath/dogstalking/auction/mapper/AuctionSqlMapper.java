@@ -8,6 +8,9 @@ import com.psychopath.dogstalking.auction.dto.AuctionGoodsDto;
 import com.psychopath.dogstalking.auction.dto.AuctionImageDto;
 import com.psychopath.dogstalking.auction.dto.BidDto;
 import com.psychopath.dogstalking.auction.dto.ChatDto;
+import com.psychopath.dogstalking.auction.dto.DeliveryDto;
+import com.psychopath.dogstalking.auction.dto.PaymentDto;
+import com.psychopath.dogstalking.auction.dto.WishlistDto;
 import com.psychopath.dogstalking.dto.UserDto;
 import com.psychopath.dogstalking.follow.dto.CollectionDto;
 
@@ -71,4 +74,33 @@ public interface AuctionSqlMapper {
 
     // 나의 입찰 내역
     public List<BidDto> getMyBidList(BidDto bidDto);
+
+    // 낙찰 상품의 결제 수
+    public int getCountPayment(int bid_pk);
+
+    // 결제 insert
+    public void insertPayment(PaymentDto paymentDto);
+
+    public BidDto getBidDto(int bidPk);
+
+    public PaymentDto getPaymentDto(int bidPk);
+
+    public DeliveryDto getDeliveryDto(int paymentPk);
+
+    public int getCountDeliveryDto(int paymentPk);
+
+    public List<AuctionGoodsDto> getSaleGoodsList(int userPk);
+
+    public void insertDelivery(DeliveryDto deliveryDto);
+
+    public int getCountWishlist(WishlistDto wishlistDto);
+
+    public void insertWishlist(WishlistDto wishlistDto);
+
+    public void deleteWishlist(WishlistDto wishlistDto);
+
+    public int getCountWishlistByGoods(WishlistDto wishlistDto);
+
+    public int getCountBidByGoods(int goodsPk);
+
 }

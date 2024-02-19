@@ -99,7 +99,24 @@
                         const userId = goodsWrapper.querySelector(".user-id");
                         userId.innerText = e.userDto.userid
 
-                        const goodsBox = goodsWrapper.querySelector(".goods-box");
+                        const like = goodsWrapper.querySelector(".wishlist-icon");
+                        if(e.wishlistCount == 1){
+                            like.style.color="#FA075B";
+                        }else{
+                            like.style.color="#E2E2E2";
+                        }
+
+                        const wishlistCount = goodsWrapper.querySelector(".wishlistCount");
+                        wishlistCount.innerText = e.wishlistAllCount;
+
+                        const bidCount = goodsWrapper.querySelector(".bidCount");
+                        bidCount.innerText = e.bidCount;
+
+
+                        const likeBox = goodsWrapper.querySelector(".wishlist-icon-box");
+                        likeBox.value = e.auctionGoodsDto.pk;
+
+                        const goodsBox = goodsWrapper.querySelector(".goods-image-cropping");
                         goodsBox.setAttribute("data-value", e.auctionGoodsDto.pk);
 
 
@@ -110,6 +127,22 @@
                 reloadRemainingTime();
 
             });
+        }
+
+        function toggleLike(goodsPk){
+
+            const sessionUserPk = document.getElementById("sessionUserPk").value;
+
+            const url = "./toggleLike?goods_pk=" + goodsPk + "&user_pk=" + sessionUserPk;
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                
+                const category = document.querySelector('.category-text.selected');
+                reloadGoodsList(category);
+            });
+
         }
 
 
@@ -170,6 +203,16 @@
 
                 });
             }, 1000); // 1초 간격으로 실행
+        }
+
+        function navigateToRegisterPage(){
+            const registerPageUrl = `./registerGoodsArticleCategoryPage`;
+            window.location.href = registerPageUrl;
+        }
+
+        function navigateToMyPage(){
+            const myPageUrl = `./myPage`;
+            window.location.href = myPageUrl;
         }
 
 
@@ -332,15 +375,12 @@
             height: 1.6em;
             width: 7em;
             border-radius: 0.5em;
-            position: absolute;
-            top: 10%;
-            left: 22%;
-            transform: translate(0, -50%);
-            z-index: 3;
+            position: relative;
+            margin-left: 1em;
         }
 
         .time-text{
-            font-size: 0.8em;
+            font-size: 1em;
             color: white;
             position: absolute;
             top: 50%;
@@ -390,7 +430,7 @@
         .user-id{
             position: absolute;
             top: 62%;
-            left: 25%;
+            left: 0%;
             transform: translate(0, -50%);
             color: #C0C0C0;
             font-size: 0.8em;
@@ -409,10 +449,7 @@
             border-color: #444444;
             border-style: solid;
             border-width: 0.1em;
-            position: absolute;
-            top: 50%;
-            left: 6%;
-            transform: translate(0, -50%);
+            margin-left: 1em;
         }
 
         .name{
@@ -420,7 +457,7 @@
             color: #111111;
             position: absolute;
             top: 38%;
-            left: 25%;
+            left: 0%;
             transform: translate(0, -50%);
             color: white;
         }
@@ -432,15 +469,11 @@
         }
 
         .live-box{
-            position: absolute;
-            top: 10%;
-            left: 6%;
-            transform: translate(0, -50%);
             border-radius: 0.5em;
-            width: 2.6em;
-            height: 1.6em;
-            z-index: 3;
+            width: 3em;
+            height: 1.8em;
             background-color: rgba(250, 7, 91, 0.8);
+            position: relative;
         }
         
         .live-text{
@@ -449,7 +482,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: white;
-            font-size: 0.8em;
+            font-size: 1em;
         }
 
         .goods-info-box{
@@ -508,7 +541,26 @@
             </div>
         </div>
         <div class="row" style="height: 3em;"></div>
+
+        <div class="row" style="position: fixed; bottom: 5em; right: 1em; z-index: 4;">
+            <div class="col" style="display: flex; justify-content: end; align-items: center;">
+                <div style="background-color: #FA075B; border-radius: 100%; width: 3em; height: 3em; position: relative;" onclick="navigateToRegisterPage()">
+                    <div style="color: white; font-size: 1.3em; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"><i class="fa-solid fa-plus"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="position: fixed; bottom: 8.5em; right: 1em; z-index: 4;">
+            <div class="col" style="display: flex; justify-content: end; align-items: center;">
+                <div style="background-color: #111111; border-radius: 100%; width: 3em; height: 3em; position: relative;" onclick="navigateToMyPage()">
+                    <div style="color: white; font-size: 1.3em; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"><i class="fa-regular fa-user"></i></div>
+                </div>
+            </div>
+        </div>
+
     </div>
+
+    
+
 
 
     <!--템플릿-->
@@ -521,24 +573,29 @@
         <div class="row goodsWrapper" style="padding-bottom: 6em;">
             <div class="col">
                 <div class="row">
-                    <div class="col goods-box" onclick="navigateToGoodsDetailPage(this)">
-                        <div class="goods-image-cropping">
+                    <div class="col goods-box">
+                        <div class="goods-image-cropping" onclick="navigateToGoodsDetailPage(this)">
                             <img class="goods-image img-fluid">   
                             <div class="goods-image-opacity"></div> 
                         </div>
-                        <div class="live-box">
-                            <div class="live-text">Live</div>
-                        </div>  
-                        <div class="time-box text-center">
-                            <div class="time-text"></div>
+                        <div style="position: absolute; top: 10%; left: 6%; transform: translate(0, -50%); display: flex; align-items: center; justify-content: start; z-index: 3;">
+                            <div class="live-box">
+                                <div class="live-text">Live</div>
+                            </div>  
+                            <div class="time-box text-center">
+                                <div class="time-text"></div>
+                            </div>
                         </div>
-                        <div class="wishlist-icon-box">
-                            <div class="wishlist-icon"><i class="fa-solid fa-heart" style="color: #ffffff;"></i></div>
+           
+                        <div class="wishlist-icon-box" onclick="toggleLike(this.value)">
+                            <div class="wishlist-icon"><i class="fa-solid fa-heart"></i></div>
                         </div>
-                        <div class="info-box">
+                        <div class="info-box" style="display: flex; justify-content: start; align-items: center;">
                             <img class="profile-image" th:src="@{/public/image/trade/puppy1.jpg}">
-                            <div class="name"></div>
-                            <div class="user-id">hello3054</div>                            
+                            <div style="position: relative; margin-left: 1em; height: 5em; width: 50%;">
+                                <div class="name"></div>
+                                <div class="user-id"></div>     
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -557,9 +614,9 @@
                         <div class="row" style="padding-top: 0.5em; padding-bottom: 0.2em;">
                             <div class="col" style="display: flex; align-items: center; justify-content: end;">
                                 <div style="color: #444444; font-size: 0.9em;"><i class="fa-solid fa-heart"></i></div>
-                                <div class="fw-bold" style="padding-left: 0.5em; color: #444444; font-size: 0.9em;">13</div>
+                                <div class="wishlistCount fw-bold" style="padding-left: 0.5em; color: #444444; font-size: 0.9em;"></div>
                                 <div style="padding-left: 2em; display: flex; align-items: center; font-size: 0.9em;"><img style="width: 1em; height: 1em;" th:src = "@{/public/image/trade/dogpawblack.png}"></div>
-                                <div class="fw-bold" style="padding-left: 0.5em; color: #444444; font-size: 0.9em;">15</div>
+                                <div class="bidCount fw-bold" style="padding-left: 0.5em; color: #444444; font-size: 0.9em;"></div>
                             </div>
                         </div>
                     </div>

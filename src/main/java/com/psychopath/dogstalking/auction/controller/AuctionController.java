@@ -5,6 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.psychopath.dogstalking.auction.dto.AuctionGoodsDto;
+import com.psychopath.dogstalking.dto.UserDto;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -69,6 +70,18 @@ public class AuctionController {
     public String myBidHistoryPage(){
 
         return "auction/myBidHistoryPage";
+    }
+
+    @RequestMapping("myPaymentPage")
+    public String myPaymentPage(){
+
+        return "auction/myPaymentPage";
+    }
+
+    @RequestMapping("mySalePage")
+    public String mySalePage(){
+
+        return "auction/mySalePage";
     }
 
 

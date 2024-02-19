@@ -17,7 +17,7 @@
             const sessionUserPk = document.getElementById("sessionUserPk").value;
 
 
-            const url = "./getMyGoodsBidHistory?userPk=" + sessionUserPk;
+            const url = "./getMyPayment?userPk=" + sessionUserPk;
             
             fetch(url)
             .then(response => response.json())
@@ -28,17 +28,16 @@
 
                 for(e of response.data){
                     if (selectedCategoryId === 'all' ||
-                        (selectedCategoryId === 'inProgress' && e.isAuctionEnd === false) ||
-                        (selectedCategoryId === 'ended' && e.isAuctionEnd === true && !e.isSuccessfulBid) ||
-                        (selectedCategoryId === 'completed' && e.isAuctionEnd === true && e.isSuccessfulBid)
+                        (selectedCategoryId === 'paymentSuccess' && e.isDelivery == false) ||
+                        (selectedCategoryId === 'delivery' && e.isDelivery == true && !e.isSuccess) ||
+                        (selectedCategoryId === 'deliveryEnd' && e.isDelivery == true && e.isSuccess)
                     ){
                         const bidHistoryWrapper = document.querySelector("#template .bidHistoryWrapper").cloneNode(true);
 
                         const goodsMoreIcon = bidHistoryWrapper.querySelector(".goodsMore-icon");
                         goodsMoreIcon.setAttribute("data-value", e.auctionGoodsDto.pk);
 
-                        const bidHistoryButton = bidHistoryWrapper.querySelector(".bid-history-button");
-                        bidHistoryButton.setAttribute("data-value", e.auctionGoodsDto.pk);
+                        
 
                         const goodsTitle = bidHistoryWrapper.querySelector(".goods-title");
                         goodsTitle.innerText = e.auctionGoodsDto.title;
@@ -46,7 +45,7 @@
                         const goodsImage = bidHistoryWrapper.querySelector(".goods-image");
                         goodsImage.setAttribute("src", "/uploadFiles/"+ e.auctionGoodsDto.image_link +"");
 
-                        const commencementDateArray = e.auctionGoodsDto.commencement_date;
+                        const commencementDateArray = e.paymentDto.created_at;
 
                         const commencementDateYear = commencementDateArray[0];
                         const commencementDateMonth = ('0' + commencementDateArray[1]).slice(-2); // 2자리 숫자로 포맷팅
@@ -56,64 +55,71 @@
 
                         const commencementDateFormatted = `${commencementDateYear}.${commencementDateMonth}.${commencementDateDays} ${commencementDateHour}:${commencementDateMinutes}`;
 
-                        const goodsStartDate = bidHistoryWrapper.querySelector(".goods-startDate");
-                        goodsStartDate.innerText = "경매일 | " + commencementDateFormatted;
-
-                        const bidPrice = bidHistoryWrapper.querySelector(".bid-price");
-                        bidPrice.innerText = "KRW " + e.myHighestBid.bid_price;
-
-                        const bidDateArray = e.myHighestBid.created_at;
-
-                        const bidDateYear = bidDateArray[0];
-                        const bidDateMonth = ('0' + bidDateArray[1]).slice(-2); // 2자리 숫자로 포맷팅
-                        const bidDateDays = ('0' + bidDateArray[2]).slice(-2); // 2자리 숫자로 포맷팅
-                        const bidDateHour = ('0' + bidDateArray[3]).slice(-2); // 2자리 숫자로 포맷팅
-                        const bidDateMinutes = ('0' + bidDateArray[4]).slice(-2); // 2자리 숫자로 포맷팅
-
-                        const bidDateFormatted = `${bidDateYear}.${bidDateMonth}.${bidDateDays} ${bidDateHour}:${bidDateMinutes}`;
-
-                        const bidDate = bidHistoryWrapper.querySelector(".bid-date");
-                        bidDate.innerText = bidDateFormatted;
 
                         const highestbidPrice = bidHistoryWrapper.querySelector(".highestbid-price");
-                        highestbidPrice.innerText = "KRW " + e.highestBid.bid_price;
+                        highestbidPrice.innerText = "KRW " + e.paymentDto.price;
+
+                        const bidDate = bidHistoryWrapper.querySelector(".bid-date");
+                        bidDate.innerText = commencementDateFormatted;
+
+
+                        // const bidDateArray = e.myHighestBid.created_at;
+
+                        // const bidDateYear = bidDateArray[0];
+                        // const bidDateMonth = ('0' + bidDateArray[1]).slice(-2); // 2자리 숫자로 포맷팅
+                        // const bidDateDays = ('0' + bidDateArray[2]).slice(-2); // 2자리 숫자로 포맷팅
+                        // const bidDateHour = ('0' + bidDateArray[3]).slice(-2); // 2자리 숫자로 포맷팅
+                        // const bidDateMinutes = ('0' + bidDateArray[4]).slice(-2); // 2자리 숫자로 포맷팅
+
+                        // const bidDateFormatted = `${bidDateYear}.${bidDateMonth}.${bidDateDays} ${bidDateHour}:${bidDateMinutes}`;
+
+                        // const bidDate = bidHistoryWrapper.querySelector(".bid-date");
+                        // bidDate.innerText = bidDateFormatted;
+
+                        // const highestbidPrice = bidHistoryWrapper.querySelector(".highestbid-price");
+                        // highestbidPrice.innerText = "KRW " + e.highestBid.bid_price;
 
 
                         const bidState = bidHistoryWrapper.querySelector(".bid-state");
 
-                        if(e.isAuctionEnd == false){
-                            bidState.innerText = "경매중";
+                        if(e.isDelivery == false){
+                            bidState.innerText = "배송대기";
 
-                            const goodsMoreIcon = bidHistoryWrapper.querySelector(".goodsMore-icon");
-                            goodsMoreIcon.classList.remove("d-none");
+                            // const goodsMoreIcon = bidHistoryWrapper.querySelector(".goodsMore-icon");
+                            // goodsMoreIcon.classList.remove("d-none");
 
-                            const highestbidPriceText = bidHistoryWrapper.querySelector(".highestbid-price-text");
-                            highestbidPriceText.innerText = "최고가";
+                            // const highestbidPriceText = bidHistoryWrapper.querySelector(".highestbid-price-text");
+                            // highestbidPriceText.innerText = "최고가";
 
                         }else{
-                            if(e.isSuccessfulBid == false){
-                                bidState.innerText = "경매종료";
-                            }else{
-                                bidState.innerText = "낙찰완료";
+
+                            const goodsStartDate = bidHistoryWrapper.querySelector(".goods-startDate");
+                            goodsStartDate.innerText = "운송장번호 " + e.deliveryDto.waybill;
+
+                            if(e.isSuccess == false){
+                                bidState.innerText = "배송중";
                                 
-                                if(e.isPayment == false){
-                                    const paymentRow = bidHistoryWrapper.querySelector(".payment-row");
-                                    const paymentButton = bidHistoryWrapper.querySelector(".payment-button");
-                                    paymentButton.value= e.myHighestBid.pk;
+                            }else{
+                                bidState.innerText = "배송완료";
+                                
+                                // if(e.isPayment == false){
+                                //     const paymentRow = bidHistoryWrapper.querySelector(".payment-row");
+                                //     const paymentButton = bidHistoryWrapper.querySelector(".payment-button");
+                                //     paymentButton.value= e.myHighestBid.pk;
 
-                                    paymentRow.classList.remove("d-none");
-                                }else{
-                                    const paymentRow = bidHistoryWrapper.querySelector(".payment-row");
-                                    paymentRow.classList.remove("d-none");
-                                    const paymentButton = bidHistoryWrapper.querySelector(".payment-button");
-                                    paymentButton.innerText = "결제완료";
-                                    paymentButton.onclick = null;
-                                    paymentButton.style.borderColor = "#111111";
-                                    paymentButton.style.borderWidth = "0.1em";
-                                    paymentButton.style.color = "#E2E2E2";
-                                    paymentButton.style.backgroundColor = "#111111";
+                                //     paymentRow.classList.remove("d-none");
+                                // }else{
+                                //     const paymentRow = bidHistoryWrapper.querySelector(".payment-row");
+                                //     paymentRow.classList.remove("d-none");
+                                //     const paymentButton = bidHistoryWrapper.querySelector(".payment-button");
+                                //     paymentButton.innerText = "결제완료";
+                                //     paymentButton.onclick = null;
+                                //     paymentButton.style.borderColor = "#E2E2E2";
+                                //     paymentButton.style.borderWidth = "0.1em";
+                                //     paymentButton.style.color = "#E2E2E2";
+                                //     paymentButton.style.backgroundColor = "white";
 
-                                }
+                                // }
                             
                             }
                         }
@@ -156,132 +162,7 @@
 
         }
 
-        function showModal(bidHistory){
-
-            const goodsPk = bidHistory.getAttribute("data-value");
-            const sessionUserPk = document.getElementById("sessionUserPk").value;
-
-            const url = "./getMyBidList?userPk=" + sessionUserPk + "&goodsPk=" + goodsPk;
-            
-            fetch(url)
-            .then(response => response.json())
-            .then(response => {
-                
-                const bidHistoryList = document.getElementById("myBidHistoryListBox");
-                bidHistoryList.innerHTML = "";
-
-                for(e of response.data){
-
-                    const bidHistoryWrapper = document.querySelector("#template .myBidHistoryWrapper").cloneNode(true);
-
-                    const bidder = bidHistoryWrapper.querySelector(".modal-bidder");
-                    bidder.innerText = e.userDto.name;
-
-                    const bidPrice = bidHistoryWrapper.querySelector(".modal-bid-price");
-                    bidPrice.innerText = "KRW " + e.bidDto.bid_price;
-
-                    const bidDate = bidHistoryWrapper.querySelector(".modal-bid-date");
-                    const bidTime = bidHistoryWrapper.querySelector(".modal-bid-time");
-
-                    const createdAtArray = e.bidDto.created_at;
-
-                    const createdAtYear = createdAtArray[0];
-                    const createdAtMonth = createdAtArray[1];
-                    const createdAtDays = createdAtArray[2];
-                    const createdAtHour = createdAtArray[3];
-                    const createdAtMinutes = createdAtArray[4];
-                    const createdAtSeconds = createdAtArray[5];
-
-                    const createdDateFormatted = `${createdAtYear}-${createdAtMonth}-${createdAtDays}`;
-                    const createdTimeFormatted = `${createdAtHour}:${createdAtMinutes}:${createdAtSeconds}`;
-
-                    bidDate.innerText = createdDateFormatted;
-                    bidTime.innerText = createdTimeFormatted;
-
-                    bidHistoryList.appendChild(bidHistoryWrapper);
-                }
-
-
-                const bidModal = bootstrap.Modal.getOrCreateInstance("#bidModal");
-
-                bidModal.show();
-
-            });
-        }
-
-
-
-        function closeModal(){
-            const bidModal = bootstrap.Modal.getOrCreateInstance("#bidModal");
-
-            bidModal.hide();
-        }
-
-
-        function showPayModal(bidPk){
-
-            
-            const url = "./getPaymentInfo?bidPk=" + bidPk;
-            
-            fetch(url)
-            .then(response => response.json())
-            .then(response => {
-                
-                const e = response.data;
-
-                const paymentModal = document.getElementById("paymentModal");
-                
-                const modalGoodsTitle = paymentModal.querySelector(".modalGoodsTitle");
-                modalGoodsTitle.innerText = e.goodsDto.title;
-
-                const modalPaymentPrice = paymentModal.querySelector(".modalPaymentPrice");
-                modalPaymentPrice.innerText = e.bidDto.bid_price;
-                modalPaymentPrice.value = e.bidDto.bid_price;
-
-                const modalPaymentBidPk = paymentModal.querySelector(".modalPaymentBidPk");
-                modalPaymentBidPk.value = e.bidDto.pk;
-
-            });
-            
-            const paymentModal = bootstrap.Modal.getOrCreateInstance("#paymentModal");
-
-            paymentModal.show();
-        }
-
-
-        function insertPayment(){
-
-            const paymentModal = document.getElementById("paymentModal");
-
-
-            const modalPaymentPrice = paymentModal.querySelector(".modalPaymentPrice");
-            const price = modalPaymentPrice.value;
-
-            const modalPaymentBidPk = paymentModal.querySelector(".modalPaymentBidPk");
-            const bidPk = modalPaymentBidPk.value;
-
-            const modalPaymentAddress = paymentModal.querySelector(".modalPaymentAddress");
-            const address = modalPaymentAddress.value;
-
-            const url = "./insertPayment?bid_pk=" + bidPk + "&price=" + price + "&address=" + address;
-
-            fetch(url)
-            .then(response => response.json())
-            .then(response => {
-                
-
-            });
-
-            closePayModal();
-            reloadMyGoodsBidHistory();
-        }
-
-
-        function closePayModal(){
-            const paymentModal = bootstrap.Modal.getOrCreateInstance("#paymentModal");
-
-            paymentModal.hide();
-        }
+ 
 
 
         window.addEventListener("DOMContentLoaded", () => {
@@ -548,12 +429,12 @@
             border-radius: 0.5em;
             border-width: 0em;
             border-style: solid; 
-            background-color: #FA075B;
+            background-color: #111111;
             display: flex; 
             align-items: center; 
             justify-content: center;
             font-size: 1em;
-            color: white;
+            color: #E2E2E2;
             font-weight: bold;
         }
 
@@ -635,7 +516,7 @@
         <div class="row" style="height: 3.5em;  padding-top: 1em; padding-bottom: 0.5em; display: flex; align-items: center;">
             <div class="col" style="padding-left: 1em; padding-right: 1em; display: flex;">
                 <div id="back-icon" class="fw-bold" style="margin-right: 1em; font-size: 1.2em;"><i class="fa-solid fa-angle-left" style="color: #111111;"></i></div>
-                <div style="color: #111111; font-weight: bold; font-size: 1.2em;">응찰 내역</div>
+                <div style="color: #111111; font-weight: bold; font-size: 1.2em;">결제 내역</div>
             </div>
         </div>
         
@@ -646,9 +527,9 @@
         <div class="row" style="height: 3.5em; padding-top: 0.5em; padding-bottom: 0.5em;">
             <div class="col" style="display: flex; align-items: center; padding-left: 1em; padding-right: 1em;">
                 <div id="all" class="category category-text" onclick="toggleCategoryClasses(this.id)">전체</div>
-                <div id="inProgress" class="category category-text-non" onclick="toggleCategoryClasses(this.id)">경매중</div>
-                <div id="ended" class="category category-text-non" onclick="toggleCategoryClasses(this.id)">경매종료</div>
-                <div id="completed" class="category category-text-non" onclick="toggleCategoryClasses(this.id)">낙찰완료</div>
+                <div id="paymentSuccess" class="category category-text-non" onclick="toggleCategoryClasses(this.id)">배송대기</div>
+                <div id="delivery" class="category category-text-non" onclick="toggleCategoryClasses(this.id)">배송중</div>
+                <div id="deliveryEnd" class="category category-text-non" onclick="toggleCategoryClasses(this.id)">배송완료</div>
             </div>
         </div>
 
@@ -721,27 +602,15 @@
                             <div class="goods-image-box">
                                 <img class="goods-image img-fluid" th:src="@{/public/image/trade/dogimage.png}">
                             </div>
-                            <div class="bid-price-text">응찰가</div>
-                            <div class="highestbid-price-text">낙찰가</div>
-                            <div class="bid-date-text">응찰일</div>
-                            <div class="bid-price"></div>
+                            <div class="highestbid-price-text">결제금액</div>
+                            <div class="bid-date-text">결제일</div>
                             <div class="highestbid-price"></div>
                             <div class="bid-date"></div>
                             <div class="bid-state"></div>
                         </div>
                     </div>
                 </div>
-                <div class="row" style="padding-top: 1em;">
-                    <div class="col">
-                        <div class="bid-history-button" onclick="showModal(this)">응찰내역</div>
-                    </div>
-                </div>
-
-                <div class="row payment-row d-none" style="padding-top: 1em;">
-                    <div class="col">
-                        <div class="payment-button" onclick="showPayModal(this.value)">결제하기</div>
-                    </div>
-                </div>
+       
             </div>
         </div>
 
@@ -759,71 +628,7 @@
     </div>
 
 
-    <!-- 모달창-->
-    <div id="bidModal" class="modal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content" style="height: 100vh; position: fixed; top: 0; left: 0; border-radius: 0; border: none;">
-                
-                <div class="modal-body" style="padding-left: 1.5em; padding-right: 1.5em; padding-top: 0em; overflow-y: auto;">
 
-                    <div class="row" style="height: 3.5em; padding-top: 1em; padding-bottom: 1em; display: flex; align-items: center;">
-                        <div class="col" style="padding-left: 1em; padding-right: 1em; display: flex; position: relative;">
-                            <div style="color: #111111; font-weight: bold; font-size: 1.2em;">응찰 내역</div>
-                            <div style="margin-right: 1em; font-size: 1.2em; position: absolute; right: 0; top: 50%; transform: translate(0, -50%);" onclick="closeModal()"><i class="fa-solid fa-x"></i></div>
-                        </div>
-                    </div>
-
-
-                    <div class="row" style="height: 1em;"></div>
-
-                    <div id="modal-bidList-row" class="row">
-                        <div id="myBidHistoryListBox" class="col">
-                            
-                        </div>
-                    </div>
-
-
-
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 모달창 -->
-    <div id="paymentModal" class="modal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content" style="height: 100vh; position: fixed; top: 0; left: 0; border-radius: 0; border: none;">
-                
-
-                <div class="modal-body" style="padding-left: 1.5em; padding-right: 1.5em; padding-top: 0em; overflow-y: auto;">
-
-                    <div class="row" style="height: 3.5em; padding-top: 1em; padding-bottom: 1em; display: flex; align-items: center;">
-                        <div class="col" style="padding-left: 1em; padding-right: 1em; display: flex; position: relative;">
-                            <div style="color: #111111; font-weight: bold; font-size: 1.2em;">결제 내역</div>
-                            <div style="margin-right: 1em; font-size: 1.2em; position: absolute; right: 0; top: 50%; transform: translate(0, -50%);" onclick="closePayModal()"><i class="fa-solid fa-x"></i></div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <div class="modalGoodsTitle"></div>
-                            <div class="modalPaymentPrice"></div>
-                            <input class="modalPaymentAddress" type="text">
-
-                            <div onclick="insertPayment()">결제하기</div>
-                            <input class="modalPaymentBidPk" type="hidden">
-                        </div>
-                    </div>
-
-
-
-                </div>
-
-
-            </div>
-        </div>
-    </div>
 
 
     <input id="sessionUserPk" type="hidden" th:value="${session.sessionUser.user_pk}">

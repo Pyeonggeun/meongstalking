@@ -19,6 +19,9 @@ import com.psychopath.dogstalking.auction.dto.AuctionGoodsDto;
 import com.psychopath.dogstalking.auction.dto.AuctionImageDto;
 import com.psychopath.dogstalking.auction.dto.BidDto;
 import com.psychopath.dogstalking.auction.dto.ChatDto;
+import com.psychopath.dogstalking.auction.dto.DeliveryDto;
+import com.psychopath.dogstalking.auction.dto.PaymentDto;
+import com.psychopath.dogstalking.auction.dto.WishlistDto;
 import com.psychopath.dogstalking.auction.service.AuctionServiceImpl;
 import com.psychopath.dogstalking.dto.RestResponseDto;
 import com.psychopath.dogstalking.dto.UserDto;
@@ -188,11 +191,14 @@ public class RestAuctionController {
     }
 
 	@RequestMapping("getGoodsListByCategoryPk")
-	public RestResponseDto getGoodsListByCategoryPk(int categoryPk){
+	public RestResponseDto getGoodsListByCategoryPk(int categoryPk, HttpSession session){
 
         RestResponseDto restResponseDto = new RestResponseDto();
 
-        restResponseDto.setData(auctionService.getGoodsListByCategoryPk(categoryPk));
+		UserDto userDto = (UserDto)session.getAttribute("sessionUser");
+		int sessionUserPk = userDto.getUser_pk();
+
+        restResponseDto.setData(auctionService.getGoodsListByCategoryPk(categoryPk, sessionUserPk));
         restResponseDto.setResult("success");
         
         return restResponseDto;
@@ -304,7 +310,69 @@ public class RestAuctionController {
         return restResponseDto;
 	}    
 
+    @RequestMapping("getPaymentInfo")
+    public RestResponseDto getPaymentInfo(int bidPk) {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(auctionService.getPaymentInfo(bidPk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+	}    
 
+    @RequestMapping("insertPayment")
+    public RestResponseDto insertPayment(PaymentDto paymentDto) {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        auctionService.insertPayment(paymentDto);
+
+        restResponseDto.setData(null);
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+	}    
+
+    @RequestMapping("getMyPayment")
+    public RestResponseDto getMyPayment(int userPk) {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(auctionService.getMyPayment(userPk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+	}    
+
+    @RequestMapping("getMySale")
+    public RestResponseDto getMySale(int userPk) {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(auctionService.getMySale(userPk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+	}   
+    
+    @RequestMapping("insertDelivery")
+    public RestResponseDto insertDelivery(DeliveryDto deliveryDto) {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        auctionService.insertDelivery(deliveryDto);
+        restResponseDto.setData(null);
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+	}    
+
+    @RequestMapping("toggleLike")
+    public RestResponseDto toggleLike(WishlistDto wishlistDto) {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        auctionService.toggleLike(wishlistDto);
+        
+        restResponseDto.setData(null);
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+	}   
 
     public RestResponseDto template() {
         RestResponseDto restResponseDto = new RestResponseDto();

@@ -12,7 +12,7 @@ public class DogDto {
     private int userpk;
     private String name;
     private LocalDate birth;
-    private int weight;
+    private String weight;
     private String gender;
     private String image;
     private String isNeutering;

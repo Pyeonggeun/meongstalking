@@ -153,4 +153,92 @@
         order by created_at desc
     </select>
 
+    <select id="getCountPayment" resultType="int">
+        SELECT count(*) from ms_auction_payment
+        where bid_pk = #{bid_pk}
+    </select>
+
+    <insert id="insertPayment">
+        insert into 
+        ms_auction_payment(bid_pk, price, address)
+        values
+        (
+            #{bid_pk},
+            #{price},
+            #{address}
+        )
+    </insert>
+
+    <select id="getBidDto" resultType="com.psychopath.dogstalking.auction.dto.BidDto">
+        select * from ms_auction_bid
+        where pk=#{bidPk}
+    </select>
+
+    <select id="getPaymentDto" resultType="com.psychopath.dogstalking.auction.dto.PaymentDto">
+        SELECT * from ms_auction_payment
+        where bid_pk = #{bidPk}
+    </select>
+
+    <select id="getDeliveryDto" resultType="com.psychopath.dogstalking.auction.dto.DeliveryDto">
+        select * from ms_auction_delivery
+        where payment_pk = #{paymentPk}
+    </select>
+
+    <select id="getCountDeliveryDto" resultType="int">
+        select count(*) from ms_auction_delivery
+        where payment_pk = #{paymentPk}
+    </select>
+
+    <select id="getSaleGoodsList" resultType="com.psychopath.dogstalking.auction.dto.AuctionGoodsDto">
+        select * from ms_auction_goods
+        where user_pk=#{userPk}
+        <![CDATA[
+        and expiry_date < now()
+        order by created_at desc
+        ]]>
+    </select>
+
+    <insert id="insertDelivery">
+        insert into 
+        ms_auction_delivery(payment_pk, waybill)
+        values
+        (
+            #{payment_pk},
+            #{waybill}
+        )
+    </insert>
+
+    <select id="getCountWishlist" resultType="int">
+        select count(*) from ms_auction_wishlist
+        where goods_pk = #{goods_pk}
+        and user_pk = #{user_pk}
+    </select>
+
+    <insert id="insertWishlist">
+        insert into 
+        ms_auction_wishlist(goods_pk, user_pk)
+        values
+        (
+            #{goods_pk},
+            #{user_pk}
+        )
+    </insert>
+
+    <delete id="deleteWishlist">
+        delete from ms_auction_wishlist
+        where goods_pk = #{goods_pk}
+        and user_pk = #{user_pk}
+    </delete>
+
+
+    <select id="getCountWishlistByGoods" resultType="int">
+        select count(*) from ms_auction_wishlist
+        where goods_pk = #{goods_pk}
+    </select>
+
+    <select id="getCountBidByGoods" resultType="int">
+        select count(*) from ms_auction_bid
+        where goods_pk = #{goodsPk}
+    </select>
+
 </mapper>
