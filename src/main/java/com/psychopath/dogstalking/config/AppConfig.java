@@ -52,6 +52,23 @@ public class AppConfig implements WebMvcConfigurer{
         .addPathPatterns("/mstar/anotherProfilePage")
         .addPathPatterns("/mstar/addStoryStoragePage")
         .excludePathPatterns("/commons/loginPage", "/commons/registerPage", "/css/**")
+        .addPathPatterns("/funding/listPage")
+        .addPathPatterns("/funding/fundingUserMyPage")
+        .addPathPatterns("/funding/fundingSellerMyPage")
+        .addPathPatterns("/funding/productDetailPage")
+        .addPathPatterns("/funding/productPurchasePage")
+        .addPathPatterns("/funding/productPaymentPage")
+        .addPathPatterns("/funding/productPaymentCompletePage")
+        .addPathPatterns("/funding/productControlPage")
+        .addPathPatterns("/funding/newsRgstrPage")
+        .addPathPatterns("/funding/newsReadPage")
+        .addPathPatterns("/funding/cheeringPage")
+        .addPathPatterns("/funding/purchaseProductManagePage")
+        .addPathPatterns("/funding/productRgstrPage")
+        .addPathPatterns("/funding/productRgstrCompletePage")
+        
+
+
         ;
     }
 
