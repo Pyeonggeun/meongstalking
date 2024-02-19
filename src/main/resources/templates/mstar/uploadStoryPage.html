@@ -290,6 +290,9 @@
             .spotLight{
                 filter: brightness(90%);
            }
+           .modal-fullscreen{
+                width: 100%;
+           }
             
         </style>
         
@@ -357,14 +360,11 @@
                 <div class="modal-content" style="background-color: transparent; border: transparent;">
                     <div id="textControllBar" class="row fs-4">
                         <div class="col-5"></div>
-                        <div class="col-auto text-white text-center">
-                            <i class="fa-sharp fa-solid fa-bars" style="padding-top: 1.5vw;"></i>
-                        </div>
                         <div class="col-auto text-center">
                             <input id="colorPicker" onchange="colorPickerChange()" type="color" class="form-control form-control-color d-none" value="#fafafa">
                             <img onclick="showColorPicker()" class="img-fluid rounded-circle border border-white border-2" src="/public/image/mstar/colorpicker.png" alt="" height="" style="height: 2em;">
                         </div>
-                        <div onclick="makeTextBox()" class="col text-white text-end">
+                        <div onclick="makeTextBox()" class="col text-white text-end align-self-center">
                             완료
                         </div>
                     </div>

@@ -35,6 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
-
+src/main/resources/properties/keys.properties
 ## Mac custom ##
 .DS_Store

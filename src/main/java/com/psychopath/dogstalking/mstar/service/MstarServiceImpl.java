@@ -1,5 +1,6 @@
 package com.psychopath.dogstalking.mstar.service;
 import java.util.Map;
+import java.util.Properties;
 import java.util.HashMap;
 import java.util.List;
 import java.text.SimpleDateFormat;
@@ -7,8 +8,19 @@ import java.io.File;
 import java.util.Date;
 import java.util.UUID;
 import java.util.ArrayList;
+import java.io.Reader;
 
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.comprehend.ComprehendClient;
+import software.amazon.awssdk.services.comprehend.model.DetectSentimentRequest;
+import software.amazon.awssdk.services.comprehend.model.DetectSentimentResponse;
+import software.amazon.awssdk.services.comprehend.model.LanguageCode;
+
+import org.apache.ibatis.io.Resources;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,11 +46,96 @@ import com.psychopath.dogstalking.mstar.dto.TcommentDto;
 import com.psychopath.dogstalking.mstar.dto.ViewStoryDto;
 import com.psychopath.dogstalking.mstar.mapper.MstarSqlMapper;
 
+
+
+
 @Service
 public class MstarServiceImpl {
     @Autowired
     private MstarSqlMapper mstarSqlMapper;
     
+
+    private String getPropertyValue(String key){
+
+        String value = "";
+
+        try {
+            Reader reader = Resources.getResourceAsReader("properties/keys.properties");
+            Properties properties = new Properties();
+            properties.load(reader);
+
+            value = properties.getProperty(key);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return value;
+    }
+
+    private String sentimentAwsComprehend(String content){
+
+       String property_accessKey  =getPropertyValue("aws-comprehends-access-key");
+        String property_secretKey  =getPropertyValue("aws-comprehends-secret-key");
+        
+        // AWS 계정의 액세스 키와 시크릿 키를 설정
+
+        String accessKey = property_accessKey;
+
+        String secretKey = property_secretKey;
+
+
+        // AWS 계정의 액세스 키와 시크릿 키를 사용하여 Comprehend 클라이언트 생성
+
+        ComprehendClient comprehendClient = ComprehendClient.builder()
+
+        .region(Region.AP_NORTHEAST_2) // 원하는 리전으로 변경
+
+        .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
+
+        .build();
+
+
+        // 분석할 텍스트
+
+        String textToAnalyze = content;
+
+
+        // 감정 분석 예제
+
+        //detectSentiment(comprehendClient, textToAnalyze);
+        DetectSentimentRequest detectSentimentRequest = DetectSentimentRequest.builder()
+
+                .languageCode(LanguageCode.KO)
+
+                .text(textToAnalyze)
+
+                .build();
+
+
+        DetectSentimentResponse sentimentResponse = comprehendClient.detectSentiment(detectSentimentRequest);
+
+
+        String emotion = sentimentResponse.sentiment().toString();
+
+        
+        return emotion;
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public ProfileInfoDto getMyProfileInfoDto(int user_pk){
         return mstarSqlMapper.selectProfileInfoDto(user_pk);
     }
@@ -168,6 +265,9 @@ public class MstarServiceImpl {
         mstarSqlMapper.updateProfileInfoDto(profileInfoDto);
     }
     public int insertArticleInfo(ArticleDto articleDto){
+        String content = articleDto.getContent();
+        String emotion =  sentimentAwsComprehend(content);
+        articleDto.setEmotion(emotion);
         mstarSqlMapper.insertArticle(articleDto);
         int article_pk = mstarSqlMapper.selectMaxArticlePk();
         return article_pk;
@@ -1133,6 +1233,8 @@ public class MstarServiceImpl {
         map.put("userDto", userDto);
         return map;
     }
-
+    public int getMyStoryCount(int profile_info_pk){
+        return mstarSqlMapper.selectStoryCount(profile_info_pk);
+    }
 
 }

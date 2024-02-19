@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="/public/js/commons/lockLikeMobile.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        @font-face {
+            font-family: 'omyu_pretty';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+        body {
+            font-family: 'omyu_pretty';
+            
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid" style="background-color: rgb(240, 222, 215); height: 100vh;">
+        <div class="row pt-5">
+            <div class="col text-center pt-5">
+                <img class="img-fluid" src="/public/image/commons/500erorImg.png" style="height: 15em;">
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col fs-1 text-center fw-bold">
+                페이지가 동작하지 없습니다.
+            </div>
+        </div>
+        <div class="row mt-3">	
+            <div class="col text-center">
+                요청하신 페이지를 처리할 수 없습니다.
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-center">
+                오류가 계속 될 경우 관리자에게 문의하세요.
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col">
+                <div class="row">
+                    <div class="col-3"></div>
+                    <div onclick="window.history.back()" class="col text-center text-white rounded-pill" style="background-color: rgb(76, 75, 75);">
+                        이전 페이지로 이동
+                    </div>
+                    <div class="col-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+       
+</body>
+
+</html>

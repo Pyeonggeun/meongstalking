@@ -54,6 +54,16 @@ public class RestMstarController {
 
         return responseDto;
     }
+    @RequestMapping("myStoryCount")
+    public RestResponseDto myStoryCount(int profile_info_pk){
+        RestResponseDto responseDto = new RestResponseDto();
+
+        int storyCount = mstarService.getMyStoryCount(profile_info_pk);
+        responseDto.setResult("success");
+        responseDto.setData(storyCount);
+
+        return responseDto;
+    }
 
     @RequestMapping("loadMyProfileInfo")
     public RestResponseDto loadMyProfileInfo(int user_pk){
@@ -635,6 +645,5 @@ public class RestMstarController {
          return responseDto;
     }
     
-
-    
+   
 }

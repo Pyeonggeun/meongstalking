@@ -74,6 +74,8 @@ public interface MstarSqlMapper{
 
     public List<StorageDto> selectStoryStorageList(int profile_info_pk);
 
+    public int selectStoryCount(int profile_info_pk);
+
     public void insertStoryStroageDto(StorageDto storageDto);
     public int selectStoragePk();
 
