@@ -2462,11 +2462,11 @@
     <body>
 
         <div class="container-fluid">
-            <div th:insert="~{/commons/naviBar.html :: topNavi}"></div>
-            <div th:insert="~{/commons/naviBar.html :: bottomNavi}"></div>
-            <div th:insert="~{/commons/naviBar.html :: motifyModal}"></div>
-            <div th:insert="~{/commons/naviBar.html :: unReadNotifyListTemplate}"></div>
-            <div th:insert="~{/commons/naviBar.html :: readNotifyListTeplate}"></div>
+            <div th:replace="~{/commons/naviBar.html :: topNavi}"></div>
+            <div th:replace="~{/commons/naviBar.html :: bottomNavi}"></div>
+            <div th:replace="~{/commons/naviBar.html :: motifyModal}"></div>
+            <div th:replace="~{/commons/naviBar.html :: unReadNotifyListTemplate}"></div>
+            <div th:replace="~{/commons/naviBar.html :: readNotifyListTeplate}"></div>
             <div class="row">
                 <div class="col px-0">
                     <div id="map">
