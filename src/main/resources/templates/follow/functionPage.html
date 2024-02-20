@@ -213,8 +213,8 @@
                     // strokeColor: '#75B8FA', // 선의 색깔입니다
                     strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
                     strokeStyle: 'dashed', // 선의 스타일 입니다
-                    fillColor: '#CFE7FF', // 채우기 색깔입니다
-                    fillOpacity: 0.7  // 채우기 불투명도 입니다   
+                    // fillColor: '#CFE7FF', // 채우기 색깔입니다
+                    fillOpacity: 0.1  // 채우기 불투명도 입니다   
                 }); 
 
                 // 지도에 원을 표시합니다 
@@ -1019,6 +1019,8 @@
                                 document.getElementById("alertContent").innerText = `이미 추행하고 있습니다\n아이템을 사용하시겠습니까?`;
                                 document.getElementById("alertCheckButton").onclick = () => {
 
+                                    hideAlertModal();
+
                                     const itemBox = document.getElementById("itemBox");
                                     itemBox.innerHTML = "";
 
@@ -1047,7 +1049,7 @@
                                     const itemMegaPhoneWrapper = document.querySelector("#template .itemMegaPhoneWrapper").cloneNode(true);
                                     itemMegaPhoneWrapper.querySelector(".itemCount").innerText = megaPhoneItemCnt;
                                     itemMegaPhoneWrapper.onclick = () => {
-
+                                        
                                         if(megaPhoneItemCnt <= 0) {
 
                                             document.getElementById("alertContent").innerText = "사용할 수 있는 아이템이 없습니다";
@@ -1073,7 +1075,6 @@
                                     itemBox.appendChild(itemMegaPhoneWrapper);
                                     showAlertItemModal();
 
-                                    hideAlertModal();
                                 };
                                 showAlertModal();
 
@@ -2726,11 +2727,11 @@
     <body>
 
         <div class="container-fluid">
-            <div th:insert="~{/commons/naviBar.html :: topNavi}"></div>
-            <div th:insert="~{/commons/naviBar.html :: bottomNavi}"></div>
-            <div th:insert="~{/commons/naviBar.html :: motifyModal}"></div>
-            <div th:insert="~{/commons/naviBar.html :: unReadNotifyListTemplate}"></div>
-            <div th:insert="~{/commons/naviBar.html :: readNotifyListTeplate}"></div>
+            <th:block th:replace="~{/commons/naviBar.html :: topNavi}"></th:block>
+            <th:block th:replace="~{/commons/naviBar.html :: bottomNavi}"></th:block>
+            <th:block th:replace="~{/commons/naviBar.html :: motifyModal}"></th:block>
+            <th:block th:replace="~{/commons/naviBar.html :: unReadNotifyListTemplate}"></th:block>
+            <th:block th:replace="~{/commons/naviBar.html :: readNotifyListTeplate}"></th:block>
             <div class="row">
                 <div class="col px-0">
                     <div id="map">
@@ -2785,7 +2786,7 @@
                             </div>
                         </div>
 
-                        <div id="alertItemModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute; z-index: 2000;">
+                        <div id="alertItemModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute; z-index: 1500;">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content fw-bold mx-auto rounded" style="width: auto; padding: 0.25rem; font-size: 0.85rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
                                     <div class="modal-header text-white fw-bold py-1 px-1 border-0" style="font-size: 1rem;">
@@ -2803,7 +2804,7 @@
                             </div>
                         </div>
 
-                        <div id="alertItemMessageModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute; z-index: 2000;">
+                        <div id="alertItemMessageModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute; z-index: 1500;">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content fw-bold mx-auto rounded" style="width: 80%; padding: 0.25rem; font-size: 0.85rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
                                     <div class="modal-header text-white fw-bold py-1 px-1 border-0" style="font-size: 1rem;">
