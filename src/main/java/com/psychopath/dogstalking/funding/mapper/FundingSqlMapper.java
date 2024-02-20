@@ -105,7 +105,7 @@ public interface FundingSqlMapper {
     public int countCheeringByPk(int product_pk);
 
     //mainpage 펀딩 리스트
-    public List<Map<String,Object>> selectFundingMainList();
+    public List<FundingProductDto> selectFundingMainList();
 
 
     //////타 dto//////////

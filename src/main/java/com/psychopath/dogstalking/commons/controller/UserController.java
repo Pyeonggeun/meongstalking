@@ -16,6 +16,7 @@ import com.psychopath.dogstalking.club.service.ClubServiceImpl;
 import com.psychopath.dogstalking.commons.service.UserServiceImpl;
 import com.psychopath.dogstalking.dto.KakaoUserDto;
 import com.psychopath.dogstalking.dto.UserDto;
+import com.psychopath.dogstalking.funding.dto.FundingProductDto;
 import com.psychopath.dogstalking.funding.service.FundingServiceImpl;
 import com.psychopath.dogstalking.mstar.service.MstarServiceImpl;
 import com.psychopath.dogstalking.trade.service.TradeServiceImpl;
@@ -77,8 +78,14 @@ public class UserController {
 	@RequestMapping("mainPage")
 	public String mainPage(Model model, HttpSession session,KakaoUserDto kakaoUserDto) {
 
-		List<Map<String, Object>> selectFundingMainList = fundingService.selectFundingMainList();
-        model.addAttribute("selectFundingMainList", selectFundingMainList);
+		List<FundingProductDto> selectFundingMainList = fundingService.selectFundingMainList();
+        
+		int sizeList = selectFundingMainList.size();
+	
+		model.addAttribute("sizeList", sizeList);
+		model.addAttribute("selectFundingMainList", selectFundingMainList);
+
+
 
 		List<Map<String, Object>> selectMstarUserMainPage = userService.selectMstarUserMainPage();
 		model.addAttribute("selectMstarUserMainPage", selectMstarUserMainPage);
