@@ -17,10 +17,11 @@
                 .then(response => response.json())
                 .then((response) =>{
                     user_pk = response.data.user_pk;
+                    getProfileInfoDto(user_pk)
                 });
             }
             let profileInfoDto = null;
-            function getProfileInfoDto(){
+            function getProfileInfoDto(user_pk){
                 const url = "./myProfileInfoDto?user_pk="+user_pk;
                 fetch(url)
                 .then(response => response.json())
@@ -177,7 +178,6 @@
 
             window.addEventListener("DOMContentLoaded", () =>{
                 getUserDto();
-                getProfileInfoDto()
             });
         </script>
         <style>
