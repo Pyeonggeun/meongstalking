@@ -2166,13 +2166,16 @@
 
             function showMyTrackCardModal() {
 
-                document.getElementById("myTrackCardModalHeight").style.height = mapHeight * 0.9 * 0.85 + "px";
-
-                const myTrackCardInfoHeight = parseFloat(getComputedStyle(document.getElementById("myTrackCardInfoHeight")).height.replace("px", ""));
-                console.log(myTrackCardInfoHeight);
-                document.getElementById("myTrackCardCommentHeight").style.height = ((mapHeight * 0.9 * 0.85) - myTrackCardInfoHeight - 30) + "px";
-
                 const modal = bootstrap.Modal.getOrCreateInstance("#myTrackCardModal");
+
+                document.getElementById("myTrackCardModal").addEventListener("shown.bs.modal", () => {
+                    document.getElementById("myTrackCardModalHeight").style.height = mapHeight * 0.9 * 0.85 + "px";
+
+                    const myTrackCardInfoHeight = parseFloat(getComputedStyle(document.getElementById("myTrackCardInfoHeight")).height.replace("px", ""));
+                    console.log(myTrackCardInfoHeight);
+                    document.getElementById("myTrackCardCommentHeight").style.height = ((mapHeight * 0.9 * 0.85) - myTrackCardInfoHeight - 30) + "px";
+                });
+
                 modal.show();
 
             }
@@ -2196,14 +2199,31 @@
             function showCollectionCardModal() {
 
                 const modal = bootstrap.Modal.getOrCreateInstance("#collectionCardModal");
+
+                // setTimeout(() => {
+                //     // alert();
+                //     document.getElementById("collectionCardModalHeight").style.height = mapHeight * 0.9 * 0.85 + "px";
+
+                //     const collectionCardInfoHeight = parseFloat(getComputedStyle(document.getElementById("collectionCardInfoHeight")).height.replace("px", ""));
+                //     console.log(getComputedStyle(document.getElementById("collectionCardInfoHeight")).height);
+                //     console.log(collectionCardInfoHeight);
+
+                //     document.getElementById("collectionCardCommentHeight").style.height = ((mapHeight * 0.9 * 0.85) - collectionCardInfoHeight - 30) + "px";
+
+                // }, 250);
+
+                
+                document.getElementById("collectionCardModal").addEventListener("shown.bs.modal", () => {
+                    document.getElementById("collectionCardModalHeight").style.height = mapHeight * 0.9 * 0.85 + "px";
+
+                    const collectionCardInfoHeight = parseFloat(getComputedStyle(document.getElementById("collectionCardInfoHeight")).height.replace("px", ""));
+                    console.log(getComputedStyle(document.getElementById("collectionCardInfoHeight")).height);
+                    console.log(collectionCardInfoHeight);
+
+                    document.getElementById("collectionCardCommentHeight").style.height = ((mapHeight * 0.9 * 0.85) - collectionCardInfoHeight - 30) + "px";
+                });
+
                 modal.show();
-
-                document.getElementById("collectionCardModalHeight").style.height = mapHeight * 0.9 * 0.85 + "px";
-
-                const collectionCardInfoHeight = parseFloat(getComputedStyle(document.getElementById("collectionCardInfoHeight")).height.replace("px", ""));
-                console.log(collectionCardInfoHeight);
-                document.getElementById("collectionCardCommentHeight").style.height = ((mapHeight * 0.9 * 0.85) - collectionCardInfoHeight - 30) + "px";
-
 
             }
 
@@ -2727,11 +2747,11 @@
     <body>
 
         <div class="container-fluid">
-            <th:block th:replace="~{/commons/naviBar.html :: topNavi}"></th:block>
-            <th:block th:replace="~{/commons/naviBar.html :: bottomNavi}"></th:block>
-            <th:block th:replace="~{/commons/naviBar.html :: motifyModal}"></th:block>
-            <th:block th:replace="~{/commons/naviBar.html :: unReadNotifyListTemplate}"></th:block>
-            <th:block th:replace="~{/commons/naviBar.html :: readNotifyListTeplate}"></th:block>
+            <th:block th:replace="~{commons/naviBar.html :: topNavi}"></th:block>
+            <th:block th:replace="~{commons/naviBar.html :: bottomNavi}"></th:block>
+            <th:block th:replace="~{commons/naviBar.html :: motifyModal}"></th:block>
+            <th:block th:replace="~{commons/naviBar.html :: unReadNotifyListTemplate}"></th:block>
+            <th:block th:replace="~{commons/naviBar.html :: readNotifyListTeplate}"></th:block>
             <div class="row">
                 <div class="col px-0">
                     <div id="map">
