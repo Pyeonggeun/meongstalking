@@ -24,10 +24,26 @@
             min-width: 320px;
         }
 
-
-        .container {
-            margin-top: 50px;
+        .scrollable-menu {
+            overflow-x: auto;
+            white-space: nowrap;
         }
+
+        .scrollable-menu .col {
+            display: flex;
+            flex-wrap: nowrap;
+        }
+
+        .scrollable-menu span {
+            border-bottom: 2px solid transparent;
+            padding-bottom: 2px;
+            transition: border-color 0.3s;
+        }
+
+        .scrollable-menu span:hover {
+            border-color: #000;
+        }
+
 
         .card {
             border: none;
@@ -75,9 +91,9 @@
 </head>
 
 <body>
-    <div th:insert="~{commons/naviBar}"></div>
+   
     <div class="container pb-5">
-        
+        <div th:insert="~{commons/naviBar}"></div>
         <div class="row">
             <div class="col-auto my-2 ms-1" onclick="goBack()">
                 <i class="bi bi-arrow-left"></i>
@@ -115,25 +131,26 @@
                         <div class="col"></div>
                         <div class="col-9 me-0 pe-0">
                             <div class="row my-1 pb-0 text-left text-start me-0 pe-0">
-                                <div class="col-5 py-0 ms-1 fw-bold text-left">가입인사 : </div>
+                                <div class="col-auto py-0 ms-1 fw-bold text-left">가입인사 : </div>
                                 <p class="col mb-1 text-left">
                                     <span class="p-1" th:text="${qwer['content']}"></span>
                                 </p>
                             </div>
 
                             <div class="row my-1 pb-0 text-left text-start me-0 pe-0">
-                                <div class="col-5 py-0 ms-1 fw-bold text-left">가입일자 : </div>
+                                <div class="col-auto py-0 ms-1 fw-bold text-left">가입일자 : </div>
                                 <p class="col mb-1 text-left">
                                     <span th:text="${#dates.format(qwer['applydate'], 'yyyy-MM-dd')}"></span>
                                 </p>
                             </div>
 
 
-                            <div class="row bg-light justify-content-end">
-                                <div class="col-6"></div>
-                                <div class="col">
-                                    <a th:href="'./approve?user_pk=' + ${qwer['user_pk']}" class="btn btn-secondary btn-sm">승인</a>
-                                    <a th:href="'./reject?user_pk=' + ${qwer.user_pk}" class="btn btn-secondary btn-sm">거절</a>
+                            <div class="row justify-content-end">
+                                <div class="col-4"></div>
+                                <div class="col-auto">
+                                    
+                                    <a th:href="'./reject?user_pk=' + ${qwer.user_pk}" class="btn btn-secondary btn-sm"><span class="px-2">거절</span></a>
+                                    <a th:href="'./approve?user_pk=' + ${qwer['user_pk']}" class="btn btn-primary btn-sm"><span class="px-2">승인</span></a>
                                 </div>
                             </div>
                         </div>
