@@ -554,6 +554,9 @@
                     if(response.data >= trackMarkerUpTo) {
 
                         document.getElementById("alertContent").innerText = "횟수를 모두 사용하셨습니다";
+                        document.getElementById("alertCheckButton").onclick = () => {
+                            hideAlertModal();
+                        };
                         showAlertModal();
 
                         return;
@@ -851,6 +854,7 @@
             function collectTrackMarkerInfo(e) {
 
                 removeScanningTrackMarkers();
+                getTracingTrackMarkers();
                 fillTrackMarkerModal(e);
                 saveCollectionInfo(e.log_pk);
 
@@ -1754,6 +1758,7 @@
                 document.getElementById("collectionCardLogPk").innerText = e.log_pk;
                 document.getElementById("collectionCardCollectDate").innerText = e.collect_date;
                 document.getElementById("collectionCardImage").style.background = "url('/uploadFiles/" + e.image_link + "') no-repeat center";
+                document.getElementById("collectionCardImage").style.backgroundSize = "cover";
                 document.getElementById("collectionCardDate").innerText = e.created_date;
                 document.getElementById("collectionCardContent").innerText = e.content;
                 document.getElementById("collectionCardCollectCount").innerText = e.collect_cnt;
@@ -3664,7 +3669,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div id="collectionCardCommentHeight" class="collectionCardCommentBox row row-cols-1 overflow-auto mt-1">
+                                                        <div id="collectionCardCommentHeight" class="collectionCardCommentBox row row-cols-1 overflow-scroll mt-1">
 
                                                             
 
@@ -4035,7 +4040,7 @@
 
                                             <div style="position: relative;">
                                                 <hr style="color: #81461A;">
-                                                <span class="px-1" style="position: absolute; top: -0.65rem; left: calc(50% - 2.5rem); font-size: 0.9rem; background: #E0C9A9; color: #81461A;">내가 한 짓</span>
+                                                <span class="px-1" style="position: absolute; top: -0.65rem; left: calc(50% - 2rem); font-size: 0.9rem; background: #E0C9A9; color: #81461A;">내가 한 짓</span>
                                             </div>
                                             <div class="row px-4 py-1">
                                                 <div class="col">
@@ -4190,7 +4195,7 @@
                                             </div>
                                             <div class="rounded mt-2" style="background: #C5A886; height: 27rem;">
                                                 <div class="overflow-auto px-3" style="height: 100%;">
-                                                    <div id="myTrackListBox" class="row row-cols-5 mt-1 pb-2">
+                                                    <div id="myTrackListBox" class="row row-cols-4 mt-1 pb-2">
 
                                                     </div>
                                                 </div>
