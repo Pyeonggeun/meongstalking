@@ -75,31 +75,33 @@
                 fileUpload.addEventListener("change", handleFiles);
             }
 
-            function updateProfile(){
-                const profilePhoto = document.querySelector("#profilePhoto");
-                const fileUpload = document.querySelector("#fileUpload");
-                const imageFiles = fileUpload.files[0];
-                const formData = new FormData();
+            async function updateProfile() {
+                try {
+                    const fileUpload = document.querySelector("#fileUpload");
+                    const imageFiles = fileUpload.files[0];
+                    const nickName = document.querySelector("#nickName").value;
+                    const status_message = document.querySelector("#status_message").value;
 
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', './updateProfileProcess', true);
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        console.log(xhr.responseText);
+                    const formData = new FormData();
+                    formData.append("imageFiles", imageFiles);
+                    formData.append("user_pk", user_pk);
+                    formData.append("nick_name", nickName);
+                    formData.append("status_message", status_message);
+
+                    const response = await fetch('./updateProfileProcess', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('프로필 업데이트 실패');
                     }
-                };
-                const nickName = document.querySelector("#nickName").value;
-                const status_message = document.querySelector("#status_message").value;
 
-                formData.append("imageFiles", imageFiles)
-                formData.append("user_pk", user_pk);
-                formData.append("nick_name", nickName);
-                formData.append("status_message", status_message);
-                
-                xhr.send(formData);
+                    location.href = './profilePage?user_pk=' + user_pk;
 
-                //비동기식이라서 업데이트해도 바로 적용안된상태로 페이지가 로드됨.. 어떡하지...
-                location.href='./profilePage?user_pk='+user_pk;
+                } catch (error) {
+                    console.error(error.message);
+                }
             }
             window.addEventListener("DOMContentLoaded", () =>{
                 getUserDto();
