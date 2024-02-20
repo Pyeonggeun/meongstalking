@@ -261,9 +261,14 @@ public class MstarServiceImpl {
             }
             String macName = "/uploadFiles/";
             profileInfoDto.setProfile_photo(macName+todayPath+fileName);
+            System.out.println(profileInfoDto.getProfile_photo());
         }
+        System.out.println("실행됨");
+        System.out.println(profileInfoDto);
         mstarSqlMapper.updateProfileInfoDto(profileInfoDto);
+
     }
+
     public int insertArticleInfo(ArticleDto articleDto){
         String content = articleDto.getContent();
         String emotion =  sentimentAwsComprehend(content);

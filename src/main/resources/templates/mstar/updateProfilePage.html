@@ -12,10 +12,14 @@
         
         <script th:inline="javascript">
             let user_pk = null;
-            function getUrlKey() {
-                const urlParams = new URLSearchParams(location.search);
-                const key = urlParams.get("user_pk");
-                user_pk = key;
+            function getUserDto(){
+                const url = "/mstar/getUserDto"
+                fetch(url)
+                .then(response => response.json())
+                .then((response) =>{
+                    user_pk = response.data.user_pk;
+                    loadMyProfileInfo(user_pk)
+                });
             }
            
 
@@ -92,15 +96,13 @@
                 formData.append("nick_name", nickName);
                 formData.append("status_message", status_message);
                 
-
                 xhr.send(formData);
 
                 //비동기식이라서 업데이트해도 바로 적용안된상태로 페이지가 로드됨.. 어떡하지...
-                location.href='./profilePage?user_pk='+user_pk;
+                //location.href='./profilePage?user_pk='+user_pk;
             }
             window.addEventListener("DOMContentLoaded", () =>{
-                getUrlKey();
-                loadMyProfileInfo();
+                getUserDto();
             });
         </script>
         <style>

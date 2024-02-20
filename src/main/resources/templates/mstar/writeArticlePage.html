@@ -12,10 +12,14 @@
 
         <script th:inline="javascript">
             let user_pk = null;
-            function getUrlKey() {
-                const urlParams = new URLSearchParams(location.search);
-                const key = urlParams.get("user_pk");
-                user_pk = key;
+            function getUserDto(){
+                const url = "/mstar/getUserDto"
+                fetch(url)
+                .then(response => response.json())
+                .then((response) =>{
+                    user_pk = response.data.user_pk;
+                    getProfileInfoDto(user_pk);
+                });
             }
             let profileInfoDto = null;
             function getProfileInfoDto(){
@@ -443,8 +447,7 @@
 
 
             window.addEventListener("DOMContentLoaded", () =>{
-                getUrlKey();
-                getProfileInfoDto();
+                getUserDto();
             });
         </script>
 
