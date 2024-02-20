@@ -568,147 +568,31 @@
                                         </div>
                                     </div>
 
+                                <th:block th:each="fund : ${selectFundingMainList}">
                                     <div class="col-auto px-1">
                                         <div class="row">
                                             <div class="col">
-                                                <div class="rounded"
-                                                    style="position: relative; width: 6rem; height: 6rem; background: #e7e7e7 url(/public/image/commons/aution.png) no-repeat center; background-size: 90%;">
-                                                    <div class="text-center"
-                                                        style="position: absolute; width: 1.3rem; height: 1.3rem; background: #fd6f6f; border-radius: 50%; top: 5%; right: 5%;">
-                                                        <span class="material-symbols-rounded text-white"
-                                                            style="font-size: 0.85rem;">
-                                                            favorite
-                                                        </span>
-                                                    </div>
-                                                </div>
+                                                    <img th:src="@{'/uploadFiles/'+${fund.title_image}}" style="position: relative; width: 6rem; height: 6rem; background: #e7e7e7 no-repeat center; background-size: 90%;">
+                                                    <!-- <div class="text-center" style="position: absolute; width: 1.3rem; height: 1.3rem; background: #fd6f6f; border-radius: 50%; top: 5%; right: 5%;">
+                                                        <span class="material-symbols-rounded text-white" style="font-size: 0.85rem;">favorite</span>
+                                                    </div> -->
                                             </div>
                                         </div>
                                         <div class="row mt-2">
                                             <div class="col text-truncate"
                                                 style="width: 6rem; font-size: 0.8rem; color: #fd6f6f;">
-                                                네츄럴오
+                                                <span th:text="${fund.price}"></span>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col text-truncate lh-1"
                                                 style="width: 6rem; font-size: 0.9rem; -webkit-line-clamp: 2; white-space: normal; display: -webkit-box; -webkit-box-orient: vertical;">
-                                                유기농 쌀과 연어 체중조절 고양이 사료
+                                                <span th:text="${fund.product_name}"></span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-auto px-1">
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="rounded"
-                                                    style="position: relative; width: 6rem; height: 6rem; background: #e7e7e7 url(/public/image/commons/aution2.png) no-repeat center; background-size: 90%;">
-                                                    <div class="text-center"
-                                                        style="position: absolute; width: 1.3rem; height: 1.3rem; background: rgb(0, 0, 0, 0.3); border-radius: 50%; top: 5%; right: 5%;">
-                                                        <span class="material-symbols-rounded text-white"
-                                                            style="font-size: 0.85rem;">
-                                                            favorite
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col text-truncate"
-                                                style="width: 6rem; font-size: 0.8rem; color: #fd6f6f;">
-                                                네츄럴랩
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col text-truncate lh-1"
-                                                style="width: 6rem; font-size: 0.9rem; -webkit-line-clamp: 2; white-space: normal; display: -webkit-box; -webkit-box-orient: vertical;">
-                                                고양이 전연령 6제로 PLUS 02 사료 연어
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-auto px-1">
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="rounded"
-                                                    style="position: relative; width: 6rem; height: 6rem; background: #e7e7e7 url(/public/image/commons/aution.png) no-repeat center; background-size: 90%;">
-                                                    <div class="text-center"
-                                                        style="position: absolute; width: 1.3rem; height: 1.3rem; background: #fd6f6f; border-radius: 50%; top: 5%; right: 5%;">
-                                                        <span class="material-symbols-rounded text-white"
-                                                            style="font-size: 0.85rem;">
-                                                            favorite
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col text-truncate"
-                                                style="width: 6rem; font-size: 0.8rem; color: #fd6f6f;">
-                                                네츄럴오
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col text-truncate lh-1"
-                                                style="width: 6rem; font-size: 0.9rem; -webkit-line-clamp: 2; white-space: normal; display: -webkit-box; -webkit-box-orient: vertical;">
-                                                유기농 쌀과 연어 체중조절 고양이 사료
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-auto px-1">
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="rounded"
-                                                    style="position: relative; width: 6rem; height: 6rem; background: #e7e7e7 url(/public/image/commons/aution2.png) no-repeat center; background-size: 90%;">
-                                                    <div class="text-center"
-                                                        style="position: absolute; width: 1.3rem; height: 1.3rem; background: rgb(0, 0, 0, 0.3); border-radius: 50%; top: 5%; right: 5%;">
-                                                        <span class="material-symbols-rounded text-white"
-                                                            style="font-size: 0.85rem;">
-                                                            favorite
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col text-truncate"
-                                                style="width: 6rem; font-size: 0.8rem; color: #fd6f6f;">
-                                                네츄럴랩
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col text-truncate lh-1"
-                                                style="width: 6rem; font-size: 0.9rem; -webkit-line-clamp: 2; white-space: normal; display: -webkit-box; -webkit-box-orient: vertical;">
-                                                고양이 전연령 6제로 PLUS 02 사료 연어
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-auto px-1">
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="rounded"
-                                                    style="position: relative; width: 6rem; height: 6rem; background: #e7e7e7 url(/public/image/commons/aution.png) no-repeat center; background-size: 90%;">
-                                                    <div class="text-center"
-                                                        style="position: absolute; width: 1.3rem; height: 1.3rem; background: #fd6f6f; border-radius: 50%; top: 5%; right: 5%;">
-                                                        <span class="material-symbols-rounded text-white"
-                                                            style="font-size: 0.85rem;">
-                                                            favorite
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col text-truncate"
-                                                style="width: 6rem; font-size: 0.8rem; color: #fd6f6f;">
-                                                네츄럴오
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col text-truncate lh-1"
-                                                style="width: 6rem; font-size: 0.9rem; -webkit-line-clamp: 2; white-space: normal; display: -webkit-box; -webkit-box-orient: vertical;">
-                                                유기농 쌀과 연어 체중조절 고양이 사료
-                                            </div>
-                                        </div>
-                                    </div>
-
+                                </th:block>
+                                    
                                 </div>
                             </div>
                         </div>

@@ -86,14 +86,14 @@
                                 <div class="col-2 pe-0 ps-3" style="align-self: center;"><a class="px-0" href="./listPage"><i class="fa-solid fa-chevron-left px-0" style="font-size: 1.2em; color: black; align-self: center;"></i></a></div>
                                 <div class="col ps-0 fw-bold text-start"><span style="font-size: 1.35em;">내 정보</span></div>
                                 <div class="col-4 px-0 me-2">
-                                    <div class="row border border-0 rounded me-2" style="background-color: gainsboro;"><div class="col px-2 py-1 rounded fw-bold text-white text-center link-underline-opacity-0" style="background-color: black; font-size: 1em;">후원</div><div class="col px-2 py-1 text-center border border-0  rounded" style="background-color: gainsboro; font-size: 1em"><a href="./fundingSellerMyPage" class="link-underline-opacity-0" style="color: gray;">등록</a></div></div>
+                                    <div class="row border border-0 rounded me-2" style="background-color: gainsboro;"><div class="col px-1 py-1 rounded fw-bold text-white text-center link-underline-opacity-0" style="background-color: black; font-size: 1em;">후원</div><div class="col px-1 py-1 text-center border border-0 rounded d-grid" style="background-color: gainsboro; font-size: 1em"><a href="./fundingSellerMyPage" class="link-underline-opacity-0" style="color: gray;">등록</a></div></div>
                                 </div>
                             </div>
 
                             <div class="row py-1 mb-2 ps-3" style="background-color: white;">
                                 <div class="col-2 px-1 text-center d-grid">
-                                    <!--<img th:src="@{${photo}}" alt="미등록">-->
-                                    <img th:src="@{/public/image/dog_img.png}" class="rounded-circle" style="width: 100%;">
+                                    <img th:src="@{${photo}}" alt="미등록"  class="rounded-circle" style="width: 100%;">
+                                    <!-- <img th:src="@{/public/image/dog_img.png}" class="rounded-circle" style="width: 100%;"> -->
                                 </div>         
                                 <div class="col useridCol" style="font-size: 0.85em;"><span class="fw-bold" th:utext="${session.sessionUser.userid}" style="font-size: 1.3em;"></span> 님 안녕하세요</div>
                             </div>
@@ -152,8 +152,8 @@
                                     <a th:href="@{./productDetailPage(id = ${wish.wish.product_pk})}">
                                         <div class="row py-1" style="display: flex">
                                             <div class="col mx-1">
-                                                <div class="row"><div class="col d-grid"><img th:src="@{'/uploadFiles/'+${wish.product.title_image}}" alt="등록된 이미지가 없습니다" style="height: 8em; width: 14em;"></div></div>
-                                                <div class="row pt-1" style="width: 14em;"><div class="col" style="overflow-x: hidden; color: black;" th:text="${wish.product.product_name}"a></div></div>
+                                                <div class="row"><div class="col d-grid"><img th:src="@{'/uploadFiles/'+${wish.product.title_image}}" alt="등록된 이미지가 없습니다" style="height: 11em; width: 11em;"></div></div>
+                                                <div class="row pt-1" style="width: 11em;"><div class="col" style="overflow-x: hidden; color: black;" th:text="${wish.product.product_name}"a></div></div>
                                             </div>
                                         </div>
                                     </a>  
