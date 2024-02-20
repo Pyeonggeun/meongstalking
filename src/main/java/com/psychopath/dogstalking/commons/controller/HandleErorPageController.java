@@ -15,14 +15,14 @@ public class HandleErorPageController {
     public String error404(HttpServletRequest req, HttpServletResponse resp) {
         log.info("errorPage 404");
         printErrorInfo(req);
-        return "/commons/interceptor/eror404Page";
+        return "commons/interceptor/eror404Page";
     }
 
     @RequestMapping("/erorPage/500")
     public String error500(HttpServletRequest req, HttpServletResponse resp) {
         log.info("errorPage 500");
         printErrorInfo(req);
-        return "/commons/interceptor/eror500Page";
+        return "commons/interceptor/eror500Page";
     }
 
     private void printErrorInfo(HttpServletRequest req) {
@@ -31,7 +31,7 @@ public class HandleErorPageController {
     @RequestMapping("/commons/interceptor/sessionNullPage")
     public String nullPage() {
         
-        return "/commons/interceptor/sessionNullPage";
+        return "commons/interceptor/sessionNullPage";
     }
 
 }

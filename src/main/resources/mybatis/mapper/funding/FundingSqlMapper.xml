@@ -38,6 +38,7 @@
 <select id="fundingListCallForPk" resultType="com.psychopath.dogstalking.funding.dto.FundingProductDto">
     select * from ms_funding_product
     where user_pk = #{user_pk}
+    order by product_pk DESC
 </select>
 
 <select id="selectUserInfo" resultType="com.psychopath.dogstalking.dto.UserDto">
@@ -123,6 +124,7 @@ where product_pk = #{product_pk} order by created_at DESC
 <select id="selectWishList" resultType="com.psychopath.dogstalking.funding.dto.FundingWishlistDto">
     select * from ms_funding_wishlist mfw 
     where user_pk = #{user_pk}
+    order by created_at DESC
 </select>
 
 
@@ -184,6 +186,7 @@ where product_pk = #{product_pk} order by created_at DESC
 <select id="selectOrderList" resultType="com.psychopath.dogstalking.funding.dto.FundingOrderDto">
     select * from ms_funding_order mfo 
     where user_pk = #{user_pk}
+    ORDER BY ORDER_PK DESC
 </select>
 
 <select id="countOrder" resultType="int">
@@ -303,13 +306,14 @@ select
     where product_pk = #{product_pk}
 </select>
 
-    <select id="selectFundingMainList" resultType="map">
+    <select id="selectFundingMainList" resultType="com.psychopath.dogstalking.funding.dto.FundingProductDto">
         <![CDATA[
         SELECT *
         FROM ms_funding_product
-        WHERE start_date <= CURRENT_DATE
-        AND finish_date >= CURRENT_DATE
-        ORDER BY RAND();
+        WHERE start_date <= now()  
+        AND finish_date >= now()
+        ORDER BY RAND()
+        limit 5;
         ]]>
     </select>
 

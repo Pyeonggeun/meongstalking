@@ -280,8 +280,9 @@ public class FundingServiceImpl {
         return fundingSqlMapper.countNewsByPk(product_pk);
     }
 
-    public List<Map<String, Object>> selectFundingMainList(){
+    public List<FundingProductDto> selectFundingMainList(){
         return fundingSqlMapper.selectFundingMainList();
+        // 카운트를 따로가져와서 
     }
 
 
