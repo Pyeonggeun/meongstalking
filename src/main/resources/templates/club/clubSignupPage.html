@@ -120,9 +120,11 @@
                     <div class="card-body text-center">
                         <div class="col-2">
                             <div class="row mb-2">
-                                <img th:src="@{/public/image/dog_img.png}"
+                                <a href="../mstar/profilePage">
+                                <img th:src="@{response.data.profile_photo}"
                                     class="img-fluid rounded-circle profile-image" width="50">
-                            </div>
+                                </a>
+                                </div>
 
                             <div class="row">
                                 <h6><span class="fw-bold" th:text="${qwer['name']}"></span></h6>

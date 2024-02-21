@@ -2,6 +2,7 @@ package com.psychopath.dogstalking.auction.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
+import java.util.Map;
 
 import com.psychopath.dogstalking.auction.dto.AuctionCategoryDto;
 import com.psychopath.dogstalking.auction.dto.AuctionGoodsDto;
@@ -109,4 +110,7 @@ public interface AuctionSqlMapper {
     public DogDto getDogInfo(int userPk);
 
     public int getDogCount(int userPk);
+
+    // 메인페이지 리스트
+    public List<Map<String, Object>> mainPageGoodsList();
 }
