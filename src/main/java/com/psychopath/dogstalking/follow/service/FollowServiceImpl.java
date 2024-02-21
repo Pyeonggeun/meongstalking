@@ -11,9 +11,9 @@ import com.psychopath.dogstalking.follow.dto.CommentDto;
 import com.psychopath.dogstalking.follow.dto.LikeDto;
 import com.psychopath.dogstalking.follow.dto.LikeLogDto;
 import com.psychopath.dogstalking.follow.dto.LogDto;
-import com.psychopath.dogstalking.follow.dto.UseItemDto;
 import com.psychopath.dogstalking.follow.dto.UserMoreDto;
 import com.psychopath.dogstalking.follow.mapper.FollowSqlMapper;
+import com.psychopath.dogstalking.mFollow.dto.UserItemDto;
 
 @Service
 public class FollowServiceImpl {
@@ -138,9 +138,9 @@ public class FollowServiceImpl {
         return followSqlMapper.getItemCount(user_pk);
     }
     
-    public void insertUserItemInfo(UseItemDto useItemDto) {
+    public void insertUserItemInfo(UserItemDto userItemDto) {
 
-        followSqlMapper.insertUserItemInfo(useItemDto);
+        followSqlMapper.insertUserItemInfo(userItemDto);
     }
 
     public void sendMessage() {

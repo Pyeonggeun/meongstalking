@@ -11,8 +11,8 @@ import com.psychopath.dogstalking.follow.dto.CommentDto;
 import com.psychopath.dogstalking.follow.dto.LikeDto;
 import com.psychopath.dogstalking.follow.dto.LikeLogDto;
 import com.psychopath.dogstalking.follow.dto.LogDto;
-import com.psychopath.dogstalking.follow.dto.UseItemDto;
 import com.psychopath.dogstalking.follow.dto.UserMoreDto;
+import com.psychopath.dogstalking.mFollow.dto.UserItemDto;
 
 @Mapper
 public interface FollowSqlMapper {
@@ -60,7 +60,7 @@ public interface FollowSqlMapper {
     public int getPlusTrackMarker(@RequestParam("user_pk") int user_pk, @RequestParam("user_writer_pk") int user_writer_pk);
 
     public List<Map<String, Object>> getItemCount(int user_pk);
-    public void insertUserItemInfo(UseItemDto useItemDto);
+    public void insertUserItemInfo(UserItemDto userItemDto);
 
     public void sendMessage();
 
