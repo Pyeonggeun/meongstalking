@@ -511,6 +511,14 @@ public class AuctionServiceImpl {
 
         return map;
     }
+
+
+    public List<Map<String, Object>> mainPageGoodsList(){
+
+        List<Map<String, Object>> list = auctionMapper.mainPageGoodsList();
+
+        return list;
+    }
     
 
 }

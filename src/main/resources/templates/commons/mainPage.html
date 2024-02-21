@@ -48,12 +48,49 @@
                 mainDogImage.style.backgroundImage = "url('/uploadFiles/" + sessionDogImage + "')";
                 mainDogName.innerText= sessionDogName;
             }
-
         }
+
+
+        function reloadAuctionList(){
+		
+            const url = "/auction/mainPageGoodsList";
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+
+                const auctionGoodsListBox = document.getElementById("auctionGoodsListBox");
+
+                for(e of response.data){
+                    const auctionGoodsWrapper = document.querySelector("#template .auctionGoodsWrapper").cloneNode(true);
+
+                    const goodsTitle = auctionGoodsWrapper.querySelector(".goodsTitle");
+                    goodsTitle.innerText = e.title;
+
+                
+                    const goodsCategory = auctionGoodsWrapper.querySelector(".goodsCategory");
+                    goodsCategory.innerText = e.category_name;
+
+                    const goodsImage = auctionGoodsWrapper.querySelector(".goodsImage");
+                    goodsImage.style.backgroundImage = "url('/uploadFiles/" + e.image_link + "')";
+
+
+                    auctionGoodsListBox.appendChild(auctionGoodsWrapper);
+                }
+                                
+
+
+            });
+        }  
+
+
+
+
 
 
         window.addEventListener("DOMContentLoaded", () => {
             reloadDogImage();
+            reloadAuctionList();
         });  
 
 
@@ -336,12 +373,12 @@
                     <div class="col">
                         <div class="row">
                             <div class="col" style="font-size: 1rem;">
-                                🤞🏻 행운을 빌어요 <span class="fw-bold">TOP 10</span>
+                                🤞🏻 실시간 경매 아이템 <span class="fw-bold">TOP 10</span>
                             </div>
                         </div>
                         <div class="row mt-3 overflow-x-auto none-scrollbar" style="width: 105%; height: 11rem;">
                             <div class="col">
-                                <div class="row d-flex" style="flex-wrap: nowrap;">
+                                <div id="auctionGoodsListBox" class="row d-flex" style="flex-wrap: nowrap;">
                                     <div class="col-4 me-2">
                                         <div class="row">
                                             <div class="col" style="position: relative;">
@@ -362,36 +399,9 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-auto px-1">
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="rounded"
-                                                    style="position: relative; width: 6rem; height: 6rem; background: #e7e7e7 url(/public/image/commons/aution2.png) no-repeat center; background-size: 90%;">
-                                                    <div class="text-center"
-                                                        style="position: absolute; width: 1.3rem; height: 1.3rem; background: rgb(0, 0, 0, 0.3); border-radius: 50%; top: 5%; right: 5%;">
-                                                        <span class="material-symbols-rounded text-white"
-                                                            style="font-size: 0.85rem;">
-                                                            favorite
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col text-truncate"
-                                                style="width: 6rem; font-size: 0.8rem; color: #fd6f6f;">
-                                                네츄럴랩
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col text-truncate lh-1"
-                                                style="width: 6rem; font-size: 0.9rem; -webkit-line-clamp: 2; white-space: normal; display: -webkit-box; -webkit-box-orient: vertical;">
-                                                고양이 전연령 6제로 PLUS 02 사료 연어
-                                            </div>
-                                        </div>
-                                    </div>
+                           
 
-                                    <div class="col-auto px-1">
+                                    <!-- <div class="col-auto px-1">
                                         <div class="row">
                                             <div class="col">
                                                 <div class="rounded"
@@ -502,7 +512,7 @@
                                                 고양이 전연령 6제로 PLUS 02 사료 연어
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
 
                                 </div>
                             </div>
@@ -665,6 +675,37 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div id="template" class="d-none">
+
+        <div class="col-auto px-1 auctionGoodsWrapper">
+            <div class="row">
+                <div class="col">
+                    <div class="rounded goodsImage"
+                        style="position: relative; width: 6rem; height: 6rem; background: #e7e7e7 url(/public/image/commons/aution2.png) no-repeat center; background-size: 100%;">
+                        <div class="text-center"
+                            style="position: absolute; width: 1.3rem; height: 1.3rem; background: rgb(0, 0, 0, 0.3); border-radius: 50%; top: 5%; right: 5%;">
+                            <span class="material-symbols-rounded text-white"
+                                style="font-size: 0.85rem;">
+                                favorite
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col text-truncate goodsCategory"
+                    style="width: 6rem; font-size: 0.8rem; color: #fd6f6f;">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col text-truncate lh-1 goodsTitle"
+                    style="width: 6rem; font-size: 0.9rem; -webkit-line-clamp: 2; white-space: normal; display: -webkit-box; -webkit-box-orient: vertical;">
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <input id="sessionDogImage" type="hidden" th:value="${session.dogInfo.dogImage}">

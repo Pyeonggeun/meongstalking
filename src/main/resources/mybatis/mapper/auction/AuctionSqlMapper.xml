@@ -254,4 +254,20 @@
         where userpk = #{userPk}
     </select>
 
+
+    <select id="mainPageGoodsList" resultType="map">
+        <![CDATA[
+        SELECT g.*, COALESCE(w.wishlist_count, 0) AS wishlist_count, c.name AS category_name
+        FROM ms_auction_goods g
+        LEFT JOIN (
+            SELECT goods_pk, COUNT(*) AS wishlist_count
+            FROM ms_auction_wishlist
+            GROUP BY goods_pk
+        ) w ON g.pk = w.goods_pk
+        LEFT JOIN ms_auction_category c ON g.category_pk = c.pk
+        WHERE g.commencement_date <= NOW() AND g.expiry_date >= NOW()
+        ORDER BY COALESCE(w.wishlist_count, 0) DESC, g.expiry_date - NOW() ASC
+        LIMIT 5
+        ]]>
+    </select>
 </mapper>
