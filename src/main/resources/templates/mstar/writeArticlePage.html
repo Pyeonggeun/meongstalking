@@ -88,7 +88,8 @@
             function insertArticleInfo(){
                 const url = "/mstar/insertArticleInfo"
 
-                const content = document.querySelector("#content").value;            
+                const content = document.querySelector("#content").value;       
+                
                 const profile_info_pk = profileInfoDto.profile_info_pk;
                 fetch(url, {
                      method: "post",
@@ -103,53 +104,55 @@
                 });
                 
             }
-            function inserArticlePhotoTag(article_pk){
-                let view_order = 1;
-                for (let i = 0; i < upLoadImgList.length; i++) {
-                    const formData = new FormData();
-                    const xhr = new XMLHttpRequest();
-                    xhr.open('POST', './inserArticlePhotoTag', true);
-                    xhr.onreadystatechange = function () {
-                        if (xhr.readyState === 4 && xhr.status === 200) {
-                            console.log(xhr.responseText);
+            async function inserArticlePhotoTag(article_pk){
+                try{
+                    let view_order = 1;
+                    for (let i = 0; i < upLoadImgList.length; i++) {
+                        const formData = new FormData();
+                        formData.append("article_pk", article_pk);
+                        formData.append("imageFiles", upLoadImgList[i][0]);
+                        formData.append("view_order",view_order);
+
+                        if((upLoadImgList[i].length-1) !=0){
+                            
+                            for(let e = 1; e < upLoadImgList[i].length; e++){
+
+                                const tagBox = document.querySelector("#tagInfo"+upLoadImgList[i][e]);
+                                const tagWrapper = tagBox.closest(".tagWrapper");
+                                const selectImgWrapper1 = tagBox.closest(".selectImgWrapper");
+                                const selectImgWrapper = selectImgWrapper1.querySelector(".selectImg")
+                                
+                                const x_coordinates = parseFloat(tagWrapper.style.left);
+                                const y_coordinates = parseFloat(tagWrapper.style.top);
+                                
+                                formData.append("tag_info_pk" ,upLoadImgList[i][e]);
+                                formData.append("x_coordinates" ,x_coordinates);
+                                
+                                formData.append("y_coordinates" ,y_coordinates);
+                                formData.append("view_order", view_order); // view_order 값을 formData에 추가
                         }
-                    };
-                    formData.append("article_pk", article_pk);
-                    formData.append("imageFiles", upLoadImgList[i][0]);
-                    formData.append("view_order",view_order);
-
-                    view_order +=1;
-                    
-                    if((upLoadImgList[i].length-1) !=0){
                         
-                        for(let e = 1; e < upLoadImgList[i].length; e++){
+                        
+                        }else{
+                            formData.append("tag_info_pk" ,[]);
+                            formData.append("x_coordinates" , 0);
+                            formData.append("y_coordinates" , 0);
+                        }
 
-                            const tagBox = document.querySelector("#tagInfo"+upLoadImgList[i][e]);
-                            const tagWrapper = tagBox.closest(".tagWrapper");
-                            const selectImgWrapper1 = tagBox.closest(".selectImgWrapper");
-                            const selectImgWrapper = selectImgWrapper1.querySelector(".selectImg")
-                            
-                            const x_coordinates = parseFloat(tagWrapper.style.left);
-                            const y_coordinates = parseFloat(tagWrapper.style.top);
-                            
-                            formData.append("tag_info_pk" ,upLoadImgList[i][e]);
-                            formData.append("x_coordinates" ,x_coordinates);
-                            
-                            formData.append("y_coordinates" ,y_coordinates);
-                            formData.append("view_order", view_order); // view_order 값을 formData에 추가
-                       }
-                       
-                       
-                    }else{
-                        formData.append("tag_info_pk" ,[]);
-                        formData.append("x_coordinates" , 0);
-                        formData.append("y_coordinates" , 0);
-                    }
+                        const response = await fetch('./inserArticlePhotoTag', {
+                                    method: 'POST',
+                                    body: formData
+                                });
                     
-                    xhr.send(formData);
-                   
+                        view_order +=1;
+                        
+                        
+                    }
+                    location.href = '/mstar/profilePage';
+                } catch(error){
+                    throw new Error('게시물 등록 실패');
                 }
-                location.href = '/mstar/profilePage';
+                
                 
             }
 
@@ -312,9 +315,9 @@
 
                     var carousel = new bootstrap.Carousel(document.querySelector('.carouselWrapper'));
                      
-                    // 현재 액티브된 carousel-item에 접근
+                    
                     var activeItem = document.querySelector('.carouselWrapper .carousel-item.active');
-                    console.log('현재 액티브된 carousel-item:', activeItem);
+                    
 
                     const tagWrapper = document.querySelector("#tagTemplete .tagWrapper").cloneNode(true);
                     const tag = tagWrapper.querySelector(".tag");
@@ -538,7 +541,7 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <textarea  class="form-control" name="" id="content" rows="3" placeholder="작성할 내용을 입력하세요."></textarea>
+                    <textarea  class="form-control" name="" id="content" rows="3" placeholder="작성할 내용을 입력하세요." value="1"></textarea>
                 </div>
             </div>
             <div onclick="showUserTagModal()" class="row mt-2">

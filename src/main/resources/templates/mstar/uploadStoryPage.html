@@ -73,45 +73,49 @@
                     };
                 fileUpload.addEventListener("change", handleFiles);
             }
-            function insertStory(){
-                const story_img = document.querySelector("#story_img");
+            async function insertStory(){
+                try{
+                    const story_img = document.querySelector("#story_img");
                 
-                const storyTextBox = document.querySelector("#storyTextBox");
-                const X = parseInt(storyTextBox.style.left);
-                const Y = parseInt(storyTextBox.style.top);
-                const {width: story_imgWidth, height: story_imgHeight} = story_img.getBoundingClientRect();
-                
-                const x_coordinates = X/story_imgWidth*100;
-                const y_coordinates = Y/story_imgHeight*100;
+                    const storyTextBox = document.querySelector("#storyTextBox");
+                    const X = parseInt(storyTextBox.style.left);
+                    const Y = parseInt(storyTextBox.style.top);
+                    const {width: story_imgWidth, height: story_imgHeight} = story_img.getBoundingClientRect();
+                    
+                    const x_coordinates = X/story_imgWidth*100;
+                    const y_coordinates = Y/story_imgHeight*100;
 
-                const fileUpload = document.querySelector("#fileUpload");
-                const imageFiles = fileUpload.files[0];
-                const formData = new FormData();
+                    const fileUpload = document.querySelector("#fileUpload");
+                    const imageFiles = fileUpload.files[0];
+                    const formData = new FormData();
                 
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', './insertStory', true);
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        console.log(xhr.responseText);
-                    }
-                };
-                const profile_info_pk = profile_info_Dto.profile_info_pk;
-                const story_text = document.querySelector("#story_textAndColor").innerText;
-                const text_color = document.querySelector("#story_textAndColor").style.color;
-                const background_color = document.querySelector("#story_textAndColor").style.backgroundColor;
-                console.log(background_color);
+                    const profile_info_pk = profile_info_Dto.profile_info_pk;
+                    const story_text = document.querySelector("#story_textAndColor").innerText;
+                    const text_color = document.querySelector("#story_textAndColor").style.color;
+                    const background_color = document.querySelector("#story_textAndColor").style.backgroundColor;
+                    
+                    formData.append("imageFiles", imageFiles);
+                    formData.append("story_text", story_text);
+                    formData.append("x_coordinates", x_coordinates);
+                    formData.append("y_coordinates", y_coordinates);
+                    formData.append("profile_info_pk", profile_info_pk);
+                    formData.append("text_color", text_color);
+                    formData.append("background_color", background_color);
+
+                    const response = await fetch('./insertStory', {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('프로필 업데이트 실패');
+                        }
+
+                location.href='./profilePage?user_pk='+user_pk;
+            }catch(error){
+                console.error(error.message);
+                }
                 
-                formData.append("imageFiles", imageFiles);
-                formData.append("story_text", story_text);
-                formData.append("x_coordinates", x_coordinates);
-                formData.append("y_coordinates", y_coordinates);
-                formData.append("profile_info_pk", profile_info_pk);
-                formData.append("text_color", text_color);
-                formData.append("background_color", background_color);
-
-                xhr.send(formData);
-
-               location.href='./profilePage?user_pk='+user_pk;
             }
           
 
