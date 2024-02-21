@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.psychopath.dogstalking.auction.service.AuctionServiceImpl;
 import com.psychopath.dogstalking.club.service.ClubServiceImpl;
 import com.psychopath.dogstalking.commons.service.UserServiceImpl;
+import com.psychopath.dogstalking.dto.DogDto;
 import com.psychopath.dogstalking.dto.KakaoUserDto;
 import com.psychopath.dogstalking.dto.UserDto;
 import com.psychopath.dogstalking.funding.dto.FundingProductDto;
@@ -41,6 +43,9 @@ public class UserController {
 
 	@Autowired
 	private MstarServiceImpl mstarService;
+
+	@Autowired
+	private AuctionServiceImpl auctionService;
 
 
 	@RequestMapping("loginPage")
@@ -78,14 +83,23 @@ public class UserController {
 	@RequestMapping("mainPage")
 	public String mainPage(Model model, HttpSession session,KakaoUserDto kakaoUserDto) {
 
+		//평근
+		UserDto userInfo = (UserDto) session.getAttribute("sessionUser");
+		int userPk = userInfo.getUser_pk();
+
+		Map<String, Object> map = auctionService.getDogInfo(userPk);
+
+		session.setAttribute("dogInfo", map);
+
+
+		////////////////////////////////
+
 		List<FundingProductDto> selectFundingMainList = fundingService.selectFundingMainList();
         
 		int sizeList = selectFundingMainList.size();
 	
 		model.addAttribute("sizeList", sizeList);
 		model.addAttribute("selectFundingMainList", selectFundingMainList);
-
-
 
 		List<Map<String, Object>> selectMstarUserMainPage = userService.selectMstarUserMainPage();
 		model.addAttribute("selectMstarUserMainPage", selectMstarUserMainPage);

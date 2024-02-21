@@ -11,6 +11,7 @@ import com.psychopath.dogstalking.auction.dto.ChatDto;
 import com.psychopath.dogstalking.auction.dto.DeliveryDto;
 import com.psychopath.dogstalking.auction.dto.PaymentDto;
 import com.psychopath.dogstalking.auction.dto.WishlistDto;
+import com.psychopath.dogstalking.dto.DogDto;
 import com.psychopath.dogstalking.dto.UserDto;
 import com.psychopath.dogstalking.follow.dto.CollectionDto;
 
@@ -103,4 +104,9 @@ public interface AuctionSqlMapper {
 
     public int getCountBidByGoods(int goodsPk);
 
+
+    // 메인페이지 개 정보
+    public DogDto getDogInfo(int userPk);
+
+    public int getDogCount(int userPk);
 }
