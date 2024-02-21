@@ -47,6 +47,8 @@ public interface ClubSqlMapper {
     //리스트
     public List<Map<String, Object>> selectClubList();
     public Map<String, Object> showclubpk(int club_pk);
+    public List<Map<String, Object>> selectRankClubList();
+    
 
     //회원상태
     public void insertUserStatusLog(ClubStatusLogDto clubStatusLogDto);
