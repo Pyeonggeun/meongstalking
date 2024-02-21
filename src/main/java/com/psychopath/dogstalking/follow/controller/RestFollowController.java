@@ -18,9 +18,9 @@ import com.psychopath.dogstalking.follow.dto.CommentDto;
 import com.psychopath.dogstalking.follow.dto.LikeDto;
 import com.psychopath.dogstalking.follow.dto.LikeLogDto;
 import com.psychopath.dogstalking.follow.dto.LogDto;
-import com.psychopath.dogstalking.follow.dto.UseItemDto;
 import com.psychopath.dogstalking.follow.dto.UserMoreDto;
 import com.psychopath.dogstalking.follow.service.FollowServiceImpl;
+import com.psychopath.dogstalking.mFollow.dto.UserItemDto;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -352,7 +352,7 @@ public class RestFollowController {
     }
 
     @RequestMapping("insertUserItemInfo")
-    public RestResponseDto insertUserItemInfo(UseItemDto params) {
+    public RestResponseDto insertUserItemInfo(UserItemDto params) {
 
         RestResponseDto restResponseDto = new RestResponseDto();
 
