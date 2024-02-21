@@ -374,6 +374,16 @@ public class RestAuctionController {
         return restResponseDto;
 	}   
 
+    @RequestMapping("mainPageGoodsList")
+    public RestResponseDto mainPageGoodsList() {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(auctionService.mainPageGoodsList());
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+	}    
+
     public RestResponseDto template() {
         RestResponseDto restResponseDto = new RestResponseDto();
         
