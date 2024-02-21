@@ -68,4 +68,6 @@ public interface FollowSqlMapper {
     public List<Map<String, Object>> getMyTrackMarkersInfo(@RequestParam("user_pk") int user_pk, @RequestParam("trackMarkerDateValidity") int trackMarkerDateValidity);
     public int getTracingTrackMarkerLogPk(@RequestParam("user_pk") int user_pk, @RequestParam("user_writer_pk") int user_writer_pk);
 
+    public Integer getRandomLogPkExceptMine(int user_pk);
+
 }

@@ -800,6 +800,15 @@
         LIMIT 1
     </select>
 
+    <select id="getRandomLogPkExceptMine" resultType="integer">
+        SELECT mfl.log_pk FROM ms_follow_log mfl
+        WHERE NOT EXISTS (
+            SELECT 1 FROM ms_follow_collection mfc WHERE mfc.log_pk = mfl.log_pk AND mfc.user_pk = #{user_pk}
+        )
+        ORDER BY RAND()
+        LIMIT 1
+    </select>
+
     <!-- <select id="" resultType=""></select> -->
 
 </mapper>
