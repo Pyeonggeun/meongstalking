@@ -89,7 +89,13 @@ public class UserController {
 
 		Map<String, Object> map = auctionService.getDogInfo(userPk);
 
-		session.setAttribute("dogInfo", map);
+		Map<String, Object> sessionDogInfo = (Map<String, Object>)session.getAttribute("dogInfo");
+
+		if(sessionDogInfo == null){
+			session.setAttribute("dogInfo", map);
+		}
+
+		
 
 
 		////////////////////////////////

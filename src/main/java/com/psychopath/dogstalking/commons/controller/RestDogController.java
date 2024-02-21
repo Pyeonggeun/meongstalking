@@ -3,7 +3,9 @@ package com.psychopath.dogstalking.commons.controller;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.psychopath.dogstalking.auction.dto.AuctionImageDto;
 import com.psychopath.dogstalking.commons.service.DogServiceImpl;
+import com.psychopath.dogstalking.dto.DogDto;
 import com.psychopath.dogstalking.dto.RestResponseDto;
 
 import jakarta.servlet.http.HttpSession;
@@ -78,5 +80,53 @@ public class RestDogController {
         }      
 
 
+        @RequestMapping("getDogList")
+        public RestResponseDto getDogList(int userPk, HttpSession session) {
+            RestResponseDto restResponseDto = new RestResponseDto();
+            
+            Map<String, Object> dogInfo = (Map<String, Object>)session.getAttribute("dogInfo");
 
+            int dogPk = (int)dogInfo.get("dogPk");
+            List<DogDto> dogList = dogService.getDogList(userPk);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("dogPk", dogPk);
+            map.put("dogList", dogList);
+
+            restResponseDto.setData(map);
+            restResponseDto.setResult("success");
+            
+            return restResponseDto;
+        }    
+
+        @RequestMapping("getDogInfo")
+        public RestResponseDto getDogInfo(int dogPk) {
+            RestResponseDto restResponseDto = new RestResponseDto();
+            
+            restResponseDto.setData(dogService.getDogInfo(dogPk));
+            restResponseDto.setResult("success");
+            
+            return restResponseDto;
+        }    
+
+        @RequestMapping("selectDog")
+        public RestResponseDto selectDog(int dogPk, HttpSession session) {
+            RestResponseDto restResponseDto = new RestResponseDto();
+
+            Map<String, Object> map = new HashMap<>();
+            boolean isDogExist = true;
+            DogDto dogDto = dogService.getDogInfo(dogPk);
+
+            map.put("dogImage", dogDto.getImage());
+            map.put("dogName", dogDto.getName());
+            map.put("dogPk", dogDto.getPk());
+            map.put("isDogExist", isDogExist);
+
+            session.setAttribute("dogInfo", map);
+            
+            restResponseDto.setData(null);
+            restResponseDto.setResult("success");
+            
+            return restResponseDto;
+        }    
 }

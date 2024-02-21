@@ -124,6 +124,14 @@
     <select id="selectClubList" resultType="map">
         SELECT * FROM ms_club ORDER BY RAND()
     </select>
+
+    <select id="selectRankClubList" resultType="map">
+        SELECT COUNT(ms_club_user.user_pk) AS member_count, ms_club.*
+            FROM ms_club
+            JOIN ms_club_user ON ms_club.club_pk = ms_club_user.club_pk
+            GROUP BY ms_club.club_pk
+            ORDER BY member_count DESC;
+    </select>
      
     <select id="showclubpk" resultType="map">
         SELECT 

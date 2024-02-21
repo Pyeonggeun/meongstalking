@@ -4,7 +4,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.psychopath.dogstalking.dto.UserDto;
-import com.psychopath.dogstalking.follow.dto.ItemDto;
 import com.psychopath.dogstalking.mFollow.dto.AchievementDto;
 import com.psychopath.dogstalking.mFollow.dto.AchievementResultDto;
 import com.psychopath.dogstalking.mFollow.dto.CoinCategoryDto;

@@ -90,6 +90,10 @@ public class ClubServiceImpl {
 	//리스트
 	public List<Map<String, Object>> selectClubList(){
 		return clubSqlMapper.selectClubList();	
+	}	
+
+	public List<Map<String, Object>> selectRankClubList(){
+		return clubSqlMapper.selectRankClubList();	
 	}
 
 	public Map<String, Object> showclubpk(int club_pk){

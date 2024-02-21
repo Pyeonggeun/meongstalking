@@ -208,6 +208,9 @@
                 $('#gearModal').modal('hide');
             }
         }
+        function goBack() {
+            window.history.back();
+        }
     </script>
     <script src="/public/js/commons/naviBar.js"></script>
     <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}" />
@@ -250,8 +253,9 @@
                 <div class="col" th:each="member : ${searchResults}">
                     <div class="row">
                         <div class="col  text-center">
-                            <img th:src="@{/public/image/dog_img.png}" class="img-fluid rounded-circle profile-image "
-                                style="max-width: 3em; max-height: 3em; ">
+                            <a href="../mstar/profilePage">
+                            <img th:src="@{response.data.profile_photo}" class="img-fluid rounded-circle profile-image "
+                                style="max-width: 3em; max-height: 3em; "></a>
                         </div>
                     </div>
                     <div class="row">
@@ -290,9 +294,14 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-2">
-                                        <img th:src="@{/public/image/dog_img.png}"
-                                            class="img-fluid rounded-circle profile-image"
-                                            style="max-width: 40px; max-height: 40px;">
+
+                                        <a href="../mstar/profilePage">
+                                            <img th:src="@{response.data.profile_photo}"
+                                                class="img-fluid rounded-circle profile-image"
+                                                style="max-width: 40px; max-height: 40px;">
+                                        </a>
+
+
                                     </div>
                                     <div th:if="${leaderRank == 1}" class="col-5 d-flex align-items-center">
 
@@ -351,12 +360,12 @@
                 <div class="modal-body p-3">
                     <div class="permission-label">
                         <button class="btn" onclick="selectPermission('leaderPermission')">
-                            - 멤버 권한 설정
+                            멤버 권한 설정
                         </button>
                     </div>
                     <div class="permission-label">
                         <button class="btn" onclick="selectPermission('leaderPermission')">
-                            - 차단 멤버 관리
+                                차단 멤버 관리
                         </button>
                     </div>
                 </div>

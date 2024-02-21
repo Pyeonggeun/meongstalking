@@ -501,15 +501,25 @@ public class AuctionServiceImpl {
             DogDto dogDto = auctionMapper.getDogInfo(userPk);
             map.put("dogImage", dogDto.getImage());
             map.put("dogName", dogDto.getName());
+            map.put("dogPk", dogDto.getPk());
         }else{
             map.put("dogImage", null);
             map.put("dogName", null);
+            map.put("dogPk", null);
         }
 
         
         map.put("isDogExist", isDogExist);
 
         return map;
+    }
+
+
+    public List<Map<String, Object>> mainPageGoodsList(){
+
+        List<Map<String, Object>> list = auctionMapper.mainPageGoodsList();
+
+        return list;
     }
     
 

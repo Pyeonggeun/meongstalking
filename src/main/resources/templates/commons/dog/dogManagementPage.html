@@ -12,10 +12,77 @@
 
     <script>
 
+        function reloadDogList(){
+            
+            const sessionUserPk = document.getElementById("sessionUserPk").value;
 
 
+            const url = "./getDogList?userPk=" + sessionUserPk;
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                
+                const dogListBox = document.getElementById("dogListBox");
+                dogListBox.innerHTML = "";
+                
+                const sessionDogPk = response.data.dogPk;
+
+                for(e of response.data.dogList){
+
+                    const dogWrapper = document.querySelector("#template .dogWrapper").cloneNode(true);
+
+                    const dogName = dogWrapper.querySelector(".oc-dogName");
+                    dogName.innerText = e.name;
+
+                    const dogWeight = dogWrapper.querySelector(".oc-dogWeight");
+                    dogWeight.innerText = e.weight + " kg";
+
+                    const dogImage = dogWrapper.querySelector(".oc-dogImage");
+                    dogImage.setAttribute("src", "/uploadFiles/"+ e.image +"");
+
+                    dogWrapper.value = e.pk;
+
+                    if(e.pk == sessionDogPk){
+                        const selectedDog = dogWrapper.querySelector(".selectedDog");
+                        selectedDog.classList.remove("d-none");
+
+                        const dogImage1 = document.getElementById("dogImage1");
+                        dogImage1.setAttribute("src", "/uploadFiles/"+ e.image +"");
+
+                        const dogImage2 = document.getElementById("dogImage2");
+                        dogImage2.setAttribute("src", "/uploadFiles/"+ e.image +"");
+                        
+                        const dogName1 = document.getElementById("dogName1");
+                        dogName1.innerText = e.name;
+
+                        const dogBreed = document.getElementById("dogBreed");
+                        dogBreed.innerText = e.breed;
+                    }
+
+                    dogListBox.appendChild(dogWrapper);
+                }
+
+
+
+            });
+        }  
+
+        function selectDog(dogPk){
+            
+            const url = "./selectDog?dogPk=" + dogPk;
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                
+            });
+
+            reloadDogList();
+        }  
 
         
+
         function templete(){
             
             const url = "";
@@ -29,7 +96,7 @@
 
 
         window.addEventListener("DOMContentLoaded", () => {
-            
+            reloadDogList();
         });  
 
     </script>
@@ -58,7 +125,7 @@
             position: relative;    
         }
 
-        #dogImage{
+        #dogImage1{
             width: 2em;
             height: 2em;
             border-radius: 100%;
@@ -67,7 +134,7 @@
             border-width: 0.01em;
         }
 
-        #dogName{
+        #dogName1{
             color: #111111;
             font-size: 1em;
             font-weight: bold;
@@ -208,8 +275,8 @@
             <div class="col" style="padding-left: 1em; padding-right: 1em; display: flex; position: relative;">
                 <div id="back-icon" class="fw-bold" style="font-size: 1.2em;"><i class="fa-solid fa-angle-left" style="color: #111111;"></i></div>
                 <div type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; justify-content: center; align-items: center;">
-                    <img id="dogImage" class="img-fluid" th:src="@{/public/image/trade/dogimage.png}">
-                    <div id="dogName">알렉스</div>
+                    <img id="dogImage1" class="img-fluid" th:src="@{/public/image/trade/dogimage.png}">
+                    <div id="dogName1">알렉스</div>
                     <div style="margin-left: 0.3em;"><i class="bi bi-caret-down-fill"></i></div>
                 </div>
             </div>
@@ -253,7 +320,7 @@
                                 <div style="font-size: 1em;  color: rgba(0, 0, 0, 0.3); font-weight: bold; margin-left: 0.5em;">30분</div>
                             </div>
                             <div style="position: absolute; bottom: 15%; left: 50%; transform: translate(-50%, 0); width: 80%; background-color: rgba(0, 0, 0, 0.1); border-style: none; height: 0.5em; border-radius: 1em;">
-                                <img style="position: absolute; left: 0%; top: 50%; transform: translate(-50%, -50%); border-radius: 100%; width: 2.5em; height: 2.5em;" class="img-fluid" th:src="@{/public/image/trade/dogimage.png}">
+                                <img id="dogImage2" style="position: absolute; left: 0%; top: 50%; transform: translate(-50%, -50%); border-radius: 100%; width: 2.5em; height: 2.5em;" class="img-fluid" th:src="@{/public/image/trade/dogimage.png}">
                             </div>
                         </div>
                     </div>
@@ -286,18 +353,6 @@
 
     </div>
 
-    <div id="template" class="d-none">
-
-        <div class="row dogWrapper" style="height: 3em;">
-            <div class="col" style="display: flex; justify-content: start; align-items: center;">
-                <div><img class="img-fluid oc-dogImage" th:src="@{/public/image/trade/dogimage.png}"></div>
-                <div class="oc-dogName">알렉스</div>
-                <div class="oc-dogWeight">3.5kg</div>
-            </div>
-        </div>
-
-    </div>
-
 
     <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel" style="border-top-left-radius: 1em; border-top-right-radius: 1em;">
       <div class="offcanvas-header" style="display: flex; justify-content: center; align-items: center;">
@@ -305,14 +360,8 @@
       </div>
       <div class="offcanvas-body small">
         <div class="row">
-            <div class="col dogListBox">
-                <div class="row dogWrapper" style="height: 3em;">
-                    <div class="col" style="display: flex; justify-content: start; align-items: center;">
-                        <div><img class="img-fluid oc-dogImage" th:src="@{/public/image/trade/dogimage.png}"></div>
-                        <div class="oc-dogName">알렉스</div>
-                        <div class="oc-dogWeight">3.5kg</div>
-                    </div>
-                </div>
+            <div id="dogListBox" class="col">
+
             </div>
         </div>
 
@@ -327,7 +376,22 @@
       </div>
     </div>
 
-    
+    <div id="template" class="d-none">
+
+        <div class="row dogWrapper pb-4" style="height: 3em;" onclick="selectDog(this.value)">
+            <div class="col" style="position: relative; display: flex; justify-content: start; align-items: center;">
+                <div><img class="img-fluid oc-dogImage" th:src="@{/public/image/trade/dogimage.png}"></div>
+                <div class="oc-dogName">알렉스</div>
+                <div class="oc-dogWeight">3.5kg</div>
+                <div class="selectedDog d-none" style="position: absolute; right: 1em; top: 50%; transform: translate(0, -50%); border-radius: 100%; border-style: solid; border-width: 0.2em; border-color: #E2E2E2; width: 1.5em; height: 1.5em;">
+                    <div style="border-radius: 100%; background-color: #FA075B; width: 1em; height: 1em; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>    
+
+    <input id="sessionUserPk" type="hidden" th:value="${session.sessionUser.user_pk}">
 
     <script src="/public/js/commons/lockLikeMobile.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>

@@ -44,11 +44,12 @@
         }
 
         .user-bubble {
-            background-color: #f8c8c8;
+            background-color: #fef88b;
             color: #000;
             text-align: right;
             position: relative;
             margin-right: 20px;
+
         }
 
         .user-bubble::before {
@@ -58,13 +59,13 @@
             right: -15px;
             border-width: 0 0 15px 20px;
             border-style: solid;
-            border-color: transparent transparent #f8c8c8 transparent;
+            border-color: transparent transparent #fef88b transparent;
             display: inline-block;
             transform: rotate(-175deg);
         }
 
         .bot-bubble {
-            background-color: #a3dfff;
+            background-color: #e8e8e8;
             color: #151515;
             text-align: left;
             margin-left: 20px;
@@ -77,19 +78,23 @@
             left: -15px;
             border-width: 0 15px 20px 0;
             border-style: solid;
-            border-color: transparent #a3dfff transparent transparent;
+            border-color: transparent #e8e8e8 transparent transparent;
             display: inline-block;
             transform: rotate(75deg);
         }
 
 
         .main-bubble {
-            background-color: #FFFFFF;
+            background-color: #ffe3e3;
             color: #000;
             text-align: center;
+            word-wrap: break-word;
+            /* 텍스트 줄 바꿈 설정 */
+            display: inline-block;
+            max-width: 100%;
         }
 
-        .main-bubble::before {
+        /* .main-bubble::before {
             content: '';
             position: absolute;
             bottom: 0;
@@ -100,10 +105,14 @@
             border-style: solid;
             border-color: transparent transparent #FFFFFF transparent;
             display: inline-block;
-        }
+        } */
 
         .main-bubble strong {
             font-weight: bold;
+        }
+
+        .container {
+            background-color: ghostwhite;
         }
     </style>
 </head>
@@ -119,31 +128,33 @@
                     궁금한 것이 있으면 물어보세요. </strong>
             </div>
         </div>
-        <div class="row p-3 px-3">
-            <div class="chat-bubble user-bubble text-center">
+        <div class="row p-3 px-4">
+            <div class="chat-bubble user-bubble text-start">
                 <strong> Q : </strong> 강아지를 키우는데 필요한 준비물은 무엇인가요?
             </div>
             <div class="chat-bubble bot-bubble mx-3">
                 <strong> A : </strong>
                 강아지를 키우기 위해서는 몇 가지 필수적인 아이템과 주의할 점들이 있습니다.<br>
                 <b>사료와 물 그릇 : </b> 고품질의 강아지 사료와 항상 신선한 물을 제공해 주세요.<br>
-                <b>침구 및 켄넬 : </b> 편안한 침구나 켄넬을 마련하여 강아지가 안락하게 쉴 수 있도록 해주세요.<br> 
-                <b>장난감: </b>다양한 종류의 장난감으로 놀이와 심신 활동을 지원해주세요.<br>                
-                <b>목줄과 목걸이: </b>안전한 산책을 위해 목줄과 목걸이를 사용하세요.<br>                
-                <b>건강 관리용품 : </b>미용 도구, 이빨 닦이용품, 목욕 용품 등을 갖춰 강아지의 건강을 유지하세요.<br>                
-                <b>배변패드와 배변봉투: </b>훈련 중이거나 외출 시 사용할 배변패드와 봉투를 준비하세요.<br>               
-                <b>예방접종 및 수의사 검진: </b>정기적인 예방접종과 건강 검진으로 강아지의 건강을 지켜주세요.<br>               
-                <b>교육용 자료: </b>강아지 훈련에 도움이 될 수 있는 책이나 동영상을 찾아보세요.<br>                
-                <b>시간과 인내: </b>충분한 시간과 인내를 갖고 강아지와 소통하며 훈련해주세요.<br>              
-                <b>사회화: </b>다양한 환경과 사람, 동물들과의 만남을 통해 강아지의 사회성을 발전시켜주세요.<br>                
+                <b>침구 및 켄넬 : </b> 편안한 침구나 켄넬을 마련하여 강아지가 안락하게 쉴 수 있도록 해주세요.<br>
+                <b>장난감: </b>다양한 종류의 장난감으로 놀이와 심신 활동을 지원해주세요.<br>
+                <b>목줄과 목걸이: </b>안전한 산책을 위해 목줄과 목걸이를 사용하세요.<br>
+                <b>건강 관리용품 : </b>미용 도구, 이빨 닦이용품, 목욕 용품 등을 갖춰 강아지의 건강을 유지하세요.<br>
+                <b>배변패드와 배변봉투: </b>훈련 중이거나 외출 시 사용할 배변패드와 봉투를 준비하세요.<br>
+                <b>예방접종 및 수의사 검진: </b>정기적인 예방접종과 건강 검진으로 강아지의 건강을 지켜주세요.<br>
+                <b>교육용 자료: </b>강아지 훈련에 도움이 될 수 있는 책이나 동영상을 찾아보세요.<br>
+                <b>시간과 인내: </b>충분한 시간과 인내를 갖고 강아지와 소통하며 훈련해주세요.<br>
+                <b>사회화: </b>다양한 환경과 사람, 동물들과의 만남을 통해 강아지의 사회성을 발전시켜주세요.<br>
                 이러한 요소들을 준비하면 건강하고 행복한 강아지를 키울 수 있을 것입니다. 또한, 강아지의 개별적인 특성에 맞추어 관리와 교육을 진행하는 것이 중요합니다.<br>
             </div>
 
-            <div class="chat-bubble user-bubble text-center">
+            <div class="chat-bubble user-bubble text-start">
                 <strong> Q : </strong> 강아지 훈련에 어떤 방법이 좋아요?
             </div>
             <div class="chat-bubble bot-bubble">
-                <strong> A : </strong> 인기 있는 훈련 방법으로는 좋은 행동이 보상되는 긍정적 강화와 클릭 소리를 사용하여 원하는 행동을 표시하는 클릭커 훈련이 있습니다. <br>또한, 요즘에는 덜 권장되지만 지배 기반 훈련과 처벌 없이 긍정적인 강화에 의존하는 무력 훈련이 있습니다. <br>가장 효과적인 방법은 종종 개별 개의 성격과 해결하려는 특정 행동에 따라 달라집니다. <br>당신과 당신의 개 사이의 유대감을 강화하는 인도적이고 긍정적인 방법을 사용하는 것이 중요합니다.
+                <strong> A : </strong> 인기 있는 훈련 방법으로는 좋은 행동이 보상되는 긍정적 강화와 클릭 소리를 사용하여 원하는 행동을 표시하는 클릭커 훈련이 있습니다. <br>또한,
+                요즘에는 덜 권장되지만 지배 기반 훈련과 처벌 없이 긍정적인 강화에 의존하는 무력 훈련이 있습니다. <br>가장 효과적인 방법은 종종 개별 개의 성격과 해결하려는 특정 행동에 따라
+                달라집니다. <br>당신과 당신의 개 사이의 유대감을 강화하는 인도적이고 긍정적인 방법을 사용하는 것이 중요합니다.
             </div>
         </div>
         <div class="row p-3 px-3">

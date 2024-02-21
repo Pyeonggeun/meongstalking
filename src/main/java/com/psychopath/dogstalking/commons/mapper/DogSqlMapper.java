@@ -12,4 +12,5 @@ public interface DogSqlMapper {
 
     public List<DogDto> getDogList(int userPk);
 
+    public DogDto getDogInfo(int dogPk);
 }

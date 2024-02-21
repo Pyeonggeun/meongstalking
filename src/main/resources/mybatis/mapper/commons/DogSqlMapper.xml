@@ -24,5 +24,9 @@
         where userpk=#{userPk}
     </select>
 	
+    <select id="getDogInfo" resultType="com.psychopath.dogstalking.dto.DogDto">
+        select * from ms_dog
+        where pk = #{dogPk}
+    </select>
 
 </mapper>
