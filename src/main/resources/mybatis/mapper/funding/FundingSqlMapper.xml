@@ -138,6 +138,7 @@ where product_pk = #{product_pk} order by created_at DESC
 <select id="selectNewsById" resultType="com.psychopath.dogstalking.funding.dto.FundingNewsDto">
     select * from ms_funding_news 
     where product_pk = #{product_pk}
+    order by news_pk DESC
 </select>
 
 <select id="countNewsByPk" resultType="int">
@@ -238,7 +239,7 @@ where product_pk = #{product_pk} order by created_at DESC
     where product_pk in(
         select product_pk  from ms_funding_product mfp 
         where user_pk = #{user_pk})
-    and mfo.created_at &gt;= CURRENT_TIMESTAMP - INTERVAL 7 DAY;
+    and mfo.created_at &gt;= CURRENT_TIMESTAMP - INTERVAL 6 MONTH;
 </select>
 
 <select id="selectCheeringStatsDay" resultType="int">
@@ -246,7 +247,7 @@ where product_pk = #{product_pk} order by created_at DESC
     where product_pk in 
     (select product_pk  from ms_funding_product mfp 
     where user_pk = #{user_pk})
-    and mfc.created_at &gt;= CURRENT_TIMESTAMP - INTERVAL 7 DAY;
+    and mfc.created_at &gt;= CURRENT_TIMESTAMP - INTERVAL 6 MONTH;
 </select>
 
 <select id="selectWishlistStatsDay" resultType="int">
@@ -254,7 +255,7 @@ where product_pk = #{product_pk} order by created_at DESC
     where product_pk in
     (select product_pk  from ms_funding_product mfp 
     where user_pk = #{user_pk})
-    and mfw.created_at &gt;= CURRENT_TIMESTAMP - INTERVAL 7 DAY;
+    and mfw.created_at &gt;= CURRENT_TIMESTAMP - INTERVAL 6 MONTH;
 </select>
 
 <select id="selectReviewStatsDay" resultType="int">
@@ -262,7 +263,7 @@ where product_pk = #{product_pk} order by created_at DESC
     where product_pk in
     (select product_pk  from ms_funding_product mfp 
     where user_pk = #{user_pk})
-    and mfw.created_at &gt;= CURRENT_TIMESTAMP - INTERVAL 7 DAY;
+    and mfw.created_at &gt;= CURRENT_TIMESTAMP - INTERVAL 6 MONTH;
 </select>
 
 <select id="selectCountSuccessGoal" resultType="int">
