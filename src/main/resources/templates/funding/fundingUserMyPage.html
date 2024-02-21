@@ -145,6 +145,7 @@
 
                     <div class="row mt-1 ms-1"><div class="col fw-bold" style="font-size: 1em;">내가 찜한 프로젝트 목록</div></div>
                     <div class="row mt-1 ms-1"><div class="col" style="font-size: 0.85em; color: darkgray;">회원님의 후원을 기다리고 있습니다</div></div>
+                    
                     <div class="row mb-3">
                         <div class="col py-1 px-2">
                             <div class="container overflow-x-auto" style="white-space: nowrap;">    
@@ -153,7 +154,7 @@
                                         <div class="row py-1" style="display: flex">
                                             <div class="col mx-1">
                                                 <div class="row"><div class="col d-grid"><img th:src="@{'/uploadFiles/'+${wish.product.title_image}}" alt="등록된 이미지가 없습니다" style="height: 11em; width: 11em;"></div></div>
-                                                <div class="row pt-1" style="width: 11em;"><div class="col" style="overflow-x: hidden; color: black;" th:text="${wish.product.product_name}"a></div></div>
+                                                <div class="row pt-1" style="width: 11em;"><div class="col" style="overflow-x: hidden; color: black;" th:text="${wish.product.product_name}"></div></div>
                                             </div>
                                         </div>
                                     </a>  
@@ -162,41 +163,54 @@
                         </div>
                     </div>
 
+
                     <!--후원 프로젝트 감싸는 로우 콜 시작-->
                     <div class="row">
                         <div class="col packBox">
-
-                            <div class="row mt-1 ms-1"><div class="col fw-bold" style="font-size: 1em;">내가 후원한 프로젝트 목록</div></div>
-                            <div class="row mt-1 ms-1"><div class="col" style="font-size: 0.85em; color: darkgray;">'나의 펀딩현황'으로 이동해 관련 정보를 볼 수 있습니다.</div></div>
-                            <div class="row mb-3">
-                                <div class="col py-1 px-2">
-                                    <div class="container overflow-y-auto" style="height: 15em;">
-                                        <th:block th:each="order : ${order}">
-                                            <a th:href="@{./purchaseProductManagePage(id = ${order.order.order_pk})}">
-                                                <div class="row py-2" style="display: flex">
-                                                    <div class="col">
-                                                        <div class="row mx-1 border border-1 productBox rounded">
-                                                            <div class="col-4 d-grid px-0"><img th:src="@{'/uploadFiles/'+${order.product.title_image}}" alt="등록된 이미지가 없습니다" style="width: 100%; height: 100%;" class="rounded"></div>
-                                                            <div class="col-8 py-1" style="overflow-x: hidden; height: 6em; color: black;">
-                                                                <div class="row"><div class="col textBox" th:text="${order.product.product_component}"></div></div>
-                                                                <div class="row"><div class="col" style="font-size: 0.85em; color: gray;" th:text="${#temporals.format(order.order.order_date, 'yyyy.MM.dd HH:mm')}"></div></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </a>  
-                                        </th:block>
-                                    </div>    
-                                </div>
+                    
+                        <div class="row mt-1"><div class="col fw-bold" style="font-size: 1em;">내가 후원한 프로젝트 목록</div></div>
+                        <div class="row mt-1"><div class="col" style="font-size: 0.85em; color: darkgray;">'나의 펀딩현황'에서 관련 정보를 볼 수 있습니다.</div></div>
+                    
+                        <div class="row mb-3">
+                            <div class="col py-1 px-2">
+                            <div class="container overflow-y-auto" style="height: 15em;">
+                                <th:block th:each="order : ${order}">
+                                <a th:href="@{./purchaseProductManagePage(id = ${order.order.order_pk})}">
+                                    <div class="row py-2" style="display: flex">
+                                    <div class="col">
+                                        <div class="row mx-1 border border-1 productBox rounded">
+                                        <div class="col-4 d-flex px-0">
+                                            <img th:src="@{'/uploadFiles/'+${order.product.title_image}}" alt="등록된 이미지가 없습니다" style="width: 100%; height: 100%;" class="rounded">
+                                        </div>
+                                        <div class="col-8 py-1" style="overflow-x: hidden; color: black; height: 5em;">
+                                            <div class="row">
+                                            <div class="col" th:text="${order.product.product_component}"></div>
+                                            </div>
+                                            <div class="row">
+                                            <div class="col" style="font-size: 0.85em; color: gray;" th:text="${#temporals.format(order.order.order_date, 'yyyy.MM.dd HH:mm')}"></div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </a>
+                                </th:block>
                             </div>
-
+                            </div>
+                        </div>
+                    
                         </div>
                     </div>
-                    <!--후원 프로젝트 감싸는 로우 콜 시작-->
+                    
+
+
+
+                    <!--후원 프로젝트 감싸는 로우 콜 끝-->
 
                     <!--뻥 ui? 감싸는-->
                     <div class="row">
                         <div class="col packBox">
+
                             <div class="row">
                                 <div class="col mx-2 mb-3" style="color:#555c65;">
                                     <div class="row"><div class="col my-2 fw-bold" style="font-size: 1em;">고객센터</div></div>
@@ -206,6 +220,7 @@
                                     <div class="row border-bottom py-2"><div class="col" style="font-size: 0.85em;"> <i class="bi bi-wrench-adjustable" style="font-size: 1.1em;"></i> 설정</div><div class="col-2 text-end" style="font-size:1em;"> > </div></div>
                                 </div>
                             </div>
+
                         </div>    
                     </div>        
 
