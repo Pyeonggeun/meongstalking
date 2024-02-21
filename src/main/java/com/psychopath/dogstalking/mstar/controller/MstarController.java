@@ -28,23 +28,23 @@ public class MstarController {
         return "mstar/mainListPage";
     }
     @RequestMapping("updateProfilePage")
-    public String updateProfilePage(int user_pk){
+    public String updateProfilePage(){
 
         return "mstar/updateProfilePage";
     }
    
     @RequestMapping("writeArticlePage")
-    public String writeArticlePage(int user_pk){
+    public String writeArticlePage(){
 
         return "mstar/writeArticlePage";
     }
     @RequestMapping("addStoryStoragePage")
-    public String addStoryStoragePage(int user_pk){
+    public String addStoryStoragePage(){
 
         return "mstar/addStoryStoragePage";
     }
     @RequestMapping("uploadStoryPage")
-    public String uploadStoryPage(int user_pk){
+    public String uploadStoryPage(){
 
         return "mstar/uploadStoryPage";
     }

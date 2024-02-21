@@ -11,13 +11,17 @@
         <script src="/public/js/commons/lockLikeMobile.js"></script>
         <script th:inline="javascript">
             let user_pk = null;
-            function getUrlKey() {
-                const urlParams = new URLSearchParams(location.search);
-                const key = urlParams.get("user_pk");
-                user_pk = key;
+            function getUserDto(){
+                const url = "/mstar/getUserDto"
+                fetch(url)
+                .then(response => response.json())
+                .then((response) =>{
+                    user_pk = response.data.user_pk;
+                    getProfileInfoDto(user_pk)
+                });
             }
             let profileInfoDto = null;
-            function getProfileInfoDto(){
+            function getProfileInfoDto(user_pk){
                 const url = "./myProfileInfoDto?user_pk="+user_pk;
                 fetch(url)
                 .then(response => response.json())
@@ -57,48 +61,43 @@
                 fileUpload.addEventListener("change", handleFiles);
             }
 
-            function insertStoryStorage(profile_info_pk){
-                const coverPhoto = document.querySelector("#coverPhoto");
-                const fileUpload = document.querySelector("#fileUpload");
-                const imageFiles = fileUpload.files[0];
-                const formData = new FormData();
-
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', './insertStoryStorage', true);
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        console.log(xhr.responseText);
+            async function insertStoryStorage(profile_info_pk){
+               try{
+                    const coverPhoto = document.querySelector("#coverPhoto");
+                    const fileUpload = document.querySelector("#fileUpload");
+                    const imageFiles = fileUpload.files[0];
+                    const formData = new FormData();
+                    
+                    if(storage_name == ""){
+                        storage_name = "하이라이트";
                     }
-                };
-                let storage = document.querySelector("#storage_name");
-                let storage_name = storage.value;
-                console.log(storage_name)
-                if(storage_name == ""){
-                    storage_name = "하이라이트";
-                }
-                formData.append("imageFiles", imageFiles)
-                
-                
-                
-                
-                formData.append("profile_info_pk", profile_info_pk);
-                formData.append("storage_name", storage_name);
-                
-                const storyPkList = document.querySelectorAll(".insertStoryPk");
-                if(storyPkList.length != 0){
-                    for(e of storyPkList){
-                        console.log(e.value);
-                        formData.append("storyPkList", e.value)
+                    let storage = document.querySelector("#storage_name");
+                    let storage_name = storage.value;
+                    
+                    formData.append("imageFiles", imageFiles)
+                    formData.append("profile_info_pk", profile_info_pk);
+                    formData.append("storage_name", storage_name);
+                    
+                    const storyPkList = document.querySelectorAll(".insertStoryPk");
+                    if(storyPkList.length != 0){
+                        for(e of storyPkList){
+                            formData.append("storyPkList", e.value)
+                        }
+                    }else{
+                        alert("하나 이상의 스토리를 등록해주셔야합니다.")
+                    }
+                    const response = await fetch('./insertStoryStorage', {
+                            method: 'POST',
+                            body: formData
+                        });
 
-                     }
-                     xhr.send(formData);
-                     location.href='./profilePage?user_pk='+user_pk;
-                }else{
-                    alert("하나이상의 스토리를 등록해주셔야합니다.")
-                }
-                
-
-                
+                    if (!response.ok) {
+                    throw new Error('프로필 업데이트 실패');
+                    }
+                location.href='./profilePage?user_pk='+user_pk;
+               } catch(error){
+                    throw new Error('프로필 업데이트 실패');
+               }
 
                 
             }
@@ -173,8 +172,7 @@
 
 
             window.addEventListener("DOMContentLoaded", () =>{
-                getUrlKey();
-                getProfileInfoDto()
+                getUserDto();
             });
         </script>
         <style>

@@ -12,10 +12,14 @@
         
         <script th:inline="javascript">
             let user_pk = null;
-            function getUrlKey() {
-                const urlParams = new URLSearchParams(location.search);
-                const key = urlParams.get("user_pk");
-                user_pk = key;
+            function getUserDto(){
+                const url = "/mstar/getUserDto"
+                fetch(url)
+                .then(response => response.json())
+                .then((response) =>{
+                    user_pk = response.data.user_pk;
+                    loadMyProfileInfo(user_pk);
+                });
             }
 
             let profile_info_Dto = null;
@@ -59,7 +63,6 @@
          
             window.addEventListener("DOMContentLoaded", () =>{
                 getUrlKey();
-                loadMyProfileInfo();
                 showFileUploadModal();
             });
 
