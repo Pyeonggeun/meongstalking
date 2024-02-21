@@ -98,6 +98,11 @@
             box-shadow: 0 0.2em 0 0 rgb(49, 109, 176);
             color: whitesmoke;
             }
+
+        .NoWorkBtn{
+            color: gray;
+            background-color: whitesmoke;
+        }
         
         #fixedForPurchase{
             position: fixed;
@@ -176,13 +181,13 @@
                     <div class="col mx-3 mb-3 py-1 border rounded">
                         <div class="row py-2 px-3">
                                 <div class="col-2 px-1 text-center d-grid">
-                                <!--    <img th:src="@{'/uploadFiles/'+${product.photo}}" alt="미등록" class="rounded-circle" style="width: 100%;">-->
-                                    <img th:src="@{/public/image/dog_img.png}" class="rounded-circle" style="width: 100%;">
+                                <img th:src="@{${product.photo}}" alt="미등록" class="rounded-circle" style="width: 100%;">
+                                    <!-- <img th:src="@{/public/image/dog_img.png}" class="rounded-circle" style="width: 100%;"> -->
                                 </div> 
                             
                             <div class="col">
-                                <div class="row"><div class="col fw-bold" style="font-size: 0.85em;"><span th:text="${product.user.userid}"></span></div></div>
-                                <div class="row"><div class="col" style="font-size: 0.7em;">제작자 팔로워 수</div></div>        
+                                <div class="row"><div class="col fw-bold" style="font-size: 1em;"><span th:text="${product.user.userid}"></span></div></div>
+                                <div class="row"><div class="col" style="font-size: 0.7em;"></div></div>        
                             </div>
                             <div class="col"><div class="button py-1 text-center rounded" style="background-color:rgb(65,147,239); color: white;"><i class="fa-solid fa-plus"></i> 팔로우</div></div>
                         </div>
@@ -269,6 +274,8 @@
                         <div class="row"><div class="col px-0" style="font-size: 0.65em;">응원하기</div></div>
                     </div> 
 
+                    <!-- <div th:if="${#temporals.formatDateTime(product.detail.start_date, 'yyyyMMddHHmmss') > #temporals.formatDateTime(now(), 'yyyyMMddHHmmss')}" class="col me-1 d-grid align-self-center"><div class="btn border rouneded border-primary fw-bold NoWorkBtn" style="font-size:1.25em;">오픈 예정</a></div>
+                    <div th:unless="${#temporals.formatDateTime(product.detail.finish_date, 'yyyyMMddHHmmss') < #temporals.formatDateTime(now(), 'yyyyMMddHHmmss')}" class="col me-1 d-grid align-self-center"><div class="btn border rouneded border-primary fw-bold NoWorkBtn" style="font-size:1.25em;">펀딩 마감</a></div> -->
                     <div class="col me-1 d-grid align-self-center"><a th:href="@{./productPurchasePage(id = ${product.detail.product_pk})}" class="btn border rouneded border-primary fw-bold" id="purchaseBtn" style="font-size:1.25em;">후원하기</a></div> 
                 </div>
 
