@@ -424,19 +424,24 @@
                         // </div>
                         
                         
-
+                        
+                        const indicatorBox = carouselWrapper.querySelector(".indicatorBox");
                         for(p of e.photoAndTagList){
                             const articleImgWrapper =  document.querySelector("#articleImgTemplete .articleImgWrapper").cloneNode(true);
-                            const articleSizeWrapper = document.querySelector("#articleSizeTemplete .articleSizeWrapper").cloneNode(true);
-                            const point = articleSizeWrapper.querySelector(".point");
-                            point.setAttribute("id", "point"+count);
+                            
+                            const indicatorButton = document.querySelector("#carouselIndicatorTemplete .indicatorButton").cloneNode(true);
+                            indicatorButton.setAttribute("data-bs-target","#carouselId"+e.articleDto.article_pk);
+                            indicatorButton.setAttribute("data-bs-slide-to" , count-1);
+                            indicatorBox.appendChild(indicatorButton);
+                            
+                            
+                           
 
                             const img = articleImgWrapper.querySelector(".img");
                             
                             if(count ==1){
-                                point.classList.add("text-primary");
-                                point.classList.remove("text-secondary");
                                 articleImgWrapper.classList.add("active");
+                                indicatorButton.classList.add("active");
                             }
                             const photoCount = articleImgWrapper.querySelector(".photoCount");
                             if(!(e.photoAndTagList.length <= 1)){
@@ -460,7 +465,10 @@
                                 tagWrapper.setAttribute("style", "left:" +i.articleTagDto.x_coordinates+ "%; top:"+i.articleTagDto.y_coordinates + "%;");
                                 articleImgWrapper.appendChild(tagWrapper);
                             }
-                            articleImgWrapper.setAttribute("onclick", "showTagUser(this)");
+                            if(p.userTagList.length !=0){
+                                articleImgWrapper.setAttribute("onclick", "showTagUser(this)");
+                            }
+                            
 
                             articleImg.appendChild(articleImgWrapper);
                             
@@ -487,7 +495,7 @@
                         //contentUserId.appendChild(useridSpan);
                         contentUserId.appendChild(contentSpan);
                         console.log(e.articleDto.content.length)
-                        if(e.articleDto.content.length > 40){
+                        if(e.articleDto.content.length > 80){
                             contentSpan.classList.add("content_ellipsis" ,"content");
                             const moreContent =  document.createElement("span");
                             moreContent.setAttribute("onclick", "showMoreContent(this)");
@@ -500,17 +508,17 @@
             
                         const emotion = articleListWrapper.querySelector(".emotion");
                         if(e.articleDto.emotion == "POSITIVE"){
-                            emotion.innerText =  "☀️";
-                            emotion.classList.add("rotating-icon")
+                            emotion.innerText =  "긍정";
+                            emotion.classList.add("text-primary");
                         }else if(e.articleDto.emotion == "NEGATIVE"){
-                            emotion.innerText =  "⛈️";
-                            emotion.classList.add("blinking-icon")
+                            emotion.innerText =  "부정";
+                            emotion.classList.add("text-danger");
                         }else if(e.articleDto.emotion == "MIXED"){
-                            emotion.innerText =  "🌦️";
-                            emotion.classList.add("movingupdown-icon")
+                            emotion.innerText =  "혼합";
+                            emotion.classList.add("text-warning");
                         }else if(e.articleDto.emotion == "NEUTRAL"){
-                            emotion.innerText =  "🌤️";
-                            emotion.classList.add("movingleftright-icon")
+                            emotion.innerText =  "보통";
+                            
                             
                         }
                         
@@ -1675,6 +1683,10 @@
                 -webkit-box-orient: vertical;
                 -webkit-line-clamp: 2;
                 overflow: hidden;
+                opacity: 0.7;
+            }
+            .carousel-indicators{
+                color: blue;
             }
         </style>
     </head>
@@ -1812,6 +1824,14 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-auto text-secondary align-self-center" style="font-size: 0.9em;">
+                            AI 감정 분석 결과:
+                        </div>
+                        <div class="col ps-0 text-start emotion">
+                                            
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col pt-1 pb-0">
                             <div class="row">
                                 <div class="col px-4">
@@ -1866,6 +1886,11 @@
                 </div>
             </div>
         </div>
+
+        
+        
+            
+            
 
         <div class="offcanvas offcanvas-bottom" tabindex="-1" id="commentWriteBox" aria-labelledby="offcanvasBottomLabel" style="height: auto; background-color: transparent; border: none; padding-left: 0.7rem; padding-right: 0.7rem;"> 
             <div id="commentListBox" class="row d-none">
@@ -2095,9 +2120,6 @@
                 <div  class="col-auto position-absolute rounded-pill px-2 photoCount d-none" style="color: #dbd5d5;background-color: #636262; position: absolute; top: 3%; left: 90%; opacity: 0.7;">
                     
                 </div>
-                <div class="col-auto ps-0 text-start emotion" style="position: absolute; top: 3%; left: 3%;">
-                                            
-                </div>
             </div>
         </div>
 
@@ -2109,6 +2131,9 @@
 
         <div id="carouselTemplete" class="d-none">
             <div class="carousel slide carouselWrapper" data-bs-wrap="false" >
+                <div class="carousel-indicators indicatorBox">
+
+                </div>
                 <div class="carousel-inner articleImg" style="overflow: hidden;">
                     
                 </div>
@@ -2121,6 +2146,10 @@
                     <span class="visually-hidden">Next</span>
                 </button>
             </div>
+        </div>
+
+        <div id="carouselIndicatorTemplete" class="d-none">
+            <button type="button" data-bs-target=".carouselWrapper" class="rounded-circle indicatorButton" aria-current="true" style="width: 0.3em; height: 0.3em;"></button>
         </div>
 
         <div id="storyModal" class="modal" tabindex="-1">
