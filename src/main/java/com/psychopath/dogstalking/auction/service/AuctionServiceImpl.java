@@ -19,6 +19,7 @@ import com.psychopath.dogstalking.auction.dto.DeliveryDto;
 import com.psychopath.dogstalking.auction.dto.PaymentDto;
 import com.psychopath.dogstalking.auction.dto.WishlistDto;
 import com.psychopath.dogstalking.auction.mapper.AuctionSqlMapper;
+import com.psychopath.dogstalking.dto.DogDto;
 import com.psychopath.dogstalking.dto.UserDto;
 import com.psychopath.dogstalking.follow.dto.CollectionDto;
 import com.psychopath.dogstalking.trade.dto.WishListDto;
@@ -486,6 +487,31 @@ public class AuctionServiceImpl {
 
     }
 
+
+    public Map<String, Object> getDogInfo(int userPk){
+
+        int count = auctionMapper.getDogCount(userPk);
+
+        boolean isDogExist = false;
+
+        Map<String, Object> map = new HashMap<>();
+
+        if(count != 0){
+            isDogExist = true;
+            DogDto dogDto = auctionMapper.getDogInfo(userPk);
+            map.put("dogImage", dogDto.getImage());
+            map.put("dogName", dogDto.getName());
+        }else{
+            map.put("dogImage", null);
+            map.put("dogName", null);
+        }
+
+        
+        map.put("isDogExist", isDogExist);
+
+        return map;
+    }
+    
 
 }
 

@@ -126,7 +126,7 @@
         select * from ms_auction_goods
         where pk in 
         (
-            select DISTINCT pk from ms_auction_bid
+            select DISTINCT goods_pk from ms_auction_bid
             where user_pk = #{user_pk}
         )
     </select>
@@ -151,6 +151,7 @@
         where goods_pk = #{goods_pk}
         and user_pk = #{user_pk}
         order by created_at desc
+
     </select>
 
     <select id="getCountPayment" resultType="int">
@@ -239,6 +240,18 @@
     <select id="getCountBidByGoods" resultType="int">
         select count(*) from ms_auction_bid
         where goods_pk = #{goodsPk}
+    </select>
+
+    <select id="getDogInfo" resultType="com.psychopath.dogstalking.dto.DogDto">
+        select * from ms_dog
+        where userpk = #{userPk}
+        order by created_at asc
+        Limit 1
+    </select>
+
+    <select id="getDogCount" resultType="int">
+        select COUNT(*) from ms_dog
+        where userpk = #{userPk}
     </select>
 
 </mapper>
