@@ -33,7 +33,7 @@
     </insert>
 
     <insert id="insertUserItemInfo">
-        insert into ms_follow_use_item(user_pk, item_pk) values(#{user_pk}, #{item_pk})
+        insert into ms_mFollow_use_item(user_pk, item_pk) values(#{user_pk}, #{item_pk})
     </insert>
 
     <insert id="sendMessage">
@@ -624,9 +624,9 @@
         )
         -
         (
-            SELECT COUNT(*) FROM ms_follow_use_item mfui
-            WHERE mfui.user_pk = #{user_pk}
-            AND mfui.item_pk = mmfi.item_pk
+            SELECT COUNT(*) FROM ms_mFollow_use_item mmfui
+            WHERE mmfui.user_pk = #{user_pk}
+            AND mmfui.item_pk = mmfi.item_pk
         ) as item_cnt FROM ms_mFollow_item mmfi
         where mmfi.item_pk BETWEEN 5 AND 8
     </select>

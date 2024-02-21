@@ -1012,9 +1012,11 @@
                     for(let e of response.data) {
                         console.log(e);
                         const likeListWrapper = document.querySelector("#template .likeListWrapper").cloneNode(true);
+                        
                         if(switchButton) {
                             likeListWrapper.classList.add("active");
                         }
+
                         likeListWrapper.querySelector(".likeListButton").onclick = () => {
                             console.log(e.user_pk + ": " + e.is_trace);
                             if(e.is_trace == "Y") {
@@ -1550,6 +1552,25 @@
 
                     case "10" :
                         document.getElementById("collectionDetailName").innerText = e.nick_name;
+                        document.getElementById("collectionDetailMstarButton").disabled = false;
+                        document.getElementById("collectionDetailMstarButton").onclick = () => {
+
+                            hideCollectionDetailModal();
+                            hideCollectionModal();
+
+                            location.href = "/mstar/profilePage";
+                        };
+                        document.getElementById("collectionDetailWalkRequestButton").disabled = false;
+                        document.getElementById("collectionDetailWalkRequestButton").onclick = () => {
+
+                            document.getElementById("alertContent").innerText = "산책 신청이 완료되었습니다/알람 등록하기";
+                            document.getElementById("alertCheckButton").onclick = () => {
+                                hideAlertModal();
+                            };
+                            showAlertModal();
+
+                        };
+
                     case "9" :
                         document.getElementById("collectionDetailModalImage").style.background = 
                             "url(" + e.profile_photo + ") no-repeat center";
@@ -1575,6 +1596,16 @@
                     case "7", "6" : 
                         document.getElementById("collectionDetailMbtiType").innerText = e.blood_type;
                         document.getElementById("collectionDetailHobby").innerText = e.hobby;
+                        document.getElementById("collectionDetailMessageButton").disabled = false;
+                        document.getElementById("collectionDetailMessageButton").onclick = () => {
+
+                            document.getElementById("alertContent").innerText = "메세지 보내는 모달만 만들면 됨";
+                            document.getElementById("alertCheckButton").onclick = () => {
+                                hideAlertModal();
+                            };
+                            showAlertModal();
+
+                        };
                     case "5" :
                         document.getElementById("collectionDetailSmoking").innerText = e.smoking;
                         document.getElementById("collectionDetailDrinking").innerText = e.drinking;
@@ -1639,6 +1670,27 @@
                 }else if(e.star_rating == "oneStar") {
                     document.getElementById("collectionDetailOuter").classList.add("OneStarOuter");
                 }
+
+                if(e.is_like == "Y") {
+                    document.getElementById("collectionDetailHeartIcon").style.fontVariationSettings = "'FILL' 1";
+                }else {
+                    document.getElementById("collectionDetailHeartIcon").style.fontVariationSettings = "'FILL' 0";
+                }
+                
+                // document.getElementById("collectionDetailHeartButton").onclick = () => {
+                //     console.log(e.is_trace);
+                //     if(e.is_trace == "N") {
+                //         toggleLike(e.user_pk, document.getElementById("collectionDetailHeartIcon"));
+                //         return;
+                //     }
+
+                //     document.getElementById("alertContent").innerText = "추행하고 있습니다";
+                //     document.getElementById("alertCheckButton").onclick = () => {
+                //         hideAlertModal();
+                //     };
+                //     showAlertModal();
+
+                // };
 
                 getCollectionLogList(e.user_pk, e.star_rating);
 
@@ -1824,9 +1876,9 @@
                     document.getElementById("myPageHeight").innerText = response.data.height;
 
                     if(response.data.gender == "M") {
-                        document.getElementById("myPageGender").innerText = "👱🏻‍♀️";
-                    }else {
                         document.getElementById("myPageGender").innerText = "👱🏻‍♂️";
+                    }else {
+                        document.getElementById("myPageGender").innerText = "👱🏻‍♀️";
                     }
                     
                     document.getElementById("myPageWeight").innerText = response.data.weight;
@@ -2136,6 +2188,13 @@
 
             }
 
+            function hideCollectionModal() {
+
+                const modal = bootstrap.Modal.getOrCreateInstance("#collectionModal");
+                modal.hide();
+
+            }
+
             function showCollectionDetailModal() {
                 const modal = bootstrap.Modal.getOrCreateInstance("#collectionDetailModal");
                 modal.show();
@@ -2147,6 +2206,13 @@
                 const collectionDetailInfoHeight = parseFloat(getComputedStyle(document.getElementById("collectionDetailInfoHeight")).height.replace("px",""));
 
                 document.getElementById("collectionDetailModalCardHeight").style.height = (mapHeight * 0.9 - collectionDetailInfoHeight - 100) + "px";
+
+            }
+
+            function hideCollectionDetailModal() {
+
+                const modal = bootstrap.Modal.getOrCreateInstance("#collectionDetailModal");
+                modal.hide();
 
             }
 
@@ -3373,175 +3439,207 @@
                                     <div class="modal-body rounded" style="padding: 0.2rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
                                         <div id="collectionDetailModalHeight" class="rounded" style="padding: 0.5rem; padding-top: 1.3rem; background: #E0C9A9; border: 2px solid rgba(241, 194, 92, 0.4);">
 
-                                            <div class="rounded px-3 py-2" style="width: 100%;" id="collectionDetailInfoHeight">
-                                                <div class="row">
-                                                    <div class="col-3">
-                                                        <div class="row">
-                                                            <div class="col px-2">
-                                                                <div id="collectionDetailOuter" class="d-flex align-items-center justify-content-center border-0" style="width: 100%; aspect-ratio: 1/1; border-radius: 50%;">
-                                                                    <div id="collectionDetailImage" style="width: 90%; aspect-ratio: 1/1; border-radius: 50%; background: url('/public/image/follow/questionBlack.png') no-repeat center; background-size: cover; filter: opacity(85%);"></div>
+                                            <div id="collectionDetailInfoHeight">
+                                                <div class="rounded px-3 py-2" style="width: 100%;">
+                                                    <div class="row">
+                                                        <div class="col-3">
+                                                            <div class="row">
+                                                                <div class="col px-2">
+                                                                    <div id="collectionDetailOuter" class="d-flex align-items-center justify-content-center border-0" style="width: 100%; aspect-ratio: 1/1; border-radius: 50%;">
+                                                                        <div id="collectionDetailImage" style="width: 90%; aspect-ratio: 1/1; border-radius: 50%; background: url('/public/image/follow/questionBlack.png') no-repeat center; background-size: cover; filter: opacity(85%);"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mt-1">
+                                                                <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                    <span id="collectionDetailName">? ? ?</span>
+                                                                    <!-- 김아무 -->
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div id="collectionDetailOpenRating" class="col text-center fw-bold" style="font-size: 0.56rem;">
+                                                                    Lv ? ( ?? / ?? )
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="row mt-1">
-                                                            <div class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                <span id="collectionDetailName">? ? ?</span>
-                                                                <!-- 김아무 -->
+                                                        <div class="col my-auto">
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="row">
+                                                                        <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                            <span id="collectionDetailHeight">? ? ?</span> cm
+                                                                            <!-- 163 cm -->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                            키
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                                <div class="col-3">
+                                                                    <div class="row">
+                                                                        <div id="collectionDetailGender" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                            ? ?
+                                                                            <!-- 👱🏻‍♀️ -->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                            성별
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                                <div class="col">
+                                                                    <div class="row">
+                                                                        <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                            <span id="collectionDetailWeight">? ? ?</span> kg
+                                                                            <!-- 50 kg -->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                            몸무게
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div id="collectionDetailOpenRating" class="col text-center fw-bold" style="font-size: 0.56rem;">
-                                                                Lv ? ( ?? / ?? )
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="row">
+                                                                        <div id="collectionDetailMbtiType" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                            ? ? ? ?
+                                                                            <!-- ISTJ -->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                            MBTI
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                                <div class="col">
+                                                                    <div class="row">
+                                                                        <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                            <span id="collectionDetailBloodType">? ?</span> 형
+                                                                            <!-- B 형 -->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                            혈액형
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                                <div class="col">
+                                                                    <div class="row">
+                                                                        <div id="collectionDetailDrinking" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                            ? ?
+                                                                            <!-- N -->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                            음주여부
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                                <div class="col">
+                                                                    <div class="row">
+                                                                        <div id="collectionDetailSmoking" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                            ? ?
+                                                                            <!-- N -->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                            흡연여부
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="row">
+                                                                        <div id="collectionDetailHobby" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                            ? ? ? ? ?
+                                                                            <!-- 집에서 뒹굴거리기 -->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                            취미
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                                                <div class="col">
+                                                                    <div class="row">
+                                                                        <div id="collectionDetailPreference" class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                                            ? ? ? ? ?
+                                                                            <!-- 게이 -->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                                            성적지향
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col my-auto">
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="row">
-                                                                    <div class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                        <span id="collectionDetailHeight">? ? ?</span> cm
-                                                                        <!-- 163 cm -->
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                        키
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                                            <div class="col-3">
-                                                                <div class="row">
-                                                                    <div id="collectionDetailGender" class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                        ? ?
-                                                                        <!-- 👱🏻‍♀️ -->
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                        성별
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                                            <div class="col">
-                                                                <div class="row">
-                                                                    <div class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                        <span id="collectionDetailWeight">? ? ?</span> kg
-                                                                        <!-- 50 kg -->
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                        몸무게
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                    <div class="row align-items-center">
+                                                        <div class="col-auto pe-0 text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                            인스타 활동온도
                                                         </div>
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="row">
-                                                                    <div id="collectionDetailMbtiType" class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                        ? ? ? ?
-                                                                        <!-- ISTJ -->
+                                                        <div class="col">
+                                                            <div class="row align-items-center">
+                                                                <div class="col">
+                                                                    <div class="progress" style="height: 0.5rem;">
+                                                                        <div id="collectionDetailTemp" class="progress-bar rounded" style="background: #feb146; width: 36.5%;"></div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="row">
-                                                                    <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                        MBTI
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                                            <div class="col">
-                                                                <div class="row">
-                                                                    <div class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                        <span id="collectionDetailBloodType">? ?</span> 형
-                                                                        <!-- B 형 -->
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                        혈액형
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                                            <div class="col">
-                                                                <div class="row">
-                                                                    <div id="collectionDetailDrinking" class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                        ? ?
-                                                                        <!-- N -->
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                        음주여부
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                                            <div class="col">
-                                                                <div class="row">
-                                                                    <div id="collectionDetailSmoking" class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                        ? ?
-                                                                        <!-- N -->
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                        흡연여부
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="row">
-                                                                    <div id="collectionDetailHobby" class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                        ? ? ? ? ?
-                                                                        <!-- 집에서 뒹굴거리기 -->
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                        취미
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                                            <div class="col">
-                                                                <div class="row">
-                                                                    <div id="collectionDetailPreference" class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                                                        ? ? ? ? ?
-                                                                        <!-- 게이 -->
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                                        성적지향
-                                                                    </div>
+                                                                <div class="col-auto ps-0 fw-bold text-end" style="font-size: 0.8rem; color: #000;">
+                                                                    <span id="collectionDetailTempContent">36.5</span>℃
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="row align-items-center">
-                                                    <div class="col-auto pe-0 text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                        인스타 활동온도
+    
+                                                <div style="position: relative;">
+                                                    <hr class="my-2" style="color: #81461A;">
+                                                    <span class="px-3" style="position: absolute; top: -0.65rem; left: calc(50% - 2rem); font-size: 0.9rem; background: #E0C9A9; color: #81461A;">추가기능</span>
+                                                </div>
+    
+                                                <div class="row py-2 justify-content-center">
+                                                    <div class="col-auto d-grid justify-content-center px-2">
+                                                        <button id="collectionDetailHeartButton" class="btn text-white py-0" style="background: #81461A;">
+                                                            <span id="collectionDetailHeartIcon" class="material-symbols-rounded" style="font-size: 0.8rem;">
+                                                                favorite
+                                                            </span>
+                                                        </button>
                                                     </div>
-                                                    <div class="col">
-                                                        <div class="row align-items-center">
-                                                            <div class="col">
-                                                                <div class="progress" style="height: 0.5rem;">
-                                                                    <div id="collectionDetailTemp" class="progress-bar rounded" style="background: #feb146; width: 36.5%;"></div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-auto ps-0 fw-bold text-end" style="font-size: 0.8rem; color: #000;">
-                                                                <span id="collectionDetailTempContent">36.5</span>℃
-                                                            </div>
-                                                        </div>
+                                                    <div class="col-auto d-grid justify-content-center px-2">
+                                                        <button id="collectionDetailMessageButton" class="btn text-white py-0" style="background: #81461A; font-size: 0.8rem;" disabled>
+                                                            메세지
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-auto d-grid justify-content-center px-2">
+                                                        <button id="collectionDetailMstarButton" class="btn text-white py-0" style="background: #81461A; font-size: 0.8rem;" disabled>
+                                                            Mstar
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-auto d-grid justify-content-center px-2">
+                                                        <button id="collectionDetailWalkRequestButton" class="btn text-white py-0" style="background: #81461A; font-size: 0.8rem;" disabled>
+                                                            산책 신청
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -4387,7 +4485,7 @@
             </div>
 
             <div class="likeListWrapper carousel-item px-1">
-                <div class="likeListButton rounded px-3 py-2" style="width: 100%; background: #C5A886;">
+                <div class="rounded px-3 py-2" style="width: 100%; background: #C5A886;">
                     <div class="row my-auto align-items-center">
                         <div class="col">No. <span class="likeListPk">777</span></div>
                         <div class="col">
@@ -4399,172 +4497,176 @@
                     <div>
                         <hr class="mt-1 mb-2" style="color: #81461A;">
                     </div>
-                    <div class="row">
-                        <div class="col-3">
+                    <div class="likeListButton row">
+                        <div class="col">
                             <div class="row">
-                                <div class="col px-2">
-                                    <div class="likeListOuter d-flex align-items-center justify-content-center border-0" style="width: 100%; aspect-ratio: 1/1; border-radius: 50%;">
-                                        <div class="likeListImage" style="width: 90%; aspect-ratio: 1/1; border-radius: 50%; background: url('/public/image/follow/questionBlack.png') no-repeat center; background-size: cover; filter: opacity(85%);"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mt-1">
-                                <div class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                    <span class="likeListName">? ? ?</span>
-                                    <!-- 김아무 -->
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="likeListOpenRating col text-center fw-bold" style="font-size: 0.56rem;">
-                                    Lv ? ( ?? / ?? )
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col my-auto">
-                            <div class="row">
-                                <div class="col">
-                                    <div class="row">
-                                        <div class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                            <span class="likeListHeight">? ? ?</span> cm
-                                            <!-- 163 cm -->
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                            키
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
                                 <div class="col-3">
                                     <div class="row">
-                                        <div class="likeListGender col text-center fw-bold" style="font-size: 0.8rem;">
-                                            ? ?
-                                            <!-- 👱🏻‍♀️ -->
+                                        <div class="col px-2">
+                                            <div class="likeListOuter d-flex align-items-center justify-content-center border-0" style="width: 100%; aspect-ratio: 1/1; border-radius: 50%;">
+                                                <div class="likeListImage" style="width: 90%; aspect-ratio: 1/1; border-radius: 50%; background: url('/public/image/follow/questionBlack.png') no-repeat center; background-size: cover; filter: opacity(85%);"></div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                            성별
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                <div class="col">
-                                    <div class="row">
+                                    <div class="row mt-1">
                                         <div class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                            <span class="likeListWeight">? ? ?</span> kg
-                                            <!-- 50 kg -->
+                                            <span class="likeListName">? ? ?</span>
+                                            <!-- 김아무 -->
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                            몸무게
+                                        <div class="likeListOpenRating col text-center fw-bold" style="font-size: 0.56rem;">
+                                            Lv ? ( ?? / ?? )
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col my-auto">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                    <span class="likeListHeight">? ? ?</span> cm
+                                                    <!-- 163 cm -->
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                    키
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                        <div class="col-3">
+                                            <div class="row">
+                                                <div class="likeListGender col text-center fw-bold" style="font-size: 0.8rem;">
+                                                    ? ?
+                                                    <!-- 👱🏻‍♀️ -->
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                    성별
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                    <span class="likeListWeight">? ? ?</span> kg
+                                                    <!-- 50 kg -->
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                    몸무게
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="likeListMbtiType col text-center fw-bold" style="font-size: 0.8rem;">
+                                                    ? ? ? ?
+                                                    <!-- ISTJ -->
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                    MBTI
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col text-center fw-bold" style="font-size: 0.8rem;">
+                                                    <span class="likeListBloodType">? ?</span> 형
+                                                    <!-- B 형 -->
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                    혈액형
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="likeListDrinking col text-center fw-bold" style="font-size: 0.8rem;">
+                                                    ? ?
+                                                    <!-- N -->
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                    음주여부
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="likeListSmoking col text-center fw-bold" style="font-size: 0.8rem;">
+                                                    ? ?
+                                                    <!-- N -->
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                    흡연여부
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="likeListHobby col text-center fw-bold" style="font-size: 0.8rem;">
+                                                    ? ? ? ? ?
+                                                    <!-- 집에서 뒹굴거리기 -->
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                    취미
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="likeListPreference col text-center fw-bold" style="font-size: 0.8rem;">
+                                                    ? ? ? ? ?
+                                                    <!-- 게이 -->
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                                    성적지향
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="row">
-                                        <div class="likeListMbtiType col text-center fw-bold" style="font-size: 0.8rem;">
-                                            ? ? ? ?
-                                            <!-- ISTJ -->
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                            MBTI
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                <div class="col">
-                                    <div class="row">
-                                        <div class="col text-center fw-bold" style="font-size: 0.8rem;">
-                                            <span class="likeListBloodType">? ?</span> 형
-                                            <!-- B 형 -->
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                            혈액형
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                <div class="col">
-                                    <div class="row">
-                                        <div class="likeListDrinking col text-center fw-bold" style="font-size: 0.8rem;">
-                                            ? ?
-                                            <!-- N -->
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                            음주여부
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                <div class="col">
-                                    <div class="row">
-                                        <div class="likeListSmoking col text-center fw-bold" style="font-size: 0.8rem;">
-                                            ? ?
-                                            <!-- N -->
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                            흡연여부
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="row">
-                                        <div class="likeListHobby col text-center fw-bold" style="font-size: 0.8rem;">
-                                            ? ? ? ? ?
-                                            <!-- 집에서 뒹굴거리기 -->
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                            취미
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="vr px-0 text-body-tertiary my-auto" style="height: 1rem;"></div>
-                                <div class="col">
-                                    <div class="row">
-                                        <div class="likeListPreference col text-center fw-bold" style="font-size: 0.8rem;">
-                                            ? ? ? ? ?
-                                            <!-- 게이 -->
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                            성적지향
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row align-items-center">
-                        <div class="col-auto pe-0 text-body-tertiary text-center" style="font-size: 0.6rem;">
-                            인스타 활동온도
-                        </div>
-                        <div class="col">
                             <div class="row align-items-center">
-                                <div class="col">
-                                    <div class="progress" style="height: 0.5rem;">
-                                        <div class="likeListTemp progress-bar rounded" style="background: #feb146; width: 36.5%;"></div>
-                                    </div>
+                                <div class="col-auto pe-0 text-body-tertiary text-center" style="font-size: 0.6rem;">
+                                    인스타 활동온도
                                 </div>
-                                <div class="col-auto ps-0 fw-bold text-end" style="font-size: 0.8rem; color: #000;">
-                                    <span class="likeListTempContent">36.5</span>℃
+                                <div class="col">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <div class="progress" style="height: 0.5rem;">
+                                                <div class="likeListTemp progress-bar rounded" style="background: #feb146; width: 36.5%;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto ps-0 fw-bold text-end" style="font-size: 0.8rem; color: #000;">
+                                            <span class="likeListTempContent">36.5</span>℃
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

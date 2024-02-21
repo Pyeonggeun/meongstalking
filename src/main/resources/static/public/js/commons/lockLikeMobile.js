@@ -26,13 +26,13 @@ const llmLeftSummarySettingValues = {
 };
 
 // 오른쪽 요약 페이지 세팅값(em)
-const llmRightSummarySettingValues = {
-    right: 3,                                    // auto 옵션 만들어야 되나
-    top: 3,
-    backgroundColor: "#FFF",
-    width: 15,
-    height: 40,
-};
+// const llmRightSummarySettingValues = {
+//     right: 3,                                    // auto 옵션 만들어야 되나
+//     top: 3,
+//     backgroundColor: "#FFF",
+//     width: 15,
+//     height: 40,
+// };
 
 
 const leftSummaryHtml = `
@@ -42,16 +42,26 @@ const leftSummaryHtml = `
 <div class="row">
 <div class="col">레이아웃 테스트</div>
 </div>
+<div style="width: 100%; height: 100%;">
+    <div class="row">
+        <div class="col">뭐라고 써야하나요..?</div>
+    </div>
+    <div class="row mt-5">
+        <div class="col d-grid justify-content-center">
+            <div class="rounded" style="width: 8rem; height: 8rem; border: 5px solid #211e1e; background: url('/public/image/follow/qrCode.png') no-repeat center; background-size: cover;"></div>
+        </div>
+    </div>
+</div>
 `;
 
-const rightSummaryHtml = `
-<div class="row">
-<div class="col fw-bold">오른쪽 제목... 블라블라...</div>
-</div>
-<div class="row">
-<div class="col">레이아웃 테스트</div>
-</div>
-`;
+// const rightSummaryHtml = `
+// <div class="row">
+// <div class="col fw-bold">오른쪽 제목... 블라블라...</div>
+// </div>
+// <div class="row">
+// <div class="col">레이아웃 테스트</div>
+// </div>
+// `;
 
 
 
@@ -64,7 +74,7 @@ window.addEventListener("DOMContentLoaded", () => {
     initializeBody();
     createMoblieWrapper();
     createLeftSummary();
-    createRightSummary();
+    // createRightSummary();
 });
 function backGroundImg(){
     document.body.style.backgroundImage = "url('/public/image/commons/webCover.png')";
@@ -88,19 +98,19 @@ function createLeftSummary() {
 
 }
 
-function createRightSummary() {
-    const summaryWrapper = document.createElement("div");
-    summaryWrapper.style.position = "absolute";
-    summaryWrapper.style.right = `${llmRightSummarySettingValues.right}em`;
-    summaryWrapper.style.top = `${llmRightSummarySettingValues.top}em`;
-    summaryWrapper.style.backgroundColor = llmRightSummarySettingValues.backgroundColor;
-    summaryWrapper.style.width = `${llmRightSummarySettingValues.width}em`;
-    summaryWrapper.style.height = `${llmRightSummarySettingValues.height}em`;
+// function createRightSummary() {
+//     const summaryWrapper = document.createElement("div");
+//     summaryWrapper.style.position = "absolute";
+//     summaryWrapper.style.right = `${llmRightSummarySettingValues.right}em`;
+//     summaryWrapper.style.top = `${llmRightSummarySettingValues.top}em`;
+//     summaryWrapper.style.backgroundColor = llmRightSummarySettingValues.backgroundColor;
+//     summaryWrapper.style.width = `${llmRightSummarySettingValues.width}em`;
+//     summaryWrapper.style.height = `${llmRightSummarySettingValues.height}em`;
 
-    summaryWrapper.innerHTML = rightSummaryHtml;
+//     summaryWrapper.innerHTML = rightSummaryHtml;
 
-    document.body.appendChild(summaryWrapper);
-}
+//     document.body.appendChild(summaryWrapper);
+// }
 
 
 function initializeBody() {
