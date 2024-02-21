@@ -302,8 +302,10 @@
                 <div class="col">
                     <div class="row">
                         <div class="col-7">
-                            <img th:src="@{/public/image/dog_img.png}" class="img-fluid rounded-circle"
+                            <a href="../mstar/profilePage">
+                            <img th:src="@{response.data.profile_photo}" class="img-fluid rounded-circle"
                                 style="width: 2em; height: 2em;">
+                                </a>
                             <span class="fw-bold" style="color: #f45600;" th:text="${qwer['name']}"></span>
                         </div>
                         <div class="col text-end text-secondary">
@@ -389,7 +391,7 @@
         <div class="commentWrapper">
             <div class="row">
                 <div class="col pt-1 text-center">
-                    <img th:src="@{/public/image/dog_img.png}" class="img-fluid rounded-circle profile-image"
+                    <img th:src="@{response.data.profile_photo}" class="img-fluid rounded-circle profile-image"
                         style="width: 7em">
                 </div>
                 <div class="col-10">
