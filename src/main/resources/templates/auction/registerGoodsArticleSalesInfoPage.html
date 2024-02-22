@@ -25,10 +25,9 @@
 
                 const startingPrice = document.getElementById("starting_price").value;
 
-                const binPrice = document.getElementById("bin_price").value;
 
 
-                const url = "./registerGoods?commencement_date=" + commencementDateTime + "&expiry_date=" + expiryDateTime + "&starting_price=" + startingPrice + "&bin_price=" + binPrice;
+                const url = "./registerGoods?commencement_date=" + commencementDateTime + "&expiry_date=" + expiryDateTime + "&starting_price=" + startingPrice + "&bin_price=" + null;
                 
                 fetch(url)
                 .then(response => response.json())
