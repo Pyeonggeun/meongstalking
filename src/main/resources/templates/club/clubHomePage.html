@@ -134,6 +134,18 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
         }
+
+        .packBox {
+            background-color: white;
+            border-radius: 1em;
+            padding-top: 0.75em;
+            padding-bottom: 0.75em;
+            margin: 0.02em;
+        }
+/* // */
+        .container {
+            background-color: ghostwhite;
+        }
     </style>
     <script th:inline="javascript">
         function goBack() {
@@ -241,12 +253,12 @@
         </div>
 
         <div th:if="${checkMember != 1} or ${checkMember != 3}  or ${clubTF['user_exists'] == 'F' }">
-            <div class="row">
-                <div id="carouselExampleCaptions1" class="carousel slide">
+            <div class="row px-0">
+                <div id="carouselExampleCaptions1" class="carousel slide px-0">
                     <div class="carousel-indicators">
-      
-                        <button type="button" data-bs-target="#carouselExampleCaptions1" data-bs-slide-to="0" class="active"
-                            aria-current="true" aria-label="Slide 1"></button>
+
+                        <button type="button" data-bs-target="#carouselExampleCaptions1" data-bs-slide-to="0"
+                            class="active" aria-current="true" aria-label="Slide 1"></button>
                         <button type="button" data-bs-target="#carouselExampleCaptions1" data-bs-slide-to="1"
                             aria-label="Slide 2"></button>
                         <button type="button" data-bs-target="#carouselExampleCaptions1" data-bs-slide-to="2"
@@ -255,37 +267,60 @@
                     <div class="carousel-inner">
 
                         <div class="carousel-item active">
-                            <img th:src="@{'/uploadFiles/'+${clublist[0]['img']}}" class="d-block w-100" alt="Image" style="height: 200px;">
+                            <img th:src="@{'/uploadFiles/'+${clublist[0]['img']}}" class="d-block w-100" alt="Image"
+                                style="height: 200px;">
                         </div>
                         <div class="carousel-item">
-                            <img th:src="@{'/uploadFiles/'+${clublist[1]['img']}}" class="d-block w-100" alt="Image" style="height: 200px;">
+                            <img th:src="@{'/uploadFiles/'+${clublist[1]['img']}}" class="d-block w-100" alt="Image"
+                                style="height: 200px;">
                         </div>
                         <div class="carousel-item">
-                            <img th:src="@{'/uploadFiles/'+${clublist[2]['img']}}" class="d-block w-100" alt="Image" style="height: 200px;">
+                            <img th:src="@{'/uploadFiles/'+${clublist[2]['img']}}" class="d-block w-100" alt="Image"
+                                style="height: 200px;">
                         </div>
 
                     </div>
                 </div>
-            
+
             </div>
-            
+
             <div class="row pt-3 scrollable-menu d-flex justify-content-around align-items-center fw-bold text-center">
                 <span class="col-6 clickable" onclick="aaa()">인기 많은 동호회</span>
                 <span class="col-6 clickable" onclick="popularClubsContent()">전 체 동호회</span>
             </div>
-            <div id="popularClubsContent" class="row pt-2 fw-bold justify-content-center p-3">
-                <div th:each="qwer : ${clublist}" class="card mb-3 px-1 " style="max-width: auto;">
-                    <div class="row g-0">
-                        <div class="col-4">
-                            <img th:src="@{'/uploadFiles/'+${qwer['img']}}" class="img-fluid d-flex mx-auto py-1"
-                                style="height: 100%; max-width: 100%;">
-                        </div>
-                        <div class="col-8">
-                            <div class="card-body">
-                                <a th:href="@{./clubListPage?clubPk={club_pk}(club_pk=${qwer['club_pk']})}"
-                                    class="card-title text-decoration-none" th:text="${qwer['name']}"
-                                    style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: inherit;"></a>
-                                <p class="card-text" th:text="${qwer['content']}"></p>
+            <div id="popularClubsContent" class="row pt-2 fw-bold justify-content-center p-3 ">
+                <div class="col">
+                    <div class="row mt-2 ">
+                        <div class="col">
+                            <div th:each="club, iterStat : ${clublist}" class="pt-0 border-bottom border-5 border-gray packBox mb-2 "
+                            style="background-color: #fff;" >
+                                <a th:href="@{../club/clubListPage?clubPk={club_pk}(club_pk=${club['club_pk']})}"
+                                    class="text-decoration-none">
+                                    <div class="row">
+                                        <div class="col">
+                                            <img th:src="@{'/uploadFiles/'+${club['img']}}" class="w-100"
+                                                alt="Image"
+                                                style="height: 8rem; background-size: cover; border-radius: 10px;">
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2 px-3" >
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col fw-bold" style="font-size: 0.9rem;">
+                                                    <span th:text="${club['name']}"></span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="col text-secondary text-truncate"
+                                                        style="font-size: 0.85rem; height: 1.25rem; -webkit-line-clamp: 1; white-space: normal; display: -webkit-box; -webkit-box-orient: vertical;">
+                                                        <span th:text="${club['content']}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -314,7 +349,62 @@
                 </div>
             </div>
 
-            <div id="aaa" class="row pt-2 fw-bold justify-content-center px-3">
+            <div id="aaa" class="row pt-2 fw-bold justify-content-center p-3 ">
+                <!-- <div th:each="qwer : ${clubRanklist}" class="card mb-3 px-1 " style="max-width: auto;">
+                    <div class="row g-0">
+                        <div class="col-4">
+                            <img th:src="@{'/uploadFiles/'+${qwer['img']}}" class="img-fluid d-flex mx-auto py-1"
+                                style="height: 100%; max-width: 100%;">
+                        </div>
+                        <div class="col-8">
+                            <div class="card-body">
+                                <a th:href="@{./clubListPage?clubPk={club_pk}(club_pk=${qwer['club_pk']})}"
+                                    class="card-title text-decoration-none" th:text="${qwer['name']}"
+                                    style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: inherit;"></a>
+                                <p class="card-text" th:text="${qwer['content']}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+                <!-- 다른모양으로 -->
+                <div class="col">
+                    <div class="row mt-2 ">
+                        <div class="col">
+                            <div th:each="club, iterStat : ${clubRanklist}" class="pt-0 border-bottom border-5 border-gray packBox mb-2 "
+                            style="background-color: #fff;" >
+                                <a th:href="@{../club/clubListPage?clubPk={club_pk}(club_pk=${club['club_pk']})}"
+                                    class="text-decoration-none">
+                                    <div class="row">
+                                        <div class="col">
+                                            <img th:src="@{'/uploadFiles/'+${club['img']}}" class="w-100"
+                                                alt="Image"
+                                                style="height: 8rem; background-size: cover; border-radius: 10px;">
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2 px-3" >
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col fw-bold" style="font-size: 0.9rem;">
+                                                    <span th:text="${club['name']}"></span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="col text-secondary text-truncate"
+                                                        style="font-size: 0.85rem; height: 1.25rem; -webkit-line-clamp: 1; white-space: normal; display: -webkit-box; -webkit-box-orient: vertical;">
+                                                        <span th:text="${club['content']}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="row-auto">
                     <div class="col">
                         <div class="row pt-2">

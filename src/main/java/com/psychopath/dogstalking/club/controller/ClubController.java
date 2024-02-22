@@ -61,6 +61,9 @@ public class ClubController {
         List<Map<String, Object>> clublist = clubService.selectClubList();
         model.addAttribute("clublist", clublist);
 
+        List<Map<String, Object>> clubRanklist = clubService.selectRankClubList();
+        model.addAttribute("clubRanklist", clubRanklist);
+
         if (memberLank == 1 || memberLank == 3) {
 
             int clubPk = clubService.selectClubPK(userDto.getUser_pk());
