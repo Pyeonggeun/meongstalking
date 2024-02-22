@@ -204,13 +204,13 @@
                 <div class="col justify-content-between fw-bold">
                     <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
                     <th:block
-                        th:if="${session.checkMember == null || (session.checkMember == 2 || session.checkMember == 3)}">
+                        th:if="${session.checkMember == null || (session.checkMember == 2)}">
                         <span class="mx-3" style="cursor: pointer;" onclick="alert('가입 후 이용해주세요')">방명록</span>
                         <span class="mx-3" style="cursor: pointer;" onclick="alert('가입 후 이용해주세요')">사진첩</span>
                         <span class="mx-3" style="cursor: pointer;" onclick="alert('가입 후 이용해주세요')">멤버</span>
                     </th:block>
                     <th:block
-                        th:unless="${session.checkMember == null || (session.checkMember == 2 || session.checkMember == 3)}">
+                        th:unless="${session.checkMember == null || (session.checkMember == 2)}">
                         <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">방명록</span>
 
                         <span class="mx-3" style="cursor: pointer;"
@@ -272,7 +272,7 @@
                                 <div class="row">
                                     <div class="col-7">
                                         <a href="../mstar/profilePage">
-                                            <img th:src="@{response.data.profile_photo}" class="img-fluid rounded-circle"
+                                            <img th:src="@{response.data.profileInfoDto.profile_photo}" class="img-fluid rounded-circle"
                                                  style="width: 2em; height: 2em;">
                                         </a>
                                         
