@@ -214,5 +214,5 @@ public interface MstarSqlMapper{
     public void insertArticleTag(ArticleTagDto articleTagDto);
     public List<ArticleTagDto> selectArticleTagList(int art_photo_pk);
 
-    public List<ProfileInfoDto> selectRecoUserList(int user_pk);
+    public int[] selectRecoUserList(int user_pk);
 }
