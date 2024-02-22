@@ -1,308 +1,308 @@
-    <div id="itemModal" class="modal" tabindex="-1" style="z-index: 3000;">
-        <div class="modal-dialog">
-          <div class="modal-content" style="background-color: transparent; border: none;">
-            <div class="row mt-2 justify-content-end">
-                <div class="col-auto rounded-pill bg-white" style="z-index: 100;">
-                    <div class="row align-self-center">
-                        <div class="col-auto">
-                            <img class="img-fluid" src="/public/image/mFollow/coin.png" alt="" style="height: 1em;">
-                        </div>
-                        <div id="myCoin" class="col text-end">
-                            
-                        </div>
+<div id="itemModal" class="modal fade" tabindex="-1" style="z-index: 3000;">
+    <div class="modal-dialog modal-dialog-center">
+      <div class="modal-content" style="background-color: transparent; border: none;">
+        <div class="row mt-2 justify-content-end">
+            <div class="col-auto rounded-pill bg-white" style="z-index: 100;">
+                <div class="row align-self-center">
+                    <div class="col-auto">
+                        <img class="img-fluid" src="/public/image/mFollow/coin.png" alt="" style="height: 1em;">
                     </div>
-                </div>
-                <div class="col-auto">
-                    <div class="row">
-                        <div class="col">
-
-                        </div>
+                    <div id="myCoin" class="col text-end">
+                        
                     </div>
                 </div>
             </div>
-            <div class="modal-body py-1  position-relative" style="overflow-y: hidden; border: none;">
-                <div id="carouselExample" class="carousel slide">
-                    <div class="carousel-inner">
-                      <div class="carousel-item active ">
-                        <div class="row" style="height: 3em; overflow: hidden;">
-                            <div class="col">
-                              <img class=" py-0 px-0 d-block" src="/public/image/mFollow/caenofi.png" alt="" style="position: absolute; z-index: 9999; height: 5em; width: 120%; left: -10%;">
-                            </div>  
-                          </div>
-                          <div class="row  mx-1 px-0 pattern rounded-top">
-                              <div class="col food"></div>
-                              <div class="col">
-                                  <div  class="row justify-content-center">
-                                      <div id="steam-container" class="col updownMove">
-                                          <div class="steam" style="top: 8em; left: 4em;"></div>
-                                          <div class="steam" style="top: 3em; left: 7em;"></div>
-                                          <div class="steam" style="top: 6em; left: 10em;"></div>
-                                          <div class="steam" style="top: 4em; left: 12em;"></div>
-                                          <div class="steam" style="top: 7em; left: 15em;"></div>  
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div id="coinOrderBox" class="row rounded position-absolute px-auto mx-auto d-none" style="background-color: rgb(255, 255, 255); z-index: 9999; width: 80%; left: 10%; top: 20%; border: 0.2em solid rgb(175, 144, 50);">
-                              <div class="col">
-                                  <div class="row">
-                                      <div class="col text-end">
-                                          <i onclick="closeCoinOrderBox()" class="fa-solid fa-xmark"></i>
-                                      </div>
-                                  </div>
-                                  <div class="row">
-                                      <div class="col"></div>
-                                      <div class="col-auto">
-                                          <img id="coinImg" class="img-fluid" src="" alt="" style="height: 6em;">
-                                      </div>
-                                      <div class="col"></div>
-                                  </div>
-                                  <div class="row mt-3">
-                                      <div id="payProduct" class="col text-center fw-bold" style="font-size: 0.8em;">
-                                          
-                                      </div>
-                                  </div>
-                                  <div class="row mt-2">
-                                      <div class="col text-center" style="font-size: 0.9em;">
-                                          고기 보석으로 멍스토킹 콘텐츠를 구매할 수 있습니다. 구매한 콘텐츠는 환불이 불가능합니다.
-                                      </div>
-                                  </div>
-                                  <div class="row mt-3 mb-2 justify-content-center">
-                                      <div class="col"></div>
-                                      <div id="goPayRequestPage" class="col px-0 text-center rotated_gradient_box" style="font-size: 0.8em;">
-                                          KRW<span id="payAmount"></span>
-                                      </div>
-                                      <div class="col"></div>
-                                  </div>
-                              </div>
-                          </div>
-                          
-                          <div class="row mx-1 wood rounded-bottom">
-                              <div class="col">
-                                  <div class="row mt-5" style="overflow-x: scroll;">
-                                      <div class="col none-scrollbar" style="overflow-x: scroll; scrollbar-width: none; height: 15em;">
-                                          <div  id="coinProductListBox" class="row mt-2 py-0 px-0 " style="width: 700%;">
-                                                    
-                                          </div>
-                                      </div>
-                                  </div>
-                                  <!--두번쨰 시작-->
-                                  
-                                  <!--두번쨰 끝-->
-                                  <div class="row mx-2 mt-4">
-                                      <div class="col-auto">
-                                          <div class="row">
-                                              <div onclick="closeShopModal()" class="col rounded-pill" style="background-color: rgb(232, 232, 235);">
-                                                  돌아가기
-                                              </div>
-                                          </div>
-                                      </div>
-                                      <div onclick="goAthorShop()" class="col fs--5 text-white text-end align-self-center">
-                                            아이템 상점으로
-                                      </div>
-                                      <div onclick="goAthorShop()" class="col-auto fs-5 px-0 text-white align-self-center">
-                                        <i class="fa-solid fa-arrow-right leftRightMove"></i>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                     </div>
+            <div class="col-auto">
+                <div class="row">
+                    <div class="col">
 
-
-                      <div class="carousel-item">
-                        <div id="itemShopMainImg" class="row position-relative">
-                            <div class="col mt-5">
-                                <div class="row mx-3 mt-5">
-                                    <div class="col mt-5 rounded none-scrollbar " style="overflow-x: scroll; height: 7em;">
-                                        <div id="shopLvItemListBox" class="row" style="width: 130%;">
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- 두번째 줄-->
-                                <div class="row mx-3 mt-3">
-                                    <div class="col  rounded none-scrollbar " style="overflow-x: scroll; height: 7em;">
-                                        <div  id="shopUseItemListBox" class="row" style="width: 130%;">
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mx-3 mt-3 rounded">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="modal-body py-1 position-relative" style="overflow-y: hidden; border: none;"> -->
+            <div class="modal-body rounded" style="padding: 0.2em;">
+                <div id="collectionModalHeight" class="rounded">
+                    <div id="carouselExample" class="carousel slide">
+                        <div class="carousel-inner">
+                          <div class="carousel-item active">
+                                <div class="row" style="height: 3em; overflow: hidden;">
                                     <div class="col">
-                                        <div class="row px-2 py-1 rounded" style="background-color: #f2e5a3; border: 0.2em solid rgb(158, 114, 2); height: 8em;">
-                                            <div class="col">
-                                                <div class="row justify-content-center">
-                                                    <div id="itemExplainName" class="col-auto rounded-pill fw-bold" style="background-color: #f2e5a4; color: #917326; font-size: 0.8em;">
-                                                        
-                                                    </div>
-                                                </div>
-                                                <div class="row justify-content-center mt-1">
-                                                    <div id="itemExplainDetail" class="col py-2 rounded" style="background-color: #835b0c; color: #eed9a5; font-size: 0.7em; height: 7em;">
-                                                        
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-auto rounded py-1 px-0 align-self-center" style="background-color: rgb(250, 237, 171);">
-                                                <img id="itemExplainImg" class="img-fluid sizeUP" alt="" style="height: 5em; max-width: 5em;">
+                                      <img class=" py-0 px-0 d-block" src="/public/image/mFollow/caenofi.png" alt="" style="position: absolute; z-index: 9999; height: 5em; width: 120%; left: -10%;">
+                                    </div>  
+                                </div>
+                                <div class="row  mx-1 px-0 pattern rounded-top">
+                                     <div class="col food"></div>
+                                    <div class="col">
+                                        <div  class="row justify-content-center">
+                                            <div id="steam-container" class="col updownMove">
+                                                <div class="steam" style="top: 60%; left: 25%;"></div>
+                                                <div class="steam" style="top: 30%; left: 35%;"></div>
+                                                <div class="steam" style="top: 50%; left: 48%;"></div>
+                                                <div class="steam" style="top: 30%; left: 58%;"></div>
+                                                <div class="steam" style="top: 60%; left: 70%;"></div>  
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div id="itemOrderBox" class="row rounded position-absolute px-auto mx-auto d-none" style="background-color: rgb(255, 255, 255); z-index: 9999; width: 80%; left: 10%; top: 20%; border: 0.2em solid rgb(175, 144, 50);">
+                                <div id="coinOrderBox" class="row rounded position-absolute px-auto mx-auto d-none" style="background-color: rgb(255, 255, 255); z-index: 9999; width: 80%; left: 10%; top: 20%; border: 0.2em solid rgb(175, 144, 50);">
                                     <div class="col">
                                         <div class="row">
                                             <div class="col text-end">
-                                                <i onclick="closeItemOrderBox()" class="fa-solid fa-xmark"></i>
+                                                <i onclick="closeCoinOrderBox()" class="fa-solid fa-xmark"></i>
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col">
-                                                <div class="row">
-                                                    <div class="col"></div>
-                                                    <div class="col-auto">
-                                                        <img id="orderItemImg" class="img-fluid" src="" alt="" style="height: 6em;">
-                                                    </div>
-                                                    <div class="col"></div>
-                                                </div>
+                                            <div class="col"></div>
+                                            <div class="col-auto">
+                                                <img id="coinImg" class="img-fluid" src="" alt="" style="height: 6em;">
                                             </div>
+                                            <div class="col"></div>
                                         </div>
                                         <div class="row mt-3">
-                                            <div id="orderItemName" class="col text-center fw-bold ">
+                                            <div id="payProduct" class="col text-center fw-bold" style="font-size: 0.8em;">
                                                 
                                             </div>
                                         </div>
                                         <div class="row mt-2">
-                                            <div id="orderItemExplain" class="col text-center " style="font-size: 0.9em;">
-                                                
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col text-end align-self-center">
-                                                <i id="downButton" onclick="downQuantity()" class="fa-solid fa-minus"></i>
-                                            </div>
-                                            <div class="col-3 px-0 pe-0">
-                                                <input id="quantity" class="form-control text-center py-1 px-1" type="number" value="1" disabled>
-                                            </div>
-                                            <div class="col text-start align-self-center">
-                                                <i id="upButton" onclick="upQuantity()" class="fa-solid fa-plus"></i>
+                                            <div class="col text-center" style="font-size: 0.9em;">
+                                                고기 보석으로 멍스토킹 콘텐츠를 구매할 수 있습니다. 구매한 콘텐츠는 환불이 불가능합니다.
                                             </div>
                                         </div>
                                         <div class="row mt-3 mb-2 justify-content-center">
                                             <div class="col"></div>
-                                            <div id="orderItembutton" class="col px-0 text-center rotated_gradient_box" style="font-size: 0.9em;">
-                                                <div class="row">
-                                                    <div class="col-auto pe-0 ">
-                                                        <img class="img-fluid" src="/public/image/mFollow/coin1.png" alt="" style="height: 2em;">
-                                                    </div>
-                                                    <div id="orderItemPrice" class="col-auto px-1 text-center align-self-center">
-
-                                                    </div>
-                                                </div>
+                                            <div id="goPayRequestPage" class="col px-0 text-center rotated_gradient_box" style="font-size: 0.8em;">
+                                                KRW<span id="payAmount"></span>
                                             </div>
                                             <div class="col"></div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mx-2 mt-3 mb-2">
-                                    <div class="col-auto">
-                                        <div class="row">
-                                            <div onclick="closeShopModal()" class="col text-white rounded-pill" style="background-color: rgb(67, 168, 62);">
-                                                돌아가기
+                                <div class="row mx-1 wood rounded-bottom" style="position: relative;">
+                                    <div class="col">
+                                      <div class="row mt-5 " style="overflow-x: scroll;">
+                                          <div class="col none-scrollbar" style="overflow-x: scroll; scrollbar-width: none;">
+                                              <div  id="coinProductListBox" class="row mt-2 py-0 px-0 " style="width: 600%;">
+                                                        
+                                              </div>
+                                          </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                              </div>
+                              <div class="row px-3 mt-3 mb-2 align-self-center" style="position: absolute; top: 90%; left:8%; width: 100%;">
+                                <div onclick="closeShopModal()" class="col-auto rounded-pill align-self-center bg-white">
+                                    돌아가기
+                                </div>
+                                <div onclick="goAthorShop()" class="col text-white text-end align-self-center" >
+                                    아이템 상점으로
+                                </div>
+                                <div onclick="goAthorShop()" class="col-auto pe-4 text-white align-self-center">
+                                    <i class="fa-solid fa-arrow-right leftRightMove"></i>
+                                </div>
+                         </div>
+    
+    
+                          <div class="carousel-item">
+                            <div id="itemShopMainImg" class="row position-relative">
+                                <div class="col mt-5">
+                                    <div class="row mt-5 mx-3">
+                                        <div class="col mt-5 rounded none-scrollbar " style="overflow-x: scroll; height: 7em;">
+                                            <div id="shopLvItemListBox" class="row" style="width: 130%;">
+                                                
                                             </div>
                                         </div>
                                     </div>
-                                    <div onclick="goAthorShop()" class="col text-end align-self-center" style="color: rgb(67, 168, 62);">
-                                          고기 보석점으로
+                                    <!-- 두번째 줄-->
+                                    <div class="row mx-3 mt-3">
+                                        <div class="col  rounded none-scrollbar " style="overflow-x: scroll; height: 7em;">
+                                            <div  id="shopUseItemListBox" class="row" style="width: 130%;">
+                                                
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div onclick="goAthorShop()" class="col-auto fs-5 pe-3 text-white align-self-center">
-                                      <i class="fa-solid fa-arrow-right leftRightMove" style="color: rgb(67, 168, 62);"></i>
+                                    <div class="row mx-3 mt-3 rounded">
+                                        <div class="col">
+                                            <div class="row px-2 py-1 rounded" style="background-color: #f2e5a3; border: 0.2em solid rgb(158, 114, 2); height: 8em;">
+                                                <div class="col">
+                                                    <div class="row justify-content-center">
+                                                        <div id="itemExplainName" class="col-auto rounded-pill fw-bold" style="background-color: #f2e5a4; color: #917326; font-size: 0.8em;">
+                                                            
+                                                        </div>
+                                                    </div>
+                                                    <div class="row justify-content-center mt-1">
+                                                        <div id="itemExplainDetail" class="col py-2 rounded" style="background-color: #835b0c; color: #eed9a5; font-size: 0.7em; height: 7em;">
+                                                            
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-auto rounded py-1 px-0 align-self-center" style="background-color: rgb(250, 237, 171);">
+                                                    <img id="itemExplainImg" class="img-fluid sizeUP" alt="" style="height: 5em; max-width: 5em;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="itemOrderBox" class="row rounded position-absolute px-auto mx-auto d-none" style="background-color: rgb(255, 255, 255); z-index: 9999; width: 80%; left: 10%; top: 20%; border: 0.2em solid rgb(175, 144, 50);">
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col text-end">
+                                                    <i onclick="closeItemOrderBox()" class="fa-solid fa-xmark"></i>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="row">
+                                                        <div class="col"></div>
+                                                        <div class="col-auto">
+                                                            <img id="orderItemImg" class="img-fluid" src="" alt="" style="height: 6em;">
+                                                        </div>
+                                                        <div class="col"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div id="orderItemName" class="col text-center fw-bold ">
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div id="orderItemExplain" class="col text-center " style="font-size: 0.9em;">
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col text-end align-self-center">
+                                                    <i id="downButton" onclick="downQuantity()" class="fa-solid fa-minus"></i>
+                                                </div>
+                                                <div class="col-3 px-0 pe-0">
+                                                    <input id="quantity" class="form-control text-center py-1 px-1" type="number" value="1" disabled>
+                                                </div>
+                                                <div class="col text-start align-self-center">
+                                                    <i id="upButton" onclick="upQuantity()" class="fa-solid fa-plus"></i>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3 mb-2 justify-content-center">
+                                                <div class="col"></div>
+                                                <div id="orderItembutton" class="col px-0 text-center rotated_gradient_box" style="font-size: 0.9em;">
+                                                    <div class="row">
+                                                        <div class="col-auto pe-0 ">
+                                                            <img class="img-fluid" src="/public/image/mFollow/coin1.png" alt="" style="height: 2em;">
+                                                        </div>
+                                                        <div id="orderItemPrice" class="col-auto px-1 text-center align-self-center">
+    
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row px-3 mt-3 mb-2 align-self-center" style="position: absolute; top: 90%; left:8%">
+                                    <div onclick="closeShopModal()" class="col-auto text-white rounded-pill align-self-center" style="background-color: rgb(67, 168, 62);">
+                                        돌아가기
+                                    </div>
+                                    <div onclick="goAthorShop()" class="col text-end align-self-center" style="color: rgb(67, 168, 62);">
+                                        고기 보석점으로
+                                    </div>
+                                    <div onclick="goAthorShop()" class="col-auto pe-5 text-white align-self-center">
+                                       <i class="fa-solid fa-arrow-right leftRightMove" style="color: rgb(67, 168, 62);"></i>
                                     </div>
                                 </div>
                             </div>
+                          </div>
                         </div>
-                      </div>
+                        <button  class="carousel-control-prev d-none" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button id="itemShopButton" class="carousel-control-next d-none" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Next</span>
+                        </button>
                     </div>
-                    <button  class="carousel-control-prev d-none" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                      <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button id="itemShopButton" class="carousel-control-next d-none" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                      <span class="visually-hidden">Next</span>
-                    </button>
                 </div>
             </div>
-          </div>
         </div>
       </div>
+    </div>
+  </div>
 
 
-      <div id="coinProductListTemplete" class="d-none">
-            <div class="col px-0 coinProductListWrapper">
-                <div class="row justify-content-center">
-                    <div class="col-auto mt-2">
-                        <img class="sizeUP coinProductImg" src="" alt="" style="height: 9em; width: 9em;">
+  <div id="coinProductListTemplete" class="d-none">
+        <div class="col px-0 coinProductListWrapper">
+            <div class="row justify-content-center">
+                <div class="col-auto mt-2">
+                    <img class="sizeUP coinProductImg" src="" alt="" style="height: 9em; width: 9em;">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col text-center text-white coinProductCount" style="font-size: 0.8em;">
+                    
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col">
+                    <div class="row justify-content-center" >
+                        <div class="col-auto mt-1 rounded-pill coinProductPrice" style="height: 1.5em; background-color: beige;">
+                            
+                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
+  </div>
+  
+  <div id="shopLvItemListTemplete" class="d-none">
+    <div  class="col itemBackground shopLvItemListWrapper">
+        <div class="row mt-1">
+            <div class="col text-center shackMove text-white itemLV" style="font-size: 0.8em;">
+                
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-auto align-self-center py-0">
+                <img class="img-fluid sizeUP itemImg" src="" alt="" style="height: 3.5em;">
+            </div>
+        </div>
+        <div class="row mt-2 justify-content-center">
+            <div class="col-auto rounded-pill" style="background-color: #f3e8d0;">
                 <div class="row">
-                    <div class="col text-center text-white coinProductCount" style="font-size: 0.8em;">
+                    <div class="col-auto pe-0 align-self-center">
+                        <img class="img-fluid" src="/public/image/mFollow/coin.png" alt="" style="height: 0.9em;">
+                    </div>
+                    <div class="col-auto ps-1 rounded-pill itemPrice" style="font-size: 0.9em;">
                         
                     </div>
                 </div>
-                <div class="row mt-2">
-                    <div class="col">
-                        <div class="row justify-content-center" >
-                            <div class="col-auto mt-1 rounded-pill coinProductPrice" style="height: 1.5em; background-color: beige;">
-                                
-                            </div>
-                        </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  
+  <div id="shopUseItemListTemplete" class="d-none">
+    <div class="col itemBackground shopUseItemListWrapper">
+        <div class="row mt-1">
+            <div class="col text-center shackMove text-white haveItemCount" style="font-size: 0.8em;">
+                
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-auto ps-3 align-self-center py-0">
+                <img class=" img-fluid sizeUP itemImg" src="" alt="" style="height: 3.5em;">
+            </div>
+        </div>
+        <div class="row mt-2 justify-content-center">
+            <div class="col-auto px-1 rounded-pill" style="background-color: #f3e8d0;">
+                <div class="row">
+                    <div class="col-auto pe-0 align-self-center">
+                        <img class="img-fluid" src="/public/image/mFollow/coin.png" alt="" style="height: 0.9em;">
+                    </div>
+                    <div class="col-auto ps-1 rounded-pill itemPrice align-self-center" style="font-size: 0.9em;">
+                        
                     </div>
                 </div>
             </div>
-      </div>
-      
-      <div id="shopLvItemListTemplete" class="d-none">
-        <div  class="col itemBackground shopLvItemListWrapper">
-            <div class="row mt-1">
-                <div class="col text-center shackMove text-white itemLV" style="font-size: 0.8em;">
-                    
-                </div>
-            </div>
-            <div class="row">
-                <div class="col align-self-center py-0">
-                    <img class=" img-fluid sizeUP itemImg" src="" alt="" style="height: 3.5em;">
-                </div>
-            </div>
-            <div class="row mt-2">
-                <div class="col-auto pe-0 align-self-center justify-content-center">
-                    <img class="img-fluid" src="/public/image/mFollow/coin.png" alt="" style="height: 1em;">
-                </div>
-                <div class="col-auto ps-1 itemPrice">
-                    
-                </div>
-            </div>
         </div>
-      </div>
-      
-      <div id="shopUseItemListTemplete" class="d-none">
-        <div class="col itemBackground shopUseItemListWrapper">
-            <div class="row mt-1">
-                <div class="col text-center shackMove text-white haveItemCount" style="font-size: 0.8em;">
-                    
-                </div>
-            </div>
-            <div class="row">
-                <div class="col align-self-center py-0">
-                    <img class=" img-fluid sizeUP itemImg" src="" alt="" style="height: 3.5em;">
-                </div>
-            </div>
-            <div class="row mt-2">
-                <div class="col-auto pe-0 align-self-center justify-content-center">
-                    <img class="img-fluid" src="/public/image/mFollow/coin.png" alt="" style="height: 1em;">
-                </div>
-                <div class="col-auto ps-1 itemPrice">
-                    
-                </div>
-            </div>
-        </div>
-      </div>      
+    </div>
+  </div>      
