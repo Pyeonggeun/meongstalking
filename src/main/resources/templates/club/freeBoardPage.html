@@ -92,6 +92,7 @@
             }
 
         }
+
         .packtitleBox {
             background-color: white;
             border-bottom-left-radius: 1em;
@@ -300,7 +301,7 @@
         <div class="row">
             <div th:insert="~{commons/naviBar}" style="background-color: #ffffff;"></div>
         </div>
-        <div class="row px-0"  style="background-color: #ffffff;">
+        <div class="row px-0" style="background-color: #ffffff;">
             <div class="col-auto my-2 ms-1" onclick="goBack()">
                 <i class="bi bi-arrow-left"></i>
             </div>
@@ -327,7 +328,7 @@
                     <div class="row">
                         <div class="col-7">
                             <a href="../mstar/profilePage">
-                                <img th:src="@{${qwer['profile_photo']}}" cl   ass="img-fluid rounded-circle"
+                                <img th:src="@{${qwer['profile_photo']}}" class="img-fluid rounded-circle"
                                     style="width: 2em; height: 2em;">
                             </a>
                             <span class="fw-bold" style="color: #f45600;" th:text="${qwer['name']}"></span>
@@ -412,8 +413,6 @@
                 </div>
             </div>
         </div>
-
-
         <div class="row updateCommentWrapper">
             <div class="col">
                 <div class="row">
@@ -427,10 +426,6 @@
                 </div>
             </div>
         </div>
-
-
-
-
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

@@ -174,7 +174,7 @@
             cardDiv.innerHTML = `
         <div class="col text-center">
             <div class="row d-flex justify-content-center align-items-center">
-                <img src="/public/image/dog_img.png" class="rounded-circle profile-image" style="max-width: 4.5em; max-height: 4.5em;">
+                <img th:src="@{${member.profile_photo}}" class="rounded-circle profile-image" style="max-width: 4.5em; max-height: 4.5em;">
             </div>
 
                 <div class="row">
