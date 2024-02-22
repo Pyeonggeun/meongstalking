@@ -27,7 +27,7 @@
 
 
 
-                const url = "./registerGoods?commencement_date=" + commencementDateTime + "&expiry_date=" + expiryDateTime + "&starting_price=" + startingPrice + "&bin_price=" + null;
+                const url = "./registerGoods?commencement_date=" + commencementDateTime + "&expiry_date=" + expiryDateTime + "&starting_price=" + startingPrice + "&bin_price=" + 0;
                 
                 fetch(url)
                 .then(response => response.json())
@@ -254,7 +254,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col">
-                                            <input id="commencement_date text-center" class="input-date" type="date">
+                                            <input id="commencement_date" class="input-date" type="date">
                                         </div>
                                         <div class="col">
                                             <span><input id="commencement_hour" class="input-text" type="number" style="width: 30%; text-align: center; font-weight: bold; color: #111111;"></span>
