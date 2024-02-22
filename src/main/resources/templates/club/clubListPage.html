@@ -164,6 +164,34 @@
         }
     </style>
     <script>
+        let user_pk = null;
+        function getUserDto() {
+            const url = "/mstar/getUserDto"
+            fetch(url)
+                .then(response => response.json())
+                .then((response) => {
+                    user_pk = response.data.user_pk;
+                    reloadRecoUserList(user_pk);
+                });
+        }
+
+        let profile_info_pk = null;
+        function loadMyProfileInfo(user_pk) {
+            const url = "/mstar/myProfileInfoDto";
+            fetch(url, {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "user_pk=" + user_pk
+            })
+                .then(response => response.json())
+                .then((response) => {
+
+                    profile_info_pk = response.data.profile_info_pk;
+                    console.log(profile_info_pk);
+                });
+        }
         function loadSignupModal() {
             const modal = bootstrap.Modal.getOrCreateInstance("#loadSignupModal");
             modal.show();
@@ -172,6 +200,35 @@
         function goBack() {
             window.history.back();
         }
+
+        function reloadRecoUserList(user_pk) {
+            const url = "/mstar/reloadRecoUserList?user_pk=" + user_pk
+
+            fetch(url)
+                .then(response => response.json())
+                .then(response => {
+                    const userRecoBox = document.querySelector("#userRecoBox");
+
+                    for (e of response.data) {
+                        const userRecoWrapper = document.querySelector("#template .userRecoWrapper").cloneNode(true);
+                        const profileImg = userRecoWrapper.querySelector(".profileImg");
+                        profileImg.src = e.profile_photo;
+
+                        const user_nickName = userRecoWrapper.querySelector(".user_nickName");
+                        user_nickName.innerText = e.nick_name;
+
+                        const followButton = userRecoWrapper.querySelector(".followButton");
+                        followButton.setAttribute("onclick", "followingUser(" + e.profile_info_pk + ", this)");
+
+                        userRecoBox.appendChild(userRecoWrapper);
+                    }
+                });
+
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            getUserDto();
+        });
 
     </script>
 
@@ -200,14 +257,12 @@
             <div class="row scrollable-menu py-2" style="background-color: #fff;">
                 <div class="col justify-content-between fw-bold">
                     <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
-                    <th:block
-                        th:if="${session.checkMember == null || (session.checkMember == 2)}">
+                    <th:block th:if="${session.checkMember == null || (session.checkMember == 2)}">
                         <span class="mx-3" style="cursor: pointer;" onclick="alert('가입 후 이용해주세요')">방명록</span>
                         <span class="mx-3" style="cursor: pointer;" onclick="alert('가입 후 이용해주세요')">사진첩</span>
                         <span class="mx-3" style="cursor: pointer;" onclick="alert('가입 후 이용해주세요')">멤버</span>
                     </th:block>
-                    <th:block
-                        th:unless="${session.checkMember == null || (session.checkMember == 2)}">
+                    <th:block th:unless="${session.checkMember == null || (session.checkMember == 2)}">
                         <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">방명록</span>
 
                         <span class="mx-3" style="cursor: pointer;"
@@ -218,7 +273,7 @@
             </div>
         </div>
 
-<!--   packBox mb-2 mt-1 -->
+        <!--   packBox mb-2 mt-1 -->
         <div class="row ">
             <div class="col-md-4 px-0 py-3">
                 <img class="img-fluid rounded" th:src="@{'/uploadFiles/'+${showclubpk.img}}" alt="등록된 이미지가 없습니다">
@@ -244,8 +299,8 @@
                             <div th:each="image : ${latestAlbum}" class="col px-1">
                                 <!-- <img style="height: 7.5em;" class="img-fluid" th:src="@{'/uploadFiles/'+${board.location}}" alt="사진">                     -->
                                 <a href="./photoAlbumPage">
-                                <img th:src="@{'/uploadFiles/'+${image.location}}" style="height: 7em;"
-                                    class="img-fluid" /></a>
+                                    <img th:src="@{'/uploadFiles/'+${image.location}}" style="height: 7em;"
+                                        class="img-fluid" /></a>
                             </div>
                         </div>
 
@@ -267,12 +322,15 @@
                         <div class="row pt-3 px-1">
                             <div class="col">
                                 <div class="row">
+                                    <!-- <div id="userRecoBox" class="row" style="flex-wrap: nowrap;"></div> -->
                                     <div class="col-7">
+
                                         <a href="../mstar/profilePage">
-                                            <img th:src="@{response.data.profileInfoDto.profile_photo}" class="img-fluid rounded-circle"
-                                                 style="width: 2em; height: 2em;">
+                                            <img th:src="${latestPost.profile_photo}"
+                                                class="img-fluid rounded-circle" style="width: 2em; height: 2em;">
                                         </a>
-                                        
+
+
                                         <span class="fw-bold ps-1 ms-2" style="color: #2f2f2f;"
                                             th:text="${latestPost.name}">닉네임1</span>
 
@@ -307,8 +365,8 @@
                         <div class="row align-items-center">
                             <div class="col-2">
                                 <a href="../mstar/profilePage">
-                                <img th:src="@{response.data.profile_photo}"
-                                    class="img-fluid rounded-circle profile-image"></a>
+                                    <img th:src="@{${member.profile_photo}}"
+                                        class="img-fluid rounded-circle profile-image"></a>
                             </div>
 
                             <div class="col">
@@ -321,7 +379,7 @@
             </div>
         </div>
 
-        
+
 
         <!-- <div th:if="${ApplyStatus == 1} or ${ApplyStatus == 3}" class="col">
                 
@@ -364,7 +422,7 @@
                 </div>
             </form>
         </div>
-        
+
 
 
     </div>
