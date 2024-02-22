@@ -430,23 +430,23 @@
                             const articleImgWrapper =  document.querySelector("#articleImgTemplete .articleImgWrapper").cloneNode(true);
                             
                             const indicatorButton = document.querySelector("#carouselIndicatorTemplete .indicatorButton").cloneNode(true);
-                            indicatorButton.setAttribute("data-bs-target","#carouselId"+e.articleDto.article_pk);
-                            indicatorButton.setAttribute("data-bs-slide-to" , count-1);
-                            indicatorBox.appendChild(indicatorButton);
-                            
-                            
                            
 
                             const img = articleImgWrapper.querySelector(".img");
                             
-                            if(count ==1){
-                                articleImgWrapper.classList.add("active");
-                                indicatorButton.classList.add("active");
-                            }
+                            
                             const photoCount = articleImgWrapper.querySelector(".photoCount");
                             if(!(e.photoAndTagList.length <= 1)){
                                 photoCount.classList.remove("d-none");
                                 photoCount.innerText = count+"/"+e.photoAndTagList.length;
+                                indicatorButton.setAttribute("data-bs-target","#carouselId"+e.articleDto.article_pk);
+                                indicatorButton.setAttribute("data-bs-slide-to" , count-1);
+                                indicatorBox.appendChild(indicatorButton);
+
+                            }
+                            if(count ==1){
+                                articleImgWrapper.classList.add("active");
+                                indicatorButton.classList.add("active");
                             }
                             count +=1;
                             if(p.userTagList.length !=0){
@@ -501,6 +501,7 @@
                             moreContent.setAttribute("onclick", "showMoreContent(this)");
                             moreContent.innerText = "더보기"
                             moreContent.classList.add("text-primary");
+                            moreContent.style.opacity = "0.7";
                             contentUserId.appendChild(moreContent);
                         }
             
@@ -1683,7 +1684,6 @@
                 -webkit-box-orient: vertical;
                 -webkit-line-clamp: 2;
                 overflow: hidden;
-                opacity: 0.7;
             }
             .carousel-indicators{
                 color: blue;

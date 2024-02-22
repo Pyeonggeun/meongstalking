@@ -30,6 +30,36 @@
 
     <script>
 
+        let user_pk = null;
+            function getUserDto(){
+            const url = "/mstar/getUserDto"
+            fetch(url)
+            .then(response => response.json())
+            .then((response) =>{
+                user_pk = response.data.user_pk;
+                reloadRecoUserList(user_pk);
+                loadMyProfileInfo(user_pk);
+            });
+        }
+
+        let profile_info_pk = null;
+        function loadMyProfileInfo(user_pk){
+            const url = "/mstar/myProfileInfoDto";
+            fetch(url, {
+                    method: "post",
+                    headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                    body: "user_pk="+user_pk
+            })
+            .then(response => response.json())
+            .then((response) =>{
+                
+                profile_info_pk = response.data.profile_info_pk;
+                console.log(profile_info_pk);
+            });
+        }
+
         function reloadDogImage(){
 
             const mainDogImage = document.getElementById("mainDogImage");
@@ -81,9 +111,72 @@
 
 
             });
-        }  
+        }
+        function removeTarget(target){
+            const userRecoWrapper =  target.closest(".userRecoWrapper");
+            userRecoWrapper.remove();
+        }
+    
+        function reloadRecoUserList(user_pk){
+            const url ="/mstar/reloadRecoUserList?user_pk="+user_pk
 
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                const userRecoBox = document.querySelector("#userRecoBox");
 
+                for(e of response.data){
+                    const userRecoWrapper = document.querySelector("#template .userRecoWrapper").cloneNode(true);
+                    const profileImg = userRecoWrapper.querySelector(".profileImg");
+                    profileImg.src = e.profile_photo;
+
+                    const user_nickName = userRecoWrapper.querySelector(".user_nickName");
+                    user_nickName.innerText = e.nick_name;
+
+                    const followButton = userRecoWrapper.querySelector(".followButton");
+                    followButton.setAttribute("onclick", "followingUser("+e.profile_info_pk+", this)");
+
+                    userRecoBox.appendChild(userRecoWrapper);
+                }
+            }); 
+            
+        }
+        function followingUser(follow_user_pk,target){
+            
+            const url = "/mstar/followingAnotherUser";
+            fetch(url, {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "follow_user_pk="+follow_user_pk+"&following_user_pk="+profile_info_pk
+                }).then(() => {
+                    console.log(follow_user_pk)
+                    console.log(profile_info_pk)
+                    target.setAttribute("onclick", "unFollowingUser("+follow_user_pk+", this)");
+                    target.setAttribute("style","background-color: rgb(231, 229, 229);");
+                    target.innerText = "팔로잉 ";
+                    target.classList.remove("text-white");    
+                });
+       }
+        function unFollowingUser(follow_user_pk, target){
+
+            const url = "/mstar/unFollowingAnotherUser";
+            fetch(url, {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "follow_user_pk="+follow_user_pk+"&following_user_pk="+profile_info_pk
+            }).then(() => {
+
+                target.setAttribute("onclick", "followingUser("+follow_user_pk+", this)");
+                target.innerText = "팔로우 ";
+                target.setAttribute("style","background-color: rgb(65,147,239);");
+                target.classList.add("text-white");
+                                
+            });
+           }
 
 
 
@@ -91,6 +184,7 @@
         window.addEventListener("DOMContentLoaded", () => {
             reloadDogImage();
             reloadAuctionList();
+            getUserDto();
         });  
 
 
@@ -127,6 +221,15 @@
 
         .carousel-indicators .active {
             width: 10px;
+        }
+        .profileImg {
+                position: relative;
+                border: 0.14em solid transparent;
+                border-radius: 50%;
+                background-image: linear-gradient(#fff, #fff), 
+                linear-gradient(to right, rgb(254, 64, 64) 0%, rgb(247, 238, 124) 50%, rgb(55, 87, 249) 100%);
+                background-origin: border-box;
+                background-clip: content-box, border-box;
         }
     </style>
 
@@ -213,122 +316,19 @@
                     <div class="col">
                         <div class="row">
                             <div class="col" style="font-size: 1rem;">
-                                🤩 지금 핫한 <span class="fw-bold">STORY</span>
+                                🤩 회원님을 위한  <span class="fw-bold">추천</span>
                             </div>
                         </div>
                         <div class="row mt-2 px-2 overflow-x-auto none-scrollbar" style="width: 105%;">
                             <div class="col">
-                                <div class="row" style="flex-wrap: nowrap;">
+                                <div id="userRecoBox" class="row" style="flex-wrap: nowrap;">
+                                    
+                                    
 
-                                    <div class="col-auto px-2">
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="rounded"
-                                                    style="width: 6.5rem; height: 6.5rem; background: url(/public/image/commons/list1.jpeg) no-repeat center; background-size: cover;">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-1">
-                                            <div class="col-auto pe-0">
-                                                <img class="img-fluid" src="/public/image/commons/commonsDogImg2.png"
-                                                    style="width: 1.7rem; border-radius: 50%; aspect-ratio: 1/1; border: 1px solid #e8e8e8;">
-                                            </div>
-                                            <div class="col ps-1 my-auto" style="font-size: 0.9rem;">
-                                                엔젤루나
-                                            </div>
-                                        </div>
-                                    </div>
+                                    
+                                    
 
-                                    <div class="col-auto px-2">
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="rounded"
-                                                    style="width: 6.5rem; height: 6.5rem; background: url(/public/image/commons/list2.jpeg) no-repeat center; background-size: cover;">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-1">
-                                            <div class="col-auto pe-0">
-                                                <img class="img-fluid" src="/public/image/commons/commonsDogImg3.png"
-                                                    style="width: 1.7rem; border-radius: 50%; aspect-ratio: 1/1; border: 1px solid #e8e8e8;">
-                                            </div>
-                                            <div class="col ps-1 my-auto" style="font-size: 0.9rem;">
-                                                멍레이멍
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-auto px-2">
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="rounded"
-                                                    style="width: 6.5rem; height: 6.5rem; background: url(/public/image/commons/list3.jpeg) no-repeat center; background-size: cover;">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-1">
-                                            <div class="col-auto pe-0">
-                                                <img class="img-fluid" src="/public/image/commons/commonsDogImg1.png"
-                                                    style="width: 1.7rem; border-radius: 50%; aspect-ratio: 1/1; border: 1px solid #e8e8e8;">
-                                            </div>
-                                            <div class="col ps-1 my-auto" style="font-size: 0.9rem;">
-                                                러블리하라
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-auto px-2">
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="rounded"
-                                                    style="width: 6.5rem; height: 6.5rem; background: url(/public/image/commons/list2.jpeg) no-repeat center; background-size: cover;">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-1">
-                                            <div class="col-auto pe-0">
-                                                <img class="img-fluid" src="/public/image/commons/commonsDogImg3.png"
-                                                    style="width: 1.7rem; border-radius: 50%; aspect-ratio: 1/1; border: 1px solid #e8e8e8;">
-                                            </div>
-                                            <div class="col ps-1 my-auto" style="font-size: 0.9rem;">
-                                                멍레이멍
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-auto px-2">
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="rounded"
-                                                    style="width: 6.5rem; height: 6.5rem; background: url(/public/image/commons/list1.jpeg) no-repeat center; background-size: cover;">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-1">
-                                            <div class="col-auto pe-0">
-                                                <img class="img-fluid" src="/public/image/commons/commonsDogImg2.png"
-                                                    style="width: 1.7rem; border-radius: 50%; aspect-ratio: 1/1; border: 1px solid #e8e8e8;">
-                                            </div>
-                                            <div class="col ps-1 my-auto" style="font-size: 0.9rem;">
-                                                엔젤루나
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-auto px-2">
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="rounded"
-                                                    style="width: 6.5rem; height: 6.5rem; background: url(/public/image/commons/list2.jpeg) no-repeat center; background-size: cover;">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-1">
-                                            <div class="col-auto pe-0">
-                                                <img class="img-fluid" src="/public/image/commons/commonsDogImg3.png"
-                                                    style="width: 1.7rem; border-radius: 50%; aspect-ratio: 1/1; border: 1px solid #e8e8e8;">
-                                            </div>
-                                            <div class="col ps-1 my-auto" style="font-size: 0.9rem;">
-                                                멍레이멍
-                                            </div>
-                                        </div>
-                                    </div>
+                                    
 
                                 </div>
                             </div>
@@ -706,6 +706,28 @@
                 </div>
             </div>
         </div>
+
+
+        
+        <div class="col-auto py-2 me-2 rounded userRecoWrapper" style="position: relative; border: 0.1em solid rgb(231, 231, 231); padding-left: 2.5em; padding-right: 2.5em;">
+            <i onclick="removeTarget(this)" class="fa-solid fa-xmark text-secondary" style="position: absolute; left: 90%; font-size: 0.9em;"></i>
+            <div class="row">                                            
+                <div class="col text-center px-0">
+                    <img class="img-fluid rounded-circle profileImg" src="" alt="" style="height: 5.5em; aspect-ratio: 1/1;">
+                </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col text-center user_nickName" style="font-size: 0.9em;">
+                    춘이야박사
+                </div>        
+            </div>
+            <div class="row mt-1">
+                <div class="col text-center rounded followButton text-white" style=" background-color: rgb(65,147,239);">
+                    팔로우
+                </div>
+            </div>
+        </div>
+        
 
     </div>
 

@@ -210,6 +210,10 @@ public class RestMstarController {
 
         return responseDto;
     }
+    @RequestMapping("logOut")
+    public void logOut(HttpSession session){
+        session.invalidate();
+    }
     
     @RequestMapping("anotherUserDto")
     public RestResponseDto anotherUserDto(int profile_info_pk){
@@ -645,5 +649,14 @@ public class RestMstarController {
          return responseDto;
     }
     
-   
+    @RequestMapping("reloadRecoUserList")
+    public RestResponseDto reloadRecoUserList(int user_pk){
+        RestResponseDto responseDto = new RestResponseDto();
+        List<ProfileInfoDto> list = mstarService.getRecoProfileList(user_pk);
+
+        responseDto.setResult("success");
+        responseDto.setData(list);
+ 
+         return responseDto;
+    }
 }

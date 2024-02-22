@@ -1242,4 +1242,11 @@ public class MstarServiceImpl {
         return mstarSqlMapper.selectStoryCount(profile_info_pk);
     }
 
+    public List<ProfileInfoDto> getRecoProfileList(int user_pk){
+        
+        return mstarSqlMapper.selectRecoUserList(user_pk);
+
+
+    }
+
 }
