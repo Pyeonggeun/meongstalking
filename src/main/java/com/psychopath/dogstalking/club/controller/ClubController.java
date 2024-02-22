@@ -26,6 +26,7 @@ import com.psychopath.dogstalking.club.dto.ClubUserDto;
 import com.psychopath.dogstalking.club.dto.ClubUserRanklogDto;
 import com.psychopath.dogstalking.club.service.ClubServiceImpl;
 import com.psychopath.dogstalking.dto.UserDto;
+import com.psychopath.dogstalking.funding.service.FundingServiceImpl;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -35,6 +36,9 @@ public class ClubController {
 
     @Autowired
     private ClubServiceImpl clubService;
+
+    @Autowired
+    private FundingServiceImpl fundingService;
 
     @RequestMapping("clubHomePage")
     public String clubHomePage(Model model, HttpSession session) {
@@ -199,7 +203,7 @@ public class ClubController {
     @RequestMapping("clubListPage")
     public String clubListPage(HttpSession session, Model model, int clubPk) {
 
-
+        UserDto userDto = (UserDto) session.getAttribute("sessionUser");
 
         List<Map<String, Object>> clublist = clubService.selectClubList();
         model.addAttribute("clublist", clublist);
@@ -212,8 +216,8 @@ public class ClubController {
         List<Map<String, Object>> memberlist = clubService.selectMember(clubPk);
         model.addAttribute("memberlist", memberlist);
 
+        model.addAttribute("photo",fundingService.pickProfilePhoto(userDto.getUser_pk()));
 
-        UserDto userDto = (UserDto) session.getAttribute("sessionUser");
         // System.out.println("userDto.getUser_pk(): "+userDto.getUser_pk());
         // int clubPk = clubService.selectClubPK(userDto.getUser_pk());
         // System.out.println("clubPk: "+clubPk);

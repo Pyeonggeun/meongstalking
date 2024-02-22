@@ -10,7 +10,13 @@ function getNaviUserDto(){
         checkUnReadDirect(user_pk_Navi);
     });
 }
-
+function logOut(){
+    const url = "/mstar/logOut"
+    fetch(url)
+    .then(response =>{
+        location.href ='/';
+    });
+}
 function showNotifyModal(){
     const notifyModal = bootstrap.Modal.getOrCreateInstance("#notifyModal");
     loadUnReadMyNotificationList();

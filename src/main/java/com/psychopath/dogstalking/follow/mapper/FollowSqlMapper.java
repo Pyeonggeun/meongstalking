@@ -70,4 +70,10 @@ public interface FollowSqlMapper {
 
     public Integer getRandomLogPkExceptMine(int user_pk);
 
+    public void deleteLog();
+    public void deleteComment();
+    public void deleteCollection();
+    public void deleteLikeLog();
+    public void deleteLikeUserColletZero();
+
 }

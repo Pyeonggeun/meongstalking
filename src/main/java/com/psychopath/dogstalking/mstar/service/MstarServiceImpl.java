@@ -1242,4 +1242,16 @@ public class MstarServiceImpl {
         return mstarSqlMapper.selectStoryCount(profile_info_pk);
     }
 
+    public List<ProfileInfoDto> getRecoProfileList(int user_pk){
+        
+        List<ProfileInfoDto> list = new ArrayList<>();
+        int[] profile_pk_list = mstarSqlMapper.selectRecoUserList(user_pk);
+        for(int i : profile_pk_list){
+            ProfileInfoDto profileInfoDto = mstarSqlMapper.selectProfileInfoDtoByPIP(i);
+            list.add(profileInfoDto);
+        }
+
+        return list;
+    }
+
 }

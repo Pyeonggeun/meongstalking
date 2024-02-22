@@ -35,6 +35,8 @@
                     myCommentProfileImg.src = profileInfoDto.profile_photo;
                     const myStoryListProfileImg = document.querySelector("#myStoryListProfileImg");
                     myStoryListProfileImg.src= profileInfoDto.profile_photo;
+                    const my_story_profile_img = document.querySelector("#my_story_profile_img")
+                    my_story_profile_img.src =  profileInfoDto.profile_photo;
                     //count가지고 와서 있으면 보여주고 없으면 스토리 등록페이지로;;;;;
                     myStoryCount(profile_info_pk);
 
@@ -430,23 +432,23 @@
                             const articleImgWrapper =  document.querySelector("#articleImgTemplete .articleImgWrapper").cloneNode(true);
                             
                             const indicatorButton = document.querySelector("#carouselIndicatorTemplete .indicatorButton").cloneNode(true);
-                            indicatorButton.setAttribute("data-bs-target","#carouselId"+e.articleDto.article_pk);
-                            indicatorButton.setAttribute("data-bs-slide-to" , count-1);
-                            indicatorBox.appendChild(indicatorButton);
-                            
-                            
                            
 
                             const img = articleImgWrapper.querySelector(".img");
                             
-                            if(count ==1){
-                                articleImgWrapper.classList.add("active");
-                                indicatorButton.classList.add("active");
-                            }
+                            
                             const photoCount = articleImgWrapper.querySelector(".photoCount");
                             if(!(e.photoAndTagList.length <= 1)){
                                 photoCount.classList.remove("d-none");
                                 photoCount.innerText = count+"/"+e.photoAndTagList.length;
+                                indicatorButton.setAttribute("data-bs-target","#carouselId"+e.articleDto.article_pk);
+                                indicatorButton.setAttribute("data-bs-slide-to" , count-1);
+                                indicatorBox.appendChild(indicatorButton);
+
+                            }
+                            if(count ==1){
+                                articleImgWrapper.classList.add("active");
+                                indicatorButton.classList.add("active");
                             }
                             count +=1;
                             if(p.userTagList.length !=0){
@@ -501,6 +503,7 @@
                             moreContent.setAttribute("onclick", "showMoreContent(this)");
                             moreContent.innerText = "더보기"
                             moreContent.classList.add("text-primary");
+                            moreContent.style.opacity = "0.7";
                             contentUserId.appendChild(moreContent);
                         }
             
@@ -1683,7 +1686,6 @@
                 -webkit-box-orient: vertical;
                 -webkit-line-clamp: 2;
                 overflow: hidden;
-                opacity: 0.7;
             }
             .carousel-indicators{
                 color: blue;
@@ -2156,32 +2158,33 @@
             <div class="modal-dialog modal-fullscreen">
                 <div class="modal-content " style="background-color: black; overflow: hidden;">
                     <div class="modal-body" style="overflow: hidden;">
+                        <div class="row">
+                            <div class="col">
+                                <div id="barBox" class="mt-1 "> 
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row text-light mt-2">
+                            <div class="col-auto">
+                                <img id="storyProfileImg" class="rounded-circle ms-2"  alt="" style="aspect-ratio: 1/1; height: 2em;">
+                            </div>
+                            <div id="storyUserid" class="col-auto align-self-center px-0">
+                                
+                            </div>
+                            <div id="story_created_at" class="col-auto text-secondary align-self-center pt-1" style="font-size: 0.9em;">
+                                
+                            </div>
+                            <div class="col text-end text-white fs-5">
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </div>
+                            <div class="col-auto pe-4 text-end text-white fs-4">
+                                <i class="fa-solid fa-xmark"></i>
+                            </div>
+                        </div>
                         <div id="story_img" class="row position-relative px-0 rounded" style="height: 35em; background-size: 100%; background-repeat: no-repeat; background-position: center; background-color: rgb(49, 49, 49); top: 1rem;">   
                             <div class="col px-0">
-                                <div class="row">
-                                    <div class="col">
-                                        <div id="barBox" class="mt-1 "> 
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row text-light mt-2">
-                                    <div class="col-auto">
-                                        <img id="storyProfileImg" class="rounded-circle ms-2"  alt="" style="aspect-ratio: 1/1; height: 2em;">
-                                    </div>
-                                    <div id="storyUserid" class="col-auto align-self-center px-0">
-                                        
-                                    </div>
-                                    <div id="story_created_at" class="col-auto text-secondary align-self-center pt-1" style="font-size: 0.9em;">
-                                        
-                                    </div>
-                                    <div class="col text-end text-white fs-5">
-                                        <i class="fa-solid fa-ellipsis"></i>
-                                    </div>
-                                    <div class="col-auto pe-4 text-end text-white fs-4">
-                                        <i class="fa-solid fa-xmark"></i>
-                                    </div>
-                                </div>
+                                
                             </div>
                             <div id="storyTextBox" class="col-auto px-0 position-absolute" style="cursor: pointer; top: 50%; left: 0%;">
                                 <div id="story_textAndColor" class="px-2">
@@ -2206,29 +2209,30 @@
             <div class="modal-dialog modal-fullscreen">
                 <div class="modal-content " style="background-color: black; overflow: hidden;">
                     <div class="modal-body" style="overflow: hidden;">
+                        <div class="row">
+                            <div class="col">
+                                <div id="myBarBox" class="mt-1 "> 
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row text-light mt-2">
+                            <div class="col-auto">
+                                <img id="my_story_profile_img" class="rounded-circle ms-2"  alt="" style="aspect-ratio: 1/1; height: 2em;">
+                            </div>
+                            <div id="my_story_userid" class="col-auto align-self-center px-0">
+                                
+                            </div>
+                            <div id="my_story_created_at" class="col-auto text-secondary align-self-center pt-1" style="font-size: 0.9em;">
+                                
+                            </div>
+                            <div class="col pe-4 text-end text-white fs-4">
+                                <i class="fa-solid fa-xmark" data-bs-dismiss="modal"></i>
+                            </div>
+                        </div>
                         <div id="my_story_img" class="row position-relative px-0 rounded" style="height: 35em; background-size: 100%; background-repeat: no-repeat; background-position: center; background-color: rgb(49, 49, 49); top: 1rem;">   
                             <div class="col px-0">
-                                <div class="row">
-                                    <div class="col">
-                                        <div id="myBarBox" class="mt-1 "> 
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row text-light mt-2">
-                                    <div class="col-auto">
-                                        <img id="my_story_profile_img" class="rounded-circle ms-2"  alt="" style="aspect-ratio: 1/1; height: 2em;">
-                                    </div>
-                                    <div id="my_story_userid" class="col-auto align-self-center px-0">
-                                        
-                                    </div>
-                                    <div id="my_story_created_at" class="col-auto text-secondary align-self-center pt-1" style="font-size: 0.9em;">
-                                        
-                                    </div>
-                                    <div class="col pe-4 text-end text-white fs-4">
-                                        <i class="fa-solid fa-xmark" data-bs-dismiss="modal"></i>
-                                    </div>
-                                </div>
+                                
                             </div>
                             <div id="my_storyTextBox" class="col-auto px-0 position-absolute" style="cursor: pointer; top: 50%; left: 0%;">
                                 <div id="my_story_textAndColor" class="px-2">
