@@ -196,7 +196,7 @@ public class FollowSimulator {
     // 수집
 
 
-    @Scheduled(cron = "21 3 5 * * *")
+    // @Scheduled(cron = "21 3 5 * * *")
     public void collect(){
         
         System.out.println("괜찮아 토닥토닥...3");
