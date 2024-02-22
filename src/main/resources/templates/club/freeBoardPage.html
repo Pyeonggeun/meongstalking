@@ -92,6 +92,25 @@
             }
 
         }
+        .packtitleBox {
+            background-color: white;
+            border-bottom-left-radius: 1em;
+            border-bottom-right-radius: 1em;
+            margin: 0.02em;
+            margin-top: 0em;
+        }
+
+        .packBox {
+            background-color: white;
+            border-radius: 1em;
+            padding-top: 0.75em;
+            padding-bottom: 0.75em;
+            margin: 0.02em;
+        }
+
+        .container {
+            background-color: ghostwhite;
+        }
     </style>
     <script>
         function goBack() {
@@ -278,15 +297,17 @@
 
 <body>
     <div class="container pb-5">
-        <div th:insert="~{commons/naviBar}"></div>
-        <div class="row px-0">
+        <div class="row">
+            <div th:insert="~{commons/naviBar}" style="background-color: #ffffff;"></div>
+        </div>
+        <div class="row px-0"  style="background-color: #ffffff;">
             <div class="col-auto my-2 ms-1" onclick="goBack()">
                 <i class="bi bi-arrow-left"></i>
             </div>
             <div th:text="${clubTF.clubname}" class="col d-flex align-items-center px-0">
             </div>
         </div>
-        <div class="row scrollable-menu py-2">
+        <div class="row scrollable-menu py-2" style="background-color: #ffffff;">
             <div class="col justify-content-between fw-bold">
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">방명록</span>
@@ -295,13 +316,13 @@
             </div>
         </div>
 
-        <div class="row mt-4">
+        <div class="row py-4">
             <div class="col fw-bold fs-4">동호회 방명록</div>
         </div>
 
 
         <th:block th:each="qwer : ${freeBoardList}">
-            <div class="row py-3 px-1 border-bottom">
+            <div class="row py-3 px-2  border-bottom border-5 border-gray packBox mb-2">
                 <div class="col">
                     <div class="row">
                         <div class="col-7">
