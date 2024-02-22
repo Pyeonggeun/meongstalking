@@ -436,7 +436,7 @@
     </delete>
 
     <select id="getCollectionList" resultType="map">
-        SELECT t1.collect_count, t1.open_rating, t3.star_rating,
+        SELECT t1.collect_count, t1.open_rating, t1.is_trace, t3.star_rating,
             mmpi.profile_photo, mmpi.nick_name, mu.gender, t4.*, (
             CASE 
                 when t1.user_pk in (
@@ -464,7 +464,21 @@
                         else '1'
                     ]]>
                 END
-            ) as open_rating FROM ms_follow_collection mfc
+            ) as open_rating, (
+                CASE 
+                    when mfl.user_pk in (
+                        SELECT mfl3.user_pk FROM ms_follow_like_log mfll
+                        inner join ms_follow_log mfl3 on mfll.log_pk = mfl3.log_pk
+                        WHERE mfll.user_pk = #{user_pk}
+                        AND mfll.log_pk not in (
+                            SELECT mfc2.log_pk FROM ms_follow_collection mfc2
+                            WHERE mfc2.user_pk = #{user_pk}
+                        )
+                        GROUP BY mfl3.user_pk
+                    )
+                    then 'Y' else 'N'
+                END
+            ) as is_trace FROM ms_follow_collection mfc
             inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
             where mfc.user_pk = #{user_pk}
             GROUP BY mfl.user_pk
@@ -808,6 +822,38 @@
         ORDER BY RAND()
         LIMIT 1
     </select>
+
+    <delete id="deleteLog">
+        <![CDATA[
+            DELETE FROM ms_follow_log WHERE date(now()) - date(created_date) >= 14
+        ]]>
+    </delete>
+
+    <delete id="deleteComment">
+        DELETE FROM ms_follow_comment WHERE log_pk NOT IN (
+            SELECT log_pk FROM ms_follow_log
+        )
+    </delete>
+
+    <delete id="deleteCollection">
+        DELETE FROM ms_follow_collection WHERE log_pk NOT IN (
+            SELECT log_pk FROM ms_follow_log
+        )
+    </delete>
+
+    <delete id="deleteLikeLog">
+        DELETE FROM ms_follow_like_log WHERE log_pk NOT IN (
+            SELECT log_pk FROM ms_follow_log
+        )
+    </delete>
+
+    <delete id="deleteLikeUserColletZero">
+        DELETE FROM ms_follow_like
+        WHERE user_writer_pk not in(
+            SELECT DISTINCT mfl2.user_pk FROM ms_follow_collection mfc
+            inner join ms_follow_log mfl2 on mfc.log_pk = mfl2.log_pk
+        )
+    </delete>
 
     <!-- <select id="" resultType=""></select> -->
 

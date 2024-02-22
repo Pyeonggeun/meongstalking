@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ import com.psychopath.dogstalking.follow.mapper.FollowSqlMapper;
 @Service
 public class FollowSimulator {
 
-    final int DAILY_MARKING_COUNT = 60;
+    final int DAILY_MARKING_COUNT = 80;
 
     final int MIN_USER_PK = 51; //51번 회원
     final int MAX_USER_PK = 100; //100번 회원 - 75번 회원 기준 앞뒤로 가장 많이 활동
@@ -93,7 +94,7 @@ public class FollowSimulator {
     }
 
     // 마킹
-    // @Scheduled(cron = "27 * * * * *")
+    @Scheduled(cron = "27 * * * * *")
     public void marking(){
 
         if((int)(Math.random()*1440) < DAILY_MARKING_COUNT) { 
@@ -101,7 +102,7 @@ public class FollowSimulator {
             Random random = new Random();
             int userPk = (int)(random.nextGaussian()*((MAX_USER_PK-MIN_USER_PK)/2)/3) + (MIN_USER_PK + MAX_USER_PK)/2; // 45는 중앙 번호
 
-            System.out.println("으앙: " + userPk);
+            // System.out.println("으앙: " + userPk);
 
             if(userPk >= MIN_USER_PK && userPk <= MAX_USER_PK) {
                 // 자취를 남긴다...
@@ -115,6 +116,14 @@ public class FollowSimulator {
                     "2024/02/21/48912a98-262e-427d-9b9b-70c025a7e089_1708510224903.jpeg",
                     "2024/02/21/ae4356a2-1f83-486d-8937-e39c861814c8_1708510357791.jpeg",
                     "2024/02/21/9eca2a54-9646-4f77-ada9-511fa5b89ae1_1708510389052.jpeg",
+                    "2024/02/22/2ed434e7-7966-4478-9590-d8fa8b00d4b1_1708598170819.jpg",
+                    "2024/02/22/d6111ab9-3c51-48ef-95af-40a4bad5511e_1708598212315.jpg",
+                    "2024/02/22/7d876059-a047-42b5-b693-fcbb0c7ecec6_1708598301423.jpg",
+                    "2024/02/22/d64f7b76-27b5-4bbd-bb95-f1fc771e2dba_1708598341694.jpg",
+                    "2024/02/22/25ba5671-a5c2-4ecf-ba4d-b66d3da14292_1708598391713.jpg",
+                    "2024/02/22/3156cf8a-eee7-463e-b592-cedf188b70cd_1708598437381.jpg",
+                    "2024/02/22/33affb20-144f-40a2-9952-2e2f0e69104f_1708598497897.jpg",
+                    "2024/02/22/a8f09b21-3807-4a9f-ba4c-308e718c8f34_1708598532128.jpg",
                 };
 
                 String[] contentList = {
@@ -196,7 +205,7 @@ public class FollowSimulator {
     // 수집
 
 
-    // @Scheduled(cron = "21 3 5 * * *")
+    @Scheduled(cron = "27 46 5 * * *")
     public void collect(){
         
         System.out.println("괜찮아 토닥토닥...3");
@@ -267,8 +276,17 @@ public class FollowSimulator {
 
 
     // 로그 지우기(하루 한번 - 2주 전 내용들은 지운다...)
-    @Scheduled(cron = "13 22 5 * * *")
+    @Scheduled(cron = "52 13 5 * * *")
     public void initLogsForTest(){
+
+        // System.out.println("무섭당");
+
+        followSqlMapper.deleteLog();
+        followSqlMapper.deleteComment();
+        followSqlMapper.deleteCollection();
+        followSqlMapper.deleteLikeLog();
+        followSqlMapper.deleteLikeUserColletZero();
+
         // ... 
     }
 
