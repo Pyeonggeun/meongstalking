@@ -113,4 +113,7 @@ public interface AuctionSqlMapper {
 
     // 메인페이지 리스트
     public List<Map<String, Object>> mainPageGoodsList();
+
+    // 경매 메인페이지 실시간 리스트
+    public List<Map<String, Object>> mainPageGoodsListLimit();
 }

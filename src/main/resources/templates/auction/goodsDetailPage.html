@@ -37,6 +37,18 @@
                 const goodsImage = document.getElementById("goods-image");
                 goodsImage.setAttribute("src", "/uploadFiles/"+ e.auctionGoodsDto.image_link +"");
 
+
+                const wishList = document.getElementById("wishlist-icon");
+
+                if(e.wishlistCount != 0){
+                    wishList.style.color = "#FA075B";
+                }else{
+                    wishList.style.color = "#ffffff";
+                }
+
+                const wishListBox = document.getElementById("wishlist-icon-box");
+                wishListBox.value= e.auctionGoodsDto.pk;
+
                 const startingPrice = document.getElementById("starting-price");
                 startingPrice.innerText = "KRW " + e.auctionGoodsDto.starting_price;
                 startingPrice.value = e.auctionGoodsDto.starting_price;
@@ -72,6 +84,44 @@
                     askPrice.value = 1000000; 
                     askPrice.innerText = "KRW " + askPrice.value;
                 }
+
+                const modalImage = document.getElementById("bidModal-image");
+                modalImage.setAttribute("src", "/uploadFiles/"+ e.auctionGoodsDto.image_link +"");
+
+                const modalUser = document.getElementById("bidModal-user");
+                modalUser.innerText = e.userDto.name;
+
+                const modalTitle = document.getElementById("bidModal-title");
+                modalTitle.innerText=e.auctionGoodsDto.title;
+
+                const modalStartDate = document.getElementById("bidModal-startDate");
+
+                const modalEndDate = document.getElementById("bidModal-endDate");
+
+                const startAtArray = e.auctionGoodsDto.commencement_date;
+
+
+                const startAtYear = startAtArray[0];
+                const startAtMonth = ('0' + startAtArray[1]).slice(-2);
+                const startAtDays = ('0' + startAtArray[2]).slice(-2);
+                const startAtHour = ('0' + startAtArray[3]).slice(-2);
+                const startAtMinutes = ('0' + startAtArray[4]).slice(-2);
+
+                const startAtFormatted = `${startAtYear}.${startAtMonth}.${startAtDays} ${startAtHour}:${startAtMinutes}`;
+
+                modalStartDate.innerText = startAtFormatted;
+
+                const endAtArray = e.auctionGoodsDto.expiry_date;
+
+                const endAtYear = endAtArray[0];
+                const endAtMonth = ('0' + endAtArray[1]).slice(-2);
+                const endAtDays = ('0' + endAtArray[2]).slice(-2);
+                const endAtHour = ('0' + endAtArray[3]).slice(-2);
+                const endAtMinutes = ('0' + endAtArray[4]).slice(-2);
+
+                const endAtFormatted = `${endAtYear}.${endAtMonth}.${endAtDays} ${endAtHour}:${endAtMinutes}`;
+
+                modalEndDate.innerText = endAtFormatted;
                 
             });
         }
@@ -84,6 +134,7 @@
             const goodsPk = document.getElementById("goodsPk").value;
 
 	
+            
             const url = "./getGoodsInfo?goodsPk=" + goodsPk;
             
             fetch(url)
@@ -401,13 +452,13 @@
                     const createdAtArray = e.bidDto.created_at;
 
                     const createdAtYear = createdAtArray[0];
-                    const createdAtMonth = createdAtArray[1];
-                    const createdAtDays = createdAtArray[2];
-                    const createdAtHour = createdAtArray[3];
-                    const createdAtMinutes = createdAtArray[4];
-                    const createdAtSeconds = createdAtArray[5];
+                    const createdAtMonth = ('0' + createdAtArray[1]).slice(-2);
+                    const createdAtDays = ('0' + createdAtArray[2]).slice(-2);
+                    const createdAtHour = ('0' + createdAtArray[3]).slice(-2);
+                    const createdAtMinutes = ('0' + createdAtArray[4]).slice(-2);
+                    const createdAtSeconds = ('0' + createdAtArray[5]).slice(-2);
 
-                    const createdDateFormatted = `${createdAtYear}-${createdAtMonth}-${createdAtDays}`;
+                    const createdDateFormatted = `${createdAtYear}.${createdAtMonth}.${createdAtDays}`;
                     const createdTimeFormatted = `${createdAtHour}:${createdAtMinutes}:${createdAtSeconds}`;
 
                     bidDate.innerText = createdDateFormatted;
@@ -460,6 +511,21 @@
 
             });
         }  
+
+        function toggleWishList(goodsPk){
+
+            const sessionUserPk = document.getElementById("sessionUserPk").value;
+
+            const url = "./toggleLike?goods_pk=" + goodsPk + "&user_pk=" + sessionUserPk;
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+                
+                reloadGoodsInfo();
+            });
+
+        }
 
 
         function registerBid(){
@@ -522,6 +588,10 @@
 
         }   
 
+        function navigateToListPage(){
+            const goodsListPageUrl = `./goodsListPage`;
+            window.location.href = goodsListPageUrl;
+        }
 
         function showModal(){
 
@@ -566,7 +636,7 @@
         let remainingTimeIntervalId;
         
         chatListIntervalId = setInterval(appendChatList, 1000);
-        bidListIntervalId = setInterval(reloadBidList, 15000);
+        bidListIntervalId = setInterval(reloadBidList, 5000);
         remainingTimeIntervalId = setInterval(fetchRemainingTime, 15000);
 
         window.addEventListener("DOMContentLoaded", () => {
@@ -1092,11 +1162,11 @@
          <!--상단 바 = 좋아요, 뒤로가기-->
         <div class="row" style="height: 4em;">
             <div class="col" style="position: relative; z-index: 3;">
-                <div id="back-icon-box" class="text-center">
+                <div id="back-icon-box" class="text-center" onclick="navigateToListPage()">
                     <div id="back-icon" class="fw-bold"><i class="fa-solid fa-angle-left" style="color: #ffffff;"></i></div>
                 </div>
-                <div id="wishlist-icon-box">
-                    <div id="wishlist-icon"><i class="fa-solid fa-heart" style="color: #ffffff;"></i></div>
+                <div id="wishlist-icon-box" onclick="toggleWishList(this.value)">
+                    <div id="wishlist-icon"><i class="fa-solid fa-heart"></i></div>
                 </div>
             </div>
         </div>
@@ -1128,13 +1198,13 @@
             <div class="col-4"></div>
         </div>
 
-        <div id="showButton" class="row d-none" onclick="show()" style="height: 3em; position: fixed; bottom: 0; height: 3em; width: 100%; 
+        <div id="showButton" class="row d-none" style="height: 3em; position: fixed; bottom: 0; height: 3em; width: 100%; 
         z-index: 3; 
         background-color: rgba(17, 17, 17, 0.9); 
         border-top-left-radius: 1.5em; 
         border-top-right-radius: 1.5em;">
             <div class="col" style="display: flex; align-items: center; justify-content: center;">
-                <div data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" class="fold-icon"><i class="fa-solid fa-chevron-up"></i></div>
+                <div data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" class="fold-icon" onclick="show()"><i class="fa-solid fa-chevron-up"></i></div>
             </div>
         </div>
         
@@ -1273,31 +1343,31 @@
                             <div class="row">
                                 <div class="col-5" style="display: flex; justify-content: center;">
                                     <div style="width: 8em; max-height: 10em; overflow: hidden; position: relative; border-style: solid; border-color: #777777; border-width: 0.03em; border-radius: 1em;">
-                                        <div style="width: 100%; max-height: initial; margin-top: -50%;"><img class="img-fluid" th:src="@{/public/image/trade/dogimage.png}"></div>    
+                                        <div style="width: 100%; max-height: initial; margin-top: -50%;"><img class="img-fluid" id="bidModal-image"></div>    
                                     </div>
                                 </div>
                                 <div class="col-7">
                                     <div class="row" style="height: 0.5em;"></div>
                                     <div class="row">
                                         <div class="col">
-                                            <div style="font-size: 0.9em; font-weight: bold; color: #111111;">미스김</div>
+                                            <div id="bidModal-user" style="font-size: 0.9em; font-weight: bold; color: #111111;">미스김</div>
                                         </div>
                                     </div>
                                     <div class="row" style="height: 2.5em;"></div>
                                     <div class="row">
                                         <div class="col">
-                                            <div style="font-size: 0.8em; color: #777777; font-weight: bold;">그레이 하운드 오리털 패딩</div>
+                                            <div id="bidModal-title" style="font-size: 0.8em; color: #777777; font-weight: bold;">그레이 하운드 오리털 패딩</div>
                                         </div>
                                     </div>
 
                                     <div class="row" style="padding-top: 0.5em;">
                                         <div class="col">
-                                            <div style="font-size: 0.8em; color: #777777; font-weight: bold;">07/01 16:00</div>
+                                            <div id="bidModal-startDate" style="font-size: 0.8em; color: #777777; font-weight: bold;">07/01 16:00</div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col">
-                                            <div style="font-size: 0.8em; color: #777777; font-weight: bold;">07/03 18:00 | 2024</div>
+                                            <div id="bidModal-endDate" style="font-size: 0.8em; color: #777777; font-weight: bold;">07/03 18:00 | 2024</div>
                                         </div>
                                     </div>
                                 </div>

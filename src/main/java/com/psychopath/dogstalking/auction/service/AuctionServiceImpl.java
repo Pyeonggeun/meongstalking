@@ -78,6 +78,31 @@ public class AuctionServiceImpl {
 
             int bidCount = auctionMapper.getCountBidByGoods(auctionGoodsDto.getPk());
 
+
+            LocalDateTime expiryDate = auctionGoodsDto.getExpiry_date();
+            LocalDateTime now = LocalDateTime.now();
+            Duration duration = Duration.between(now, expiryDate);
+
+            if(duration.isNegative()){
+    
+            }else{
+                long days = duration.toDays();
+                long hours = duration.toHours() % 24;
+                long minutes = duration.toMinutes() % 60;
+                long seconds = duration.getSeconds() % 60;
+                long[] remainingTime = new long[4];
+                remainingTime[0] = days;
+                remainingTime[1] = hours;
+                remainingTime[2] = minutes;
+                remainingTime[3] = seconds;
+    
+                if (days > 0) {
+                    map.put("remainingTime", remainingTime);
+                } else {
+                    map.put("remainingTime", remainingTime);
+                }
+            }
+
             map.put("auctionGoodsDto", auctionGoodsDto);
             map.put("userDto", userDto);
             map.put("wishlistCount", wishlistCount);
@@ -93,7 +118,7 @@ public class AuctionServiceImpl {
 
 
 
-    public Map<String, Object> getGoodsDetailInfo(int goodsPk){
+    public Map<String, Object> getGoodsDetailInfo(int goodsPk, int userPk){
 
         Map<String, Object> map = new HashMap<>();
 
@@ -103,6 +128,14 @@ public class AuctionServiceImpl {
 
         AuctionCategoryDto auctionCategoryDto = auctionMapper.getCategoryDto(auctionGoodsDto.getCategory_pk());
 
+        WishlistDto wishlistDto = new WishlistDto();
+
+        wishlistDto.setGoods_pk(auctionGoodsDto.getPk());
+        wishlistDto.setUser_pk(userPk);
+
+        int wishlistCount = auctionMapper.getCountWishlist(wishlistDto);
+
+        map.put("wishlistCount", wishlistCount);
         map.put("auctionGoodsDto", auctionGoodsDto);
         map.put("userDto", userDto);
         map.put("auctionCategoryDto", auctionCategoryDto);
@@ -518,6 +551,13 @@ public class AuctionServiceImpl {
     public List<Map<String, Object>> mainPageGoodsList(){
 
         List<Map<String, Object>> list = auctionMapper.mainPageGoodsList();
+
+        return list;
+    }
+
+    public List<Map<String, Object>> mainPageGoodsListLimit(){
+
+        List<Map<String, Object>> list = auctionMapper.mainPageGoodsListLimit();
 
         return list;
     }
