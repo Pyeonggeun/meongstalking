@@ -1063,6 +1063,15 @@
             .modal-fullscreen{
                 width: 100%;
             }
+            .storageImg {
+                position: relative;
+                border: 0.1em solid transparent;
+                border-radius: 50%;
+                background-image: linear-gradient(#fff, #fff), 
+                linear-gradient(to top, rgb(117, 154, 255) 0%,  yellow 100%);
+                background-origin: border-box;
+                background-clip: content-box, border-box;
+            }
             
         </style>
         
@@ -1222,9 +1231,9 @@
         
         <div id="storyStorageListTemplete" class="d-none">
             <div class="col-auto me-1 storyStorageListWrapper">
-                <div class="row">
+                <div class="row px-2">
                     <div class="col-auto rounded-circle storageImg px-0 py-0">
-                        <img class="img-fluid rounded-circle border border-white border-2 storage_img"  src="" alt="" style="aspect-ratio: 1/1; height: 4em;">
+                        <img class="img-fluid rounded-circle border border-white border-2  storageImg storage_img"  src="" alt="" style="aspect-ratio: 1/1; height: 4em;">
                     </div>
                 </div>
                 <div class="row">
