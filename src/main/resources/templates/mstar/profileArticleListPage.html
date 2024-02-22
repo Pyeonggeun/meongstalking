@@ -24,7 +24,15 @@
 
                 
             }
-
+            function getUserDto(){
+                const url = "/mstar/getUserDto"
+                fetch(url)
+                .then(response => response.json())
+                .then((response) =>{
+                    const articleListUserid = document.querySelector("#articleListUserid");
+                    articleListUserid.innerText = response.data.userid+" 님의";
+                });
+            }
             let profileInfoDto = null;
             function getProfileInfoDto(){
                 const url = "./myProfileInfoDto?user_pk="+user_pk;
@@ -928,6 +936,7 @@
             window.addEventListener("DOMContentLoaded", () =>{
                 getProfileInfoKey();
                 getProfileInfoDto();
+                getUserDto();
             });
         </script>
         <style>
