@@ -31,21 +31,63 @@
                     if(e.pk==1){
                         const categoryImage = categoryWrapper.querySelector(".category-image");
                         categoryImage.setAttribute("src", "/public/image/auction/dogClothes.jpeg");
+
+                        const text1 = categoryWrapper.querySelector(".category-box-text1");
+                        const text2 = categoryWrapper.querySelector(".category-box-text2");
+
+                        text1.innerText="취향별 픽!";
+                        text2.innerText="입기 좋은 츄리닝";
+
                     }else if(e.pk==2){
                         const categoryImage = categoryWrapper.querySelector(".category-image");
                         categoryImage.setAttribute("src", "/public/image/auction/dogFood.jpeg");
+
+                        const text1 = categoryWrapper.querySelector(".category-box-text1");
+                        const text2 = categoryWrapper.querySelector(".category-box-text2");
+
+                        text1.innerText="건강 케어";
+                        text2.innerText="맛있는 간식";
+
                     }else if(e.pk==3){
                         const categoryImage = categoryWrapper.querySelector(".category-image");
                         categoryImage.setAttribute("src", "/public/image/auction/dogLiving.jpeg");
+
+                        const text1 = categoryWrapper.querySelector(".category-box-text1");
+                        const text2 = categoryWrapper.querySelector(".category-box-text2");
+
+                        text1.innerText="생활 편의";
+                        text2.innerText="안락한 공간";
+
                     }else if(e.pk==4){
                         const categoryImage = categoryWrapper.querySelector(".category-image");
                         categoryImage.setAttribute("src", "/public/image/auction/dogToy.jpeg");
+
+                        const text1 = categoryWrapper.querySelector(".category-box-text1");
+                        const text2 = categoryWrapper.querySelector(".category-box-text2");
+
+                        text1.innerText="활기 넘치는";
+                        text2.innerText="즐거운 놀이!";
+
                     }else if(e.pk==5){
                         const categoryImage = categoryWrapper.querySelector(".category-image");
                         categoryImage.setAttribute("src", "/public/image/auction/dogGrooming.jpeg");
+
+                        const text1 = categoryWrapper.querySelector(".category-box-text1");
+                        const text2 = categoryWrapper.querySelector(".category-box-text2");
+
+                        text1.innerText="건강 미용";
+                        text2.innerText="아름다운 케어";
+
                     }else if(e.pk==6){
                         const categoryImage = categoryWrapper.querySelector(".category-image");
                         categoryImage.setAttribute("src", "/public/image/auction/dogAccessories.jpeg");
+
+                        const text1 = categoryWrapper.querySelector(".category-box-text1");
+                        const text2 = categoryWrapper.querySelector(".category-box-text2");
+
+                        text1.innerText="멋진 액세서리!";
+                        text2.innerText="스타일 강아지";
+
                     }
 
 
@@ -73,6 +115,44 @@
             window.location.href = goodsListUrl;
         }
 
+        function reloadLiveAuctionList(){
+		
+            const url = "./mainPageGoodsListLimit";
+            
+            fetch(url)
+            .then(response => response.json())
+            .then(response => {
+
+                const liveAuctionListBox = document.getElementById("liveAuctionListBox");
+
+                for(e of response.data){
+                    const liveAuctionWrapper = document.querySelector("#template .liveAuctionWrapper").cloneNode(true);
+
+                    const liveTitle = liveAuctionWrapper.querySelector(".live-title");
+                    liveTitle.innerText = e.title;
+
+                    const livePrice = liveAuctionWrapper.querySelector(".live-price");
+                    livePrice.innerText = "KRW " + e.starting_price;
+
+                    const liveImage = liveAuctionWrapper.querySelector(".live-image");
+                    liveImage.style.backgroundImage = "url('/uploadFiles/" + e.image_link + "')";
+
+                    const goodsPk = liveAuctionWrapper.querySelector(".liveGoodsPk");
+                    goodsPk.value=e.pk;
+
+                    liveAuctionListBox.appendChild(liveAuctionWrapper);
+                }
+      
+                
+            });
+        }  
+
+        function navigateToGoodsDetailPage(goodsPk){
+            const goodsDetailtUrl = "./goodsDetailPage?goodsPk=" + goodsPk;
+            window.location.href = goodsDetailtUrl;
+        }
+
+
 
         function templete(){
 		
@@ -88,6 +168,7 @@
         window.addEventListener("DOMContentLoaded", () => {
             
             reloadCategory();
+            reloadLiveAuctionList();
         });  
 
 
@@ -107,11 +188,16 @@
             color: #111111;
         }
 
-        .banner-text{
+        .banner-text1{
             font-size: 1em;
             color: #636363;
         }
         
+        .banner-text2{
+            font-size: 1em;
+            color: #636363;
+        }
+
         .category-row{
             background-color: white;
             margin-left: 0;
@@ -253,8 +339,8 @@
         </div>
         <div class="row" style="padding-top: 0.2em;">
             <div class="col">
-                <div class="banner-text fw-bold">강아지와 함께하는 특별한 순간을</div>
-                <div class="banner-text fw-bold">지금 바로 소개합니다.</div>
+                <div class="banner-text1 fw-bold">강아지와 함께하는 특별한 순간을</div>
+                <div class="banner-text2 fw-bold">지금 바로 소개합니다.</div>
             </div>
         </div>
         <div class="row" style="height: 2em;"></div>
@@ -262,7 +348,7 @@
             <div class="col">
                 <div class="row">
                     <div class="col">
-                        <div class="category-text1 fw-bold">다양한 체취</div>
+                        <div class="category-text1 fw-bold">취향별 픽!</div>
                     </div>
                 </div>
                 <div class="row pt-3">
@@ -305,42 +391,20 @@
                             <div class="col overflow-x-auto">
                                 <div class="row" style="display: flex;">
                                     <div class="col overflow-x-auto">
-                                        <div class="auction-text" style="border-bottom-style: solid; border-bottom-width: 1; border-bottom-color: white; padding-bottom: 0.2em;">Shoes</div>
-                                        <div class="auction-text">Jacket</div>
-                                        <div class="auction-text">Watch</div>
-                                        <div class="auction-text">Bag</div>
-                                        <div class="auction-text">Muffler</div>
-                                        <div class="auction-text">cap</div>
+                                        <div class="auction-text" style="border-bottom-style: solid; border-bottom-width: 1; border-bottom-color: white; padding-bottom: 0.2em;">Clothes</div>
+                                        <div class="auction-text">Food</div>
+                                        <div class="auction-text">Living</div>
+                                        <div class="auction-text">Toys</div>
+                                        <div class="auction-text">Grooming</div>
+                                        <div class="auction-text">Accessories</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col">
-                                <div class="row" style="padding-top: 1.5em;">
-                                    <div class="col">
-                                        <div style="position: relative; border-radius: 1em; background-color: white; width: 100%; height: 5.5em;">
-                                            <div style="background-color: #f5f5f5; width: 4.5em; height: 4.5em; border-radius: 1em; position: absolute; top: 50%; left: 3%; transform: translate(0, -50%);"></div>
-                                            <div style="position: absolute; top: 50%; right: 6%; transform: translate(0, -50%); font-size: 1.3em;"><i class="fa-regular fa-heart"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row" style="padding-top: 1.5em;">
-                                    <div class="col">
-                                        <div style="position: relative; border-radius: 1em; background-color: white; width: 100%; height: 5.5em;">
-                                            <div style="background-color: #f5f5f5; width: 4.5em; height: 4.5em; border-radius: 1em; position: absolute; top: 50%; left: 3%; transform: translate(0, -50%);"></div>
-                                            <div style="position: absolute; top: 50%; right: 6%; transform: translate(0, -50%); font-size: 1.3em;"><i class="fa-regular fa-heart"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row" style="padding-top: 1.5em;">
-                                    <div class="col">
-                                        <div style="position: relative; border-radius: 1em; background-color: white; width: 100%; height: 5.5em;">
-                                            <div style="background-color: #f5f5f5; width: 4.5em; height: 4.5em; border-radius: 1em; position: absolute; top: 50%; left: 3%; transform: translate(0, -50%);"></div>
-                                            <div style="position: absolute; top: 50%; right: 6%; transform: translate(0, -50%); font-size: 1.3em;"><i class="fa-regular fa-heart"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="col" id="liveAuctionListBox">
+
+
                             </div>
                         </div>
                     </div>
@@ -370,10 +434,26 @@
             <div class="category-box-name" style="z-index: 2;">Clothes</div>
             <div class="category-box-text1" style="z-index: 2;">취향별 픽!</div>
             <div class="category-box-text2" style="z-index: 2;">입기 좋은 츄리닝</div>
-            <div style="background-color: rgba(68, 68, 68, 0.5); width: 100%; height: 100%; border-radius: 1em; position: absolute; top: 0%; z-index: 1;"></div>
+            <div style="background-color: rgba(68, 68, 68, 0.3); width: 100%; height: 100%; border-radius: 1em; position: absolute; top: 0%; z-index: 1;"></div>
             <img class="category-image img-fluid" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; border-radius: 1em;">
             
             
+        </div>
+
+
+        <div class="row liveAuctionWrapper" style="padding-top: 1.5em;">
+            <div class="col liveGoodsPk" onclick="navigateToGoodsDetailPage(this.value)">
+                <div style="position: relative; border-radius: 1em; background-color: white; width: 100%; height: 5.5em;">
+                    <div style="background-color: #f5f5f5; width: 4.5em; height: 4.5em; border-radius: 1em; position: absolute; top: 50%; left: 3%; transform: translate(0, -50%);">
+                        <div style="background-color: rgba(68, 68, 68, 0.1); width: 100%; height: 100%; border-radius: 1em; position: absolute; top: 0%; z-index: 1;"></div>
+                        <img class="live-image img-fluid" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; border-radius: 1em;">
+                    </div>
+                    <div style="position: absolute; top: 50%; right: 6%; transform: translate(0, -50%); font-size: 1.3em;"><i class="fa-regular fa-heart"></i></div>
+                    <div class="fw-bold live-title" style="position: absolute; top: 20%; left: calc(10% + 5em); font-size: 0.8em;"></div>
+                    <div class="fw-bold live-price" style="color: #FA075B; position: absolute; bottom: 20%; left: calc(10% + 5em); font-size: 0.8em;"></div>
+
+                </div>
+            </div>
         </div>
         
     </div>

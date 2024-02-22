@@ -182,12 +182,9 @@
 
 <body>
     <div class="container pb-5">
-        <div th:insert="~{commons/naviBar}"></div>
-        <!-- <div class="position-fixed bottom-0 end-0 m-3">
-            <a href="../diagnosis/diagnosisMainPage" class="btn btn-secondary rounded-circle p-3">
-                <i class="bi bi-hospital"></i>  
-            </a>
-        </div> -->
+        <div class="row">
+            <div th:insert="~{commons/naviBar}" style="background-color: #ffffff;"></div>
+        </div>
         <div class=" sticky-top">
             <div class="row" style="background-color: #fff;">
                 <div class="col-auto my-2 ms-1" onclick="goBack()">
@@ -204,13 +201,13 @@
                 <div class="col justify-content-between fw-bold">
                     <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
                     <th:block
-                        th:if="${session.checkMember == null || (session.checkMember == 2 || session.checkMember == 3)}">
+                        th:if="${session.checkMember == null || (session.checkMember == 2)}">
                         <span class="mx-3" style="cursor: pointer;" onclick="alert('가입 후 이용해주세요')">방명록</span>
                         <span class="mx-3" style="cursor: pointer;" onclick="alert('가입 후 이용해주세요')">사진첩</span>
                         <span class="mx-3" style="cursor: pointer;" onclick="alert('가입 후 이용해주세요')">멤버</span>
                     </th:block>
                     <th:block
-                        th:unless="${session.checkMember == null || (session.checkMember == 2 || session.checkMember == 3)}">
+                        th:unless="${session.checkMember == null || (session.checkMember == 2)}">
                         <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">방명록</span>
 
                         <span class="mx-3" style="cursor: pointer;"
@@ -272,7 +269,7 @@
                                 <div class="row">
                                     <div class="col-7">
                                         <a href="../mstar/profilePage">
-                                            <img th:src="@{response.data.profile_photo}" class="img-fluid rounded-circle"
+                                            <img th:src="@{response.data.profileInfoDto.profile_photo}" class="img-fluid rounded-circle"
                                                  style="width: 2em; height: 2em;">
                                         </a>
                                         

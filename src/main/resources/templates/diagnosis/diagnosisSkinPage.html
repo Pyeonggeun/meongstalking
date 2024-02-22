@@ -3,205 +3,90 @@
 
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
+    <script src="/public/js/commons/lockLikeMobile.js"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-</head>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <style>
+        @font-face {
+            font-family: 'omyu_pretty';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
 
-<body>
-    <div class="container" style="background-color: #e2e2e2; height: 100vh;">
+        body {
+            font-family: 'omyu_pretty';
+            min-width: 320px;
+        }
 
-        <div class="row justify-content-center align-items-center" style="background-color: #ffffff;">
-            <div class="col text-center py-3" style="font-weight: bold; border-bottom: 2px solid #bcbcbc;">종합 건강체크</div>
-        </div>
+        .col h6 {
+            letter-spacing: 2px;
+            margin: 8px 0;
+            font-size: 12px;
+        }
 
-        <form id="selectForm">
-            <div class="mb-3 question" id="question1">
-                <div class="text-center pt-5">
-                    <img src="../public/image/diagnosis/skin.png" alt="There are no registered images"
-                        style="max-width: 50px; max-height: 50px;">
-                    <h5 style="font-weight: bold; margin-bottom: 10px;">피부</h5><br>
-                </div>
+        .main-bubble {
+            color: #000;
+            text-align: center;
+            word-wrap: break-word;
+            display: inline-block;
+            max-width: 100%;
+            position: relative;
+            overflow: hidden;
+            font-size: 1.2em;
+        }
 
-                <div class="row text-center">
-                    <div class="form-label text-center"
-                        style="font-weight: bold; text-align: center; font-size: 1.0em;">증상의 지속기간이 길 수록 단순한 증상이 아닌 질병일
-                        확률이 커집니다.<br>아래 항목에서 선택해주세요.</div>
-                </div>
-                <div class="row p-3">
-                    <div class="form-label" style="font-size: 1.1em; font-family: 'Your Korean Font';">
-                        1. <span style="font-weight: bold;">필수 </span>지속시기
-                    </div>
-                </div>
+        .main-bubble::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0%;
+            height: 0.2em;
+            background: linear-gradient(to right, transparent 50%, #ffcccb 50%);
+            background-size: 200% 100%;
+            transition: width 0.5s;
+        }
 
-                <div class="row ms-3">
-                    <div class="form-check" style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="radio" name="question1" id="q1a" value="a1">
-                        <label class="form-check-label" for="q1a">1일 이내</label>
-                    </div>
-                    <div class="form-check pt-2" style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="radio" name="question1" id="q1b" value="a2">
-                        <label class="form-check-label" for="q1b">3일 이내</label>
-                    </div>
-                    <div class="form-check pt-2" style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="radio" name="question1" id="q1c" value="a3">
-                        <label class="form-check-label" for="q1c">1주일 미만</label>
-                    </div>
-                    <div class="form-check pt-2" style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="radio" name="question1" id="q1d" value="a4">
-                        <label class="form-check-label" for="q1d">1주일 이상</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <button type="button" class="btn btn-primary nextBtn" data-next="question3"
-                        style="background-color: #007bff; color: #ffffff; border: none; padding: 15px 0; width: 100%; border-radius: 5px; cursor: pointer; position: fixed; bottom: 0;">다음</button>
-                </div>
-            </div>
+        .main-bubble:hover::after {
+            width: 100%;
+        }
 
-            <!-- <div class="mb-3 question" id="question2" style="display: none; ">
-                <div class="text-center pt-5">
-                    <img src="../public/image/diagnosis/skin.png" alt="There are no registered images"
-                        style="max-width: 50px; max-height: 50px;">
-                    <h5 style="font-weight: bold; margin-bottom: 10px;">피부</h5><br>
-                </div>
-                <div class="row text-center">
-                    <div class="form-label text-center"
-                        style="font-weight: bold; text-align: center; font-size: 1.0em;">평소와 다른 반려견의 식사 행동에 대해서<br>아래 항목
-                        중 선택해 주세요.</div>
-                </div>
-                <div class="row p-3">
-                    <div class="form-label" style="font-size: 1.1em; font-family: 'Your Korean Font';">
-                        2. <span style="font-weight: bold;">필수 </span>음수량
-                    </div>
-                </div>
-                <div class="row ms-3">
-                    <div class="form-check pt-2" style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="radio" name="question2" id="q2a" value="b1">
-                        <label class="form-check-label" for="q2a">양치질을 아파하는 것 같아요.</label>
-                    </div>
-                    <div class="form-check pt-2" style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="radio" name="question2" id="q2b" value="b2">
-                        <label class="form-check-label" for="q2b">이빨 색이 누렇게 보여요.</label>
-                    </div>
-                    <div class="form-check pt-2" style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="radio" name="question2" id="q2c" value="b3">
-                        <label class="form-check-label" for="q2c">갈수록 입냄새가 심해져요.</label>
-                    </div>
-                    <div class="form-check pt-2" style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="radio" name="question2" id="q2d" value="b4">
-                        <label class="form-check-label" for="q2d">사료나 간식을 흘리면서 먹어요.</label>
-                    </div>
-                    <div class="form-check pt-2" style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="radio" name="question2" id="q2e" value="b5">
-                        <label class="form-check-label" for="q2e">없어요.</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <button type="button" class="btn btn-primary nextBtn" data-next="question3"
-                        style="background-color: #007bff; color: #ffffff; border: none; padding: 15px 0; width: 100%; border-radius: 5px; cursor: pointer; position: fixed; bottom: 0;">다음</button>
-                </div>
-            </div> -->
+        .packBox {
+            background-color: white;
+            border-radius: 1em;
+            padding-top: 0.75em;
+            padding-bottom: 0.75em;
+            margin: 0.02em;
+            transition: transform 0.5s ease, background-color 0.3s ease;
+        }
 
-            <div class="mb-3 question" id="question3" style="display: none; ">
-                <div class="text-center pt-5">
-                    <img src="../public/image/diagnosis/skin.png" alt="There are no registered images"
-                        style="max-width: 50px; max-height: 50px;">
-                    <h5 style="font-weight: bold; margin-bottom: 10px;">피부</h5><br>
-                </div>
-                <div class="row text-center">
-                    <div class="form-label text-center"
-                        style="font-weight: bold; text-align: center; font-size: 1.0em;">반려견에겐 피부와 털 관련 문제가 가장 많이
-                        <br>발생합니다. 아래 항목에서 선택해 주세요.
-                    </div>
-                </div>
-                <div class="row p-3">
-                    <div class="form-label" style="font-size: 1.1em; font-family: 'Your Korean Font';">
-                        2. <span style="font-weight: bold;">피부 </span>
-                    </div>
-                </div>
-                <div class="row ms-3">
-                    <div class="form-check pt-2" style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="radio" name="question3" id="q3a" value="c1">
-                        <label class="form-check-label" for="q3a">
-                            피부에 붉은 반점</label>
-                    </div>
-                    <div class="form-check pt-2" style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="radio" name="question3" id="q3b" value="c2">
-                        <label class="form-check-label" for="q3b">
-                            뾰루지</label>
-                    </div>
-                    <div class="form-check pt-2" style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="radio" name="question3" id="q3c" value="c3">
-                        <label class="form-check-label" for="q3c">
-                            피부에 딱지</label>
-                    </div>
-                    <div class="form-check pt-2" style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="radio" name="question3" id="q3d" value="c4">
-                        <label class="form-check-label" for="q3d">
-                            검은 반점</label>
-                    </div>
-                    <div class="form-check pt-2" style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="radio" name="question3" id="q3e" value="c5">
-                        <label class="form-check-label" for="q3e">종기</label>
-                    </div>
-                    <div class="form-check pt-2" style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="radio" name="question3" id="q3f" value="c6">
-                        <label class="form-check-label" for="q3f">없어요.</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <button type="button" class="btn btn-primary nextBtn" data-next="question4"
-                        style="background-color: #007bff; color: #ffffff; border: none; padding: 15px 0; width: 100%; border-radius: 5px; cursor: pointer; position: fixed; bottom: 0;">다음</button>
-                </div>
+        .packBox:hover {
+            transform: scale(1.1);
+            background-color: #e6e6e6;
+        }
 
-                <!-- <div class="row">
-                    <button type="button" class="btn btn-primary nextBtn" data-next="question3"
-                        style="background-color: #007bff; color: #ffffff; border: none; padding: 15px 0; width: 100%; border-radius: 5px; cursor: pointer; position: fixed; bottom: 0;">다음</button>
-                </div> -->
-            </div>
+        .container {
+            background-color: #ffeddc;
+        }
 
-            <div class="mb-3 question" id="question4" style="display: none; ">
-                <div class="text-center pt-5">
-                    <img src="../public/image/diagnosis/skin.png" alt="There are no registered images"
-                        style="max-width: 50px; max-height: 50px;">
-                    <h5 style="font-weight: bold; margin-bottom: 10px;">피부</h5><br>
-                </div>
-                <div class="row text-center">
-                    <div class="form-label text-center"
-                        style="font-weight: bold; text-align: center; font-size: 1.0em;">반려견에겐 피부와 털 관련 문제가 가장 많이
-                        <br>발생합니다. 아래 항목에서 선택해 주세요.
-                    </div>
-                </div>
-                <div class="row p-3">
-                    <div class="form-label" style="font-size: 1.1em; font-family: 'Your Korean Font';">
-                        3. <span style="font-weight: bold;">털</span>
-                    </div>
-                </div>
-                <div class="row p-3 ms-1">
-                    <div class="form-check pt-2" style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="radio" name="question4" id="q4a" value="d1">
-                        <label class="form-check-label" for="q4a">
-                            털 빠짐</label>
-                    </div>
-                    <div class="form-check pt-2" style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="radio" name="question4" id="q4b" value="d2">
-                        <label class="form-check-label" for="q4b">
-                            털 윤기 사라짐</label>
-                    </div>
-                    <div class="form-check pt-2" style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="radio" name="question4" id="q4c" value="d3">
-                        <label class="form-check-label" for="q4c">
-                            없어요.</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <button type="submit" class="btn btn-primary"
-                        style="background-color: #007bff; color: #ffffff; border: none; padding: 15px 0; width: 100%; border-radius: 5px; cursor: pointer; position: fixed; bottom: 0;">제출</button>
-                </div>
-            </div>
-        </form>
-    </div>
+        body {
+            margin-bottom: 10px;
+        }
+    </style>
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
@@ -245,6 +130,197 @@
         });
 
     </script>
+
+
+</head>
+
+<body>
+
+    <div class="container  pb-5" style="background-color: #ffeddc;    ">
+        <div class="row">
+            <div th:insert="~{commons/naviBar}" style="background-color: #ffffff;"></div>
+        </div>
+
+        <div class="row p-3 px-2 pb-3">
+            <div class="col-auto" onclick="goBack()">
+                <span class="rounded-pill ps-2 px-2" style="background-color: #ffffff; font-size: 0.9em;">이전으로</span>
+            </div>
+            <div class="col" style="font-size: 1em;">
+                <strong> 종합 건강체크</strong>
+            </div>
+
+        </div>
+
+        <form id="selectForm">
+            <div class="mb-3 pt-0 question" id="question1">
+                <div class="row text-center pt-4 py-2">
+                    <div class="col">
+                        <img src="../public/image/diagnosis/skin.png" alt="There are no registered images"
+                            style="max-width: 50px; max-height: 50px;">
+                    </div>
+                </div>
+                <div class="row text-center pt-0 pb-1">
+                    <div class="col pb-2 ">
+                        <h5 style="font-weight: bold; font-size: 0.9rem;">피부</h5>
+                    </div>
+                </div>
+
+                <div class="row text-center pb-3">
+                    <div class="form-label text-center"
+                        style="font-weight: bold; text-align: center; font-size: 1.0em;">증상의 지속기간이 길 수록 단순한 증상이 아닌<br>
+                        질병일
+                        확률이 커집니다. 아래 항목에서 선택해주세요.</div>
+                </div>
+                <div class="row p-3 py-2 pt-3">
+                    <div class="form-label" style="font-size: 1.1em; ">
+                        1. <span style="font-weight: bold;">필수 </span>지속시기
+                    </div>
+                </div>
+
+                <div class="row ms-3 mb-1">
+                    <div class="form-check pt-0" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question1" id="q1a" value="a1">
+                        <label class="form-check-label ps-2" for="q1a">1일 이내</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question1" id="q1b" value="a2">
+                        <label class="form-check-label ps-2" for="q1b">3일 이내</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question1" id="q1c" value="a3">
+                        <label class="form-check-label ps-2" for="q1c">1주일 미만</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question1" id="q1d" value="a4">
+                        <label class="form-check-label ps-2" for="q1d">1주일 이상</label>
+                    </div>
+                </div>
+                <div class="row pb-0 pt-3 p-3">
+                    <button type="button" class="btn nextBtn rounded-pill" data-next="question3"
+                        style="background-color: #fdff9f;  border: none; padding: 15px 0; width: 100%; border-radius: 5px; cursor: pointer;">
+                        다음
+                    </button>
+                </div>
+            </div>
+
+
+            <div class="mb-3 question" id="question3" style="display: none; ">
+                <div class="mb-3 pt-0 question" id="question1">
+                    <div class="row text-center pt-4 py-2">
+                        <div class="col">
+                            <img src="../public/image/diagnosis/skin.png" alt="There are no registered images"
+                                style="max-width: 50px; max-height: 50px;">
+                        </div>
+
+                    </div>
+                    <div class="row text-center pt-0 ">
+                        <div class="col pb-2 mb-1">
+                            <h5 style="font-weight: bold; font-size: 0.9rem;">피부</h5>
+                        </div>
+                    </div>
+                    <div class="row text-center pb-2">
+                        <div class="form-label text-center"
+                            style="font-weight: bold; text-align: center; font-size: 1.0em;">증상의 지속기간이 길 수록 단순한 증상이
+                            아닌<br>
+                            질병일
+                            확률이 커집니다. 아래 항목에서 선택해주세요.</div>
+                    </div>
+                </div>
+                <div class="row p-3 py-2 pt-3">
+                    <div class="form-label" style="font-size: 1.1em; ">
+                        2. <span style="font-weight: bold;">피부</span>
+                    </div>
+                </div>
+
+                <div class="row ms-3">
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question3" id="q3a" value="c1">
+                        <label class="form-check-label" for="q3a">
+                            피부에 붉은 반점</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question3" id="q3b" value="c2">
+                        <label class="form-check-label" for="q3b">
+                            뾰루지</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question3" id="q3c" value="c3">
+                        <label class="form-check-label" for="q3c">
+                            피부에 딱지</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question3" id="q3d" value="c4">
+                        <label class="form-check-label" for="q3d">
+                            검은 반점</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question3" id="q3e" value="c5">
+                        <label class="form-check-label" for="q3e">종기</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question3" id="q3f" value="c6">
+                        <label class="form-check-label" for="q3f">없어요.</label>
+                    </div>
+                </div>
+                <button type="button" class="btn nextBtn rounded-pill" data-next="question4"
+                    style="background-color: #fdff9f;  border: none; padding: 15px 0; width: 100%; border-radius: 5px; cursor: pointer;">
+                    다음
+                </button>
+
+
+            </div>
+
+            <div class="mb-3 question" id="question4" style="display: none; ">
+                <div class="row text-center pt-4 py-2">
+                    <div class="col">
+                        <img src="../public/image/diagnosis/skin.png" alt="There are no registered images"
+                            style="max-width: 50px; max-height: 50px;">
+                    </div>
+
+                </div>
+                <div class="row text-center pt-0 ">
+                    <div class="col pb-2 mb-1">
+                        <h5 style="font-weight: bold; font-size: 0.9rem;">피부</h5>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="form-label text-center"
+                        style="font-weight: bold; text-align: center; font-size: 1.0em;">반려견에겐 피부와 털 관련 문제가 가장 많이
+                        <br>발생합니다. 아래 항목에서 선택해 주세요.
+                    </div>
+                </div>
+                <div class="row p-3 py-2 pt-3">
+                    <div class="form-label" style="font-size: 1.1em; ">
+                       3 <span style="font-weight: bold;">털</span>
+                    </div>
+                </div>
+   
+                <div class="row p-3 ms-1 py-0 pb-5">
+                    <div class="form-check " style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question4" id="q4a" value="d1">
+                        <label class="form-check-label" for="q4a">
+                            털 빠짐</label>
+                    </div>
+                    <div class="form-check pt-2" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question4" id="q4b" value="d2">
+                        <label class="form-check-label" for="q4b">
+                            털 윤기 사라짐</label>
+                    </div>
+                    <div class="form-check pt-2 pb-4 mb-5" style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="radio" name="question4" id="q4c" value="d3">
+                        <label class="form-check-label" for="q4c">
+                            없어요.</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn  rounded-pill" 
+                    style="background-color: #fdff9f;  border: none; padding: 15px 0; width: 100%; border-radius: 5px; cursor: pointer;">
+                    제출
+                </button>
+        
+
+            </div>
+        </form>
+    </div>
 
 
 </body>

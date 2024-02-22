@@ -207,10 +207,13 @@ public class RestAuctionController {
 
 
 	@RequestMapping("getGoodsDetailInfo")
-    public RestResponseDto getGoodsDetailInfo(int goodsPk) {
+    public RestResponseDto getGoodsDetailInfo(int goodsPk, HttpSession session) {
         RestResponseDto restResponseDto = new RestResponseDto();
+
+		UserDto userDto = (UserDto)session.getAttribute("sessionUser");
+		int sessionUserPk = userDto.getUser_pk();
         
-        restResponseDto.setData(auctionService.getGoodsDetailInfo(goodsPk));
+        restResponseDto.setData(auctionService.getGoodsDetailInfo(goodsPk, sessionUserPk));
         restResponseDto.setResult("success");
         
         return restResponseDto;
@@ -383,6 +386,16 @@ public class RestAuctionController {
         
         return restResponseDto;
 	}    
+
+    @RequestMapping("mainPageGoodsListLimit")
+    public RestResponseDto mainPageGoodsListLimit() {
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(auctionService.mainPageGoodsListLimit());
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+	}  
 
     public RestResponseDto template() {
         RestResponseDto restResponseDto = new RestResponseDto();
