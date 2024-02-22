@@ -39,4 +39,10 @@ public class FollowController {
         return "follow/examplePage";
     }
 
+    @RequestMapping("loginPage")
+    public String loginPage() {
+
+        return "follow/loginPage";
+    }
+
 }
