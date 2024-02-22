@@ -48,6 +48,26 @@
         .scrollable-menu span:hover {
             border-color: #000;
         }
+
+        .packtitleBox {
+            background-color: white;
+            border-bottom-left-radius: 1em;
+            border-bottom-right-radius: 1em;
+            margin: 0.02em;
+            margin-top: 0em;
+        }
+
+        .packBox {
+            background-color: white;
+            border-radius: 1em;
+            padding-top: 0.75em;
+            padding-bottom: 0.75em;
+            margin: 0.02em;
+        }
+
+        .container {
+            background-color: ghostwhite;
+        }
     </style>
 
     <script>
@@ -238,17 +258,19 @@
 
 </head>
 
-<body>
+<body style="background-color: ghostwhite;">
     <div class="container pb-5">
-        <div th:insert="~{commons/naviBar}"></div>
         <div class="row">
+            <div th:insert="~{commons/naviBar}" style="background-color: #ffffff;"></div>
+        </div>
+        <div class="row" style="background-color: #ffffff;">
             <div class="col-auto my-2 ms-1" onclick="goBack()">
                 <i class="bi bi-arrow-left"></i>
             </div>
             <div th:text="${clubTF.clubname}" class="col d-flex align-items-center px-0">
             </div>
         </div>
-        <div class="row scrollable-menu py-2">
+        <div class="row scrollable-menu py-2" style="background-color: #ffffff;"    >
             <div class="col justify-content-between fw-bold">
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">방명록</span>
@@ -257,14 +279,14 @@
             </div>
         </div>
 
-        <div class="row mt-4" style="color: #323232;">
+        <div class="row py-4">
             <div class="col fw-bold fs-4">동호회 사진첩</div>
         </div>
 
-        <div class="row row-cols-1 row-cols-3 mt-1">
+        <div class="row row-cols-1 row-cols-3 border-bottom border-5 border-gray packBox">
             <div class="col border border-white px-0" th:each="board : ${freeBoardList}">
                 <div class="row">
-                    <div class="col text-center" style="position: relative;">
+                    <div class="col d-flex justify-content-center align-items-center" style="position: relative;">
                         <a href="#" th:attr="onclick='openOffcanvas(event, \'' + ${board.clubimgboard_pk} + '\')'"
                             aria-controls="offcanvasBottom">
                             <img style="height: 7.5em;" class="img-fluid" th:src="@{'/uploadFiles/'+${board.location}}"
