@@ -182,12 +182,9 @@
 
 <body>
     <div class="container pb-5">
-        <div th:insert="~{commons/naviBar}"></div>
-        <!-- <div class="position-fixed bottom-0 end-0 m-3">
-            <a href="../diagnosis/diagnosisMainPage" class="btn btn-secondary rounded-circle p-3">
-                <i class="bi bi-hospital"></i>  
-            </a>
-        </div> -->
+        <div class="row">
+            <div th:insert="~{commons/naviBar}" style="background-color: #ffffff;"></div>
+        </div>
         <div class=" sticky-top">
             <div class="row" style="background-color: #fff;">
                 <div class="col-auto my-2 ms-1" onclick="goBack()">

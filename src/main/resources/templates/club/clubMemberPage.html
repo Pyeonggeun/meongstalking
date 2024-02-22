@@ -337,7 +337,7 @@
                                                 </div>
                                                 <div th:unless="${member.user_pk == user_pk}"
                                                     style="display: flex; align-items: center;">
-                                                    <span class="fw-bold" th:text="${memner.mame}" style="margin: auto;"></span>
+                                                    <span class="fw-bold" th:text="${member.name}" style="margin: auto;"></span>
                                                 </div>
                                             </div>
             
@@ -350,7 +350,7 @@
                                                 </div>
                                             </div>
                                             <div th:if="${leaderRank == 1}"
-                                                class="col-5 d-flex align-items-center justify-content-end">
+                                                class="col d-flex align-items-center justify-content-end text-end pe-4">
                                                 <div th:if="${member.user_pk == user_pk}">
                                                     <button class="btn btn-secondary btn-sm text-end btn-no-background"
                                                         id="gearModalButton" data-bs-toggle="modal" data-bs-target="#gearModal">
