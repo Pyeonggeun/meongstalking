@@ -10,16 +10,15 @@
 
 
     <select id="selectFreeBoardAll" resultType="map">
-        SELECT ms_club_freeboard.*, ms_user.*, 
+        SELECT ms_club_freeboard.*, ms_user.*, ms_mstar_profile_info.*,
         (SELECT COUNT(*) 
             FROM ms_club_freeboard_comment 
             WHERE clubfreeboard_pk = ms_club_freeboard.clubfreeboard_pk) AS comment_count
-        FROM ms_club_freeboard
-        JOIN ms_user ON ms_user.USER_PK = ms_club_freeboard.user_pk
-        JOIN ms_mstar_profile_info ON ms_mstar_profile_info.user_pk = ms_user.user_pk
-        WHERE ms_club_freeboard.club_pk = #{club_pk}
-        ORDER BY ms_club_freeboard.created_at DESC;
-
+    FROM ms_club_freeboard
+    JOIN ms_user ON ms_user.USER_PK = ms_club_freeboard.user_pk
+    JOIN ms_mstar_profile_info ON ms_mstar_profile_info.user_pk = ms_user.user_pk
+    WHERE ms_club_freeboard.club_pk = #{club_pk}
+    ORDER BY ms_club_freeboard.created_at DESC;
     </select>
 
     <select id="selectImgFreeBoardAll" resultType="map">
@@ -347,18 +346,18 @@
     <!--멤버 서치-->
     <select id="searchMember" resultType="map">
     <![CDATA[
-        SELECT *
+            SELECT *
         FROM 
             ms_club_user
             JOIN ms_user ON ms_user.user_pk = ms_club_user.user_pk
             JOIN ms_club ON ms_club.club_pk = ms_club_user.club_pk 
             JOIN ms_club_user_statuslog ON ms_club_user_statuslog.club_user_pk = ms_club_user.club_user_pk
             JOIN ms_club_user_ranklog ON ms_club_user_ranklog.club_user_pk = ms_club_user.club_user_pk
+            JOIN ms_mstar_profile_info ON ms_mstar_profile_info.user_pk = ms_user.user_pk
         WHERE 
             ms_club_user_statuslog.clubcategory_pk = 1 
-            AND ms_club_user.club_pk = 1 
+            AND ms_club_user.club_pk = 1
             AND ms_user.name LIKE CONCAT('%', #{name}, '%');
-
     ]]>
     </select>
 
