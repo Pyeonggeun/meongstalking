@@ -253,6 +253,7 @@
     <!--게시글 리스트 출력 (조건없는 더미용)-->
     <select id="selectArticleList" resultType="com.psychopath.dogstalking.mstar.dto.ArticleDto">
         SELECT * from ms_mstar_article
+        order by article_pk DESC
     </select>
     <!--프로필 사진 클릭시 나오는 페이지-->
     <select id="selectProfileArticleList" resultType="com.psychopath.dogstalking.mstar.dto.ArticleDto">
