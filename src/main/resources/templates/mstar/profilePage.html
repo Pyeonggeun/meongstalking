@@ -253,8 +253,8 @@
                         const col1 = document.createElement("div");
                         col1.classList.add("col","fs-5", "text-center");
                         const i = document.createElement("i");
-                        i.classList.add("fa-solid","fa-plus" ,"rounded-circle","border","border-black","px-3", "py-3");
-                        i.setAttribute("style","height: 3em; aspect-ratio: 1/1;")
+                        i.classList.add("fa-solid","fa-plus" ,"rounded-circle","border","border-black");
+                        i.setAttribute("style","height: 3em; aspect-ratio: 1/1; padding-top: 0.9em")
                         col1.appendChild(i);
                         row1.appendChild(col1);
 
@@ -898,8 +898,8 @@
                         <div id="updateProfilePageButton" class="col ms-3 fw-bold text-center rounded border" style="background-color: rgb(231, 229, 229);">
                             프로필 편집
                         </div>
-                        <div th:onclick="|location.href='@{./mainListPage(user_pk=${session.sessionUser.user_pk})}'|" class="col mx-3 fw-bold text-center rounded border" style="background-color: rgb(231, 229, 229);">
-                            멍스타 피드
+                        <div th:onclick="|location.href='@{./uploadStoryPage(user_pk=${session.sessionUser.user_pk})}'|" class="col mx-3 fw-bold text-center rounded border" style="background-color: rgb(231, 229, 229);">
+                            스토리 등록
                         </div>
                         <div class="col-auto me-3 px-1 pt-1 text-center rounded border" style="background-color: rgb(231, 229, 229); font-size: small;">
                             <i class="fa-solid fa-user-plus px-0"></i>
@@ -921,10 +921,10 @@
                     <div id="d-none-scroll" class="row mt-3">
                         <div class="col">
                             <div id="storyStorageListBox" class="row ps-2">
-                                <div id="storageAddButton" th:onclick="|location.href='@{./addStoryStoragePage(user_pk=${session.sessionUser.user_pk})}'|" class="col-auto align-self-center">
+                                <div id="storageAddButton" th:onclick="|location.href='@{./addStoryStoragePage(user_pk=${session.sessionUser.user_pk})}'|" class="col-auto">
                                     <div class="row">
-                                        <div class="col fs-5 text-center">
-                                            <i class="fa-solid fa-plus rounded-circle border border-black py-3 px-3" style="height: 3em; aspect-ratio: 1/1;"></i>
+                                        <div class="col-auto fs-5 text-center ">
+                                            <i class="fa-solid fa-plus rounded-circle border border-black" style="height: 3em; aspect-ratio: 1/1; padding-top: 0.9em;"></i>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -983,7 +983,7 @@
         
         <div id="storyStorageListTemplete" class="d-none">
             <div class="col-auto storyStorageListWrapper">
-                <div class="row">
+                <div class="row px-2">
                     <div class="col-auto rounded-circle storageImg px-0 py-0">
                         <img class="img-fluid rounded-circle border border-white border-2 storage_img"  src="" alt="" style="aspect-ratio: 1/1; height: 4em;">
                     </div>

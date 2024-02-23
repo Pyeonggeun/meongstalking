@@ -9,6 +9,7 @@
 
     function showShopModal(){
         const itemModal = bootstrap.Modal.getOrCreateInstance("#itemModal");
+       
         loadShopItemList();
         getMyCoin();
         itemModal.show();

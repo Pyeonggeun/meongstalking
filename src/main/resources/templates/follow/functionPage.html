@@ -758,6 +758,8 @@
                         document.getElementById("previewTrackMarkerOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.cnt + " / 2 )";
                     }
 
+                    document.getElementById("previewTrackMarkerOuter").setAttribute("class", "d-flex align-items-center justify-content-center border-0");
+                    document.getElementById("previewTrackMarkercoverdImage").setAttribute("class", "col-6 rounded-pill mx-3 px-0");
                     if(e.star_rating == "SSR") {
                         document.getElementById("previewTrackMarkerOuter").classList.add("SSROuter");
                         document.getElementById("previewTrackMarkercoverdImage").classList.add("SSROuter");
@@ -768,14 +770,14 @@
                         document.getElementById("previewTrackMarkerOuter").classList.add("SOuter");
                         document.getElementById("previewTrackMarkercoverdImage").classList.add("SOuter");
                     }else if(e.star_rating == "fiveStar") {
-                        document.getElementById("previewTrackMarkerOuter").classList.add("FiveStarROuter");
-                        document.getElementById("previewTrackMarkercoverdImage").classList.add("FiveStarROuter");
+                        document.getElementById("previewTrackMarkerOuter").classList.add("FiveStarOuter");
+                        document.getElementById("previewTrackMarkercoverdImage").classList.add("FiveStarOuter");
                     }else if(e.star_rating == "fourStar") {
-                        document.getElementById("previewTrackMarkerOuter").classList.add("FourStarROuter");
-                        document.getElementById("previewTrackMarkercoverdImage").classList.add("FourStarROuter");
+                        document.getElementById("previewTrackMarkerOuter").classList.add("FourStarOuter");
+                        document.getElementById("previewTrackMarkercoverdImage").classList.add("FourStarOuter");
                     }else if(e.star_rating == "threeStar") {
-                        document.getElementById("previewTrackMarkerOuter").classList.add("ThreeStarROuter");
-                        document.getElementById("previewTrackMarkercoverdImage").classList.add("ThreeStarROuter");
+                        document.getElementById("previewTrackMarkerOuter").classList.add("ThreeStarOuter");
+                        document.getElementById("previewTrackMarkercoverdImage").classList.add("ThreeStarOuter");
                     }else if(e.star_rating == "twoStar") {
                         document.getElementById("previewTrackMarkerOuter").classList.add("TwoStarOuter");
                         document.getElementById("previewTrackMarkercoverdImage").classList.add("TwoStarOuter");
@@ -885,6 +887,7 @@
 
                 resetTrackMarkerModal();
                 console.log(e.star_rating)
+                document.getElementById("trackMarkerOuter").setAttribute("class", "d-flex align-items-center justify-content-center border-0");
                 if(e.star_rating == "SSR") {
                     document.getElementById("trackMarkerOuter").classList.add("SSROuter");
                 }else if(e.star_rating == "SR") {
@@ -892,11 +895,11 @@
                 }else if(e.star_rating == "S") {
                     document.getElementById("trackMarkerOuter").classList.add("SOuter");
                 }else if(e.star_rating == "fiveStar") {
-                    document.getElementById("trackMarkerOuter").classList.add("FiveStarROuter");
+                    document.getElementById("trackMarkerOuter").classList.add("FiveStarOuter");
                 }else if(e.star_rating == "fourStar") {
-                    document.getElementById("trackMarkerOuter").classList.add("FourStarROuter");
+                    document.getElementById("trackMarkerOuter").classList.add("FourStarOuter");
                 }else if(e.star_rating == "threeStar") {
-                    document.getElementById("trackMarkerOuter").classList.add("ThreeStarROuter");
+                    document.getElementById("trackMarkerOuter").classList.add("ThreeStarOuter");
                 }else if(e.star_rating == "twoStar") {
                     document.getElementById("trackMarkerOuter").classList.add("TwoStarOuter");
                 }else if(e.star_rating == "oneStar") {
@@ -983,6 +986,7 @@
                 hideAction();
                 getMyLocation();
                 getLikeList();
+                showLikeListModal();
 
             }
 
@@ -1205,11 +1209,11 @@
                         }else if(e.star_rating == "S") {
                             likeListWrapper.querySelector(".likeListOuter").classList.add("SOuter");
                         }else if(e.star_rating == "fiveStar") {
-                            likeListWrapper.querySelector(".likeListOuter").classList.add("FiveStarROuter");
+                            likeListWrapper.querySelector(".likeListOuter").classList.add("FiveStarOuter");
                         }else if(e.star_rating == "fourStar") {
-                            likeListWrapper.querySelector(".likeListOuter").classList.add("FourStarROuter");
+                            likeListWrapper.querySelector(".likeListOuter").classList.add("FourStarOuter");
                         }else if(e.star_rating == "threeStar") {
-                            likeListWrapper.querySelector(".likeListOuter").classList.add("ThreeStarROuter");
+                            likeListWrapper.querySelector(".likeListOuter").classList.add("ThreeStarOuter");
                         }else if(e.star_rating == "twoStar") {
                             likeListWrapper.querySelector(".likeListOuter").classList.add("TwoStarOuter");
                         }else if(e.star_rating == "oneStar") {
@@ -1221,8 +1225,6 @@
                         likeListBox.appendChild(likeListWrapper);
 
                     }
-                    
-                    showLikeListModal();
 
                 });
 
@@ -1311,16 +1313,16 @@
             function toggleLike(userWriterPk, target) {
 
                 // .onclick = () => {} 으로 호출 & if문으로 is_trace 걸러내기
-
+                
                 const url = "./isLike?user_collector_pk=" + user_pk + "&user_writer_pk=" + userWriterPk;
 
                 fetch(url)
                 .then(response => response.json())
                 .then(response => {
-
                     if(response.data) {
 
                         deleteLike(userWriterPk, target);
+                        return;
 
                     }
 
@@ -1430,6 +1432,7 @@
             function openBag() {
 
                 getCollectionList();
+                showCollectionModal();
 
             }
 
@@ -1521,12 +1524,12 @@
 
                         collectionOuter.onclick = () => {
 
-                        reloadDetailCollection(e);
+                            reloadDetailCollection(e);
 
                         };
 
                         document.getElementById("collectionLikeCnt").innerText = e.like_cnt;
-
+                        console.log(e.is_like);
                         if(e.is_like == 'Y') {
 
                             collectionLikeListBox.appendChild(collectionWrapper);
@@ -1538,9 +1541,6 @@
                         }
 
                     }
-
-                    showCollectionModal();
-
 
                 });
 
@@ -1555,8 +1555,8 @@
                         document.getElementById("collectionDetailMstarButton").disabled = false;
                         document.getElementById("collectionDetailMstarButton").onclick = () => {
 
-                            hideCollectionDetailModal();
-                            hideCollectionModal();
+                            // hideCollectionDetailModal();
+                            // hideCollectionModal();
 
                             location.href = "/mstar/profilePage";
                         };
@@ -1652,7 +1652,8 @@
                 }else if(e.open_rating == 1) {
                     document.getElementById("collectionDetailOpenRating").innerText = "Lv " + e.open_rating + " ( " + e.collect_count + " / 2 )";
                 }
-
+                console.log(e.star_rating);
+                document.getElementById("collectionDetailOuter").setAttribute("class", "d-flex align-items-center justify-content-center border-0");
                 if(e.star_rating == "SSR") {
                     document.getElementById("collectionDetailOuter").classList.add("SSROuter");
                 }else if(e.star_rating == "SR") {
@@ -1660,37 +1661,38 @@
                 }else if(e.star_rating == "S") {
                     document.getElementById("collectionDetailOuter").classList.add("SOuter");
                 }else if(e.star_rating == "fiveStar") {
-                    document.getElementById("collectionDetailOuter").classList.add("FiveStarROuter");
+                    document.getElementById("collectionDetailOuter").classList.add("FiveStarOuter");
                 }else if(e.star_rating == "fourStar") {
-                    document.getElementById("collectionDetailOuter").classList.add("FourStarROuter");
+                    document.getElementById("collectionDetailOuter").classList.add("FourStarOuter");
                 }else if(e.star_rating == "threeStar") {
-                    document.getElementById("collectionDetailOuter").classList.add("ThreeStarROuter");
+                    document.getElementById("collectionDetailOuter").classList.add("ThreeStarOuter");
                 }else if(e.star_rating == "twoStar") {
                     document.getElementById("collectionDetailOuter").classList.add("TwoStarOuter");
                 }else if(e.star_rating == "oneStar") {
                     document.getElementById("collectionDetailOuter").classList.add("OneStarOuter");
                 }
-
+                console.log(e.is_like)
                 if(e.is_like == "Y") {
                     document.getElementById("collectionDetailHeartIcon").style.fontVariationSettings = "'FILL' 1";
                 }else {
                     document.getElementById("collectionDetailHeartIcon").style.fontVariationSettings = "'FILL' 0";
                 }
                 
-                // document.getElementById("collectionDetailHeartButton").onclick = () => {
-                //     console.log(e.is_trace);
-                //     if(e.is_trace == "N") {
-                //         toggleLike(e.user_pk, document.getElementById("collectionDetailHeartIcon"));
-                //         return;
-                //     }
+                document.getElementById("collectionDetailHeartButton").onclick = () => {
+                    
+                    if(e.is_trace == "N") {
+                        console.log(e.is_trace);
+                        toggleLike(e.user_pk, document.getElementById("collectionDetailHeartIcon"));
+                        return;
+                    }
 
-                //     document.getElementById("alertContent").innerText = "추행하고 있습니다";
-                //     document.getElementById("alertCheckButton").onclick = () => {
-                //         hideAlertModal();
-                //     };
-                //     showAlertModal();
+                    document.getElementById("alertContent").innerText = "추행하고 있습니다";
+                    document.getElementById("alertCheckButton").onclick = () => {
+                        hideAlertModal();
+                    };
+                    showAlertModal();
 
-                // };
+                };
 
                 getCollectionLogList(e.user_pk, e.star_rating);
 
@@ -1942,6 +1944,7 @@
                     if(response.data.length == 0) {
 
                         document.getElementById("myTrackCnt").innerText = "0";
+                        showMyTrackModal();
                         return;
                         
                     }
@@ -2210,6 +2213,8 @@
             }
 
             function hideCollectionDetailModal() {
+
+                getCollectionList();
 
                 const modal = bootstrap.Modal.getOrCreateInstance("#collectionDetailModal");
                 modal.hide();
@@ -3092,7 +3097,7 @@
                                                 <div class="col-3">
                                                     <div class="row">
                                                         <div class="col px-2">
-                                                            <div id="previewTrackMarkerOuter" class="d-flex align-items-center justify-content-center border-0" style="width: 100%; aspect-ratio: 1/1; border-radius: 50%;">
+                                                            <div id="previewTrackMarkerOuter" style="width: 100%; aspect-ratio: 1/1; border-radius: 50%;">
                                                                 <div id="previewTrackMarkerImage" style="width: 90%; aspect-ratio: 1/1; border-radius: 50%; background: url('/public/image/follow/questionBlack.png') no-repeat center; background-size: cover; filter: opacity(85%);"></div>
                                                             </div>
                                                         </div>
@@ -3261,7 +3266,7 @@
                                         </div>
                                         <div class="rounded-bottom px-3 py-5" style="width: 100%; background: #C5A886;">
                                             <div class="row justify-content-center">
-                                                <div id="previewTrackMarkercoverdImage" class="col-6 rounded-pill mx-3 px-0" style="aspect-ratio: 16/9;">
+                                                <div id="previewTrackMarkercoverdImage" style="aspect-ratio: 16/9;">
                                                     <div class="row text-center align-items-center" style="height: 100%;">
                                                         <div class="col">
                                                             <div class="row">
@@ -3309,7 +3314,7 @@
                                             <div class="col">
                                                 <div class="row">
                                                     <div class="col-auto pe-1">
-                                                        <div id="trackMarkerOuter" class="d-flex align-items-center justify-content-center border-0" style="width: 2rem; height: 2rem; border-radius: 50%;">
+                                                        <div id="trackMarkerOuter" style="width: 2rem; height: 2rem; border-radius: 50%;">
                                                             <div id="trackMarkerInner" style="width: 1.6rem; height: 1.6rem; border-radius: 50%; background: url('/public/image/follow/questionBlack.png') no-repeat center; background-size: cover; filter: opacity(85%);"></div>
                                                         </div>
                                                     </div>
@@ -3429,7 +3434,7 @@
                                         <img class="img-fluid" th:src="@{/public/image/follow/banner.png}" style="width: 12rem; height: 3rem;">
                                     </div>
                                     <span class="text-white fw-bold" style="position: absolute; z-index: 1; font-size: 1rem; left: 5rem; top: 0.3rem; color: #f3ecdd;">상 세 정 보</span>
-                                    <button type="button" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" data-bs-dismiss="modal" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.7rem; top: 0.6rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
+                                    <button type="button" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" onclick="hideCollectionDetailModal()" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.7rem; top: 0.6rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
                                         <div style="border-radius: 50%; background: #ac5e23; width: 1.3rem; height: 1.3rem; border: 1px solid #7D3A05;">
                                             <span id="collectionModalCloseIcon" class="material-symbols-rounded" style="position: absolute; font-size: 1.2rem; left: 0.2rem; color: #f3ecdd;">
                                                 close
@@ -3445,8 +3450,8 @@
                                                         <div class="col-3">
                                                             <div class="row">
                                                                 <div class="col px-2">
-                                                                    <div id="collectionDetailOuter" class="d-flex align-items-center justify-content-center border-0" style="width: 100%; aspect-ratio: 1/1; border-radius: 50%;">
-                                                                        <div id="collectionDetailImage" style="width: 90%; aspect-ratio: 1/1; border-radius: 50%; background: url('/public/image/follow/questionBlack.png') no-repeat center; background-size: cover; filter: opacity(85%);"></div>
+                                                                    <div id="collectionDetailOuter" style="width: 100%; aspect-ratio: 1/1; border-radius: 50%;">
+                                                                        <div id="collectionDetailImage" style="width: 89%; aspect-ratio: 1/1; border-radius: 50%; background: url('/public/image/follow/questionBlack.png') no-repeat center; background-size: cover; filter: opacity(85%);"></div>
                                                                     </div>
                                                                 </div>
                                                             </div>

@@ -16,6 +16,7 @@
             WHERE clubfreeboard_pk = ms_club_freeboard.clubfreeboard_pk) AS comment_count
         FROM ms_club_freeboard
         JOIN ms_user ON ms_user.USER_PK = ms_club_freeboard.user_pk
+        JOIN ms_mstar_profile_info ON ms_mstar_profile_info.user_pk = ms_user.user_pk
         WHERE ms_club_freeboard.club_pk = #{club_pk}
         ORDER BY ms_club_freeboard.created_at DESC;
 
@@ -207,14 +208,17 @@
 
     <!--길드 멤버-->
     <select id="selectMember" resultType="map">
-    SELECT *
-    FROM 
-        ms_club_user
-        JOIN ms_user ON ms_user.user_pk = ms_club_user.user_pk
-        JOIN ms_club ON ms_club.club_pk = ms_club_user.club_pk 
-        join ms_club_user_statuslog on ms_club_user_statuslog.club_user_pk = ms_user.user_pk
-        join ms_club_user_ranklog on ms_club_user_ranklog.club_user_pk = ms_user.user_pk
-        WHERE ms_club_user_statuslog.clubcategory_pk=1 and ms_club_user.club_pk=#{club_pk};
+            SELECT *
+        FROM 
+            ms_club_user
+            JOIN ms_user ON ms_user.user_pk = ms_club_user.user_pk
+            JOIN ms_club ON ms_club.club_pk = ms_club_user.club_pk      
+            JOIN ms_club_user_statuslog ON ms_club_user_statuslog.club_user_pk = ms_user.user_pk
+            JOIN ms_club_user_ranklog ON ms_club_user_ranklog.club_user_pk = ms_user.user_pk
+            JOIN ms_mstar_profile_info ON ms_mstar_profile_info.user_pk = ms_user.user_pk
+        WHERE
+            ms_club_user_statuslog.clubcategory_pk = 1
+            AND ms_club_user.club_pk = #{club_pk};
     </select>
 
     <!--탈퇴-->
@@ -274,6 +278,7 @@
         SELECT *
         FROM ms_club_freeboard
         join ms_user on ms_user.user_pk =ms_club_freeboard.user_pk 
+        JOIN ms_mstar_profile_info ON ms_mstar_profile_info.user_pk = ms_user.user_pk
         WHERE ms_club_freeboard.club_pk = #{club_pk}
         ORDER BY ms_club_freeboard.created_at DESC
         LIMIT 1;

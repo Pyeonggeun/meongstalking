@@ -584,7 +584,28 @@
         where user_pk = #{user_pk})
         and read_status ='N'
     </select>
-    
+    <select id="selectRecoUserList" resultType="int"> 
+        SELECT result.profile_info_pk FROM (
+            SELECT unfollowinglist.profile_info_pk, COUNT(mf.following_user_pk) as follow_count
+            FROM (
+                SELECT mmpi.profile_info_pk
+                FROM ms_mstar_profile_info mmpi
+                WHERE user_pk != 1
+                AND profile_info_pk NOT IN (
+                    SELECT follow_user_pk
+                    FROM ms_mstar_follow mmf
+                    WHERE following_user_pk = (
+                        SELECT profile_info_pk
+                        FROM ms_mstar_profile_info
+                        WHERE user_pk = 1
+                    )
+                )
+            ) AS unfollowinglist
+            LEFT JOIN ms_mstar_follow mf ON unfollowinglist.profile_info_pk = mf.following_user_pk
+            GROUP BY unfollowinglist.profile_info_pk
+            order BY follow_count DESC
+            limit 5) as result
+    </select>
     
     
     

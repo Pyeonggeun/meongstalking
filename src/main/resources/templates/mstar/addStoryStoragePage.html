@@ -68,12 +68,13 @@
                     const imageFiles = fileUpload.files[0];
                     const formData = new FormData();
                     
+                    let storage = document.querySelector("#storage_name");
                     if(storage_name == ""){
                         storage_name = "하이라이트";
+                    }else{
+                        storage_name = storage.value;
                     }
-                    let storage = document.querySelector("#storage_name");
-                    let storage_name = storage.value;
-                    
+
                     formData.append("imageFiles", imageFiles)
                     formData.append("profile_info_pk", profile_info_pk);
                     formData.append("storage_name", storage_name);

@@ -10,6 +10,11 @@
     <script src="https://kit.fontawesome.com/784384f602.js" crossorigin="anonymous"></script>
     <script src="/public/js/commons/naviBar.js"></script>
     <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+
 
 
     <script>
@@ -88,7 +93,10 @@
                         goodsImage.setAttribute("src", "/uploadFiles/"+ e.auctionGoodsDto.image_link +"");
 
                         const time = goodsWrapper.querySelector(".time-text");
-                        time.setAttribute("data-value", e.auctionGoodsDto.expiry_date);
+                        remainingTimeInSeconds = e.remainingTime[0] * 86400 + e.remainingTime[1] * 3600 + e.remainingTime[2] * 60 + e.remainingTime[3];
+                        time.value = remainingTimeInSeconds;
+
+
 
                         const price = goodsWrapper.querySelector(".goods-price");
                         price.innerText = "KRW " + e.auctionGoodsDto.starting_price;
@@ -160,47 +168,36 @@
             const goodsListBox = document.getElementById("goodsListBox");
             const timeTexts = goodsListBox.querySelectorAll(".time-text");
 
+
             // 1초마다 실행되는 타이머 설정
             setInterval(() => {
                 // 각 time-text 엘리먼트에 대해 처리
                 timeTexts.forEach(timeText => {
                     // data-value에서 날짜 정보 가져오기
-                    const expiryDateArray = timeText.getAttribute("data-value").split(',');
-                    if(expiryDateArray){
-                        const expiryYear = expiryDateArray[0];
-                        const expiryMonth = expiryDateArray[1];
-                        const expiryDays = expiryDateArray[2];
-                        const expiryHour = expiryDateArray[3];
-                        const expiryMinutes = expiryDateArray[4];
-                        const expiry = expiryYear + '-' + expiryMonth + '-' + expiryDays + '- ' + expiryHour + ':' + expiryMinutes + ':00';
+                    let remainingTimeInSeconds = timeText.value;
+                    if(remainingTimeInSeconds != 0){
 
-                        const expiryDate = new Date(expiry);
                         
-                        const now = new Date();
+                        let days = Math.floor(remainingTimeInSeconds / 86400);
+                        let hours = Math.floor((remainingTimeInSeconds % 86400) / 3600);
+                        let minutes = Math.floor((remainingTimeInSeconds % 3600) / 60);
+                        let seconds = remainingTimeInSeconds % 60;
 
-                        const remainingTime = expiryDate - now;
-                        if (remainingTime > 24 * 60 * 60 * 1000) {
-                            // 24시간 이상 남은 경우
-                            const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
-                            const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                            const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
-                            const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
-                            timeText.innerText = `${days}일 ${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-                        } else if (remainingTime > 60 * 60 * 1000) {
-                            // 24시간 이하, 1시간 이상 남은 경우
-                            const hours = Math.floor(remainingTime / (1000 * 60 * 60));
-                            const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
-                            const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
-                            timeText.innerText = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-                        } else {
-                            // 1시간 이하 남은 경우
-                            const minutes = Math.floor(remainingTime / (1000 * 60));
-                            const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
-                            timeText.innerText = `00:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                        hours = hours.toString().padStart(2, '0');
+                        minutes = minutes.toString().padStart(2, '0');
+                        seconds = seconds.toString().padStart(2, '0');
+
+                        if(days == 0){
+                            timeText.innerText = `${hours}:${minutes}:${seconds}`;
+                        }else{
+                            timeText.innerText = `${days}일 ${hours}:${minutes}:${seconds}`;
                         }
+
+                        remainingTimeInSeconds--;
+                        timeText.value = remainingTimeInSeconds;
+                    }else{
+                        timeText.innerText = "00:00:00";
                     }
-
-
                 });
             }, 1000); // 1초 간격으로 실행
         }
@@ -242,6 +239,11 @@
 
 
     <style>
+        body{
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        
         body{
             background-color: #f5f5f5;
         }
