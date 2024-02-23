@@ -62,8 +62,8 @@
         }
 
         .user-bubble {
-            background-color: #3140dd;
-            color: #ffffff;
+            background-color: #FDE5CD;
+            color: #151515;
             text-align: right;
             display: inline-block;
             position: relative;
@@ -78,7 +78,7 @@
             right: -15px;
             border-width: 0 0 15px 20px;
             border-style: solid;
-            border-color: transparent transparent #3140dd transparent;
+            border-color: transparent transparent #FDE5CD transparent;
             display: inline-block;
             transform: rotate(-175deg);
         }
@@ -132,7 +132,7 @@
 
 
         .container {
-            background-color: rgb(215, 215, 255);
+            background-color: rgb(240, 240, 240);
 
         }
 
@@ -149,14 +149,15 @@
             <div th:insert="~{commons/naviBar}" ></div>
         </div>
 
-        <div class="row p-3 px-3 pb-0">
-            <div class="main-bubble">
-                <strong> 강아지 관리 QnA에 오신 것을 환영합니다!<br> 궁금한 것이 있으면 물어보세요. </strong>
+        <div class="row pt-2">
+            <div class="col-auto" onclick="goBack()">
+                <span class="rounded-pill px-2 " style=" font-size: 1em;">&lt</span>
             </div>
         </div>
-        <div class="row justify-content-center py-3 pt-0 pb-4">
-            <div class="col-auto" onclick="goBack()">
-                <span class="rounded-pill px-2 " style="background-color: #ffffff; font-size: 0.9em;">이전으로</span>
+
+        <div class="row p-3 pt-0 pb-4">
+            <div class="main-bubble">
+                <strong> 강아지 관리 QnA에 오신 것을 환영합니다!<br> 궁금한 것이 있으면 물어보세요. </strong>
             </div>
         </div>
 

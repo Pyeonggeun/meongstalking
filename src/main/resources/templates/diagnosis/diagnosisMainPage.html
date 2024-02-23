@@ -63,61 +63,57 @@
             padding-top: 0.75em;
             padding-bottom: 0.75em;
             margin: 0.02em;
-            transition: transform 0.5s ease, background-color 0.3s ease; /* 확대 및 배경색 변경 트랜지션 설정 */
+            transition: transform 0.5s ease, background-color 0.3s ease; 
         }
 
         .packBox:hover {
-            transform: scale(1.1); /* 확대 효과 */
-            background-color: #e6e6e6; /* 호버 시 배경색 변경 */
+            transform: scale(1.1);
+            background-color: #FDE5CD; 
+            color: #000;
         }
 
     </style>
     <script>
         function goBack() {
             window.history.back();
-        }
-        //        
+        }    
     </script>
 
 </head>
 
 <body>
-    <div class="container pb-5" style="background-color: #ffeddc; height: 100vh;">
+    <div class="container pb-5" style="background-color: rgb(240,240,240); height: 100vh;">
         <div class="row" style="background-color: #ffffff;">
             <div th:insert="~{commons/naviBar}"></div>
         </div>
-
-        <div class="row p-3 px-3 pb-0">
-            <div class="main-bubble pt-3" style="font-size: 1em;">
-                <strong> 반려견의 증상 유형을 선택해주세요. </strong>
+        <div class="row pt-2">
+            <div class="col-auto" onclick="goBack()">
+                <span class="rounded-pill px-2 " style=" font-size: 1em;">&lt</span>
             </div>
         </div>
-        <div class="row justify-content-center py-3  pb-3">
-            <div class="col-auto" onclick="goBack()">
-                <span class="rounded-pill px-2 " style="background-color: #ffffff; font-size: 0.9em;">이전으로</span>
+        <div class="row p-3 pt-0 pb-4">
+            <div class="main-bubble " style="font-size: 1em;">
+                <strong> 반려견의 증상 유형을 선택해주세요. </strong>
             </div>
         </div>
 
         <div class="row row-cols-1 row-cols-3 p-3 pb-0">
             <a href="./diagnosisSkinPage" style="color: rgb(70, 70, 70); text-decoration: none;">
-                <div class="col text-center pt-3 border-bottom border-5 border-gray packBox pb-0"
-                    style="background-color: #fdff9f;">
+                <div class="col text-center pt-3 border-bottom border-5 border-gray packBox pb-0">
                     <img src="../public/image/diagnosis/skin.png" alt="There are no registered images"
                         style="max-width: 50px; max-height: 50px;">
                     <h6 style="font-weight: bold;">피부</h6><br>
                 </div>
             </a>
             <a href="./diagnosisSkinPage" style="color: rgb(70, 70, 70); text-decoration: none;">
-                <div class="col text-center pt-3  border-bottom border-5 border-gray packBox pb-0"
-                    style="background-color: #fdff9f;">
+                <div class="col text-center pt-3  border-bottom border-5 border-gray packBox pb-0">
                     <img src="../public/image/diagnosis/tooth.png" alt="There are no registered images"
                         style="max-width: 50px; max-height: 50px; ">
                     <h6 style="font-weight: bold; margin-bottom: 10px;">치아</h6><br>
                 </div>
             </a>
             <a href="./diagnosisSkinPage" style="color: rgb(70, 70, 70); text-decoration: none;">
-                <div class="col text-center pt-3  border-bottom border-5 border-gray packBox pb-0"
-                    style="background-color: #fdff9f;">
+                <div class="col text-center pt-3  border-bottom border-5 border-gray packBox pb-0">
                     <img src="../public/image/diagnosis/bone.png" alt="There are no registered images"
                         style="max-width: 50px; max-height: 50px; ">
                     <h6 style="font-weight: bold; margin-bottom: 10px;">뼈/관절</h6><br>
@@ -127,24 +123,21 @@
 
         <div class="row row-cols-1 row-cols-3 p-3 pb-0">
             <a href="./diagnosisSkinPage" style="color: rgb(70, 70, 70); text-decoration: none;">
-                <div class="col text-center pt-3  border-bottom border-5 border-gray packBox pb-0"
-                    style="background-color: #9fc5ff;">
+                <div class="col text-center pt-3  border-bottom border-5 border-gray packBox pb-0" >
                     <img src="../public/image/diagnosis/action.png" alt="There are no registered images"
                         style="max-width: 50px; max-height: 50px; ">
                     <h6 style="font-weight: bold; margin-bottom: 10px;">행동</h6><br>
                 </div>
             </a>
             <a href="./diagnosisSkinPage" style="color: rgb(70, 70, 70); text-decoration: none;">
-                <div class="col text-center pt-3  border-bottom border-5 border-gray packBox pb-0"
-                    style="background-color: #9fc5ff;">
+                <div class="col text-center pt-3  border-bottom border-5 border-gray packBox pb-0" >
                     <img src="../public/image/diagnosis/eye.png" alt="There are no registered images"
                         style="max-width: 50px; max-height: 50px; ">
                     <h6 style="font-weight: bold; margin-bottom: 10px;">눈</h6><br>
                 </div>
             </a>
             <a href="./diagnosisSkinPage" style="color: rgb(70, 70, 70); text-decoration: none;">
-                <div class="col text-center pt-3  border-bottom border-5 border-gray packBox pb-0"
-                    style="background-color: #9fc5ff;">
+                <div class="col text-center pt-3  border-bottom border-5 border-gray packBox pb-0" >
                     <img src="../public/image/diagnosis/Immunity.png" alt="There are no registered images"
                         style="max-width: 50px; max-height: 50px; ">
                     <h6 style="font-weight: bold; margin-bottom: 10px;">면역력/호흡기</h6><br>
@@ -154,24 +147,21 @@
 
         <div class="row row-cols-1 row-cols-3 p-3">
             <a href="./diagnosisSkinPage" style="color: rgb(70, 70, 70); text-decoration: none;">
-                <div class="col text-center pt-3  border-bottom border-5 border-gray packBox pb-0"
-                    style="background-color: #c79fff;">
+                <div class="col text-center pt-3  border-bottom border-5 border-gray packBox pb-0" >
                     <img src="../public/image/diagnosis/heart.png" alt="There are no registered images"
                         style="max-width: 50px; max-height: 50px; ">
                     <h6 style="font-weight: bold; margin-bottom: 10px;">심장</h6><br>
                 </div>
             </a>
             <a href="./diagnosisSkinPage" style="color: rgb(70, 70, 70); text-decoration: none;">
-                <div class="col text-center pt-3  border-bottom border-5 border-gray packBox pb-0"
-                    style="background-color: #c79fff;">
+                <div class="col text-center pt-3  border-bottom border-5 border-gray packBox pb-0" >
                     <img src="../public/image/diagnosis/kidney.png" alt="There are no registered images"
                         style="max-width: 50px; max-height: 50px; ">
                     <h6 style="font-weight: bold; margin-bottom: 10px;">신장/방광</h6><br>
                 </div>
             </a>
             <a href="./diagnosisSkinPage" style="color: rgb(70, 70, 70); text-decoration: none;">
-                <div class="col text-center pt-3  border-bottom border-5 border-gray packBox pb-0"
-                    style="background-color: #c79fff;">
+                <div class="col text-center pt-3  border-bottom border-5 border-gray packBox pb-0" >
                     <img src="../public/image/diagnosis/stomach.png" alt="There are no registered images"
                         style="max-width: 50px; max-height: 50px; ">
                     <h6 style="font-weight: bold; margin-bottom: 10px;">위/장</h6><br>

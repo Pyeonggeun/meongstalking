@@ -111,10 +111,6 @@ public class ClubRestController {
 		RestResponseDto restResponseDto = new RestResponseDto();
 
 		restResponseDto.setData(clubService.getImgCommentList(articleId));
-
-		// System.out.println("articleId: "+articleId);
-		// System.out.println("결과: "+clubService.getImgCommentList(articleId));
-
 		restResponseDto.setResult("success");
 		return restResponseDto;
 	}

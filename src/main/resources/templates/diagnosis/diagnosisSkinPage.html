@@ -74,12 +74,9 @@
             background-color: #e6e6e6;
         }
 
-        .container {
-            background-color: #ffeddc;
-        }
-
         body {
             margin-bottom: 10px;
+            background-color: rgb(240, 240, 240);
         }
     </style>
     <script>
@@ -137,7 +134,7 @@
 
 <body>
 
-    <div class="container  pb-5" style="background-color: #ffeddc;    ">
+    <div class="container  pb-5">
         <div class="row">
             <div th:insert="~{commons/naviBar}" style="background-color: #ffffff;"></div>
         </div>
@@ -153,7 +150,7 @@
         </div>
 
         <form id="selectForm">
-            <div class="mb-3 pt-0 question" id="question1">
+            <div class="col mb-3 pt-0 question" id="question1">
                 <div class="row text-center pt-4 py-2">
                     <div class="col">
                         <img src="../public/image/diagnosis/skin.png" alt="There are no registered images"
@@ -198,7 +195,7 @@
                 </div>
                 <div class="row pb-0 pt-3 p-3">
                     <button type="button" class="btn nextBtn rounded-pill" data-next="question3"
-                        style="background-color: #fdff9f;  border: none; padding: 15px 0; width: 100%; border-radius: 5px; cursor: pointer;">
+                        style="background-color: #FDE5CD;  border: none; padding: 15px 0; width: 100%; border-radius: 5px; cursor: pointer;">
                         다음
                     </button>
                 </div>
