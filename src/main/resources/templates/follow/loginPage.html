@@ -83,12 +83,93 @@
                 
             }
 
+            function checkFirstVisit() {
+                // 로컬 스토리지에서 "visited" 키의 값을 가져옴
+                var visited = sessionStorage.getItem('visited');
+                console.log("asdf");
+                // "visited" 값이 null이면 페이지가 처음으로 로드된 것
+                if (visited == null) {
+                    // 처음 로드된 경우 처리할 작업 수행
+                    console.log('처음으로 방문한 것으로 간주합니다.');
+
+                    const logoBox = document.getElementById("logoBox");
+                    logoBox.hidden = false;
+                    logoBox.style.animation = "moveLogoBox 0.2s 6s linear 1";
+                    logoBox.style.animationFillMode = "both";
+
+                    const firstCircle = document.getElementById("firstCircle");
+                    firstCircle.style.animation = "circleSizeUp 0.1s 5.2s linear 1";
+                    firstCircle.style.animationFillMode = "both";
+
+                    const secondCircle = document.getElementById("secondCircle");
+                    secondCircle.style.animation = "circleSizeUp 0.1s 5.2s linear 1";
+                    secondCircle.style.animationFillMode = "both";
+
+                    const logo = document.getElementById("logo");
+                    logo.style.animation = "logoShake 0.2s 4.5s linear 2, logoSizeUp 0.2s 5.1s cubic-bezier(.5,-.75,.7,2) 1"
+                    logo.style.animationFillMode = "both";
+
+                    const square = document.getElementById("square");
+                    square.style.animation = "moveSquareLeft 0.9s 3.5s linear 1";
+                    square.style.animationFillMode = "both";
+
+                    const huffingPuppy = document.getElementById("huffingPuppy");
+                    huffingPuppy.hidden = false;
+                    huffingPuppy.style.animation = "popUpPuppy 1.7s 0.5s linear 1";
+                    huffingPuppy.style.animationFillMode = "both";
+
+                    const runningPuppy = document.getElementById("runningPuppy");
+                    runningPuppy.hidden = false;
+                    runningPuppy.style.animation = "runPuppy 2.5s 2.2s linear 1";
+                    runningPuppy.style.animationFillMode = "both";
+
+                    const loginBox = document.getElementById("loginBox");
+                    loginBox.style.animation = "showLoginBox 0.2s 6.1s linear 1";
+                    loginBox.style.animationFillMode = "both";
+
+                    // 로컬 스토리지에 "visited" 키에 값을 설정하여 다음에 확인할 때는 방문한 것으로 기록
+                    sessionStorage.setItem('visited', 'true');
+                } else {
+
+                    const logoBox = document.getElementById("logoBox");
+                    logoBox.hidden = true;
+                    logoBox.style.removeProperty("animation", "animation-fill-mode");
+
+                    const firstCircle = document.getElementById("firstCircle");
+                    firstCircle.style.removeProperty("animation", "animation-fill-mode");
+
+                    const secondCircle = document.getElementById("secondCircle");
+                    secondCircle.style.removeProperty("animation", "animation-fill-mode");
+
+                    const logo = document.getElementById("logo");
+                    logo.style.removeProperty("animation", "animation-fill-mode");
+
+                    const square = document.getElementById("square");
+                    square.style.removeProperty("animation", "animation-fill-mode");
+
+                    const huffingPuppy = document.getElementById("huffingPuppy");
+                    huffingPuppy.hidden = true;
+                    huffingPuppy.style.removeProperty("animation", "animation-fill-mode");
+
+                    const runningPuppy = document.getElementById("runningPuppy");
+                    runningPuppy.hidden = true;
+                    runningPuppy.style.removeProperty("animation", "animation-fill-mode");
+                    
+                    const loginBox = document.getElementById("loginBox");
+                    loginBox.style.removeProperty("animation", "animation-fill-mode");
+
+                    // 이미 방문한 경우 처리할 작업 수행
+                    console.log('이미 방문한 것으로 간주합니다.');
+                }
+            }
+
             window.addEventListener("DOMContentLoaded", () => {
 
                 windowInnerHeight = window.innerHeight;
                 windowInnerWidth = window.innerWidth;
 
                 colorBackground();
+                checkFirstVisit();
                 
             });
 
@@ -155,9 +236,12 @@
             @keyframes logoShake {
                 
                 0% {
+                    transform: rotate(0);
+                }
+                15% {
                     transform: rotate(-5deg);
                 }
-                50% {
+                75% {
                     transform: rotate(5deg);
                 }
                 100% {
@@ -236,15 +320,15 @@
                     <div style="position: absolute; width: 12rem; height: 20rem; top: -12.5rem; right: -6rem; border-radius: 20%; background: #f9d2be; transform: rotate(-8deg);"></div>
                     <div style="position: absolute; width: 12rem; height: 12rem; top: -2.5rem; right: -8.7rem; border-radius: 20%; background: #f9d2be; transform: rotate(20deg);"></div>
                     <div style="position: absolute; width: 9rem; height: 8rem; bottom: -3.5rem; right: -2.5rem; background: #a3c5a3; border-radius: 20% 70% 0% 100% / 20% 100% 0% 70%; transform: rotate(20deg); opacity: 50%;"></div>
-                    <div style="position: absolute; width: 14rem; height: 10rem; left: calc(50% - 7rem); top: calc(50% - 5rem); animation: moveLogoBox 0.2s 6s linear 1; animation-fill-mode: both;">
-                        <div style="position: absolute; width: 10rem; height: 10rem; top: -20%; left: -10%; border-radius: 50%; background: #f6bcbc; opacity: 70%; animation: circleSizeUp 0.1s 5.2s linear 1; animation-fill-mode: both;"></div>
-                        <div style="position: absolute; width: 6rem; height: 6rem; bottom: -10%; right: -5%; border-radius: 50%; background: #fbedc1; opacity: 70%; animation: circleSizeUp 0.1s 5.2s linear 1; animation-fill-mode: both;"></div>
-                        <div style="position: absolute; width: 7rem; height: 5rem; left: calc(50% - 3.5rem); top: calc(50% - 2.5rem); background: url(/public/image/mstar/logo3.png) no-repeat center; background-size: cover; animation: logoShake 0.2s 4.5s linear 2, logoSizeUp 0.2s 5.1s cubic-bezier(.5,-.75,.7,2) 1; animation-fill-mode: forwards;"></div>
-                        <div style="position: absolute; width: 7rem; height: 5rem; left: calc(50% - 3.5rem); top: calc(50% - 2.5rem); background: #F9F9F9; animation: moveSquareLeft 0.9s 3.5s linear 1; animation-fill-mode: both;"></div>
+                    <div id="logoBox" style="position: absolute; width: 14rem; height: 10rem; left: calc(50% - 7rem); top: calc(50% - 5rem);" hidden>
+                        <div id="firstCircle" style="position: absolute; width: 10rem; height: 10rem; top: -20%; left: -10%; border-radius: 50%; background: #f6bcbc; opacity: 70%;"></div>
+                        <div id="secondCircle" style="position: absolute; width: 6rem; height: 6rem; bottom: -10%; right: -5%; border-radius: 50%; background: #fbedc1; opacity: 70%;"></div>
+                        <div id="logo" style="position: absolute; width: 7rem; height: 5rem; left: calc(50% - 3.5rem); top: calc(50% - 2.5rem); background: url(/public/image/mstar/logo3.png) no-repeat center; background-size: cover;"></div>
+                        <div id="square" style="position: absolute; width: 7rem; height: 5rem; left: calc(50% - 3.5rem); top: calc(50% - 2.5rem); background: #F9F9F9;"></div>
                     </div>
-                    <div style="position: absolute; width: 20rem; height: 20rem; bottom: -7rem; left: -2rem; background: url(/public/image/follow/huffingPuppy.gif) no-repeat center; background-size: contain; animation: popUpPuppy 1.7s 0.5s linear 1; animation-fill-mode: both;"></div>
-                    <div style="position: absolute; width: 8rem; height: 8rem; bottom: calc(50% - 4rem); left: calc(50% - 4rem); background: url(/public/image/follow/runningPuppy.gif) no-repeat center; background-size: contain; animation: runPuppy 2.5s 2.2s linear 1; animation-fill-mode: both;"></div>
-                    <div style="position: absolute; width: 16rem; height: 20rem; left: calc(50% - 8rem); top: calc(50% - 10rem); animation: showLoginBox 0.2s 6.1s linear 1; animation-fill-mode: both;">
+                    <div id="huffingPuppy" style="position: absolute; width: 20rem; height: 20rem; bottom: -7rem; left: -2rem; background: url(/public/image/follow/huffingPuppy.gif) no-repeat center; background-size: contain;" hidden></div>
+                    <div id="runningPuppy" style="position: absolute; width: 8rem; height: 8rem; bottom: calc(50% - 4rem); left: calc(50% - 4rem); background: url(/public/image/follow/runningPuppy.gif) no-repeat center; background-size: contain;" hidden></div>
+                    <div id="loginBox" style="position: absolute; width: 16rem; height: 20rem; left: calc(50% - 8rem); top: calc(50% - 10rem);">
                         <div class="row">
                             <dvi class="col">
                                 <img class="img-fluid d-block mx-auto" src="/public/image/mstar/logo2.png" style="width: 80%;">
