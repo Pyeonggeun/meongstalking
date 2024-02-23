@@ -1690,6 +1690,17 @@
             .carousel-indicators{
                 color: blue;
             }
+            #storyListBox {
+                overflow-x: auto;
+                white-space: nowrap;
+                display: flex;
+                flex-wrap: nowrap;
+            }
+
+            #storyStoryListBox .col {
+                flex: 0 0 auto;
+                white-space: normal;
+            }
         </style>
     </head>
 
@@ -1734,7 +1745,7 @@
             </div>
             <div class="row fixed-bottom text-end px-4" style="bottom: 5em;">
                 <di class="col px-0 py-0">
-                    <img onclick="location.href='/mstar/profilePage'" class="img-fluid px-0 py-0" src="/public/image/mstar/goProfilePage.png" alt="" style="height: 3.3rem; aspect-ratio: 1/1;">
+                    <img onclick="location.href='/mstar/profilePage'" class="img-fluid px-0 py-0" src="/public/image/mstar/goProfilePage.png" alt="" style="height: 2.8rem; aspect-ratio: 1/1;">
                 </div>
             </div>
         </div>
