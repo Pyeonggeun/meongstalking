@@ -328,7 +328,7 @@
                 <div class="col">
                     <div class="row">
                         <div class="col-7">
-                            <a href="../mstar/profilePage">
+                            <a th:href="'../mstar/profilePage?user_pk=' + ${qwer['user_pk']}">
                                 <img th:src="@{${qwer['profile_photo']}}" class="img-fluid rounded-circle"
                                     style="width: 2em; height: 2em;">
                             </a>

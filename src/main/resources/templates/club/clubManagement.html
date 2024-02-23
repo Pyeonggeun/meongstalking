@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
+    <script src="/public/js/commons/lockLikeMobile.js"></script>
+    <!-- Popper.js (if needed) -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        @font-face {
+            font-family: 'omyu_pretty';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'omyu_pretty';
+            min-width: 320px;
+        }
+
+        .scrollable-menu {
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .scrollable-menu .col {
+            display: flex;
+            flex-wrap: nowrap;
+        }
+
+        .scrollable-menu span {
+            border-bottom: 2px solid transparent;
+            padding-bottom: 2px;
+            transition: border-color 0.3s;
+        }
+
+        .scrollable-menu span:hover {
+            border-color: #000;
+        }
+
+        .packBox {
+            background-color: white;
+            border-radius: 1em;
+            padding-top: 0.75em;
+            padding-bottom: 0.75em;
+            margin: 0.02em;
+        }
+
+        .container {
+            background-color: ghostwhite;
+        }
+    </style>
+    <style>
+        /* 헤더 스타일 수정 */
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+        }
+
+
+        /* 네비게이션 바 스타일 수정 */
+        .navbar {
+            background-color: #343a40;
+        }
+
+        .navbar-brand {
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .navbar-nav {
+            margin-left: auto;
+        }
+
+        .nav-item {
+            margin-right: 15px;
+        }
+
+        .nav-link {
+            color: #ffffff;
+        }
+
+        .nav-link:hover {
+            color: #f8f9fa;
+        }
+
+        /* 박스 스타일 수정 */
+        .packBox {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 페이지 타이틀 스타일 수정 */
+        .pageTitle {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        /* 가이드 내용 스타일 수정 */
+        .guideContent {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+    </style>
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+    <script src="/public/js/commons/naviBar.js"></script>
+    <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}" />
+
+<body>
+
+    <div class="container pb-5">
+        <div class="row">
+            <div th:insert="~{commons/naviBar}" style="background-color: #ffffff;"></div>
+        </div>
+        <div class="row" style="background-color: #ffffff;">
+            <div class="col-auto my-2 ms-1" onclick="goBack()">
+                <i class="bi bi-arrow-left"></i>
+            </div>
+            <div class="col d-flex align-items-center px-0">
+                리더를 위한 멤버 관리
+            </div>
+        </div>
+        <div class="row scrollable-menu px-0" style="background-color: #ffffff;">
+            <div class="col justify-content-between fw-bold">
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">게시판</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./photoAlbumPage'">사진첩</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubMemberPage'">멤버</span>
+            </div>
+        </div>
+        <div class="row justify-content-center align-items-center py-4">
+            <div class="col text-center py-3" style="font-weight: bold; ">이 페이지는 리더 역할을 간편하게 관리하기 위한 <br>설명을 제공합니다.</div>
+        </div>
+        <div class="row py-4">
+            <div class="col fw-bold fs-4">리더를 위한 멤버 관리 가이드</div>
+        </div>
+        <div class="row px-3">
+            <div class="col fs-6 guideContent">
+                리더님들 주목!<br>
+                멤버들의 밴드 권한을 리더가 설정할 수 있다는 것을 아셨나요?<br>
+                <b>멤버들의 권한</b>뿐만 아니라, <b>멤버들의 가입도 선별해서 받을 수 있어요</b><br>
+                현재 진행되고 있는 상황을 아래 내용을 통해 살펴보세요.
+            </div>
+        </div>
+        <div class="row px-3 ">
+            <div class="col fs-6 guideContent pt-3">
+                리더님들을 위한 멤버 관리는 밴드의 성공에 중요한 역할을 합니다. 여기에는 멤버를 효과적으로 관리하고
+                밴드의 활동을 조직화하는 몇 가지 가이드라인이 있습니다.
+
+                <h5 class="mt-4">1. 멤버 권한 설정하기</h5>
+                리더로서 가장 중요한 역할 중 하나는 멤버들에 대한 권한을 설정하는 것입니다. 밴드의 성격에 따라
+                멤버들에게 적절한 권한을 부여하여 조화롭게 협업할 수 있도록 합니다.
+
+                <h5 class="mt-4">2. 가입 신청 관리하기</h5>
+                멤버들의 가입을 선별하여 받을 수 있습니다. 적합한 멤버를 선별하여 밴드의 활동에 참여하도록
+                관리하면 밴드의 품질을 높일 수 있습니다.
+
+                <h5 class="mt-4">3. 소통 강화하기</h5>
+                밴드 내에서 효과적인 소통은 핵심입니다. 토론 게시판을 활용하거나 주기적인 회의를 통해 멤버들과
+                소통을 강화하세요.
+
+            </div>
+        </div>
+        <div class="row justify-content-center  py-4">
+            <div class="col text-center py-3" style="font-weight: bold; ">지금부터 만렙 리더 도전!<br>
+                멤버들과 함께해서 더 즐거운<br>
+                밴드 생활을 시작해 보세요! <i class="bi bi-heart"></i></div>
+        </div>
+    </div>
+
+    
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

@@ -166,6 +166,11 @@ public class ClubController {
         return "club/createClubPage";
     }
 
+    @RequestMapping("clubManagement")
+    public String clubManagement() {
+        return "club/clubManagement";
+    }
+
     @RequestMapping("clubLeaderPage")
     public String clubLeaderPage(HttpSession session, Model model, ClubDto clubDto) {
         UserDto userDto = (UserDto) session.getAttribute("sessionUser");

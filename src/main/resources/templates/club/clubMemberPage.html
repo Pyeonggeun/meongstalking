@@ -271,7 +271,7 @@
                 <div class="col" th:each="member : ${searchResults}">
                     <div class="row">
                         <div class="col text-center">
-                            <a href="../mstar/profilePage">
+                            <a th:href="'../mstar/profilePage?user_pk=' + ${qwer['user_pk']}">
                                 <img th:src="@{${member.profile_photo}}"
                                     class="img-fluid rounded-circle profile-image"
                                     style="max-width: 40px; max-height: 40px;">
@@ -303,7 +303,7 @@
                 
                 <div class="row"><div class="col fw-bold fs-4">전체 회원</div></div>
                 <div class="row px-2 mb-2">
-                    <a href="링크 주소" target="_blank">
+                    <a href="./clubManagement">
                         <span class="small-text" style="color: black;">
                             리더를 위한 멤버 관리 가이드 <br>
                             <span style="color: #2db400;">멤버 프로필 그룹관리 및 권한 설정법 ></span>
@@ -320,7 +320,7 @@
                                         <div class="row">
                                             <div class="col-2 ms-2">
             
-                                                <a href="../mstar/profilePage">
+                                                <a th:href="'../mstar/profilePage?user_pk=' + ${member.user_pk}">
                                                     <img th:src="@{${member.profile_photo}}"
                                                         class="img-fluid rounded-circle profile-image"
                                                         style="max-width: 40px; max-height: 40px;">

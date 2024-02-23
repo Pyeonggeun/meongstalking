@@ -66,6 +66,7 @@ public class AppConfig implements WebMvcConfigurer{
         .addPathPatterns("/funding/purchaseProductManagePage")
         .addPathPatterns("/funding/productRgstrPage")
         .addPathPatterns("/funding/productRgstrCompletePage")
+        .addPathPatterns("/club/*")
         
 
 
