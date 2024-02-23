@@ -632,7 +632,7 @@
 
     <select id="getItemCount" resultType="map">
         SELECT mmfi.item_pk, (
-            SELECT COUNT(mmfoi.quantity) FROM ms_mFollow_order_item mmfoi
+            SELECT IFNULL(SUM(mmfoi.quantity), 0) FROM ms_mFollow_order_item mmfoi
             where mmfoi.user_pk = #{user_pk}
             AND mmfoi.item_pk = mmfi.item_pk
         )
@@ -821,6 +821,12 @@
         )
         ORDER BY RAND()
         LIMIT 1
+    </select>
+
+    <select id="isAlert" resultType="String">
+        SELECT mmn.message FROM ms_mstar_notification mmn
+        where mmn.user_pk = #{user_pk}
+        and mmn.title LIKE #{title}
     </select>
 
     <delete id="deleteLog">

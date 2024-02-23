@@ -21,6 +21,7 @@ import com.psychopath.dogstalking.follow.dto.LogDto;
 import com.psychopath.dogstalking.follow.dto.UserMoreDto;
 import com.psychopath.dogstalking.follow.service.FollowServiceImpl;
 import com.psychopath.dogstalking.mFollow.dto.UserItemDto;
+import com.psychopath.dogstalking.mstar.dto.NotificationDto;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -364,11 +365,11 @@ public class RestFollowController {
     }
 
     @RequestMapping("sendMessage")
-    public RestResponseDto sendMessage() {
+    public RestResponseDto sendMessage(NotificationDto params) {
 
         RestResponseDto restResponseDto = new RestResponseDto();
 
-        followService.sendMessage();
+        followService.sendMessage(params);
         
         restResponseDto.setResult("success");
         
@@ -403,6 +404,17 @@ public class RestFollowController {
         RestResponseDto restResponseDto = new RestResponseDto();
         
         restResponseDto.setData(followService.getTracingTrackMarkerLogPk(user_pk, user_writer_pk));
+        restResponseDto.setResult("success");
+        
+        return restResponseDto;
+    }
+    
+    @RequestMapping("isAlert")
+    public RestResponseDto isAlert(NotificationDto params) {
+
+        RestResponseDto restResponseDto = new RestResponseDto();
+        
+        restResponseDto.setData(followService.isAlert(params));
         restResponseDto.setResult("success");
         
         return restResponseDto;

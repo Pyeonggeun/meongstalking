@@ -14,6 +14,7 @@ import com.psychopath.dogstalking.follow.dto.LogDto;
 import com.psychopath.dogstalking.follow.dto.UserMoreDto;
 import com.psychopath.dogstalking.follow.mapper.FollowSqlMapper;
 import com.psychopath.dogstalking.mFollow.dto.UserItemDto;
+import com.psychopath.dogstalking.mstar.dto.NotificationDto;
 
 @Service
 public class FollowServiceImpl {
@@ -143,9 +144,9 @@ public class FollowServiceImpl {
         followSqlMapper.insertUserItemInfo(userItemDto);
     }
 
-    public void sendMessage() {
+    public void sendMessage(NotificationDto notificationDto) {
 
-        followSqlMapper.sendMessage();
+        followSqlMapper.sendMessage(notificationDto);
     }
 
     public Map<String, Object> getMyPageInfo(int user_pk) {
@@ -161,6 +162,11 @@ public class FollowServiceImpl {
     public int getTracingTrackMarkerLogPk(int user_pk, int user_writer_pk) {
 
         return followSqlMapper.getTracingTrackMarkerLogPk(user_pk, user_writer_pk);
+    }
+
+    public String isAlert(NotificationDto notificationDto) {
+
+        return followSqlMapper.isAlert(notificationDto);
     }
 
 }

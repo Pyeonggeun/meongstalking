@@ -13,6 +13,7 @@ import com.psychopath.dogstalking.follow.dto.LikeLogDto;
 import com.psychopath.dogstalking.follow.dto.LogDto;
 import com.psychopath.dogstalking.follow.dto.UserMoreDto;
 import com.psychopath.dogstalking.mFollow.dto.UserItemDto;
+import com.psychopath.dogstalking.mstar.dto.NotificationDto;
 
 @Mapper
 public interface FollowSqlMapper {
@@ -62,13 +63,15 @@ public interface FollowSqlMapper {
     public List<Map<String, Object>> getItemCount(int user_pk);
     public void insertUserItemInfo(UserItemDto userItemDto);
 
-    public void sendMessage();
+    public void sendMessage(NotificationDto notificationDto);
 
     public Map<String, Object> getMyPageInfo(int user_pk);
     public List<Map<String, Object>> getMyTrackMarkersInfo(@RequestParam("user_pk") int user_pk, @RequestParam("trackMarkerDateValidity") int trackMarkerDateValidity);
     public int getTracingTrackMarkerLogPk(@RequestParam("user_pk") int user_pk, @RequestParam("user_writer_pk") int user_writer_pk);
 
     public Integer getRandomLogPkExceptMine(int user_pk);
+
+    public String isAlert(NotificationDto notificationDto);
 
     public void deleteLog();
     public void deleteComment();

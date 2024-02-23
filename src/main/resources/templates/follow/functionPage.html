@@ -48,7 +48,7 @@
             let scanMarkerEffectiveDistance = 250;
             let scanMarkerUpTo = 5;
             
-            let collectMarkerUpTo = 100; // ...
+            let collectMarkerUpTo = 1; // ...
 
             let traceMarkerUpTo = 3;
 
@@ -864,6 +864,7 @@
                 const random = Math.floor((Math.random() * 99) + 1);
 
                 if(plusTrackMarkerProbability >= random) {
+
                     getPlusTrackMarker(e.user_pk);
                 }
 
@@ -876,6 +877,12 @@
                 fetch(url)
                 .then(response => response.json())
                 .then(response => {
+
+                    document.getElementById("alertContent").innerText = `축하드립니다🎉\nNo.` + response.data.log_pk + ` 체취가\n추가로 수집되었습니다!`;
+                    document.getElementById("alertCheckButton").onclick = () => {
+                        hideAlertModal();
+                    };
+                    showAlertModal();
 
                     saveCollectionInfo(response.data.log_pk);
 
@@ -958,6 +965,8 @@
                 .then(response => response.json())
                 .then(response => {
 
+                    hideLikeListModal();
+                    getTracingTrackMarkers();
                     hidePreviewTrackMarkerModal();
 
                 });
@@ -1053,6 +1062,12 @@
                                         hideAlertItemModal();
                                         saveItemInfo(5);
                                         getTracingTrackMarkerLogPk(e.user_pk);
+
+                                        document.getElementById("alertContent").innerText = "수집이 완료되었습니다";
+                                        document.getElementById("alertCheckButton").onclick = () => {
+                                            hideAlertModal();
+                                        };
+                                        showAlertModal();
                                     
                                     };
 
@@ -1073,7 +1088,7 @@
                                         }
 
                                         hideAlertItemModal();
-                                        document.getElementById("sendMessageButton").onclick = () => {
+                                        document.getElementById("sendItemMessageButton").onclick = () => {
                                             sendMessage(e.user_pk);
                                         }
                                         showAlertItemMessageModal();
@@ -1246,10 +1261,24 @@
 
             function sendMessage(userWriterPk) {
 
-                const message = document.getElementById("sendMessageContent").value;
                 const title = "누군가 메세지를 보냈어요!";
-                const linkPath = "/follow/gamePage";
+                const message = document.getElementById("sendItemMessageContent").value;
                 const notifyImg = "N";
+                const linkPath = "/follow/gamePage";
+
+                notification(userWriterPk, title, message, notifyImg, linkPath);
+                hideAlertItemMessageModal();
+                saveItemInfo(7);
+
+                document.getElementById("alertContent").innerText = "메세지 전송이 완료되었습니다";
+                document.getElementById("alertCheckButton").onclick = () => {
+                    hideAlertModal();
+                };
+                showAlertModal();
+
+            }
+
+            function notification(userWriterPk, title, message, notifyImg, linkPath) {
 
                 const url = "./sendMessage?user_pk=" + userWriterPk + "&title=" + title +
                     "&message=" + message + "&link_path=" + linkPath + "&notify_img=" + notifyImg;
@@ -1258,8 +1287,7 @@
                 .then(response => response.json())
                 .then(response => {
 
-                    hideAlertItemMessageModal();
-                    saveItemInfo(7);
+                    console.log("알림 보냄!");
 
                 });
 
@@ -1563,7 +1591,14 @@
                         document.getElementById("collectionDetailWalkRequestButton").disabled = false;
                         document.getElementById("collectionDetailWalkRequestButton").onclick = () => {
 
-                            document.getElementById("alertContent").innerText = "산책 신청이 완료되었습니다/알람 등록하기";
+                            const title = "산책 신청이 왔어요!";
+                            const message = `누군가 당신과의 산책을 원합니다\n누군지 궁금하다면 클릭해주세요`;
+                            const notifyImg = "N";
+                            const linkPath = "/mstar/anotherProfilePage?profile_info_pk=" + e.user_pk + "&another_info_pk=" + user_pk;
+                            
+                            notification(e.user_pk, title, message, notifyImg, linkPath);
+
+                            document.getElementById("alertContent").innerText = `산책 신청이 완료되었습니다\n상대방이 당신의 멍스타 프로필을\n확인 할 수 있습니다`;
                             document.getElementById("alertCheckButton").onclick = () => {
                                 hideAlertModal();
                             };
@@ -1598,12 +1633,9 @@
                         document.getElementById("collectionDetailHobby").innerText = e.hobby;
                         document.getElementById("collectionDetailMessageButton").disabled = false;
                         document.getElementById("collectionDetailMessageButton").onclick = () => {
-
-                            document.getElementById("alertContent").innerText = "메세지 보내는 모달만 만들면 됨";
-                            document.getElementById("alertCheckButton").onclick = () => {
-                                hideAlertModal();
-                            };
-                            showAlertModal();
+                            
+                            const title = "당신과 가까워지고 있어요";
+                            isAlert(e.user_pk, title);
 
                         };
                     case "5" :
@@ -1853,6 +1885,63 @@
                     }
 
                     showCollectionCardModal();
+
+                });
+
+            }
+
+            function sendCollectMessage(userWriterPk) {
+                // pqpq 보냄
+                const title = "당신과 가까워지고 있어요";
+                const message = document.getElementById("sendCollectMessageContent");
+                const notifyImg = "N";
+                const linkPath = "/follow/gamePage";
+
+                notification(userWriterPk, title, message, notifyImg, linkPath);
+
+                document.getElementById("alertContent").innerText = "메세지 전송이 완료되었습니다";
+                document.getElementById("alertCheckButton").onclick = () => {
+                    hideAlertModal();
+                };
+                showAlertModal();
+
+                hideAlertCollectMessageModal();
+
+            }
+
+            function isAlert(userWriterPk, title) {
+
+                const url = "./isAlert?user_pk=" + userWriterPk + "&title=" + title;
+
+                fetch(url)
+                .then(response => response.json())
+                .then(response => {
+
+                    if(response.data) {
+                        // pqpq 받음
+                        document.getElementById("sendCollectionMessageContentTextareaHidden").hidden = true;
+                        document.getElementById("sendCollectMessageButton").hidden = true;
+                        document.getElementById("sendCollectionMessageContentHidden").innerText = response.data;
+                        document.getElementById("sendCollectionMessageContentHidden").hidden = false;
+
+                        showAlertCollectMessageModal();
+
+                        return;
+
+                    }
+
+                    document.getElementById("sendCollectionMessageContentTextareaHidden").hidden = false;
+                    document.getElementById("sendCollectMessageButton").hidden = false;
+                    document.getElementById("sendCollectionMessageContentHidden").innerText = "";
+                    document.getElementById("sendCollectionMessageContentHidden").hidden = true;
+
+                    document.getElementById("sendCollectMessageButton").onclick = () => {
+                                
+                        sendCollectMessage(userWriterPk);
+
+                    };
+
+                    showAlertCollectMessageModal();
 
                 });
 
@@ -2124,6 +2213,20 @@
                 modal.hide();
 
             }
+
+            function showAlertCollectMessageModal() {
+                
+                const modal = bootstrap.Modal.getOrCreateInstance("#alertCollectMessageModal");
+                modal.show();
+
+            }
+
+            function hideAlertCollectMessageModal() {
+                
+                const modal = bootstrap.Modal.getOrCreateInstance("#alertCollectMessageModal");
+                modal.hide();
+
+            }
             
             function showWriteMoreInfoModal() {
 
@@ -2317,6 +2420,8 @@
                 const itemModal = bootstrap.Modal.getOrCreateInstance("#itemModal");
                 itemModal.hide();
 
+                getItemCount();
+
             }
 
             function resetWriteMoreInfoModal() {
@@ -2425,7 +2530,7 @@
             
             .commonStyle {
                 position: absolute;
-                z-index: 3000;
+                z-index: 1000;
             }
 
             #locationIcon {
@@ -2915,13 +3020,44 @@
                                             </div>
                                             <div class="row mt-2">
                                                 <div class="col">
-                                                    <textarea id="sendMessageContent" class="form-control py-1" style="font-size: 0.8rem; resize: none;" max="500"></textarea>
+                                                    <textarea id="sendItemMessageContent" class="form-control py-1" style="font-size: 0.8rem; resize: none;" max="500"></textarea>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="modal-footer pb-0 border-0 justify-content-center">
                                             <button class="d-grid btn py-0 px-4 text-white" style="background: #a6a6a6; border: 2px solid rgba(91, 91, 91, 0.4); font-size: 0.9rem;" data-bs-dismiss="modal">취소</button>
-                                            <button id="sendMessageButton" class="d-grid btn py-0 px-4 text-white" style="background: #fdb96b; border: 2px solid rgba(188, 136, 46, 0.4); font-size: 0.9rem;">보내기</button>
+                                            <button id="sendItemMessageButton" class="d-grid btn py-0 px-4 text-white" style="background: #fdb96b; border: 2px solid rgba(188, 136, 46, 0.4); font-size: 0.9rem;">보내기</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="alertCollectMessageModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute; z-index: 4500;">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content fw-bold mx-auto rounded" style="width: 80%; padding: 0.25rem; font-size: 0.85rem; background: #81461A; border: 2px solid rgba(55, 29, 13, 0.4);">
+                                    <div class="modal-header text-white fw-bold py-1 px-1 border-0" style="font-size: 1rem;">
+                                        메세지
+                                    </div>
+                                    <div class="modal-body pb-1 text-center rounded" style="background: #f3ecdd; border: 2px solid rgba(241, 194, 92, 0.4);">
+                                        <div style="color: #81461A;">
+                                            <div class="row">
+                                                <div class="col" style="font-size: 0.8rem;">
+                                                    너에게 한 발자국 한 발자국 가고 있어
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div id="sendCollectionMessageContentHidden" class="col text-center text-dark" style="font-size: 0.9rem;" hidden>
+
+                                                </div>
+                                                <div id="sendCollectionMessageContentTextareaHidden" class="col">
+                                                    <textarea id="sendCollectMessageContent" class="form-control py-1" style="font-size: 0.8rem; resize: none;" max="500"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer pb-0 border-0 justify-content-center">
+                                            <button class="btn py-0 px-4 text-white" style="background: #a6a6a6; border: 2px solid rgba(91, 91, 91, 0.4); font-size: 0.9rem;" data-bs-dismiss="modal">닫기</button>
+                                            <button id="sendCollectMessageButton" class="btn py-0 px-4 text-white" style="background: #fdb96b; border: 2px solid rgba(188, 136, 46, 0.4); font-size: 0.9rem;">보내기</button>
                                         </div>
                                     </div>
                                 </div>
@@ -3620,7 +3756,7 @@
     
                                                 <div style="position: relative;">
                                                     <hr class="my-2" style="color: #81461A;">
-                                                    <span class="px-3" style="position: absolute; top: -0.65rem; left: calc(50% - 2rem); font-size: 0.9rem; background: #E0C9A9; color: #81461A;">추가기능</span>
+                                                    <span class="px-3" style="position: absolute; top: -0.65rem; left: calc(50% - 2rem); font-size: 0.9rem; background: #E0C9A9; color: #81461A;">열린기능</span>
                                                 </div>
     
                                                 <div class="row py-2 justify-content-center">
