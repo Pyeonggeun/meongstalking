@@ -98,104 +98,97 @@ public class FollowSimulator {
 
         if((int)(Math.random()*1440) < DAILY_MARKING_COUNT) { 
             // 사람 선택 (50명 중에서 30~80)
-            Random random = new Random();
-            int userPk = (int)(random.nextGaussian()*((MAX_USER_PK-MIN_USER_PK)/2)/3) + (MIN_USER_PK + MAX_USER_PK)/2; // 45는 중앙 번호
 
-            // System.out.println("으앙: " + userPk);
+            int userPk = (int)(Math.random()*(MAX_USER_PK - MIN_USER_PK)) + MIN_USER_PK;
 
-            if(userPk >= MIN_USER_PK && userPk <= MAX_USER_PK) {
-                // 자취를 남긴다...
 
-                String[] imageList = {
-                    "2024/02/21/9895cd32-80f5-43b5-aad7-791f3e1ee9d4_1708509448774.jpeg",
-                    "2024/02/20/7c2bd4ef-ad57-4de0-8c3d-87881e37d540_1708421578383.jpeg",
-                    "2024/02/20/61e8a907-5526-41bd-a618-02970c9d3811_1708416402757.jpg",
-                    "2024/02/20/652302ae-f8f9-485d-81c1-23d974a9a99d_1708415246278.jpeg",
-                    "2024/02/21/917c489e-38bb-4280-a4d5-6aae97c0b031_1708510203811.jpeg",
-                    "2024/02/21/48912a98-262e-427d-9b9b-70c025a7e089_1708510224903.jpeg",
-                    "2024/02/21/ae4356a2-1f83-486d-8937-e39c861814c8_1708510357791.jpeg",
-                    "2024/02/21/9eca2a54-9646-4f77-ada9-511fa5b89ae1_1708510389052.jpeg",
-                    "2024/02/22/2ed434e7-7966-4478-9590-d8fa8b00d4b1_1708598170819.jpg",
-                    "2024/02/22/d6111ab9-3c51-48ef-95af-40a4bad5511e_1708598212315.jpg",
-                    "2024/02/22/7d876059-a047-42b5-b693-fcbb0c7ecec6_1708598301423.jpg",
-                    "2024/02/22/d64f7b76-27b5-4bbd-bb95-f1fc771e2dba_1708598341694.jpg",
-                    "2024/02/22/25ba5671-a5c2-4ecf-ba4d-b66d3da14292_1708598391713.jpg",
-                    "2024/02/22/3156cf8a-eee7-463e-b592-cedf188b70cd_1708598437381.jpg",
-                    "2024/02/22/33affb20-144f-40a2-9952-2e2f0e69104f_1708598497897.jpg",
-                    "2024/02/22/a8f09b21-3807-4a9f-ba4c-308e718c8f34_1708598532128.jpg",
-                };
+            String[] imageList = {
+                "2024/02/21/9895cd32-80f5-43b5-aad7-791f3e1ee9d4_1708509448774.jpeg",
+                "2024/02/20/7c2bd4ef-ad57-4de0-8c3d-87881e37d540_1708421578383.jpeg",
+                "2024/02/20/61e8a907-5526-41bd-a618-02970c9d3811_1708416402757.jpg",
+                "2024/02/20/652302ae-f8f9-485d-81c1-23d974a9a99d_1708415246278.jpeg",
+                "2024/02/21/917c489e-38bb-4280-a4d5-6aae97c0b031_1708510203811.jpeg",
+                "2024/02/21/48912a98-262e-427d-9b9b-70c025a7e089_1708510224903.jpeg",
+                "2024/02/21/ae4356a2-1f83-486d-8937-e39c861814c8_1708510357791.jpeg",
+                "2024/02/21/9eca2a54-9646-4f77-ada9-511fa5b89ae1_1708510389052.jpeg",
+                "2024/02/22/2ed434e7-7966-4478-9590-d8fa8b00d4b1_1708598170819.jpg",
+                "2024/02/22/d6111ab9-3c51-48ef-95af-40a4bad5511e_1708598212315.jpg",
+                "2024/02/22/7d876059-a047-42b5-b693-fcbb0c7ecec6_1708598301423.jpg",
+                "2024/02/22/d64f7b76-27b5-4bbd-bb95-f1fc771e2dba_1708598341694.jpg",
+                "2024/02/22/25ba5671-a5c2-4ecf-ba4d-b66d3da14292_1708598391713.jpg",
+                "2024/02/22/3156cf8a-eee7-463e-b592-cedf188b70cd_1708598437381.jpg",
+                "2024/02/22/33affb20-144f-40a2-9952-2e2f0e69104f_1708598497897.jpg",
+                "2024/02/22/a8f09b21-3807-4a9f-ba4c-308e718c8f34_1708598532128.jpg",
+            };
 
-                String[] contentList = {
-                    "아침 햇살에 웃음 지어요",
-                    "눈 내리는 창밖, 따뜻한 차 한 잔",
-                    "책과 함께하는 평화로운 오후 ",
-                    "친구들과 함께하는 웃음이 넘치는 순간",
-                    "일몰을 바라보며 감사한 마음으로 ",
-                    "비오는 날, 창가에 앉아 차 한 잔",
-                    "산책하는 동안 듣는 음악에 흥이 솟아요..",
-                    "집에서 즐기는 영화 시간, 따뜻한 이불과 함께.",
-                    "오랜만에 만나는 친구들과의 끝없는 대화..",
-                    "바다 소리를 들으며 여유로운 휴식..",
-                    "새로운 요리 도전, 맛있는 결과물 만들기",
-                    "꽃 향기 가득한 봄날, 산책하는 기분.",
-                    "선물 받은 작은 행복, 감사한 마음으로 기억하기 ..",
-                    "열정적인 일의 성취감, 자신감에 가득 차서..",
-                    "어릴 적 추억 속 노래, 감성을 되새기며..",
-                    "일몰을 바라보며 소중한 사람과 함께하는 시간..",
-                    "자연 속에서의 휴식, 신선한 공기 마시며.",
-                    "열정적인 취미 활동으로 마음을 달래기",
-                    "간만에 만나는 가족들과의 특별한 순간",
-                    "변화하는 계절을 담은 사진, 자연의 아름다움",
-                    "심심한 날, 새로운 취미 발견하고 시도하기",
-                    "산책로에서 마주친 귀여운 동물들에 감동",
-                    "가슴 뭉클한 추억 속 사진들을 되새기며..",
-                    "일상 속 작은 기쁨들에 마음을 열고 기록하기",
-                    "꿈꾸던 여행지를 상상하며 여행 계획 세우기",
-                };
+            String[] contentList = {
+                "아침 햇살에 웃음 지어요",
+                "눈 내리는 창밖, 따뜻한 차 한 잔",
+                "책과 함께하는 평화로운 오후 ",
+                "친구들과 함께하는 웃음이 넘치는 순간",
+                "일몰을 바라보며 감사한 마음으로 ",
+                "비오는 날, 창가에 앉아 차 한 잔",
+                "산책하는 동안 듣는 음악에 흥이 솟아요..",
+                "집에서 즐기는 영화 시간, 따뜻한 이불과 함께.",
+                "오랜만에 만나는 친구들과의 끝없는 대화..",
+                "바다 소리를 들으며 여유로운 휴식..",
+                "새로운 요리 도전, 맛있는 결과물 만들기",
+                "꽃 향기 가득한 봄날, 산책하는 기분.",
+                "선물 받은 작은 행복, 감사한 마음으로 기억하기 ..",
+                "열정적인 일의 성취감, 자신감에 가득 차서..",
+                "어릴 적 추억 속 노래, 감성을 되새기며..",
+                "일몰을 바라보며 소중한 사람과 함께하는 시간..",
+                "자연 속에서의 휴식, 신선한 공기 마시며.",
+                "열정적인 취미 활동으로 마음을 달래기",
+                "간만에 만나는 가족들과의 특별한 순간",
+                "변화하는 계절을 담은 사진, 자연의 아름다움",
+                "심심한 날, 새로운 취미 발견하고 시도하기",
+                "산책로에서 마주친 귀여운 동물들에 감동",
+                "가슴 뭉클한 추억 속 사진들을 되새기며..",
+                "일상 속 작은 기쁨들에 마음을 열고 기록하기",
+                "꿈꾸던 여행지를 상상하며 여행 계획 세우기",
+            };
 
-                LogDto logDto = new LogDto();
-                logDto.setUser_pk(userPk);
-                logDto.setImage_link(imageList[(int)(Math.random()*imageList.length)]);
-                logDto.setContent(contentList[(int)(Math.random()*contentList.length)]);
+            LogDto logDto = new LogDto();
+            logDto.setUser_pk(userPk);
+            logDto.setImage_link(imageList[(int)(Math.random()*imageList.length)]);
+            logDto.setContent(contentList[(int)(Math.random()*contentList.length)]);
 
-                //위도는 37.58536437574824 이고, 경도는 126.9684233228641 입니다
-                //클릭한 위치의 위도는 37.4716142577263 이고, 경도는 127.19203257577148 입니다
+            //위도는 37.58536437574824 이고, 경도는 126.9684233228641 입니다
+            //클릭한 위치의 위도는 37.4716142577263 이고, 경도는 127.19203257577148 입니다
 
-                double staticLat = 37.4996259;
-                double staticLng = 127.0304801;
-    
-                switch ((int)(Math.random()*4)) {
-                    case 0, 3:
-                        // 강남 학원 위치
-                        staticLat = 37.4996259;
-                        staticLng = 127.0304801;
-                        break;
-                    case 1:
-                        // 송파 어딘가 위치
-                        staticLat = 37.50795753686061;
-                        staticLng = 127.09994223756871;
-                        break;
+            double staticLat = 37.4996259;
+            double staticLng = 127.0304801;
 
-                    case 2:
-                        // 송파 어딘가 위치
-                        staticLat = 37.501385094767755;
-                        staticLng = 127.11440920893604;
-                        break;
-                }
+            switch ((int)(Math.random()*4)) {
+                case 0, 3:
+                    // 강남 학원 위치
+                    staticLat = 37.4996259;
+                    staticLng = 127.0304801;
+                    break;
+                case 1:
+                    // 송파 어딘가 위치
+                    staticLat = 37.50795753686061;
+                    staticLng = 127.09994223756871;
+                    break;
 
-                final double RANGE_LATITUDE = 0.01;
-                final double RANGE_LONGITUDE = 0.01;
-
-                double randomLatitude = staticLat  + Math.random()*(RANGE_LATITUDE*2) - RANGE_LATITUDE;
-                double randomLongitude = staticLng  + Math.random()*(RANGE_LONGITUDE*2) - RANGE_LONGITUDE;
-
-                logDto.setLatitude(randomLatitude);
-                logDto.setLongitude(randomLongitude);
-
-                followSqlMapper.insertWriteTrackMarkInfo(logDto);
-
+                case 2:
+                    // 송파 어딘가 위치
+                    staticLat = 37.501385094767755;
+                    staticLng = 127.11440920893604;
+                    break;
             }
 
+            final double RANGE_LATITUDE = 0.01;
+            final double RANGE_LONGITUDE = 0.01;
+
+            double randomLatitude = staticLat  + Math.random()*(RANGE_LATITUDE*2) - RANGE_LATITUDE;
+            double randomLongitude = staticLng  + Math.random()*(RANGE_LONGITUDE*2) - RANGE_LONGITUDE;
+
+            logDto.setLatitude(randomLatitude);
+            logDto.setLongitude(randomLongitude);
+
+            followSqlMapper.insertWriteTrackMarkInfo(logDto);
 
         }
     }
@@ -212,7 +205,13 @@ public class FollowSimulator {
         for(int i = 0 ; i < (DAILY_MARKING_COUNT/2) ; i++){
 
             try{
-                int userPk = (int)(Math.random()*(MAX_USER_PK - MIN_USER_PK)) + MIN_USER_PK;
+
+                Random random = new Random();
+                int userPk = (int)(random.nextGaussian()*((MAX_USER_PK-MIN_USER_PK)/2)/3) + (MIN_USER_PK + MAX_USER_PK)/2; // 45는 중앙 번호
+                if(userPk < MIN_USER_PK) userPk = MIN_USER_PK;
+                if(userPk > MAX_USER_PK) userPk = MAX_USER_PK;
+
+                // int userPk = (int)(Math.random()*(MAX_USER_PK - MIN_USER_PK)) + MIN_USER_PK;
                 Integer logPk = followSqlMapper.getRandomLogPkExceptMine(userPk);
 
                 if(logPk == null) {
@@ -261,7 +260,6 @@ public class FollowSimulator {
     
                     followSqlMapper.insertComment(commentDto);
                 }
-
 
 
             }catch(Exception e){
