@@ -109,10 +109,11 @@
                     let view_order = 1;
                     for (let i = 0; i < upLoadImgList.length; i++) {
                         const formData = new FormData();
+                        const emotion = "POSITIVE";
                         formData.append("article_pk", article_pk);
                         formData.append("imageFiles", upLoadImgList[i][0]);
                         formData.append("view_order",view_order);
-
+                        formData.append("emotion",emotion);
                         if((upLoadImgList[i].length-1) !=0){
                             
                             for(let e = 1; e < upLoadImgList[i].length; e++){

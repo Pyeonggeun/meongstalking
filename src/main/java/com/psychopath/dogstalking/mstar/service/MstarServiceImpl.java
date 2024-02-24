@@ -123,19 +123,6 @@ public class MstarServiceImpl {
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     public ProfileInfoDto getMyProfileInfoDto(int user_pk){
         return mstarSqlMapper.selectProfileInfoDto(user_pk);
     }
@@ -271,8 +258,8 @@ public class MstarServiceImpl {
 
     public int insertArticleInfo(ArticleDto articleDto){
         String content = articleDto.getContent();
-        String emotion =  sentimentAwsComprehend(content);
-        articleDto.setEmotion(emotion);
+        // String emotion =  sentimentAwsComprehend(content);
+        // articleDto.setEmotion(emotion);
         mstarSqlMapper.insertArticle(articleDto);
         int article_pk = mstarSqlMapper.selectMaxArticlePk();
         return article_pk;
