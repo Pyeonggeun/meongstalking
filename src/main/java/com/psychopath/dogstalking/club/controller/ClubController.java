@@ -258,6 +258,7 @@ public class ClubController {
     public String createclubProcess(HttpSession session, ClubDto clubDto, ClubStatusLogDto clubStatusLogDto,
             ClubUserDto clubUserDto, Model model, ClubUserRanklogDto clubUserRanklogDto) {
 
+                clubDto.setImg("aaa");
         clubService.insertClub(clubDto);
 
         UserDto userDto = (UserDto) session.getAttribute("sessionUser");
