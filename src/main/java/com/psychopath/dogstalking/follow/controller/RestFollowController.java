@@ -233,7 +233,7 @@ public class RestFollowController {
         params.setLongitude(y);
         
         followService.insertLikeLogInfo(params);
-
+        restResponseDto.setData(params);
         restResponseDto.setResult("success");
         
         return restResponseDto;

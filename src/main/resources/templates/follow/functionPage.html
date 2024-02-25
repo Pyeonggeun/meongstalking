@@ -48,7 +48,7 @@
             let scanMarkerEffectiveDistance = 250;
             let scanMarkerUpTo = 5;
             
-            let collectMarkerUpTo = 1; // ...
+            let collectMarkerUpTo = 3;
 
             let traceMarkerUpTo = 3;
 
@@ -406,9 +406,9 @@
 
             function scanningMarker(position) {
 
-                var content = '<div id="markScanCircle"></div>';
+                const content = '<div id="markScanCircle"></div>';
 
-                var customOverlay = new kakao.maps.CustomOverlay({
+                const customOverlay = new kakao.maps.CustomOverlay({
                     position: position,
                     content: content
                 });
@@ -420,6 +420,96 @@
                     blockOff();
                 }, 3000);
                 
+            }
+
+            function tracingMarker(e) {
+                console.log(e)
+                console.log(e.latitude)
+                console.log(e.longitude)
+                const currentPosition = new kakao.maps.LatLng(currentLat, currentLng);
+                const position = new kakao.maps.LatLng(e.latitude, e.longitude);
+
+                const content = '<div id="markScanCircle"></div>';
+
+                map.panTo(position);
+
+                const customOverlay = new kakao.maps.CustomOverlay({
+                    position: position,
+                    content: content
+                });
+
+                customOverlay.setMap(map);
+
+                setTimeout(() => {
+                    customOverlay.setMap(null);
+                    map.panTo(currentPosition);
+                    walkingPawMarker(currentPosition, position);
+                }, 3000);
+                
+            }
+
+            function walkingPawMarker(currentPosition, position) {
+
+                const proj = map.getProjection();
+                var center = proj.containerPointFromCoords(currentPosition);
+                var pos = proj.containerPointFromCoords(position);
+
+                var angle = getAngle(center, pos);
+
+                var content = document.createElement('div');
+                content.setAttribute("class", "walkingPawCircle");
+                content.style.transform = "rotate(" + angle + "deg)";
+
+                var div1 = document.createElement('div');
+                div1.setAttribute("class", "material-symbols-outlined walkingPawIcon first");
+                div1.innerText = "pets";
+                var div2 = document.createElement('div');
+                div2.setAttribute("class", "material-symbols-outlined walkingPawIcon second");
+                div2.innerText = "pets";
+                var div3 = document.createElement('div');
+                div3.setAttribute("class", "material-symbols-outlined walkingPawIcon third");
+                div3.innerText = "pets";
+                var div4 = document.createElement('div');
+                div4.setAttribute("class", "material-symbols-outlined walkingPawIcon fourth");
+                div4.innerText = "pets";
+                var div5 = document.createElement('div');
+                div5.setAttribute("class", "material-symbols-outlined walkingPawIcon fifth");
+                div5.innerText = "pets";
+                var div6 = document.createElement('div');
+                div6.setAttribute("class", "material-symbols-outlined walkingPawIcon sixth");
+                div6.innerText = "pets";
+                var div7 = document.createElement('div');
+                div7.setAttribute("class", "material-symbols-outlined walkingPawIcon seventh");
+                div7.innerText = "pets";
+
+                content.appendChild(div1);
+                content.appendChild(div2);
+                content.appendChild(div3);
+                content.appendChild(div4);
+                content.appendChild(div5);
+                content.appendChild(div6);
+                content.appendChild(div7);
+
+                var customOverlay = new kakao.maps.CustomOverlay({
+                    position: currentPosition,
+                    content: content
+                });
+
+                customOverlay.setMap(map);
+
+                setTimeout(() => {
+                    customOverlay.setMap(null);
+                    getTracingTrackMarkers();
+                }, 3000);
+
+            }
+
+            function getAngle(center, target) {
+                var dx = target.x - center.x;
+                var dy = center.y - target.y;
+                var deg = Math.atan2( dy , dx ) * 180 / Math.PI; 
+
+                return ((-deg + 360) % 360 | 0) + 90;
             }
 
             function getMyTrackMarkers() {
@@ -1402,7 +1492,7 @@
                 .then(response => response.json())
                 .then(response => {
 
-                    getTracingTrackMarkers();
+                    tracingMarker(response.data);
                     getLikeList();
 
                 });
@@ -1530,6 +1620,7 @@
 
             function openBag() {
 
+                blockOn();
                 getCollectionList();
                 showCollectionModal();
 
@@ -1584,7 +1675,7 @@
                             collectionInner.classList.add("FourStarInner");
                         }else {
                             collectionOuter.classList.add("FiveStarOuter");
-                            collectionInner.classList.add("FiveInner");
+                            collectionInner.classList.add("FiveStarInner");
                         }
 
                         if(e.open_rating == '10') {
@@ -2020,6 +2111,7 @@
 
             function openMyPage() {
 
+                blockOn();
                 getMyPageInfo();
 
             }
@@ -2108,7 +2200,7 @@
                         return;
                         
                     }
-
+                    console.log(starRating);
                     for(let e of response.data) {
 
                         let wrapper;
@@ -2118,7 +2210,7 @@
                             wrapper = wrapper = document.querySelector("#template .collectionDetailCardCommonWrapper").cloneNode(true);
 
                         }else {
-
+                            console.log(e.card_rating);
                             if(e.card_rating == "common") {
                                 wrapper = document.querySelector("#template .collectionDetailCardCommonWrapper").cloneNode(true);
                             }else if(e.card_rating == "rare") {
@@ -2366,6 +2458,8 @@
             }
 
             function hideCollectionModal() {
+                
+                blockOff();
 
                 const modal = bootstrap.Modal.getOrCreateInstance("#collectionModal");
                 modal.hide();
@@ -2402,6 +2496,15 @@
 
                 const modal = bootstrap.Modal.getOrCreateInstance("#myPageModal");
                 modal.show();
+
+            }
+
+            function hideMyPageModal() {
+
+                blockOff();
+
+                const modal = bootstrap.Modal.getOrCreateInstance("#myPageModal");
+                modal.hide();
 
             }
             
@@ -3039,6 +3142,100 @@
                 border: 1px solid #b7b7b7;
             }
 
+            .walkingPawCircle {
+                position: relative;
+                width: 2rem;
+                height: 2rem;
+                border: 1px solid transparent;
+                border-radius: 50%;
+            }
+
+            .walkingPawIcon {
+                position: absolute;
+                color: rgb(0, 0, 0);
+            }
+
+            .walkingPawIcon.first {
+                top: calc(50% - 3rem);
+                left: calc(50% - 1.5rem);
+                transform: rotate(-5deg);
+                opacity: 0;
+                animation: showSomthing 1s, hideSomthing 0.5s 1s;
+                animation-fill-mode: forwards;
+            }
+
+            .walkingPawIcon.second {
+                top: calc(50% - 4rem);
+                right: calc(50% - 1.5rem);
+                transform: rotate(5deg);
+                opacity: 0;
+                animation: showSomthing 1s 0.3s, hideSomthing 0.5s 1.3s linear 1;
+                animation-fill-mode: forwards;
+            }
+
+            .walkingPawIcon.third {
+                top: calc(50% - 5rem);
+                left: calc(50% - 1.5rem);
+                transform: rotate(-5deg);
+                opacity: 0;
+                animation: showSomthing 1s 0.6s, hideSomthing 0.5s 1.6s linear 1;
+                animation-fill-mode: forwards;
+            }
+
+            .walkingPawIcon.fourth {
+                top: calc(50% - 6rem);
+                right: calc(50% - 1.5rem);
+                transform: rotate(5deg);
+                opacity: 0;
+                animation: showSomthing 1s 0.9s, hideSomthing 0.5s 1.9s linear 1;
+                animation-fill-mode: forwards;
+            }
+
+            .walkingPawIcon.fifth {
+                top: calc(50% - 7rem);
+                left: calc(50% - 1.5rem);
+                transform: rotate(-5deg);
+                opacity: 0;
+                animation: showSomthing 1s 1.2s, hideSomthing 0.5s 2.2s linear 1;
+                animation-fill-mode: forwards;
+            }
+
+            .walkingPawIcon.sixth {
+                top: calc(50% - 8rem);
+                right: calc(50% - 1.5rem);
+                transform: rotate(5deg);
+                opacity: 0;
+                animation: showSomthing 1s 1.5s, hideSomthing 0.5s 2.5s linear 1;
+                animation-fill-mode: forwards;
+            }
+
+            .walkingPawIcon.seventh {
+                top: calc(50% - 9rem);
+                left: calc(50% - 1.5rem);
+                transform: rotate(-5deg);
+                opacity: 0;
+                animation: showSomthing 1s 1.8s, hideSomthing 0.5s 2.8s linear 1;
+                animation-fill-mode: forwards;
+            }
+
+            @keyframes showSomthing {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes hideSomthing {
+                from {
+                    opacity: 1;
+                }
+                to {
+                    opacity: 0;
+                }
+            }
+
         </style>
 
     </head>
@@ -3634,7 +3831,7 @@
                                         <img class="img-fluid" th:src="@{/public/image/follow/banner.png}" style="width: 12rem; height: 3rem;">
                                     </div>
                                     <span class="text-white fw-bold" style="position: absolute; z-index: 1; font-size: 1rem; left: 5.5rem; top: -0.7rem; color: #f3ecdd;">내 가 방</span>
-                                    <button type="button" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" data-bs-dismiss="modal" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.7rem; top: -0.4rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
+                                    <button onclick="hideCollectionModal()" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.7rem; top: -0.4rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
                                         <div style="border-radius: 50%; background: #ac5e23; width: 1.3rem; height: 1.3rem; border: 1px solid #7D3A05;">
                                             <span id="collectionModalCloseIcon" class="material-symbols-rounded" style="position: absolute; font-size: 1.2rem; left: 0.2rem; color: #f3ecdd;">
                                                 close
@@ -3964,7 +4161,7 @@
 
                         <div id="collectionCardModal" class="modal fade" tabindex="-1" style="position: absolute; z-index: 4200;">
                             <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 2.5rem; padding-right: 2.5rem;">
+                                <div class="modal-content border-0" style="position: relative; background: transparent; margin-left: 2.5rem; margin-right: 2.5rem;">
                                     <div class="modal-body rounded" style="border: 1px solid #81461A; padding: 0;">
                                         <div class="rounded" style="border: 2px solid #f3ecdd;">
                                             <div id="collectionCardModalHeight" class="rounded px-2" style="width: 100%; background: rgb(45, 23, 11, 0.95);">
@@ -4185,7 +4382,7 @@
                                         <img class="img-fluid" th:src="@{/public/image/follow/banner.png}" style="width: 12rem; height: 3rem;">
                                     </div>
                                     <span class="text-white fw-bold" style="position: absolute; z-index: 1; font-size: 1rem; left: 5.5rem; top: -0.7rem; color: #f3ecdd;">내 정 보</span>
-                                    <button type="button" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" data-bs-dismiss="modal" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.7rem; top: -0.4rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
+                                    <button onclick="hideMyPageModal()" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.7rem; top: -0.4rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
                                         <div style="border-radius: 50%; background: #ac5e23; width: 1.3rem; height: 1.3rem; border: 1px solid #7D3A05;">
                                             <span id="collectionModalCloseIcon" class="material-symbols-rounded" style="position: absolute; font-size: 1.2rem; left: 0.2rem; color: #f3ecdd;">
                                                 close
@@ -4357,7 +4554,7 @@
                                             <div class="row px-4 py-1">
                                                 <div class="col">
                                                     <div class="row">
-                                                        <div class="col text-center" style="font-size: 0.7rem; color: #980000;">
+                                                        <div class="col text-center px-0" style="font-size: 0.7rem; color: #980000;">
                                                             <span class="material-symbols-rounded" style="font-variation-settings: 'FILL' 1;">
                                                                 footprint
                                                             </span>
@@ -4365,7 +4562,7 @@
                                                             <span id="myPageSombodyTraceCount" class="fw-bold text-dark" style="font-size: 1rem;">4</span>
                                                             <span class="text-secondary">회</span>
                                                         </div>
-                                                        <div class="col text-center" style="font-size: 0.8rem; color: #980000;">
+                                                        <div class="col text-center px-0" style="font-size: 0.8rem; color: #980000;">
                                                             <span class="material-symbols-rounded" style="font-variation-settings: 'FILL' 1;">
                                                                 wash
                                                             </span>
@@ -4375,7 +4572,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="row mt-1">
-                                                        <div class="col text-center" style="font-size: 0.8rem; color: #980000;">
+                                                        <div class="col text-center px-0" style="font-size: 0.8rem; color: #980000;">
                                                             <span class="material-symbols-rounded" style="font-variation-settings: 'FILL' 1;">
                                                                 favorite
                                                             </span>
@@ -4383,7 +4580,7 @@
                                                             <span id="myPageSombodyLikeCount" class="fw-bold text-dark" style="font-size: 1rem;">40</span>
                                                             <span class="text-secondary">회</span>
                                                         </div>
-                                                        <div class="col text-center" style="font-size: 0.8rem; color: #980000;">
+                                                        <div class="col text-center px-0" style="font-size: 0.8rem; color: #980000;">
                                                             <span class="material-symbols-rounded" style="font-variation-settings: 'FILL' 1;">
                                                                 visibility
                                                             </span>
@@ -4402,7 +4599,7 @@
                                             <div class="row px-4 py-1">
                                                 <div class="col">
                                                     <div class="row">
-                                                        <div class="col text-center" style="font-size: 0.7rem; color: #980000;">
+                                                        <div class="col text-center px-0" style="font-size: 0.7rem; color: #980000;">
                                                             <span class="material-symbols-rounded">
                                                                 footprint
                                                             </span>
@@ -4410,7 +4607,7 @@
                                                             <span id="myPageMyTraceCount" class="fw-bold text-dark" style="font-size: 1rem;">4</span>
                                                             <span class="text-secondary">회</span>
                                                         </div>
-                                                        <div class="col text-center" style="font-size: 0.8rem; color: #980000;">
+                                                        <div class="col text-center px-0" style="font-size: 0.8rem; color: #980000;">
                                                             <span class="material-symbols-rounded">
                                                                 wash
                                                             </span>
@@ -4420,7 +4617,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="row mt-1">
-                                                        <div class="col text-center" style="font-size: 0.8rem; color: #980000;">
+                                                        <div class="col text-center px-0" style="font-size: 0.8rem; color: #980000;">
                                                             <span class="material-symbols-rounded">
                                                                 favorite
                                                             </span>
@@ -4428,7 +4625,7 @@
                                                             <span id="myPageMyLikeCount" class="fw-bold text-dark" style="font-size: 1rem;">40</span>
                                                             <span class="text-secondary">회</span>
                                                         </div>
-                                                        <div class="col text-center" style="font-size: 0.8rem; color: #980000;">
+                                                        <div class="col text-center px-0" style="font-size: 0.8rem; color: #980000;">
                                                             <span class="material-symbols-rounded">
                                                                 visibility
                                                             </span>
@@ -4438,7 +4635,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="row mt-2">
-                                                        <div class="col text-center" style="font-size: 0.8rem; color: #980000;">
+                                                        <div class="col text-center px-0" style="font-size: 0.8rem; color: #980000;">
                                                             <span class="material-symbols-rounded">
                                                                 sentiment_very_satisfied
                                                             </span>
@@ -4565,7 +4762,7 @@
 
                         <div id="myTrackCardModal" class="modal fade" tabindex="-1" style="position: absolute; z-index: 4200;">
                             <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 2.5rem; padding-right: 2.5rem;">
+                                <div class="modal-content border-0" style="position: relative; background: transparent; margin-left: 2.5rem; margin-right: 2.5rem;">
                                     <div class="modal-body rounded" style="border: 1px solid #81461A; padding: 0;">
                                         <div class="rounded" style="border: 2px solid #f3ecdd;">
                                             <div id="myTrackCardModalHeight" class="rounded px-2" style="width: 100%; background: rgb(45, 23, 11, 0.95);">
