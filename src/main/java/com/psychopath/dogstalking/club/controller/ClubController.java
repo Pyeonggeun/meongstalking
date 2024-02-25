@@ -207,7 +207,7 @@ public class ClubController {
 
     @RequestMapping("clubListPage")
     public String clubListPage(HttpSession session, Model model, int clubPk) {
-
+        System.out.println("진입은 함?");
         UserDto userDto = (UserDto) session.getAttribute("sessionUser");
 
         List<Map<String, Object>> clublist = clubService.selectClubList();
@@ -216,6 +216,9 @@ public class ClubController {
         model.addAttribute("showclubpk", showclubpk);
         Map<String, Object> latestPost = clubService.selectLatestPost(clubPk);
         model.addAttribute("latestPost", latestPost);
+
+        System.out.println("lastpost="+latestPost);
+
         List<Map<String, Object>> latestAlbum = clubService.selectLatestAlbum(clubPk);
         model.addAttribute("latestAlbum", latestAlbum);
         List<Map<String, Object>> memberlist = clubService.selectMember(clubPk);
@@ -223,10 +226,6 @@ public class ClubController {
 
         model.addAttribute("photo",fundingService.pickProfilePhoto(userDto.getUser_pk()));
 
-        // System.out.println("userDto.getUser_pk(): "+userDto.getUser_pk());
-        // int clubPk = clubService.selectClubPK(userDto.getUser_pk());
-        // System.out.println("clubPk: "+clubPk);
-        // System.out.println("showclubpk: "+showclubpk);
 
         Integer memberLank = null;
         memberLank = clubService.selectLeaderLank(userDto.getUser_pk());
