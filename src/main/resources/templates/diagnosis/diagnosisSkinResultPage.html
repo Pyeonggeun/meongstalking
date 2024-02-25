@@ -73,7 +73,7 @@
         function goBack() {
             window.history.back();
         }
-        
+
     </script>
     <script src="/public/js/commons/naviBar.js"></script>
     <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}" />
@@ -95,7 +95,7 @@
                 선택하신 증상은<br>하루 이상 지속 시 병원 방문이 필요합니다.
             </div>
         </div>
-        <div class="row p-3 Z" >
+        <div class="row p-3 Z">
             <div class="text-center pt-3">
                 <img src="../public/image/diagnosis/skin.png" alt="There are no registered images"
                     style="max-width: 50px; max-height: 50px;">
@@ -162,7 +162,8 @@
 
                 <div class="row mt-5 ">
                     <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
-                        aria-controls="offcanvasRight">더보기></button>
+                        aria-controls="offcanvasRight"><a href="./diseasePage" style="color: #444444;">더 보기 ></a></button>
+
                 </div>
                 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight"
                     aria-labelledby="offcanvasRightLabel">
@@ -200,7 +201,9 @@
                     </div>
                 </div>
             </div>
-            <div th:if="${c == 'c1' or c == 'c2'}" class="col-md-6 p-3 mt-2 border-bottom border-5 border-gray  packBox mb-2" style="border-bottom: 5px solid #e3e3e3;">
+            <div th:if="${c == 'c1' or c == 'c2'}"
+                class="col-md-6 p-3 mt-2 border-bottom border-5 border-gray  packBox mb-2"
+                style="border-bottom: 5px solid #e3e3e3;">
                 <div class="row text-center py-3 mb-1">
                     <h6 style="font-weight: bold; margin-bottom: 0px; color: #0a0079;">농피증</h6><br>
                 </div>

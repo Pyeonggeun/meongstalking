@@ -118,6 +118,22 @@
             window.history.back();
         }
     </script>
+    <script>
+        function validateForm() {
+            // 제목과 내용 가져오기
+            var title = document.forms["boardForm"]["title"].value;
+            var content = document.forms["boardForm"]["content"].value;
+    
+            // 제목 또는 내용이 비어있는 경우
+            if (title == "" || content == "") {
+                alert("제목과 내용을 모두 입력해주세요.");
+                return false; // 폼 전송을 중지
+            }
+    
+            return true; // 폼 전송을 계속 진행
+        }
+    </script>
+    
     <script src="/public/js/commons/naviBar.js"></script>
     <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}" />
     
@@ -150,12 +166,13 @@
         
     
         <div class="row px-2">
-            <form action="./boardwriteProcess" method="post" enctype="multipart/form-data">
+            <form action="./boardwriteProcess" method="post" enctype="multipart/form-data" name="boardForm" onsubmit="return validateForm()">
                 <input type="text" name="title" placeholder="제목"><br>
                 <textarea name="content" placeholder="내용"></textarea><br>
                 <input type="file" class="form-control" id="img" name="img_file" accept="image/*" multiple>
                 <input type="submit" value="작성하기" class="btn btn-secondary">
             </form>
+            
         </div>
         
     </div>
