@@ -206,13 +206,15 @@ public class FollowSimulator {
 
             try{
 
+                int collectorPk = (int)(Math.random()*(MAX_USER_PK - MIN_USER_PK)) + MIN_USER_PK;
+
                 Random random = new Random();
                 int userPk = (int)(random.nextGaussian()*((MAX_USER_PK-MIN_USER_PK)/2)/3) + (MIN_USER_PK + MAX_USER_PK)/2; // 45는 중앙 번호
                 if(userPk < MIN_USER_PK) userPk = MIN_USER_PK;
                 if(userPk > MAX_USER_PK) userPk = MAX_USER_PK;
 
                 // int userPk = (int)(Math.random()*(MAX_USER_PK - MIN_USER_PK)) + MIN_USER_PK;
-                Integer logPk = followSqlMapper.getRandomLogPkExceptMine(userPk);
+                Integer logPk = followSqlMapper.getRandomLogPkExceptMine(collectorPk, userPk);
 
                 if(logPk == null) {
                     System.out.println("괜찮아 토닥토닥...2");
@@ -220,7 +222,7 @@ public class FollowSimulator {
                 }
 
                 CollectionDto params = new CollectionDto();
-                params.setUser_pk(userPk);
+                params.setUser_pk(collectorPk);
                 params.setLog_pk(logPk);
 
                 followSqlMapper.insertCollectionInfo(params);
@@ -254,8 +256,8 @@ public class FollowSimulator {
 
                 if(Math.random()*100 < 70){
                     CommentDto commentDto = new CommentDto();
-                    commentDto.setUser_pk(userPk);
-                    commentDto.setLog_pk(userPk);
+                    commentDto.setUser_pk(collectorPk);
+                    commentDto.setLog_pk(logPk);
                     commentDto.setContent(commentList[(int)(Math.random()*commentList.length)]);
     
                     followSqlMapper.insertComment(commentDto);
