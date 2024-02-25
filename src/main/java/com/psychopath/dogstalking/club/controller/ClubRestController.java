@@ -92,6 +92,16 @@ public class ClubRestController {
 		}
 	}
 
+	@RequestMapping("deleteComment")
+	public RestResponseDto deleteComment(int comment_id) {
+		RestResponseDto restResponseDto = new RestResponseDto();
+
+		clubService.deleteComment(comment_id);
+
+		restResponseDto.setResult("success");
+		return restResponseDto;
+	}
+
 	// imgfreeboard
 	@RequestMapping("writeImgComment")
 	public RestResponseDto writeImgComment(HttpSession session, ImgCommentDto params) {

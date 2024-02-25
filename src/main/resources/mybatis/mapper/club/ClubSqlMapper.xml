@@ -44,6 +44,10 @@
             mci.clubimgboard_pk;
     </select>
 
+    <delete id="deleteComment">
+		DELETE FROM ms_club_freeboard_comment WHERE comment_pk = #{comment_pk}
+	</delete>
+
     <!-- 댓글 -->
 
 	<insert id="insertComment">
@@ -322,6 +326,7 @@
     <delete id="deleteImgComment">
 		DELETE FROM ms_club_imgboard_comment WHERE imgcomment_pk = #{imgcomment_pk}
 	</delete>
+    
 
     <!--메인페이지용-->
     <select id="selectFreeboardMainPage" resultType="map">

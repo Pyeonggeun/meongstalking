@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.psychopath.dogstalking.club.dto.ClubStatusLogDto;
+import com.psychopath.dogstalking.club.dto.ClubUserDto;
 import com.psychopath.dogstalking.diagnosis.service.DiagnosisServiceImpl;
 
 import jakarta.servlet.http.HttpSession;
@@ -24,6 +27,12 @@ public class DiagnosisController {
     @RequestMapping("diagnosisSkinPage")
     public String diagnosisSkinPage(HttpSession session) {
         return "diagnosis/diagnosisSkinPage";
+    }
+
+
+    @RequestMapping("diseasePage")
+    public String diseasePage(HttpSession session) {
+        return "diagnosis/diseasePage";
     }
 
    //@RequestMapping(value = "/diagnosisSkinResultPage", method = RequestMethod.GET)

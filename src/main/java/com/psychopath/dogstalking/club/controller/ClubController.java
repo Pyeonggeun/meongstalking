@@ -207,7 +207,7 @@ public class ClubController {
 
     @RequestMapping("clubListPage")
     public String clubListPage(HttpSession session, Model model, int clubPk) {
-        System.out.println("진입은 함?");
+        
         UserDto userDto = (UserDto) session.getAttribute("sessionUser");
 
         List<Map<String, Object>> clublist = clubService.selectClubList();
@@ -217,29 +217,25 @@ public class ClubController {
         Map<String, Object> latestPost = clubService.selectLatestPost(clubPk);
         model.addAttribute("latestPost", latestPost);
 
-        System.out.println("lastpost="+latestPost);
-
         List<Map<String, Object>> latestAlbum = clubService.selectLatestAlbum(clubPk);
         model.addAttribute("latestAlbum", latestAlbum);
         List<Map<String, Object>> memberlist = clubService.selectMember(clubPk);
         model.addAttribute("memberlist", memberlist);
-
+        
         model.addAttribute("photo",fundingService.pickProfilePhoto(userDto.getUser_pk()));
-
-
+        
         Integer memberLank = null;
         memberLank = clubService.selectLeaderLank(userDto.getUser_pk());
         // System.out.println("memberLank : " + memberLank);
         if (memberLank == null || !(memberLank >= 1 && memberLank <= 3)) {
             memberLank = 9;
         }
-
         session.setAttribute("checkMember", memberLank);
 
 
         // System.out.println("memberLank : " + memberLank);
         model.addAttribute("checkMember", memberLank);
-
+        
         Integer ApplyStatus = clubService.selectClubCategoryPk(userDto.getUser_pk());
         //System.out.println("ApplyStatus : " + ApplyStatus);
         if (ApplyStatus == null) {
@@ -247,7 +243,7 @@ public class ClubController {
         }
         model.addAttribute("ApplyStatus", ApplyStatus);
 
-
+        System.out.println("진입은 ApplyStatus?"+ApplyStatus);
        // System.out.println("memberlist: "+memberlist);
 
         return "club/clubListPage";
@@ -290,6 +286,8 @@ public class ClubController {
         model.addAttribute("clubTF", clubTF);
         return "redirect:./clubHomePage";
     }
+
+
 
     @RequestMapping("clubHomeProcess")
     public String clubHomeProcess(@RequestParam("club_pk") int clubPk, Model model, HttpSession session) {
