@@ -121,6 +121,11 @@
         .container {
             background-color: ghostwhite;
         }
+
+        .profile-image {
+            max-width: 40px;
+            max-height: 40px;
+        }
     </style>
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -168,22 +173,23 @@
                 .catch(error => console.error('Error fetching search results:', error));
         }
 
+
         function createMemberCard(member) {
             const cardDiv = document.createElement('div');
+            cardDiv.classList.add('col', 'text-center', 'member-card'); // Add 'member-card' class
+
             cardDiv.innerHTML = `
-        <div class="col text-center">
-            <div class="row d-flex justify-content-center align-items-center">
-                <img th:src="@{${member.profile_photo}}" class="rounded-circle profile-image" style="max-width: 4.5em; max-height: 4.5em;">
-            </div>
-
-                <div class="row">
-                    <span class="fw-bold">${member.name}</span>
-                </div>
-
+        <div class="row d-flex justify-content-center align-items-center">
+            <img src="/uploadFiles/${member.profile_photo}" class="img-fluid rounded-circle profile-image" style="max-width: 40px; max-height: 40px;">
+        </div>
+        <div class="row">
+            <span class="fw-bold">${member.name}</span>
         </div>
     `;
+
             return cardDiv;
         }
+
 
 
         function withdrawalModal(user_pk) {
@@ -231,17 +237,17 @@
 
 <body>
     <div class="container pb-5">
-        <div class="row">
+        <!-- <div class="row">
             <div th:insert="~{commons/naviBar}" style="background-color: #ffffff;"></div>
-        </div>
-        <div class="row"style="background-color: #ffffff;">
+        </div> -->
+        <div class="row" style="background-color: #ffffff;">
             <div class="col-auto my-2 ms-1" onclick="goBack()">
                 <i class="bi bi-arrow-left"></i>
             </div>
             <div th:text="${clubTF.clubname}" class="col d-flex align-items-center px-0">
             </div>
         </div>
-        <div class="row scrollable-menu px-0"style="background-color: #ffffff;">
+        <div class="row scrollable-menu px-0" style="background-color: #ffffff;">
             <div class="col justify-content-between fw-bold">
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
                 <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">게시판</span>
@@ -255,30 +261,35 @@
 
             <form id="search-form" class="input-group" onsubmit="event.preventDefault(); searchMembers();">
                 <div class="input-group px-2 py-2">
-                    
+
                     <div class="input-group-append ">
-                        <button id="search-button" class="btn btn-icon" type="button" onclick="searchMembers()" style="border-top-left-radius: 25px; border-bottom-left-radius: 25px;">
+                        <button id="search-button" class="btn btn-icon" type="button" onclick="searchMembers()"
+                            style="border-top-left-radius: 25px; border-bottom-left-radius: 25px;">
                             <span class="bi bi-search ps-2"></span>
                         </button>
                     </div>
-                    <input type="text" id="search-query" name="q" class="form-control" placeholder="Search" style="border-top-right-radius: 25px; border-bottom-right-radius: 25px;" >
+                    <input type="text" id="search-query" name="q" class="form-control" placeholder="Search"
+                        style="border-top-right-radius: 25px; border-bottom-right-radius: 25px;">
                 </div>
-                
-                
+
+
             </form>
             <!-- 검색 부분 -->
             <div class="row p-3 row-cols-3" id="search-results" style="overflow-x: auto;">
                 <div class="col" th:each="member : ${searchResults}">
                     <div class="row">
                         <div class="col text-center">
-                            <a th:href="'../mstar/profilePage?user_pk=' + ${qwer['user_pk']}">
-                                <img th:src="@{${member.profile_photo}}"
-                                    class="img-fluid rounded-circle profile-image"
-                                    style="max-width: 40px; max-height: 40px;">
+                            <a th:href="'../mstar/profilePage?user_pk=' + ${member.user_pk}">
+                                <img src="${member.profile_photo}" class="img-fluid rounded-circle profile-image" style="max-width: 40px; max-height: 40px;">
+
                             </a>
+                            <!-- <a href="../mstar/profilePage?user_pk=${qwer['user_pk']}">
+                                <img src="/uploadFiles/${member.profile_photo}" class="img-fluid rounded-circle profile-image" style="max-width: 40px; max-height: 40px;">
+                            </a> -->
                         </div>
                     </div>
-                    
+
+
                     <div class="row">
                         <div th:if="${leaderRank == 1}" class="col d-flex align-items-center">
                             <div th:if="${member.user_pk == user_pk}" style="display: flex; align-items: center;">
@@ -300,15 +311,17 @@
 
         <div class="row mt-3 border-bottom border-5 border-gray  packBox mb-2 p-2 pt-3" style="color: #323232;">
             <div class="col">
-                
-                <div class="row"><div class="col fw-bold fs-4">전체 회원</div></div>
+
+                <div class="row">
+                    <div class="col fw-bold fs-4">전체 회원</div>
+                </div>
                 <div class="row px-2 mb-2">
                     <a href="./clubManagement">
                         <span class="small-text" style="color: black;">
                             리더를 위한 멤버 관리 가이드 <br>
                             <span style="color: #2db400;">멤버 프로필 그룹관리 및 권한 설정법 ></span>
                         </span>
-        
+
                     </a>
                 </div>
                 <div class="row pt-3">
@@ -319,29 +332,31 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-2 ms-2">
-            
+
                                                 <a th:href="'../mstar/profilePage?user_pk=' + ${member.user_pk}">
                                                     <img th:src="@{${member.profile_photo}}"
                                                         class="img-fluid rounded-circle profile-image"
                                                         style="max-width: 40px; max-height: 40px;">
                                                 </a>
-            
-            
+
+
                                             </div>
                                             <div th:if="${leaderRank == 1}" class="col-5 d-flex align-items-center">
-            
+
                                                 <div th:if="${member.user_pk == user_pk}"
                                                     style="display: flex; align-items: center;">
-                                                    <span class="fw-bold" th:text="${member.name}" style="margin: auto;"></span>
+                                                    <span class="fw-bold" th:text="${member.name}"
+                                                        style="margin: auto;"></span>
                                                     <span
                                                         style="font-size: 0.8em; color: gold; margin-left: 5px; margin-bottom: 3px;">👑</span>
                                                 </div>
                                                 <div th:unless="${member.user_pk == user_pk}"
                                                     style="display: flex; align-items: center;">
-                                                    <span class="fw-bold" th:text="${member.name}" style="margin: auto;"></span>
+                                                    <span class="fw-bold" th:text="${member.name}"
+                                                        style="margin: auto;"></span>
                                                 </div>
                                             </div>
-            
+
                                             <div th:if="${leaderRank == 3}"
                                                 class="col d-flex align-items-center justify-content-end text-end pe-4">
                                                 <div th:if="${member.user_pk == user_pk}">
@@ -354,7 +369,8 @@
                                                 class="col d-flex align-items-center justify-content-end text-end pe-4">
                                                 <div th:if="${member.user_pk == user_pk}">
                                                     <button class="btn btn-secondary btn-sm text-end btn-no-background"
-                                                        id="gearModalButton" data-bs-toggle="modal" data-bs-target="#gearModal">
+                                                        id="gearModalButton" data-bs-toggle="modal"
+                                                        data-bs-target="#gearModal">
                                                         <span class="bi bi-gear gear-icon"></span>
                                                     </button>
                                                 </div>
