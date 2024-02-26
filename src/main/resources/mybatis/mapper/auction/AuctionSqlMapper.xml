@@ -255,6 +255,7 @@
     </select>
 
 
+
     <select id="mainPageGoodsList" resultType="map">
         <![CDATA[
         SELECT g.*, COALESCE(w.wishlist_count, 0) AS wishlist_count, c.name AS category_name

@@ -1,18 +1,22 @@
-<!DOCTYPE html>
-<html lang="ko">
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
     <script src="/public/js/commons/lockLikeMobile.js"></script>
+    <!-- Popper.js (if needed) -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
     <style>
         @font-face {
             font-family: 'omyu_pretty';
@@ -20,58 +24,268 @@
             font-weight: normal;
             font-style: normal;
         }
-
         body {
             font-family: 'omyu_pretty';
             min-width: 320px;
         }
-
         .scrollable-menu {
             overflow-x: auto;
             white-space: nowrap;
         }
-
         .scrollable-menu .col {
             display: flex;
             flex-wrap: nowrap;
         }
-
         .scrollable-menu span {
             border-bottom: 2px solid transparent;
             padding-bottom: 2px;
             transition: border-color 0.3s;
         }
-
         .scrollable-menu span:hover {
             border-color: #000;
+        }
+
+        .imtext {
+            position: absolute;
+            top: 120px;
+            left: 13px;
+            z-index: 1;
+            color: rgb(190, 190, 190);
+            font-size: 0.7em;
+            width: auto;
+            font-weight: bold;
+
+        }
+
+        .custom-border {
+            border-right: 1.5px solid rgb(190, 190, 190);
+            height: 100vh;
+        }
+
+        .custom-list {
+            border-radius: 10px;
+        }
+
+        .custom-span {
+            color: black;
+            font-size: 0.7em;
+            display: inline-block;
+        }
+
+        @media (min-width: 576px) {
+            .modal.bottom-modal .modal-dialog {
+                position: fixed;
+                bottom: -10%;
+                left: 50%;
+                transform: translateX(-50%) translateY(100%);
+                margin: 0;
+                transition: transform 0.3s ease-out;
+            }
+
+            .modal.show .modal-dialog {
+                transform: translateX(-50%) translateY(0%);
+            }
+
+        }
+
+        .packtitleBox {
+            background-color: white;
+            border-bottom-left-radius: 1em;
+            border-bottom-right-radius: 1em;
+            margin: 0.02em;
+            margin-top: 0em;
+        }
+
+        .packBox {
+            background-color: white;
+            border-radius: 1em;
+            padding-top: 0.75em;
+            padding-bottom: 0.75em;
+            margin: 0.02em;
         }
 
         .container {
             background-color: ghostwhite;
         }
-
-        .packBox {
-            background-color: #ffffff;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        h1, h2 {
-            color: #333;
-        }
-
-        img {
-            max-width: 100%;
-            height: auto;
-        }
     </style>
-
     <script>
         function goBack() {
             window.history.back();
         }
+    </script>
+    <script>
+        var offcanvasElementList = [].slice.call(document.querySelectorAll('.offcanvas'))
+        var offcanvasList = offcanvasElementList.map(function (offcanvasEl) {
+            return new bootstrap.Offcanvas(offcanvasEl)
+        })
+
+        function goBack() {
+            window.history.back();
+        }
+
+    </script>
+
+
+    <script th:inline="javascript">
+        const articleId = /*[[${clubfreeboard_pk}]]*/ null;
+        var myId = /*[[${session.sessionUser.user_pk}]]*/ null;
+    </script>
+
+
+    <script>
+        let articleIds = null;
+        if (articleId != null) {
+            articleIds = articleId;
+        }
+
+        function openOffcanvas(event, clubfreeboard_pk) {
+
+            event.preventDefault();
+            var offcanvasBottom = new bootstrap.Offcanvas(document.getElementById('offcanvasBottom'));
+            offcanvasBottom.show();
+
+            articleIds = clubfreeboard_pk;
+            reloadCommentList();
+        }
+
+        function writeComment() {
+
+            var inputComment = document.getElementById("inputComment");
+            var commentValue = inputComment.value;
+
+            console.log("articleIds: " + articleIds);
+
+            var url = "./writeComment";
+
+            fetch(url, {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "content=" + commentValue + "&clubfreeboard_pk=" + articleIds
+            })
+                .then(response => response.json())
+                .then(response => {
+                    inputComment.value = "";
+                    reloadCommentList();
+                })
+                .catch(error => {
+                    console.error("Error writing comment:", error);
+                });
+        }
+
+        function showCommentUpdateForm(targetElement, commentId) {
+            const updateCommentWrapper = document.querySelector("#templete .updateCommentWrapper").cloneNode(true);
+
+            const commentWrapper = targetElement.closest(".commentWrapper");
+
+            const commentText = commentWrapper.querySelector(".commentText");
+
+            const text = commentText.innerText;
+            commentText.innerHTML = "";
+
+            updateCommentWrapper.querySelector(".inputComment").value = text;
+
+            const updateCommentButton = updateCommentWrapper.querySelector(".updateCommentButton");
+            updateCommentButton.setAttribute("onclick", "updateComment(this, " + commentId + ")");
+
+            commentText.appendChild(updateCommentWrapper);
+        }
+
+        function updateComment(targetElement, commentId) {
+            const updateCommentWrapper = targetElement.closest(".updateCommentWrapper");
+            const inputComment = updateCommentWrapper.querySelector(".inputComment");
+
+            const content = inputComment.value;
+
+            const url = "./updateComment";
+            const option = {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "comment_pk=" + commentId + "&content=" + content
+            };
+
+            fetch(url, option)
+                .then(response => response.json())
+                .then(response => {
+                    reloadCommentList();
+                });
+
+        }
+
+        function deleteComment(commentId) {
+            const url = "./deleteComment?comment_id=" + commentId;
+            fetch(url)
+                .then(response => response.json())
+                .then(response => {
+                    reloadCommentList();
+                });
+        }
+
+        function reloadCommentList() {
+
+            const url = "./getCommentList?clubfreeboard_pk=" + articleIds;
+            console.log("articleIds"+articleIds);
+            fetch(url)
+                //.then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(response => {
+                    if (response && Array.isArray(response.data)) {
+                        let commentListBox = document.getElementById("commentListBox");
+                        if (commentListBox) {
+                            commentListBox.innerHTML = "";
+
+                            for (e of response.data) {
+                                const commentWrapper = document.querySelector("#templete .commentWrapper").cloneNode(true);
+
+
+                                const commentNickname = commentWrapper.querySelector(".commentNickname");
+                                commentNickname.innerText = e.name;
+
+                                const commentDate = commentWrapper.querySelector(".commentDate");
+                                const date = new Date(e.created_at);
+                                commentDate.innerText = date.getFullYear() + "." + (date.getMonth() + 1) + "." + date.getDate();
+
+                                const commentText = commentWrapper.querySelector(".commentText");
+                                commentText.innerText = e.content;
+
+                                const commentUpdate = commentWrapper.querySelector(".commentUpdate");
+                                const commentDelete = commentWrapper.querySelector(".commentDelete");
+
+                                commentUpdate.setAttribute("onclick", "showCommentUpdateForm(this, " + e.comment_pk + ")");
+                                commentDelete.setAttribute("onclick", "deleteComment(" + e.comment_pk + ")");
+
+                                if (myId == null || myId != e.user_pk) {
+                                    commentUpdate.remove();
+                                    commentDelete.remove();
+                                }
+
+
+                                commentListBox.appendChild(commentWrapper);
+                            }
+                        } else {
+                            console.error("commentWrapper is null or undefined");
+                        }
+                    } else {
+                        console.error("Invalid response data:", response);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching comment list:", error);
+                });
+        }
+        window.addEventListener("DOMContentLoaded", () => {
+            reloadCommentList();
+        });
+
+
     </script>
 
     <script src="/public/js/commons/naviBar.js"></script>
@@ -79,77 +293,141 @@
 </head>
 
 <body>
-
     <div class="container pb-5">
         <div class="row">
             <div th:insert="~{commons/naviBar}" style="background-color: #ffffff;"></div>
         </div>
-        <div class="row justify-content-center align-items-center" style="background-color: #ffffff; border-bottom: 2px solid #bcbcbc;">
-            <div class="col text-center py-3" style="font-weight: bold;">체크 결과 안내</div>
+        <div class="row px-0" style="background-color: #ffffff;">
+            <div class="col-auto my-2 ms-1" onclick="goBack()">
+                <i class="bi bi-arrow-left"></i>
+            </div>
+            <div th:text="${clubTF.clubname}" class="col d-flex align-items-center px-0">
+            </div>
         </div>
-        <div class="row">
-            <h1>강아지 사료 알레르기와 피부 질환</h1>
-
-            <p>강아지의 건강을 이해하는 것은 최상의 돌봄을 제공하는 데 중요합니다. 강아지의 음식 알레르기와 피부 질환
-                이것은 귀하의 애완 동물에 영향을 미칠 수 있는 흔한 문제입니다. 이러한 상태를 살펴보고 관리하는 방법을 알아보겠습니다.</p>
-        </div>
-
-        <div class="row">
-            <h2>강아지 음식 알레르기</h2>
-
-            <p>인간과 마찬가지로 강아지도 특정 음식에 알레르기 반응을 보일 수 있습니다. 강아지의 음식 알레르기의 흔한 원인은 다음과 같습니다:
-                포함되어 있습니다.</p>
-
-            <div>
-                <p>음식 알레르기의 증상에는 다음이 포함될 수 있습니다:</p>
-
-                <ul>
-                    <li>가려움</li>
-                    <li>피부 붉음 또는 염증</li>
-                    <li>구토 또는 설사</li>
-                    <li>귀 감염</li>
-                </ul>
-
-                <p>강아지가 음식 알레르기가 있다고 의심되면 수의사와 상담하십시오. 특정 알레르기를 확인하기 위한 제거 식이
-                    이것이 권장될 수 있습니다. 상황을 관리하기 위해 저알레르기 강아지 사료로 전환해야 할 수 있습니다.</p>
+        <div class="row scrollable-menu py-2" style="background-color: #ffffff;">
+            <div class="col justify-content-between fw-bold">
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubHomePage'">홈</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./freeBoardPage'">방명록</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./photoAlbumPage'">사진첩</span>
+                <span class="mx-3" style="cursor: pointer;" onclick="location.href='./clubMemberPage'">멤버</span>
             </div>
         </div>
 
-        <div class="row">
-            <h2>강아지 피부 질환</h2>
-
-            <p>건강한 피부는 강아지의 전반적인 안녕에 중요합니다. 강아지의 피부 질환에는 다음이 포함될 수 있습니다:</p>
-
-            <div>
-                <ul>
-                    <li>아토피 피부염</li>
-                    <li>벼룩 알레르기 피부염</li>
-                    <li>핫 스팟</li>
-                    <li>리바 웜</li>
-                    <li>이스트 감염</li>
-                </ul>
-
-                <p>예방 수단과 초기 진단이 피부 질환 관리의 핵심입니다. 정기적인 그루밍, 벼룩 통제 및 깨끗한 생활 환경 유지
-                    이것이 피부 건강에 기여할 수 있습니다. 피부 이상을 발견하면 수의사에게 적절한 진단 및 치료 계획을 상담하십시오.
-                    받아야합니다.</p>
-            </div>
+        <div class="row py-4">
+            <div class="col fw-bold fs-4">동호회 방명록</div>
         </div>
 
-        <div class="row">
-            <h2>결론</h2>
 
-            <div>
-                <p>강아지의 음식 및 피부 상태에 주의를 기울이는 것은 그들의 행복과 건강에 중요합니다. 이상한 증상이나 행동이
-                    하나라도 발견되면 항상 수의사에게 전문가 조언을 구하십시오. 수의사는 귀하의 강아지의 특별한 요구에 기반한 맞춤 지도를
-                    제공할 것입니다.</p>
+        <th:block th:each="qwer : ${freeBoardList}">
+            <div class="row py-3 px-2  border-bottom border-5 border-gray packBox mb-2">
+                <div class="col">
+                    <div class="row">
+                        <div class="col-7">
+                            <a th:href="'../mstar/profilePage?user_pk=' + ${qwer['user_pk']}">
+                                <img th:src="@{${qwer['profile_photo']}}" class="img-fluid rounded-circle"
+                                    style="width: 2em; height: 2em;">
+                            </a>
+                            <span class="fw-bold" style="color: #f45600;" th:text="${qwer['name']}"></span>
+                        </div>
+                        <div class="col text-end text-secondary">
+
+                            <span style="font-size: 0.8em;">좋아요</span><span class="me-2 fw-bold"
+                                style="font-size: 1em;"></span>
+                            <a href="#"
+                                th:attr="onclick='openOffcanvas(event, \'' + ${qwer['clubfreeboard_pk']} + '\')'"
+                                aria-controls="offcanvasBottom">
+                                <span style="font-size: 0.8em;" class="text-primary">댓글 보기</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div th:unless="${#strings.isEmpty(qwer['img'])}" class="row mt-2">
+                        <img class="img-fluid" th:src="@{'/uploadFiles/' + ${qwer['img']}}">
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col" style="color: #200909;" th:text="${qwer['content']}"></div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="offcanvas offcanvas-bottom position-fixed" tabindex="-1" id="offcanvasBottom"
+                aria-labelledby="offcanvasBottomLabel" style="width: 100%; max-width: 600px; height: auto;">
+                <div class="row offcanvas-header">
+                    <div class="col">
+                        Likes • Comments
+                    </div>
+                    <div class="col-2 text-end">
+                        <button type="button" class="btn-close text-end" data-bs-dismiss="offcanvas"
+                            aria-label="Close"></button>
+                    </div>
+                </div>
+
+                <div class="offcanvas-body">
+                    <div id="commentListBox" class="row">
+                    </div>
+                </div>
+                <div class="offcanvas-bottom p-2">
+                    <div class="row align-items-center">
+                        <div class="col-9 d-grid pe-0" style="height: 3em;">
+                            <textarea id="inputComment" class="form-control" placeholder="댓글을 입력하세요"></textarea>
+                        </div>
+                        <div class="col-3 d-grid ps-0" style="height: 3em;">
+                            <button onclick="writeComment()" class="btn btn-secondary comment-btn">전송</button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
-            <div>
-                <p>이 정보는 교육 목적으로 제공되며 전문 수의사의 조언 대체로 사용될 수 없습니다. 귀하의 강아지의 특별한 요구에 따라
-                    수시로 수의사와 상담하십시오.</p>
+    </div>
+
+    </th:block>
+
+    <div class="row pb-2">
+        <div class="col position-fixed text-end" style="bottom: 5em;">
+            <a href="./freeBoardWritePage" class="btn btn-secondary rounded-circle p-3">
+                <i class="bi bi-pencil"></i>
+            </a>
+        </div>
+    </div>
+
+
+    <!-- Template -->
+    <div id="templete" class="d-none">
+        <div class="row commentWrapper " >
+            <div class="col">
+                <div class="row">
+                    <div class="col-3 commentNickname fw-bold"></div>
+                    <div class="commentText col">댓글 내용 블라블라....</div>
+                    <div class="col text-end commentDate text-secondary">2023.11.03</div>
+                </div>
+                <div class="row">
+                    <div class="col-10 text-end commentUpdate text-secondary small">수정</div>
+                    <div class="col-2 text-end commentDelete text-secondary small">삭제</div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row updateCommentWrapper">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <input type="text" class="inputComment form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col updateCommentButton">저장</div>
+                    <div onclick="reloadCommentList()" class="col">취소</div>
+                </div>
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>

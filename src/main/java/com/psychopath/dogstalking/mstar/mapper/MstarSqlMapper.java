@@ -135,7 +135,8 @@ public interface MstarSqlMapper{
 
     public int selectCommentLikeCount(int comment_pk);
     public int selectWriterLikeComment(@RequestParam("comment_pk") int comment_pk,
-                                       @RequestParam("profile_info_pk")int profile_info_pk);
+                                       @RequestParam("writerProfilePk")int profile_info_pk);
+    
 
     public int selectWriterProfilePkByCommnet(int comment_pk);
 
