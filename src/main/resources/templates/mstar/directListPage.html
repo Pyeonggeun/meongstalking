@@ -239,7 +239,7 @@
 
                             const anotherChat = rcvChatWrapper.querySelector(".anotherChat");
                             anotherChat.innerText = e.directDto.chat; 
-                            if(anotherChat.textContent.length >=20){
+                            if(anotherChat.textContent.length >=30){
                                 anotherChat.classList.add("py-2");
                                 anotherChat.classList.remove("rounded-pill");
                                 anotherChat.setAttribute("style","background-color: rgb(219, 219, 219); max-width: 70%; word-wrap: break-word; border-bottom-left-radius: 7%; border-top-left-radius: 7%; border-top-right-radius: 8%;");
@@ -808,7 +808,7 @@
             <div class="row mt-2 rcvChatWrapper">
                 <div class="col">
                     <div class="row">
-                        <div class="col-auto ms-1 pe-0">
+                        <div class="col-auto ms-1 pe-2">
                             <img class="img-fluid rounded-circle anotherProfilePhoto" alt="" style="aspect-ratio: 1/1; height: 2em;">
                         </div>
                         <div class="col-auto text-start py-0 align-self-center  rounded-pill anotherChat" style="background-color: rgb(219, 219, 219); max-width: 70%; word-wrap: break-word;">
