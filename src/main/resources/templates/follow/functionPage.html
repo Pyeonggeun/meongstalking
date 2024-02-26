@@ -30,6 +30,9 @@
 
             let myLocation;
 
+            // const currentLat = 37.50296848454501;
+            // const currentLng = 127.10052839825559;
+
             let currentLat;
             let currentLng;
 
@@ -1791,8 +1794,12 @@
                             document.getElementById("likeListPreference").innerText = "퀘스처닝";
                         }
                     case "7", "6" : 
-                        document.getElementById("collectionDetailMbtiType").innerText = e.blood_type;
+                        document.getElementById("collectionDetailMbtiType").innerText = e.mbti_type;
                         document.getElementById("collectionDetailHobby").innerText = e.hobby;
+                    case "5" :
+                        document.getElementById("collectionDetailSmoking").innerText = e.smoking;
+                        document.getElementById("collectionDetailDrinking").innerText = e.drinking;
+                    case "4" : 
                         document.getElementById("collectionDetailMessageButton").disabled = false;
                         document.getElementById("collectionDetailMessageButton").onclick = () => {
                             
@@ -1800,10 +1807,7 @@
                             isAlert(e.user_pk, title);
 
                         };
-                    case "5" :
-                        document.getElementById("collectionDetailSmoking").innerText = e.smoking;
-                        document.getElementById("collectionDetailDrinking").innerText = e.drinking;
-                    case "4", "3" : 
+                    case "3" : 
                         document.getElementById("collectionDetailHeight").innerText = e.height;
                         document.getElementById("collectionDetailWeight").innerText = e.weight;
                         document.getElementById("collectionDetailBloodType").innerText = e.blood_type;
