@@ -27,10 +27,10 @@
                     console.log("wishOrNot="+wishOrNot)
                     if (wishOrNot) {
                     wishButton.classList.remove("bi-heart");
-                    wishButton.classList.add("bi-heart-fill");
+                    wishButton.classList.add("bi-heart-fill","text-danger");
                     } else {
                     wishButton.classList.remove("bi-heart-fill");
-                    wishButton.classList.add("bi-heart");
+                    wishButton.classList.add("bi-heart", "text-danger");
                     }
                 });
                 
@@ -312,7 +312,7 @@
                                 <div class="row">
                                     <div class="col d-grid px-0" style="position: relative;">
                                         <img id="titleImg" class="titleImg img-fluid rounded-top">
-                                        <div style="position: absolute; top: 6%; right: 6%;"><i id="wishButton" onclick="toggleWish()" class="bi bi-heart text-white" style="font-size: 1.15em;"></i>
+                                        <div style="position: absolute; top: 6%; right: 6%;"><i id="wishButton" class="bi bi-heart" style="font-size: 1.15em;"></i>
                                         </div>
                                     </div>
                                 </div>

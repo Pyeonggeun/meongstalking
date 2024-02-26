@@ -179,31 +179,31 @@
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const form = document.getElementById('mbtiForm');
-            const questions = form.querySelectorAll('.question');
+        // document.addEventListener('DOMContentLoaded', function () {
+        //     const form = document.getElementById('mbtiForm');
+        //     //const questions = form.querySelectorAll('.question');
 
-            form.addEventListener('click', function (event) {
-                if (event.target.classList.contains('nextBtn')) {
-                    const currentQuestion = event.target.closest('.question');
-                    const nextQuestionId = event.target.getAttribute('data-next');
-                    const nextQuestion = form.querySelector(`#${nextQuestionId}`);
+        //     form.addEventListener('click', function (event) {
+        //         if (event.target.classList.contains('nextBtn')) {
+        //             const currentQuestion = event.target.closest('.question');
+        //             const nextQuestionId = event.target.getAttribute('data-next');
+        //             const nextQuestion = form.querySelector(`#${nextQuestionId}`);
 
-                    const selectedOption = currentQuestion.querySelector('input:checked');
+        //             const selectedOption = currentQuestion.querySelector('input:checked');
 
-                    if (selectedOption) {
-                        currentQuestion.style.display = 'none';
-                        nextQuestion.style.display = 'block';
+        //             if (selectedOption) {
+        //                 currentQuestion.style.display = 'none';
+        //                 nextQuestion.style.display = 'block';
 
-                        if (nextQuestionId === 'question3') {
-                            document.querySelector('button[type="submit"]').style.display = 'block';
-                        }
-                    } else {
-                        alert('문항을 선택해주세요.');
-                    }
-                }
-            });
-        });
+        //                 if (nextQuestionId === 'question3') {
+        //                     document.querySelector('button[type="submit"]').style.display = 'block';
+        //                 }
+        //             } else {
+        //                 alert('문항을 선택해주세요.');
+        //             }
+        //         }
+        //     });
+        // });
     </script>
 </body>
 
