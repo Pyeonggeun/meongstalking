@@ -13,6 +13,12 @@ public class FollowController {
     @Autowired
     private FollowSimulator followSimulator;
 
+    @RequestMapping("gamePage")
+    public String gamePage() {
+
+        return "follow/gamePage";
+    }
+
     @RequestMapping("mainPage")
     public String mainPage() {
 
