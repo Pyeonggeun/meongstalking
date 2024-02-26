@@ -217,7 +217,7 @@ public class MstarServiceImpl {
     public void updateProfileInfo(MultipartFile imageFiles, ProfileInfoDto profileInfoDto){
         if(imageFiles != null) {
             
-            String rootPath = "/Users/joinchun/uploadFiles/";
+            String rootPath = "/uploadFiles/";
             
             
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/");
@@ -273,7 +273,7 @@ public class MstarServiceImpl {
             artPhotoDto.setArticle_pk(article_pk);
             artPhotoDto.setView_order(view_order);
             
-            String rootPath = "/Users/joinchun/uploadFiles/";
+            String rootPath = "/uploadFiles/";
             
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM//dd/");
             String todayPath = sdf.format(new Date());
@@ -358,7 +358,7 @@ public class MstarServiceImpl {
     public void insertMyStory(MultipartFile imageFiles, StoryDto storyDto){
         if(imageFiles != null) {
             
-            String rootPath = "/Users/joinchun/uploadFiles/";
+            String rootPath = "/uploadFiles/";
             
             
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/");
@@ -397,7 +397,7 @@ public class MstarServiceImpl {
     public void insertMyStoryStorage(MultipartFile imageFiles, StorageDto storageDto, int[] storyPkList){
         if(imageFiles != null) {
             
-            String rootPath = "/Users/joinchun/uploadFiles/";
+            String rootPath = "/uploadFiles/";
             
             
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/");
@@ -693,12 +693,12 @@ public class MstarServiceImpl {
 
     public List<Map<String, Object>> getArticleCommentList(int article_pk){
         List<Map<String, Object>> list = new ArrayList<>();
-
+        
         List<CommentDto> commentList = mstarSqlMapper.selectArticleCommentList(article_pk);
         
         for(CommentDto commentDto : commentList){
             Map<String , Object> map = new HashMap<>();
-
+            
             int comment_pk = commentDto.getComment_pk();
             int profile_info_pk = commentDto.getProfile_info_pk();
             ProfileInfoDto profileInfoDto =  mstarSqlMapper.selectProfileInfoDtoByPIP(profile_info_pk);
@@ -707,9 +707,9 @@ public class MstarServiceImpl {
 
             int tCommentCount = mstarSqlMapper.selectTcommentCount(comment_pk);
             int commentLike = mstarSqlMapper.selectCommentLike(comment_pk);
-
-            int checkWriterLikeComment = mstarSqlMapper.selectWriterLikeComment(comment_pk, profile_info_pk);           
             int writerProfilePk = mstarSqlMapper.selectWriterProfilePk(article_pk);
+            int checkWriterLikeComment = mstarSqlMapper.selectWriterLikeComment(comment_pk, writerProfilePk);           
+            
             int commentLikeCount = mstarSqlMapper.selectCommentLikeCount(comment_pk);
 
             map.put("checkWriterLikeComment", checkWriterLikeComment);
