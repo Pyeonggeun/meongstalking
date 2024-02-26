@@ -95,6 +95,8 @@
 
                             // const highestbidPriceText = bidHistoryWrapper.querySelector(".highestbid-price-text");
                             // highestbidPriceText.innerText = "최고가";
+                            const paymentRow = bidHistoryWrapper.querySelector(".payment-history-row");
+                            paymentRow.classList.remove("d-none");
 
                         }else{
 
@@ -103,9 +105,22 @@
 
                             if(e.isSuccess == false){
                                 bidState.innerText = "배송중";
+                                const paymentRow = bidHistoryWrapper.querySelector(".payment-history-row");
+                                paymentRow.classList.remove("d-none");
+
+                                const deliverytHistoryRow = bidHistoryWrapper.querySelector(".delivery-history-row");
+                                deliverytHistoryRow.classList.remove("d-none");
+
                                 
                             }else{
                                 bidState.innerText = "배송완료";
+
+                                const paymentRow = bidHistoryWrapper.querySelector(".payment-history-row");
+                                paymentRow.classList.remove("d-none");
+
+                                const deliverytHistoryRow = bidHistoryWrapper.querySelector(".delivery-history-row");
+                                deliverytHistoryRow.classList.remove("d-none");
+
                                 
                                 // if(e.isPayment == false){
                                 //     const paymentRow = bidHistoryWrapper.querySelector(".payment-row");
@@ -167,7 +182,11 @@
 
         }
 
- 
+        function navigateToMyPage(){
+
+            const myPage = `./myPage`;
+            window.location.href = myPage;
+        }
 
 
         window.addEventListener("DOMContentLoaded", () => {
@@ -512,6 +531,37 @@
             display: none;
         }
 
+        .delivery-button{
+            width: 100%; 
+            height: 3em; 
+            border-radius: 0.5em;
+            border-width: 0em;
+            border-style: solid; 
+            background-color: #111111;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            font-size: 1em;
+            color: #E2E2E2;
+            font-weight: bold;
+        }
+
+        .delivery-history-button{
+            width: 100%; 
+            height: 3em; 
+            border-radius: 0.5em;
+            border-color: #E2E2E2;
+            border-width: 0.1em;
+            border-style: solid; 
+            color: #111111;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            font-size: 1em;
+            
+            font-weight: bold;
+        }
+
 
     </style>
 
@@ -526,7 +576,7 @@
     <div class="container-fluid">
         <div class="row" style="height: 3.5em;  padding-top: 1em; padding-bottom: 0.5em; display: flex; align-items: center;">
             <div class="col" style="padding-left: 1em; padding-right: 1em; display: flex;">
-                <div id="back-icon" class="fw-bold" style="margin-right: 1em; font-size: 1.2em;"><i class="fa-solid fa-angle-left" style="color: #111111;"></i></div>
+                <div id="back-icon" class="fw-bold" style="margin-right: 1em; font-size: 1.2em;" onclick="navigateToMyPage()"><i class="fa-solid fa-angle-left" style="color: #111111;"></i></div>
                 <div style="color: #111111; font-weight: bold; font-size: 1.2em;">결제 내역</div>
             </div>
         </div>
@@ -619,6 +669,18 @@
                             <div class="bid-date"></div>
                             <div class="bid-state"></div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="row payment-history-row d-none" style="padding-top: 1em;">
+                    <div class="col">
+                        <div class="delivery-history-button">결제내역</div>
+                    </div>
+                </div>
+
+                <div class="row delivery-history-row d-none" style="padding-top: 1em;">
+                    <div class="col">
+                        <div class="delivery-button">배송조회</div>
                     </div>
                 </div>
        

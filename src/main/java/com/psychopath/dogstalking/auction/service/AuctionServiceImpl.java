@@ -456,6 +456,11 @@ public class AuctionServiceImpl {
             bidDto.setGoods_pk(auctionGoodsDto.getPk());
 
             BidDto highestBidDto = auctionMapper.getHighestBidByGoods(bidDto);
+
+            if(highestBidDto==null){
+                continue;
+            }
+
             int bidPk = highestBidDto.getPk();
             
             UserDto userDto = auctionMapper.getUserInfoByPk(highestBidDto.getUser_pk());
