@@ -506,7 +506,7 @@
         where send_user_pk = #{another_info_pk} and rcv_user_pk = #{profile_info_pk}
         OR 
         rcv_user_pk = #{another_info_pk} and send_user_pk = #{profile_info_pk}
-        ORDER by created_at DECS
+        ORDER by created_at ASC
     </select>
     <!--로드한거 이외의 새로운채팅 로드-->
     <select id="selectNewChatList" resultType="com.psychopath.dogstalking.mstar.dto.DirectDto">
