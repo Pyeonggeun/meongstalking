@@ -16,12 +16,6 @@
             imageInput.click();
         }
 
-        const input = document.querySelector('#Number');
-        input.addEventListener('keyup', function(e) {
-        let value = e.target.value;                 
-        value = Number(value.replaceAll(',', ''));
-        const formatValue = value.toLocaleString('ko-KR'); 
-        })
 
         function titleCount(text,length){
         var limit = length;
