@@ -198,6 +198,10 @@ public class ClubServiceImpl {
 		clubSqlMapper.deleteImgComment(commentId);
 	}
 
+	public void deleteComment(int commentId) {
+		clubSqlMapper.deleteComment(commentId);
+	}
+
 	//메인페이지용
 	public List<Map<String, Object>> selectFreeboardMainPage(int club_pk){
 		return clubSqlMapper.selectFreeboardMainPage(club_pk);

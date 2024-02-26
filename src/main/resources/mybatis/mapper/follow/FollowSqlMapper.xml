@@ -57,13 +57,13 @@
             SELECT t1.*, (
                 CASE
                     <![CDATA[
-                        when (t1.rnum / t1.max_count) <= 0.36 then 'oneStar'
-                        when (t1.rnum / t1.max_count) <= 0.61 then 'twoStar'
-                        when (t1.rnum / t1.max_count) <= 0.76 then 'threeStar'
-                        when (t1.rnum / t1.max_count) <= 0.87 then 'fourStar'
-                        when (t1.rnum / t1.max_count) <= 0.94 then 'fiveStar'
-                        when (t1.rnum / t1.max_count) <= 0.994 then 'S'
-                        when (t1.rnum / t1.max_count) <= 0.999 then 'SR'
+                        when (t1.rnum / t1.max_count) <= 0.23 then 'oneStar'
+                        when (t1.rnum / t1.max_count) <= 0.45 then 'twoStar'
+                        when (t1.rnum / t1.max_count) <= 0.70 then 'threeStar'
+                        when (t1.rnum / t1.max_count) <= 0.84 then 'fourStar'
+                        when (t1.rnum / t1.max_count) <= 0.90 then 'fiveStar'
+                        when (t1.rnum / t1.max_count) <= 0.95 then 'S'
+                        when (t1.rnum / t1.max_count) <= 0.99 then 'SR'
                         else 'SSR'
                     ]]>
                 END
@@ -96,6 +96,7 @@
         <![CDATA[
             and date(now()) - date(mfl.created_date) <= #{trackMarkerDateValidity}
         ]]>
+        order by mfll.latitude desc
     </select>
 
     <select id="isFirstTimeLeavingTrackMark" resultType="int">
@@ -123,159 +124,162 @@
     </select>
 
     <select id="getScanningTrackMarkers" resultType="map">
-        SELECT t7.* FROM (
-            SELECT t1.log_pk, t1.image_link, t1.content, t1.latitude, t1.longitude, t1.created_date,
-                t3.*, IFNULL(t5.cnt, 0) as cnt, IFNULL(t5.open_rating, 1) as open_rating,
-                t1.is_trace, t1.is_like, mmpi.profile_photo, mmpi.nick_name, ms.gender, t6.mstar_temp FROM (
-                SELECT * FROM (
-                    SELECT log_pk, user_pk, image_link, content, latitude, longitude, created_date, is_trace, is_like
-                    FROM (
-                        SELECT mfl.*,
-                            ROW_NUMBER() OVER (PARTITION BY get_distance(#{latitude}, #{longitude}, mfl.latitude, mfl.longitude) ORDER BY RAND()) as row_num, (
-                                CASE 
-                                    when mfl.user_pk in (
-                                        SELECT mfl2.user_pk FROM ms_follow_like_log mfll
-                                        inner join ms_follow_log mfl2 on mfll.log_pk = mfl2.log_pk
-                                        where mfll.user_pk = #{user_pk}
-                                        and mfll.log_pk not in (
-                                            SELECT mfc.log_pk FROM ms_follow_collection mfc
-                                            where user_pk = #{user_pk}
+        SELECT t8.* FROM (
+            SELECT t7.* FROM (
+                SELECT t1.log_pk, t1.image_link, t1.content, t1.latitude, t1.longitude, t1.created_date,
+                    t3.*, IFNULL(t5.cnt, 0) as cnt, IFNULL(t5.open_rating, 1) as open_rating,
+                    t1.is_trace, t1.is_like, mmpi.profile_photo, mmpi.nick_name, ms.gender, t6.mstar_temp FROM (
+                    SELECT * FROM (
+                        SELECT log_pk, user_pk, image_link, content, latitude, longitude, created_date, is_trace, is_like
+                        FROM (
+                            SELECT mfl.*,
+                                ROW_NUMBER() OVER (PARTITION BY get_distance(#{latitude}, #{longitude}, mfl.latitude, mfl.longitude) ORDER BY RAND()) as row_num, (
+                                    CASE 
+                                        when mfl.user_pk in (
+                                            SELECT mfl2.user_pk FROM ms_follow_like_log mfll
+                                            inner join ms_follow_log mfl2 on mfll.log_pk = mfl2.log_pk
+                                            where mfll.user_pk = #{user_pk}
+                                            and mfll.log_pk not in (
+                                                SELECT mfc.log_pk FROM ms_follow_collection mfc
+                                                where user_pk = #{user_pk}
+                                            )
                                         )
-                                    )
-                                    then 'Y' else 'N'
-                                END
-                            ) as is_trace, (
-                                CASE 
-                                    when user_pk in (
-                                        SELECT mfl.user_writer_pk FROM ms_follow_like mfl
-                                        where mfl.user_collector_pk = #{user_pk}
-                                    )
-                                    then 'Y' else 'N'
-                                END
-                            ) AS is_like
-                        FROM ms_follow_log mfl
-                    ) as remove_overlap_coordinate
-                    WHERE row_num = 1
-                )t0
-                where t0.user_pk != #{user_pk}
-                <![CDATA[
-                    and date(now()) - date(t0.created_date) <= #{trackMarkerDateValidity}
-                ]]>
-                and t0.user_pk NOT IN (
-                    SELECT block_user_pk FROM ms_mstar_block mmb
-                    where mmb.user_pk = #{user_pk}
-                )
-                and t0.user_pk NOT IN (
-                    SELECT user_pk FROM ms_mstar_block mmb
-                    where mmb.block_user_pk = #{user_pk}
-                )
-                <![CDATA[
-                    and (
-                        SELECT get_distance(
-                            #{latitude}, #{longitude}, t0.latitude, t0.longitude
-                        ) AS distance
-                    ) <= #{scanMarkerEffectiveDistance}
-                ]]>
-                and t0.log_pk NOT IN (
-                    SELECT log_pk FROM ms_follow_collection mfc
-                    where mfc.user_pk = #{user_pk}
-                )
-            )t1
-            inner join (
-                SELECT t2.*, (
-                    CASE
-                        <![CDATA[
-                            when (t2.rnum / t2.max_count) <= 0.36 then 'oneStar'
-                            when (t2.rnum / t2.max_count) <= 0.61 then 'twoStar'
-                            when (t2.rnum / t2.max_count) <= 0.76 then 'threeStar'
-                            when (t2.rnum / t2.max_count) <= 0.87 then 'fourStar'
-                            when (t2.rnum / t2.max_count) <= 0.94 then 'fiveStar'
-                            when (t2.rnum / t2.max_count) <= 0.994 then 'S'
-                            when (t2.rnum / t2.max_count) <= 0.999 then 'SR'
-                            else 'SSR'
-                        ]]>
-                    END
-                ) as star_rating
-                from (
-                    SELECT mfum.*, RANK() over (order by (
-                        (
-                            SELECT COUNT(*) FROM ms_follow_collection mfc
-                            inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
-                            where mfl.user_pk = mfum.user_pk
-                        ) * 0.8 + (
-                            SELECT COUNT(*) FROM ms_follow_comment mfc
-                            inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
-                            where mfl.user_pk = mfum.user_pk
-                        ) * 0.1 + (
-                            SELECT COUNT(*) FROM ms_follow_like mfl
-                            where user_writer_pk = mfum.user_pk
-                        ) * 0.1
-                    )) as rnum, (
-                        SELECT COUNT(*) FROM ms_follow_user_more
-                    ) as max_count
-                    FROM ms_follow_user_more mfum
-                )t2
-            )t3
-            on t1.user_pk = t3.user_pk
-            left join (
-                SELECT t4.*, (
-                    CASE
-                        <![CDATA[
-                            when cnt >= 18 then '10'
-                            when cnt >= 16 then '9'
-                            when cnt >= 14 then '8'
-                            when cnt >= 12 then '7'
-                            when cnt >= 10 then '6'
-                            when cnt >= 8 then '5'
-                            when cnt >= 6 then '4'
-                            when cnt >= 4 then '3'
-                            when cnt >= 2 then '2'
-                            else '1'
-                        ]]>
-                    END
-                ) as open_rating FROM (
-                    SELECT mfl.user_pk, COUNT(*) as cnt FROM ms_follow_collection mfc
-                    inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
-                    where mfc.user_pk = #{user_pk}
-                    GROUP BY mfl.user_pk
-                )t4
-            )t5
-            on t1.user_pk = t5.user_pk
-            inner join (
-                SELECT user_pk, (
-                    36.5 + (
-                        SELECT (COUNT(*) / 10 * 0.1) as follow_temp FROM ms_mstar_follow mmf
-                        where mmf.follow_user_pk = (
-                            SELECT mmpi.profile_info_pk FROM ms_mstar_profile_info mmpi
-                            where mmpi.user_pk = mfum.user_pk
+                                        then 'Y' else 'N'
+                                    END
+                                ) as is_trace, (
+                                    CASE 
+                                        when user_pk in (
+                                            SELECT mfl.user_writer_pk FROM ms_follow_like mfl
+                                            where mfl.user_collector_pk = #{user_pk}
+                                        )
+                                        then 'Y' else 'N'
+                                    END
+                                ) AS is_like
+                            FROM ms_follow_log mfl
+                        ) as remove_overlap_coordinate
+                        WHERE row_num = 1
+                    )t0
+                    where t0.user_pk != #{user_pk}
+                    <![CDATA[
+                        and date(now()) - date(t0.created_date) <= #{trackMarkerDateValidity}
+                    ]]>
+                    and t0.user_pk NOT IN (
+                        SELECT block_user_pk FROM ms_mstar_block mmb
+                        where mmb.user_pk = #{user_pk}
+                    )
+                    and t0.user_pk NOT IN (
+                        SELECT user_pk FROM ms_mstar_block mmb
+                        where mmb.block_user_pk = #{user_pk}
+                    )
+                    <![CDATA[
+                        and (
+                            SELECT get_distance(
+                                #{latitude}, #{longitude}, t0.latitude, t0.longitude
+                            ) AS distance
+                        ) <= #{scanMarkerEffectiveDistance}
+                    ]]>
+                    and t0.log_pk NOT IN (
+                        SELECT log_pk FROM ms_follow_collection mfc
+                        where mfc.user_pk = #{user_pk}
+                    )
+                )t1
+                inner join (
+                    SELECT t2.*, (
+                        CASE
+                            <![CDATA[
+                                when (t2.rnum / t2.max_count) <= 0.23 then 'oneStar'
+                                when (t2.rnum / t2.max_count) <= 0.45 then 'twoStar'
+                                when (t2.rnum / t2.max_count) <= 0.70 then 'threeStar'
+                                when (t2.rnum / t2.max_count) <= 0.84 then 'fourStar'
+                                when (t2.rnum / t2.max_count) <= 0.90 then 'fiveStar'
+                                when (t2.rnum / t2.max_count) <= 0.95 then 'S'
+                                when (t2.rnum / t2.max_count) <= 0.99 then 'SR'
+                                else 'SSR'
+                            ]]>
+                        END
+                    ) as star_rating
+                    from (
+                        SELECT mfum.*, RANK() over (order by (
+                            (
+                                SELECT COUNT(*) FROM ms_follow_collection mfc
+                                inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
+                                where mfl.user_pk = mfum.user_pk
+                            ) * 0.8 + (
+                                SELECT COUNT(*) FROM ms_follow_comment mfc
+                                inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
+                                where mfl.user_pk = mfum.user_pk
+                            ) * 0.1 + (
+                                SELECT COUNT(*) FROM ms_follow_like mfl
+                                where user_writer_pk = mfum.user_pk
+                            ) * 0.1
+                        )) as rnum, (
+                            SELECT COUNT(*) FROM ms_follow_user_more
+                        ) as max_count
+                        FROM ms_follow_user_more mfum
+                    )t2
+                )t3
+                on t1.user_pk = t3.user_pk
+                left join (
+                    SELECT t4.*, (
+                        CASE
+                            <![CDATA[
+                                when cnt >= 18 then '10'
+                                when cnt >= 16 then '9'
+                                when cnt >= 14 then '8'
+                                when cnt >= 12 then '7'
+                                when cnt >= 10 then '6'
+                                when cnt >= 8 then '5'
+                                when cnt >= 6 then '4'
+                                when cnt >= 4 then '3'
+                                when cnt >= 2 then '2'
+                                else '1'
+                            ]]>
+                        END
+                    ) as open_rating FROM (
+                        SELECT mfl.user_pk, COUNT(*) as cnt FROM ms_follow_collection mfc
+                        inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
+                        where mfc.user_pk = #{user_pk}
+                        GROUP BY mfl.user_pk
+                    )t4
+                )t5
+                on t1.user_pk = t5.user_pk
+                inner join (
+                    SELECT user_pk, (
+                        36.5 + (
+                            SELECT (COUNT(*) / 10 * 0.1) as follow_temp FROM ms_mstar_follow mmf
+                            where mmf.follow_user_pk = (
+                                SELECT mmpi.profile_info_pk FROM ms_mstar_profile_info mmpi
+                                where mmpi.user_pk = mfum.user_pk
+                            )
                         )
-                    )
-                    + (
-                        SELECT (COUNT(*) / 10 * 0.1) as article_temp FROM ms_mstar_article mma
-                        WHERE mma.profile_info_pk = (
-                            SELECT mmpi.profile_info_pk FROM ms_mstar_profile_info mmpi
-                            where mmpi.user_pk = mfum.user_pk
+                        + (
+                            SELECT (COUNT(*) / 10 * 0.1) as article_temp FROM ms_mstar_article mma
+                            WHERE mma.profile_info_pk = (
+                                SELECT mmpi.profile_info_pk FROM ms_mstar_profile_info mmpi
+                                where mmpi.user_pk = mfum.user_pk
+                            )
                         )
-                    )
-                    + (
-                        SELECT (COUNT(*) / 10 * 0.1) as story_temp FROM ms_mstar_story mms
-                        where mms.profile_info_pk = (
-                            SELECT mmpi.profile_info_pk FROM ms_mstar_profile_info mmpi
-                            where mmpi.user_pk = mfum.user_pk
+                        + (
+                            SELECT (COUNT(*) / 10 * 0.1) as story_temp FROM ms_mstar_story mms
+                            where mms.profile_info_pk = (
+                                SELECT mmpi.profile_info_pk FROM ms_mstar_profile_info mmpi
+                                where mmpi.user_pk = mfum.user_pk
+                            )
                         )
-                    )
-                    - (
-                        SELECT COUNT(*) as block_temp FROM ms_mstar_block mmb
-                        where mmb.block_user_pk = mfum.user_pk
-                    )
-                ) as mstar_temp FROM ms_follow_user_more mfum
-            ) t6
-            on t1.user_pk = t6.user_pk
-            inner join ms_mstar_profile_info mmpi on t1.user_pk = mmpi.user_pk
-            inner join ms_user ms on t1.user_pk = ms.user_pk
-        )t7
-        order by t7.is_trace desc, RAND()
-        LIMIT #{scanMarkerUpTo}
+                        - (
+                            SELECT COUNT(*) as block_temp FROM ms_mstar_block mmb
+                            where mmb.block_user_pk = mfum.user_pk
+                        )
+                    ) as mstar_temp FROM ms_follow_user_more mfum
+                ) t6
+                on t1.user_pk = t6.user_pk
+                inner join ms_mstar_profile_info mmpi on t1.user_pk = mmpi.user_pk
+                inner join ms_user ms on t1.user_pk = ms.user_pk
+            )t7
+            order by t7.is_trace desc, RAND()
+            LIMIT #{scanMarkerUpTo}
+        )t8
+        order by t8.latitude desc
     </select>
 
     <select id="getCurrentCollectTrackMarkerCount" resultType="int">
@@ -311,13 +315,13 @@
                 SELECT t2.*, (
                     CASE
                         <![CDATA[
-                            when (t2.rnum / t2.max_count) <= 0.36 then 'oneStar'
-                            when (t2.rnum / t2.max_count) <= 0.61 then 'twoStar'
-                            when (t2.rnum / t2.max_count) <= 0.76 then 'threeStar'
-                            when (t2.rnum / t2.max_count) <= 0.87 then 'fourStar'
-                            when (t2.rnum / t2.max_count) <= 0.94 then 'fiveStar'
-                            when (t2.rnum / t2.max_count) <= 0.994 then 'S'
-                            when (t2.rnum / t2.max_count) <= 0.999 then 'SR'
+                            when (t2.rnum / t2.max_count) <= 0.23 then 'oneStar'
+                            when (t2.rnum / t2.max_count) <= 0.45 then 'twoStar'
+                            when (t2.rnum / t2.max_count) <= 0.70 then 'threeStar'
+                            when (t2.rnum / t2.max_count) <= 0.84 then 'fourStar'
+                            when (t2.rnum / t2.max_count) <= 0.90 then 'fiveStar'
+                            when (t2.rnum / t2.max_count) <= 0.95 then 'S'
+                            when (t2.rnum / t2.max_count) <= 0.99 then 'SR'
                             else 'SSR'
                         ]]>
                     END
@@ -487,13 +491,13 @@
             SELECT t2.user_pk, (
                 CASE
                     <![CDATA[
-                        when (t2.rnum / t2.max_count) <= 0.36 then 'oneStar'
-                        when (t2.rnum / t2.max_count) <= 0.61 then 'twoStar'
-                        when (t2.rnum / t2.max_count) <= 0.76 then 'threeStar'
-                        when (t2.rnum / t2.max_count) <= 0.87 then 'fourStar'
-                        when (t2.rnum / t2.max_count) <= 0.94 then 'fiveStar'
-                        when (t2.rnum / t2.max_count) <= 0.994 then 'S'
-                        when (t2.rnum / t2.max_count) <= 0.999 then 'SR'
+                        when (t2.rnum / t2.max_count) <= 0.23 then 'oneStar'
+                        when (t2.rnum / t2.max_count) <= 0.45 then 'twoStar'
+                        when (t2.rnum / t2.max_count) <= 0.70 then 'threeStar'
+                        when (t2.rnum / t2.max_count) <= 0.84 then 'fourStar'
+                        when (t2.rnum / t2.max_count) <= 0.90 then 'fiveStar'
+                        when (t2.rnum / t2.max_count) <= 0.95 then 'S'
+                        when (t2.rnum / t2.max_count) <= 0.99 then 'SR'
                         else 'SSR'
                     ]]>
                 END
@@ -726,13 +730,13 @@
             SELECT (
                 CASE
                     <![CDATA[
-                        when (t2.rnum / t2.max_count) <= 0.36 then 'oneStar'
-                        when (t2.rnum / t2.max_count) <= 0.61 then 'twoStar'
-                        when (t2.rnum / t2.max_count) <= 0.76 then 'threeStar'
-                        when (t2.rnum / t2.max_count) <= 0.87 then 'fourStar'
-                        when (t2.rnum / t2.max_count) <= 0.94 then 'fiveStar'
-                        when (t2.rnum / t2.max_count) <= 0.994 then 'S'
-                        when (t2.rnum / t2.max_count) <= 0.999 then 'SR'
+                        when (t2.rnum / t2.max_count) <= 0.23 then 'oneStar'
+                        when (t2.rnum / t2.max_count) <= 0.45 then 'twoStar'
+                        when (t2.rnum / t2.max_count) <= 0.70 then 'threeStar'
+                        when (t2.rnum / t2.max_count) <= 0.84 then 'fourStar'
+                        when (t2.rnum / t2.max_count) <= 0.90 then 'fiveStar'
+                        when (t2.rnum / t2.max_count) <= 0.95 then 'S'
+                        when (t2.rnum / t2.max_count) <= 0.99 then 'SR'
                         else 'SSR'
                     ]]>
                 END
@@ -743,18 +747,15 @@
                         SELECT COUNT(*) FROM ms_follow_collection mfc
                         inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
                         where mfl.user_pk = mfum.user_pk
-                        GROUP BY mfl.user_pk
                     ) * 0.8 + (
                         SELECT COUNT(*) FROM ms_follow_comment mfc
                         inner join ms_follow_log mfl on mfc.log_pk = mfl.log_pk
                         where mfl.user_pk = mfum.user_pk
-                        GROUP BY mfl.user_pk
                     ) * 0.1 + (
                         SELECT COUNT(*) FROM ms_follow_like mfl
-                        where user_writer_pk = mfum.user_pk
-                        GROUP BY mfl.user_writer_pk		
+                        where user_writer_pk = mfum.user_pk	
                     ) * 0.1
-                ) desc) as rnum, (
+                )) as rnum, (
                     SELECT COUNT(*) FROM ms_follow_user_more
                 ) as max_count
                 FROM ms_follow_user_more mfum
@@ -817,8 +818,9 @@
     <select id="getRandomLogPkExceptMine" resultType="integer">
         SELECT mfl.log_pk FROM ms_follow_log mfl
         WHERE NOT EXISTS (
-            SELECT 1 FROM ms_follow_collection mfc WHERE mfc.log_pk = mfl.log_pk AND mfc.user_pk = #{user_pk}
+            SELECT 1 FROM ms_follow_collection mfc WHERE mfc.log_pk = mfl.log_pk AND mfc.user_pk = #{collectorPk}
         )
+        AND mfl.user_pk = #{userPk}
         ORDER BY RAND()
         LIMIT 1
     </select>

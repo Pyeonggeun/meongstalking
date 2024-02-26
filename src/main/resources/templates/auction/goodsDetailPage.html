@@ -499,7 +499,7 @@
                             successfulbidName.innerText = name;
 
                             const successfulbidPrice = successfulbidWrapper.querySelector(".successfulbidPrice");
-                            successfulbidPrice.innerText = e.bidDto.bid_price;
+                            successfulbidPrice.innerText = "KRW " + e.bidDto.bid_price;
 
                             const successfulbidGoods = successfulbidWrapper.querySelector(".successfulbidGoods");
                             successfulbidGoods.innerText = document.getElementById("goods-title").value;
@@ -641,7 +641,7 @@
         let remainingTimeIntervalId;
         
         chatListIntervalId = setInterval(appendChatList, 1000);
-        bidListIntervalId = setInterval(reloadBidList, 5000);
+        bidListIntervalId = setInterval(reloadBidList, 1000);
         remainingTimeIntervalId = setInterval(fetchRemainingTime, 15000);
 
         window.addEventListener("DOMContentLoaded", () => {

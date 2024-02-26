@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://kit.fontawesome.com/fdd6196f61.js" crossorigin="anonymous"></script>
+    <script src="/public/js/commons/lockLikeMobile.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        @font-face {
+            font-family: 'omyu_pretty';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'omyu_pretty';
+            min-width: 320px;
+        }
+
+        .scrollable-menu {
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .scrollable-menu .col {
+            display: flex;
+            flex-wrap: nowrap;
+        }
+
+        .scrollable-menu span {
+            border-bottom: 2px solid transparent;
+            padding-bottom: 2px;
+            transition: border-color 0.3s;
+        }
+
+        .scrollable-menu span:hover {
+            border-color: #000;
+        }
+
+        .container {
+            background-color: ghostwhite;
+        }
+
+        .packBox {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+
+    <script src="/public/js/commons/naviBar.js"></script>
+    <link rel="stylesheet" th:href="@{/public/css/commons/naviBar.css}" />
+</head>
+
+<body>
+
+    <div class="container pb-5">
+        <div class="row">
+            <div th:insert="~{commons/naviBar}" style="background-color: #ffffff;"></div>
+        </div>
+        <div class="row justify-content-center align-items-center" style="background-color: #ffffff;">
+            <div class="col text-center py-3" style="font-weight: bold; border-bottom: 2px solid #bcbcbc;">체크 결과 안내
+            </div>
+        </div>
+        <div class="row">
+            <h1>강아지 사료 알레르기와 피부 질환</h1>
+
+            <p>강아지의 건강을 이해하는 것은 최상의 돌봄을 제공하는 데 중요합니다. 강아지의 음식 알레르기와 피부 질환
+                이것은 귀하의 애완 동물에 영향을 미칠 수 있는 흔한 문제입니다. 이러한 상태를 살펴보고 관리하는 방법을 알아보겠습니다.</p>
+        </div>
+
+        <div class="row">
+            <h2>강아지 음식 알레르기</h2>
+
+            <p>인간과 마찬가지로 강아지도 특정 음식에 알레르기 반응을 보일 수 있습니다. 강아지의 음식 알레르기의 흔한 원인은 다음과 같습니다:
+                포함되어 있습니다.</p>
+
+            <div>
+                <p>음식 알레르기의 증상에는 다음이 포함될 수 있습니다:</p>
+
+                <ul>
+                    <li>가려움</li>
+                    <li>피부 붉음 또는 염증</li>
+                    <li>구토 또는 설사</li>
+                    <li>귀 감염</li>
+                </ul>
+
+                <p>강아지가 음식 알레르기가 있다고 의심되면 수의사와 상담하십시오. 특정 알레르기를 확인하기 위한 제거 식이
+                    이것이 권장될 수 있습니다. 상황을 관리하기 위해 저알레르기 강아지 사료로 전환해야 할 수 있습니다.</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <h2>강아지 피부 질환</h2>
+
+            <p>건강한 피부는 강아지의 전반적인 안녕에 중요합니다. 강아지의 피부 질환에는 다음이 포함될 수 있습니다:</p>
+
+            <div>
+                <ul>
+                    <li>아토피 피부염</li>
+                    <li>벼룩 알레르기 피부염</li>
+                    <li>핫 스팟</li>
+                    <li>리바 웜</li>
+                    <li>이스트 감염</li>
+                </ul>
+
+                <p>예방 수단과 초기 진단이 피부 질환 관리의 핵심입니다. 정기적인 그루밍, 벼룩 통제 및 깨끗한 생활 환경 유지
+                    이것이 피부 건강에 기여할 수 있습니다. 피부 이상을 발견하면 수의사에게 적절한 진단 및 치료 계획을 상담하십시오.
+                    받아야합니다.</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <h2>결론</h2>
+
+            <div>
+                <p>강아지의 음식 및 피부 상태에 주의를 기울이는 것은 그들의 행복과 건강에 중요합니다. 이상한 증상이나 행동이
+                    하나라도 발견되면 항상 수의사에게 전문가 조언을 구하십시오. 수의사는 귀하의 강아지의 특별한 요구에 기반한 맞춤 지도를
+                    제공할 것입니다.</p>
+            </div>
+
+            <div>
+                <p>이 정보는 교육 목적으로 제공되며 전문 수의사의 조언 대체로 사용될 수 없습니다. 귀하의 강아지의 특별한 요구에 따라
+                    수시로 수의사와 상담하십시오.</p>
+            </div>
+        </div>
+    </div>
+</body>

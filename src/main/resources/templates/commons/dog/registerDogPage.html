@@ -53,6 +53,11 @@
             imageInput.click();
         }
 
+        function navigeteToMagement(){
+
+            const magementPage = `./dogManagementPage`;
+            window.location.href = magementPage;
+        }
 
         window.addEventListener("DOMContentLoaded", () => {
             const imageBox = document.querySelector("#imageadd-box");
@@ -121,7 +126,7 @@
     <div class="container-fluid">
         <div class="row" style="height: 3em;">
             <div class="col-3" style="display: flex; justify-content: start; align-items: center;">
-                <div style="font-size: 1.5em;"><i class="bi bi-arrow-left"></i></div>
+                <div style="font-size: 1.5em;" onclick="navigeteToMagement()"><i class="bi bi-arrow-left"></i></div>
             </div>
             <div class="col" style="display: flex; justify-content: center; align-items: center;">
                 <div class="fw-bold" style="font-size: 1.2em;">강아지 등록</div>
@@ -248,7 +253,7 @@
         <div class="row">
             <div class="col text-center">
                 <input name="image" type="hidden" id="imageHidden">
-                <input type="submit" class="fw-bold" style="background-color: #1E3269; color: white; width: 100%; font-size: 0.8em; height: 3em; border-style: none; border-radius: 0.3em;" value="등록하기">
+                <input type="submit" class="fw-bold" style="background-color: rgb(238, 82, 21); color: white; width: 100%; font-size: 0.8em; height: 3em; border-style: none; border-radius: 0.3em;" value="등록하기">
             </div>
         </div>
         </form>

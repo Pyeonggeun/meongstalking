@@ -52,12 +52,43 @@
 
                         const dogImage2 = document.getElementById("dogImage2");
                         dogImage2.setAttribute("src", "/uploadFiles/"+ e.image +"");
+
+
+                        const dogImage10 = document.getElementById("dogImage10");
+                        dogImage10.setAttribute("src", "/uploadFiles/"+ e.image +"");
                         
                         const dogName1 = document.getElementById("dogName1");
                         dogName1.innerText = e.name;
 
                         const dogBreed = document.getElementById("dogBreed");
                         dogBreed.innerText = e.breed;
+
+                        const dogGender = document.getElementById("dogGender");
+
+                        if(e.gender == 'F'){
+                            dogGender.innerText="남아";
+                        }else{
+                            dogGender.innerText="여아";
+                        }
+
+                        const dogWeight = document.getElementById("dogWeight");
+                        dogWeight.innerText = e.weight + "kg";
+
+
+                        const breed = document.getElementById("aaaa");
+                        breed.innerText = e.breed;
+
+                        const commencementDateArray = e.birth;
+
+                        const commencementDateYear = commencementDateArray[0];
+                        const commencementDateMonth = ('0' + commencementDateArray[1]).slice(-2); // 2자리 숫자로 포맷팅
+                        const commencementDateDays = ('0' + commencementDateArray[2]).slice(-2); // 2자리 숫자로 포맷팅
+
+                        const commencementDateFormatted = `${commencementDateYear}.${commencementDateMonth}.${commencementDateDays}`;
+
+                        const birth = document.getElementById("dogBirth");
+                        birth.innerText = commencementDateFormatted;
+
                     }
 
                     dogListBox.appendChild(dogWrapper);
@@ -81,7 +112,10 @@
             reloadDogList();
         }  
 
-        
+        function navigeteToRegister(){
+            const registerPage = `./registerDogPage`;
+            window.location.href = registerPage;
+        }
 
         function templete(){
             
@@ -93,6 +127,11 @@
                 
             });
         }  
+
+        function navigateToMain(){
+            const mainPage = `/commons/mainPage`;
+            window.location.href = mainPage;
+        }
 
 
         window.addEventListener("DOMContentLoaded", () => {
@@ -118,11 +157,14 @@
 
 
         #dogInfoBox{
-            height: 10em;
-            width: 100%;
+            height: 15em;
+            width: 50%;
             border-radius: 1em;
-            background-color: white;
-            position: relative;    
+            background-color: rgba(238, 82, 21, 0.8);
+            position: absolute;
+            top: 0%;  
+            left: 50%;
+            transform: translate(-50%, 0);  
         }
 
         #dogImage1{
@@ -142,17 +184,14 @@
         }
 
         #dogBreed{
-            color: rgba(0, 0, 0, 0.5);
-            position: absolute;
-            top: 65%;
-            left: 5%;
-            transform: translate(0, -50%);
+            color: white;
+
             font-size: 0.8em;
             font-weight: bold;
         }
 
         #dogGender{
-            color: rgba(0, 0, 0, 0.5);
+            color: white;
 
             font-size: 0.8em;
             font-weight: bold;
@@ -160,7 +199,7 @@
         }
 
         #dogBirth{
-            color: rgba(0, 0, 0, 0.5);
+            color: white;
 
             font-size: 0.8em;
             font-weight: bold;
@@ -168,7 +207,7 @@
         }
 
         #dogWeight{
-            color: rgba(0, 0, 0, 0.5);
+            color: white;
 
             font-size: 0.8em;
             font-weight: bold;
@@ -273,7 +312,7 @@
     <div class="container-fluid">
         <div class="row" style="height: 3.5em;  padding-top: 1em; padding-bottom: 0.5em; display: flex; align-items: center;">
             <div class="col" style="padding-left: 1em; padding-right: 1em; display: flex; position: relative;">
-                <div id="back-icon" class="fw-bold" style="font-size: 1.2em;"><i class="fa-solid fa-angle-left" style="color: #111111;"></i></div>
+                <div id="back-icon" class="fw-bold" style="font-size: 1.2em;"><i class="fa-solid fa-angle-left" style="color: #111111;" onclick="navigateToMain()"></i></div>
                 <div type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; justify-content: center; align-items: center;">
                     <img id="dogImage1" class="img-fluid" th:src="@{/public/image/trade/dogimage.png}">
                     <div id="dogName1">알렉스</div>
@@ -290,17 +329,40 @@
         <div class="row">
             <div class="col">
 
-                <div class="row" style="height: 10em;">
+                <div class="row" style="height: 15em; position: relative;">
                     <div class="col">
                         <div id="dogInfoBox">
-                         
-                            <div id="dogBreed">그레이 하운드</div>
-                            <div style="width: 100%; position: absolute; top: 85%; left: 5%; transform: translate(0, -50%); display: flex; justify-content: start; align-items: center;">
-                                <div id="dogGender">남아</div>
-                                <div id="dogBirth">생후 5개월</div>
-                                <div id="dogWeight">3.5kg</div>
+                            <img id="dogImage10" class="img-fluid" th:src="@{/public/image/trade/dogimage.png}" style="            width: 6em;
+                            height: 6em;
+                            border-radius: 100%;
+                            border-style: none;
+                            position: absolute; top: 10%; left: 50%; transform: translate(-50%, 0);
+                            ">
+                            <div style="width: 100%; position: absolute; left: 50%; top: calc(15% + 6em); transform: translate(-50%, 0);">
+                                
+                                <div style="font-size: 0.8em; color: #f5f5f5; font-weight: bold; position: absolute; left: 10%; top: 0%;">생년월일</div>
+                                <div id="dogBirth" style="position: absolute; left: 50%; top: 0%;">생후 5개월</div>
+                        
                             </div>
-
+                            <div style="width: 100%; position: absolute; left: 50%; top: calc(25% + 6em); transform: translate(-50%, 0);">
+                                
+                                <div style="font-size: 0.8em; color: #f5f5f5; font-weight: bold; position: absolute; left: 10%; top: 0%;">견종</div>
+                                <div id="dogBreed" style="position: absolute; left: 50%; top: 0%;">그레이 하운드</div>
+                        
+                            </div>
+                            <div style="width: 100%; position: absolute; left: 50%; top: calc(35% + 6em); transform: translate(-50%, 0); display: flex; justify-content: center; align-items: center;">
+                                
+                                <div style="font-size: 0.8em; color: #f5f5f5;font-weight: bold; position: absolute; left: 10%; top: 0%;">성별</div>
+                                <div id="dogGender" style="position: absolute; left: 50%; top: 0%;"></div>
+                        
+                            </div>
+                            <div style="width: 100%; position: absolute; left: 50%; top: calc(45% + 6em); transform: translate(-50%, 0); display: flex; justify-content: center; align-items: center;">
+                                
+                                <div style="font-size: 0.8em; color: #f5f5f5; font-weight: bold;position: absolute; left: 10%; top: 0%;">몸무게</div>
+                                <div id="dogWeight" style="position: absolute; left: 50%; top: 0%;"></div>   
+                        
+                            </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -313,7 +375,7 @@
                         <div class="box" style="height: 12em;">
                             <div style="position: absolute; top: 10%; left: 5%; font-weight: bold; font-size: 1em;">건강을 위해</div>
                             <div style="position: absolute; top: 23%; left: 5%; font-weight: bold; font-size: 1em;">하루 산책 양을 챙겨 주세요.</div>
-                            <div style="position: absolute; top: 39%; left: 5%; font-weight: bold; font-size: 0.8em; color: rgba(0, 0, 0, 0.5);">포메라니안 하루 권장 산책 양은 30분입니다.</div>
+                            <div style="position: absolute; top: 39%; left: 5%; font-weight: bold; font-size: 0.8em; color: rgba(0, 0, 0, 0.5);"><span id="aaaa"></span> <span>하루 권장 산책 양은 30분입니다.</span></div>
                             <div style="position: absolute; bottom: 30%; left: 5%; display: flex; justify-content: start; align-items: center;">
                                 <div style="font-size: 1em; color: #111111; font-weight: bold;">0</div>
                                 <div style="font-size: 1em; color: rgba(0, 0, 0, 0.3); font-weight: bold; margin-left: 0.5em;">/</div>
@@ -366,7 +428,7 @@
         </div>
 
         <div class="row">
-            <div class="col" style="display: flex; justify-content: start; align-items: center; height: 3em;">
+            <div class="col" style="display: flex; justify-content: start; align-items: center; height: 3em;" onclick="navigeteToRegister()">
                 <div style="color: rgba(0, 0, 0, 0.5);"><i class="bi bi-plus-lg"></i></div>
                 <div style="color: rgba(0, 0, 0, 0.5); font-weight: bold; margin-left: 0.5em;">반려동물 추가하기</div>
             </div>

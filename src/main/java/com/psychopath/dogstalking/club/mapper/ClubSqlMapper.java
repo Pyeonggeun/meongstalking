@@ -30,6 +30,7 @@ public interface ClubSqlMapper {
     // 댓글
 	public void insertComment(CommentDto commentDto);
     public List<Map<String, Object>> selectCommentAll(int article_id);
+    public void deleteComment(int id);
 
     //개설
     public void insertClub(ClubDto clubDto);

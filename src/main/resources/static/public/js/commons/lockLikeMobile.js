@@ -19,8 +19,8 @@ const llmSettingValues = {
 // 왼쪽 요약 페이지 세팅값(em)
 const llmLeftSummarySettingValues = {
     left: 3,                                    // auto 옵션 만들어야 되나
-    top: 3,
-    backgroundColor: "#FFF",
+    top: 10,
+    // backgroundColor: "#FFF",
     width: 15,
     height: 40,
 };
@@ -37,18 +37,21 @@ const llmLeftSummarySettingValues = {
 
 const leftSummaryHtml = `
 <div class="row">
-<div class="col fw-bold">왼쪽 제목... 블라블라...</div>
-</div>
-<div class="row">
-<div class="col">레이아웃 테스트</div>
-</div>
-<div style="width: 100%; height: 100%;">
-    <div class="row">
-        <div class="col">뭐라고 써야하나요..?</div>
-    </div>
-    <div class="row mt-5">
-        <div class="col d-grid justify-content-center">
-            <div class="rounded" style="width: 8rem; height: 8rem; border: 5px solid #211e1e; background: url('/public/image/follow/qrCode.png') no-repeat center; background-size: cover;"></div>
+    <div class="col">
+        <div style="position: relative; width: 22em; height: 22em; background: url('/public/image/follow/stickyNote.png') no-repeat center; background-size: 100% 100%;">
+            <div style="position: absolute; width: 5rem; height: 2.7rem; bottom: 2rem; right: 2rem; background: url('/public/image/follow/dogfoot.png') no-repeat center; background-size: contain;"></div>
+            <div class="row" style="padding-top: 4rem;">
+                <div class="col text-center">
+                    <p class="mb-0" style="font-size: 1.1rem;"><span class="fw-bold">멍's 토킹</span>은 모바일 환경에</p>
+                    <p style="font-size: 1.1rem;">최적화되어 있습니다</p>
+                    <p>아래 QR코드를 이용하시면 <span class="fw-bold">자동</span> 로그인됩니다</p>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col d-grid justify-content-center">
+                    <div class="rounded" style="width: 8rem; height: 8rem; border: 5px solid #211e1e; background: url('/public/image/follow/qrCode.png') no-repeat center; background-size: cover;"></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -87,7 +90,7 @@ function createLeftSummary() {
     summaryWrapper.style.position = "absolute";
     summaryWrapper.style.left = `${llmLeftSummarySettingValues.left}em`;
     summaryWrapper.style.top = `${llmLeftSummarySettingValues.top}em`;
-    summaryWrapper.style.backgroundColor = llmLeftSummarySettingValues.backgroundColor;
+    // summaryWrapper.style.backgroundColor = llmLeftSummarySettingValues.backgroundColor;
     summaryWrapper.style.width = `${llmLeftSummarySettingValues.width}em`;
     summaryWrapper.style.height = `${llmLeftSummarySettingValues.height}em`;
 

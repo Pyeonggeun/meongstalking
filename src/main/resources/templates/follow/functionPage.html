@@ -48,7 +48,7 @@
             let scanMarkerEffectiveDistance = 250;
             let scanMarkerUpTo = 5;
             
-            let collectMarkerUpTo = 1; // ...
+            let collectMarkerUpTo = 3;
 
             let traceMarkerUpTo = 3;
 
@@ -98,7 +98,7 @@
 
             }
 
-            function getMyLocation() {
+            function getMyLocation(value) {
                 if(navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition((position) => {
 
@@ -107,7 +107,7 @@
 
                         position = new kakao.maps.LatLng(currentLat, currentLng);
 
-                        displayMyLocation(position);
+                        displayMyLocation(position, value);
                     }, (error) => {
 
                         if(error.code === 3) {
@@ -125,13 +125,13 @@
                         showAlertModal();
 
                         position = new kakao.maps.LatLng(staticLat, staticLng);
-                        displayMyLocation(position);
+                        displayMyLocation(position, value);
 
                         });
 
                 }else {
                     position = new kakao.maps.LatLng(staticLat, staticLng);
-                    displayMyLocation(position);
+                    displayMyLocation(position, value);
 
                     document.getElementById("alertContent").innerText = "위치정보 사용이 불가합니다";
                     document.getElementById("alertCheckButton").onclick = () => {
@@ -142,11 +142,25 @@
                 }
             }
 
-            function displayMyLocation(position) {
+            function displayMyLocation(position, value) {
 
                 if(myLocation) {
                     myLocation.setPosition(position);
                     map.panTo(position);
+
+                    if(value == 1) {
+                        isFirstTimeLeavingTrackMark();
+                    }
+
+                    if(value == 2) {
+                        scanningMarker(position);
+                        getScanningTrackMarkers();
+                    }
+
+                    if(value == 3) {
+                        getLikeList();
+                        showLikeListModal();
+                    }
 
                     return;
                 }
@@ -214,44 +228,80 @@
                     strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
                     strokeStyle: 'dashed', // 선의 스타일 입니다
                     // fillColor: '#CFE7FF', // 채우기 색깔입니다
-                    fillOpacity: 0.1  // 채우기 불투명도 입니다   
+                    fillOpacity: 0  // 채우기 불투명도 입니다   
                 }); 
 
                 // 지도에 원을 표시합니다 
                 circle.setMap(map);
 
                 const content = document.createElement("div");
-                content.classList.add("traceMarkerBox");
+                content.classList.add("traceMarkerBox", "d-flex", "justify-content-center");
 
                 const div1 = document.createElement("div");
                 div1.classList.add("traceMarkerImage");
-
-                if(e.star_rating == 'oneStar') {
-                    div1.style.background = "url('/public/image/follow/onestar.png') no-repeat center";
-                }else if(e.star_rating == 'twoStar') {
-                    div1.style.background = "url('/public/image/follow/twostar.png') no-repeat center";
-                }else if(e.star_rating == 'threeStar') {
-                    div1.style.background = "url('/public/image/follow/threestar.png') no-repeat center";
-                }else if(e.star_rating == 'fourStar') {
-                    div1.style.background = "url('/public/image/follow/fourstar.png') no-repeat center";
-                }else if(e.star_rating == 'fiveStar') {
-                    div1.style.background = "url('/public/image/follow/fivestar.png') no-repeat center";
-                }else if(e.star_rating == 'S') {
-                    div1.style.background = "url('/public/image/follow/sixstar.png') no-repeat center";
-                }else if(e.star_rating == 'SR') {
-                    div1.style.background = "url('/public/image/follow/sevenstar.png') no-repeat center";
-                }else {
-                    div1.style.background = "url('/public/image/follow/eightstar.png') no-repeat center";
-                }
-
+                div1.style.background = "url('/public/image/follow/pointer.png') no-repeat center";
                 div1.style.backgroundSize = "cover";
 
+                const div2 = document.createElement("div");
+                div2.style.position = "absolute";
+                div2.style.width = "7rem";
+                div2.style.height = "0.9rem"
+                div2.style.top = "0.18rem";
+                div2.style.fontSize = "0.65rem";
+                div2.classList.add("text-white", "d-flex", "align-items-center", "justify-content-center");
+                div2.innerText = e.time_limit + "까지";
+
+                const div3 = document.createElement("div");
+                div3.style.position = "absolute";
+                div3.style.width = "3rem";
+                div3.style.height = "3rem";
+                div3.style.borderRadius = "8%";
+                div3.setAttribute("class", "d-flex align-items-center justify-content-center");
+
+                const div4 = document.createElement("div");
+                div4.style.width = "2.7rem";
+                div4.style.height = "2.7rem";
+                div4.style.borderRadius = "3%";
+                div4.style.color = "#211e1e";
+                div4.style.fontSize = "0.6rem";
+                div4.setAttribute("class", "d-flex align-items-center justify-content-center fw-bold");
+                div4.innerText = "No. " + e.user_more_pk;
+
+                if(e.star_rating == 'oneStar') {
+                    div3.classList.add("OneStarOuter");
+                    div4.classList.add("OneStarInner");
+                }else if(e.star_rating == 'twoStar') {
+                    div3.classList.add("TwoStarOuter");
+                    div4.classList.add("TwoStarInner");
+                }else if(e.star_rating == 'threeStar') {
+                    div3.classList.add("ThreeStarOuter");
+                    div4.classList.add("ThreeStarInner");
+                }else if(e.star_rating == 'fourStar') {
+                    div3.classList.add("FourStarOuter");
+                    div4.classList.add("FourStarInner");
+                }else if(e.star_rating == 'fiveStar') {
+                    div3.classList.add("FiveStarOuter");
+                    div4.classList.add("FiveStarInner");
+                }else if(e.star_rating == 'S') {
+                    div3.classList.add("SOuter");
+                    div4.classList.add("SInner");
+                }else if(e.star_rating == 'SR') {
+                    div3.classList.add("SROuter");
+                    div4.classList.add("SRInner");
+                }else {
+                    div3.classList.add("SSROuter");
+                    div4.classList.add("SSRInner");
+                }
+                
+                div1.appendChild(div2);
+                div3.appendChild(div4);
+                content.appendChild(div3);
                 content.appendChild(div1);
 
                 var customOverlay = new kakao.maps.CustomOverlay({
                     position: position,
                     content: content,
-                    yAnchor: 0.9,
+                    yAnchor: 0.95,
                     zIndex: 1
                 });
 
@@ -277,7 +327,7 @@
                 const position = new kakao.maps.LatLng(e.latitude, e.longitude);
 
                 const content = document.createElement("div");
-                content.classList.add("scanMarkerBox");
+                content.classList.add("scanMarkerBox", "markDrop");
 
                 const div1 = document.createElement("div");
                 div1.classList.add("scanMarkerImage");
@@ -352,6 +402,114 @@
                 }
 
                 scanningTrackMarkers = [];
+            }
+
+            function scanningMarker(position) {
+
+                const content = '<div id="markScanCircle"></div>';
+
+                const customOverlay = new kakao.maps.CustomOverlay({
+                    position: position,
+                    content: content
+                });
+
+                customOverlay.setMap(map);
+
+                setTimeout(() => {
+                    customOverlay.setMap(null);
+                    blockOff();
+                }, 3000);
+                
+            }
+
+            function tracingMarker(e) {
+                console.log(e)
+                console.log(e.latitude)
+                console.log(e.longitude)
+                const currentPosition = new kakao.maps.LatLng(currentLat, currentLng);
+                const position = new kakao.maps.LatLng(e.latitude, e.longitude);
+
+                const content = '<div id="markScanCircle"></div>';
+
+                map.panTo(position);
+
+                const customOverlay = new kakao.maps.CustomOverlay({
+                    position: position,
+                    content: content
+                });
+
+                customOverlay.setMap(map);
+
+                setTimeout(() => {
+                    customOverlay.setMap(null);
+                    map.panTo(currentPosition);
+                    walkingPawMarker(currentPosition, position);
+                }, 3000);
+                
+            }
+
+            function walkingPawMarker(currentPosition, position) {
+
+                const proj = map.getProjection();
+                var center = proj.containerPointFromCoords(currentPosition);
+                var pos = proj.containerPointFromCoords(position);
+
+                var angle = getAngle(center, pos);
+
+                var content = document.createElement('div');
+                content.setAttribute("class", "walkingPawCircle");
+                content.style.transform = "rotate(" + angle + "deg)";
+
+                var div1 = document.createElement('div');
+                div1.setAttribute("class", "material-symbols-outlined walkingPawIcon first");
+                div1.innerText = "pets";
+                var div2 = document.createElement('div');
+                div2.setAttribute("class", "material-symbols-outlined walkingPawIcon second");
+                div2.innerText = "pets";
+                var div3 = document.createElement('div');
+                div3.setAttribute("class", "material-symbols-outlined walkingPawIcon third");
+                div3.innerText = "pets";
+                var div4 = document.createElement('div');
+                div4.setAttribute("class", "material-symbols-outlined walkingPawIcon fourth");
+                div4.innerText = "pets";
+                var div5 = document.createElement('div');
+                div5.setAttribute("class", "material-symbols-outlined walkingPawIcon fifth");
+                div5.innerText = "pets";
+                var div6 = document.createElement('div');
+                div6.setAttribute("class", "material-symbols-outlined walkingPawIcon sixth");
+                div6.innerText = "pets";
+                var div7 = document.createElement('div');
+                div7.setAttribute("class", "material-symbols-outlined walkingPawIcon seventh");
+                div7.innerText = "pets";
+
+                content.appendChild(div1);
+                content.appendChild(div2);
+                content.appendChild(div3);
+                content.appendChild(div4);
+                content.appendChild(div5);
+                content.appendChild(div6);
+                content.appendChild(div7);
+
+                var customOverlay = new kakao.maps.CustomOverlay({
+                    position: currentPosition,
+                    content: content
+                });
+
+                customOverlay.setMap(map);
+
+                setTimeout(() => {
+                    customOverlay.setMap(null);
+                    getTracingTrackMarkers();
+                }, 3000);
+
+            }
+
+            function getAngle(center, target) {
+                var dx = target.x - center.x;
+                var dy = center.y - target.y;
+                var deg = Math.atan2( dy , dx ) * 180 / Math.PI; 
+
+                return ((-deg + 360) % 360 | 0) + 90;
             }
 
             function getMyTrackMarkers() {
@@ -473,8 +631,7 @@
             function marking() {
 
                 hideAction();
-                getMyLocation();
-                isFirstTimeLeavingTrackMark();
+                getMyLocation(1);
 
             }
 
@@ -507,7 +664,7 @@
             }
             // qwer
             function saveMoreInfo() {
-
+                // pqpq 받음
                 height = document.getElementById("writeMoreInfoHeight").value;
                 weight = document.getElementById("writeMoreInfoWeight").value;
                 bloodType = document.getElementById("writeMoreInfoBloodType").value;
@@ -597,7 +754,7 @@
             }
             // qwer
             function saveWriteTrackMarkInfo() {
-
+                // pqpq 받음
                 const inputImage = document.getElementById("writeTrackMarkImage");
                 const content = document.getElementById("writeTrackMarkContent").value;
 
@@ -638,10 +795,11 @@
 
             function scanning() {
 
+                blockOn();
+
                 hideAction();
-                getMyLocation();
+                getMyLocation(2);
                 removeScanningTrackMarkers();
-                getScanningTrackMarkers();
                 
             }
 
@@ -667,9 +825,14 @@
 
                     }
 
+                    let delay = 0;
                     for(let e of response.data) {
                         console.log(e);
-                        displayScanningTrackMarkers(e);
+                        setTimeout(() => {
+                            displayScanningTrackMarkers(e);
+                        }, delay);
+
+                        delay += 250;
 
                     }
 
@@ -993,9 +1156,7 @@
             function tracing() {
                 
                 hideAction();
-                getMyLocation();
-                getLikeList();
-                showLikeListModal();
+                getMyLocation(3);
 
             }
 
@@ -1035,10 +1196,10 @@
                             if(e.is_trace == "Y") {
                                 // ghgh
 
-                                document.getElementById("alertContent").innerText = `이미 추행하고 있습니다\n아이템을 사용하시겠습니까?`;
-                                document.getElementById("alertCheckButton").onclick = () => {
+                                document.getElementById("alertWithCancelContent").innerText = `이미 추행하고 있습니다\n아이템을 사용하시겠습니까?`;
+                                document.getElementById("alertWithCancelCheckButton").onclick = () => {
 
-                                    hideAlertModal();
+                                    hideAlertWithCancelModal();
 
                                     const itemBox = document.getElementById("itemBox");
                                     itemBox.innerHTML = "";
@@ -1101,7 +1262,7 @@
                                     showAlertItemModal();
 
                                 };
-                                showAlertModal();
+                                showAlertWithCancelModal();
 
                                 return;
 
@@ -1331,7 +1492,7 @@
                 .then(response => response.json())
                 .then(response => {
 
-                    getTracingTrackMarkers();
+                    tracingMarker(response.data);
                     getLikeList();
 
                 });
@@ -1459,6 +1620,7 @@
 
             function openBag() {
 
+                blockOn();
                 getCollectionList();
                 showCollectionModal();
 
@@ -1513,7 +1675,7 @@
                             collectionInner.classList.add("FourStarInner");
                         }else {
                             collectionOuter.classList.add("FiveStarOuter");
-                            collectionInner.classList.add("FiveInner");
+                            collectionInner.classList.add("FiveStarInner");
                         }
 
                         if(e.open_rating == '10') {
@@ -1949,6 +2111,7 @@
 
             function openMyPage() {
 
+                blockOn();
                 getMyPageInfo();
 
             }
@@ -2037,7 +2200,7 @@
                         return;
                         
                     }
-
+                    console.log(starRating);
                     for(let e of response.data) {
 
                         let wrapper;
@@ -2047,7 +2210,7 @@
                             wrapper = wrapper = document.querySelector("#template .collectionDetailCardCommonWrapper").cloneNode(true);
 
                         }else {
-
+                            console.log(e.card_rating);
                             if(e.card_rating == "common") {
                                 wrapper = document.querySelector("#template .collectionDetailCardCommonWrapper").cloneNode(true);
                             }else if(e.card_rating == "rare") {
@@ -2283,9 +2446,9 @@
             
             function showCollectionModal() {
 
-                document.getElementById("collectionModalHeight").style.height = mapHeight * 0.9 + "px";
+                document.getElementById("collectionModalHeight").style.height = mapHeight * 0.85 + "px";
                 // document.getElementById("collectionListColorBox").style.height = mapHeight * 0.625;
-                document.getElementById("collectionListBoxHeight").style.height = mapHeight * 0.9 * 0.8 + "px";
+                document.getElementById("collectionListBoxHeight").style.height = mapHeight * 0.85 * 0.8 + "px";
 
                 const modal = bootstrap.Modal.getOrCreateInstance("#collectionModal");
                 modal.show();
@@ -2295,6 +2458,8 @@
             }
 
             function hideCollectionModal() {
+                
+                blockOff();
 
                 const modal = bootstrap.Modal.getOrCreateInstance("#collectionModal");
                 modal.hide();
@@ -2306,12 +2471,12 @@
                 modal.show();
 
 
-                document.getElementById("collectionDetailModalHeight").style.height = mapHeight * 0.9 + "px";
+                document.getElementById("collectionDetailModalHeight").style.height = mapHeight * 0.85 + "px";
                 //document.getElementById("collectionDetailInfoHeight").style.height;
 
                 const collectionDetailInfoHeight = parseFloat(getComputedStyle(document.getElementById("collectionDetailInfoHeight")).height.replace("px",""));
 
-                document.getElementById("collectionDetailModalCardHeight").style.height = (mapHeight * 0.9 - collectionDetailInfoHeight - 100) + "px";
+                document.getElementById("collectionDetailModalCardHeight").style.height = (mapHeight * 0.85 - collectionDetailInfoHeight - 100) + "px";
 
             }
 
@@ -2331,6 +2496,15 @@
 
                 const modal = bootstrap.Modal.getOrCreateInstance("#myPageModal");
                 modal.show();
+
+            }
+
+            function hideMyPageModal() {
+
+                blockOff();
+
+                const modal = bootstrap.Modal.getOrCreateInstance("#myPageModal");
+                modal.hide();
 
             }
             
@@ -2488,11 +2662,12 @@
                 // mapHeight = screen.availHeight - topNaviHeight - bottomNaviHeight;
                 mapHeight = window.innerHeight - topNaviHeight - bottomNaviHeight;
                 document.getElementById("map").style.height = mapHeight  + "px";
+                document.getElementById("block").style.height = mapHeight  + "px";
                 // document.getElementById("map").style.height = xxx - topNaviHeight - bottomNaviHeight + "px";
 
                 getMyUserPk();
                 createMap();
-                getMyLocation();
+                getMyLocation(0);
                 // window.scrollTo(0,0);
             });
 
@@ -2510,7 +2685,7 @@
 
             body {
                 font-family: 'omyu_pretty';
-                min-width: 375px;
+                min-width: 360px;
                 touch-action: none;
             }
 
@@ -2523,9 +2698,8 @@
 
             #block {
                 position: absolute;
-                z-index: 9999;
+                z-index: 2000;
                 width: 100%;
-                height: 32rem;
             }
             
             .commonStyle {
@@ -2615,8 +2789,8 @@
 
             .traceMarkerBox {
                 position: relative;
-                width: 2rem;
-                height: 2rem;
+                width: 7rem;
+                height: 5rem;
             }
 
             .scanMarkerImage {
@@ -2627,8 +2801,9 @@
 
             .traceMarkerImage {
                 position: absolute;
-                width: 2rem;
-                height: 2rem;
+                bottom: 0;
+                width: 7rem;
+                height: 1.4rem;
             }
 
             .scanMarkerContent {
@@ -2849,6 +3024,52 @@
                 }
             }
 
+            #markScanCircle::before, #markScanCircle::after{
+                content: "";
+                position: absolute;
+                z-index: 1500;
+                border-radius: 50%;
+                background: rgb(0, 0, 0, 0.3);
+                width: 44rem;
+                height: 44rem;
+                top: calc(50% - 22rem);
+                left: calc(50% - 22rem);
+                animation: markScanCircle 1.2s linear 2;
+                animation-fill-mode: both;
+            }
+
+            #markScanCircle::after {
+                opacity: 0;
+                animation: markScanCircle 1.2s 0.6s linear 2;
+            }
+            
+            @keyframes markScanCircle {
+                from {
+                    scale: 0;
+                    opacity: 1;
+                }
+                to {
+                    scale: 1;
+                    opacity: 0;
+                }
+            }
+
+            .markDrop {
+                animation: markDrop 1s cubic-bezier(.17,.67,0,1) 1;
+                animation-fill-mode: both;
+            }
+
+            @keyframes markDrop {
+                from {
+                    scale: 2;
+                    opacity: 0;
+                }
+                to {
+                    scale: 1;
+                    opacity: 1;
+                }
+            }
+
             .SSROuter {
                 background: radial-gradient(white, #ffff90ff);
                 border: 1px solid #ffdf00;
@@ -2919,6 +3140,100 @@
 
             .OneStarInner {
                 border: 1px solid #b7b7b7;
+            }
+
+            .walkingPawCircle {
+                position: relative;
+                width: 2rem;
+                height: 2rem;
+                border: 1px solid transparent;
+                border-radius: 50%;
+            }
+
+            .walkingPawIcon {
+                position: absolute;
+                color: rgb(0, 0, 0);
+            }
+
+            .walkingPawIcon.first {
+                top: calc(50% - 3rem);
+                left: calc(50% - 1.5rem);
+                transform: rotate(-5deg);
+                opacity: 0;
+                animation: showSomthing 1s, hideSomthing 0.5s 1s;
+                animation-fill-mode: forwards;
+            }
+
+            .walkingPawIcon.second {
+                top: calc(50% - 4rem);
+                right: calc(50% - 1.5rem);
+                transform: rotate(5deg);
+                opacity: 0;
+                animation: showSomthing 1s 0.3s, hideSomthing 0.5s 1.3s linear 1;
+                animation-fill-mode: forwards;
+            }
+
+            .walkingPawIcon.third {
+                top: calc(50% - 5rem);
+                left: calc(50% - 1.5rem);
+                transform: rotate(-5deg);
+                opacity: 0;
+                animation: showSomthing 1s 0.6s, hideSomthing 0.5s 1.6s linear 1;
+                animation-fill-mode: forwards;
+            }
+
+            .walkingPawIcon.fourth {
+                top: calc(50% - 6rem);
+                right: calc(50% - 1.5rem);
+                transform: rotate(5deg);
+                opacity: 0;
+                animation: showSomthing 1s 0.9s, hideSomthing 0.5s 1.9s linear 1;
+                animation-fill-mode: forwards;
+            }
+
+            .walkingPawIcon.fifth {
+                top: calc(50% - 7rem);
+                left: calc(50% - 1.5rem);
+                transform: rotate(-5deg);
+                opacity: 0;
+                animation: showSomthing 1s 1.2s, hideSomthing 0.5s 2.2s linear 1;
+                animation-fill-mode: forwards;
+            }
+
+            .walkingPawIcon.sixth {
+                top: calc(50% - 8rem);
+                right: calc(50% - 1.5rem);
+                transform: rotate(5deg);
+                opacity: 0;
+                animation: showSomthing 1s 1.5s, hideSomthing 0.5s 2.5s linear 1;
+                animation-fill-mode: forwards;
+            }
+
+            .walkingPawIcon.seventh {
+                top: calc(50% - 9rem);
+                left: calc(50% - 1.5rem);
+                transform: rotate(-5deg);
+                opacity: 0;
+                animation: showSomthing 1s 1.8s, hideSomthing 0.5s 2.8s linear 1;
+                animation-fill-mode: forwards;
+            }
+
+            @keyframes showSomthing {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes hideSomthing {
+                from {
+                    opacity: 1;
+                }
+                to {
+                    opacity: 0;
+                }
             }
 
         </style>
@@ -3075,17 +3390,17 @@
                                         
                                         <div class="input-group">
                                             <span class="my-auto">키&nbsp;&nbsp;</span>
-                                            <input id="writeMoreInfoHeight" type="number" class="form-control py-0 text-end" style="font-size: 0.8rem;">
+                                            <input id="writeMoreInfoHeight" type="number" class="form-control py-0 text-end" style="font-size: 0.8rem; box-shadow: none;">
                                             <span class="my-auto">&nbsp;&nbsp;cm&nbsp;&nbsp;</span>
                                             <span class="my-auto">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
                                             <span class="my-auto">&nbsp;&nbsp;몸무게&nbsp;&nbsp;</span>
-                                            <input id="writeMoreInfoWeight" type="number" class="form-control py-0 text-end" style="font-size: 0.8rem;">
+                                            <input id="writeMoreInfoWeight" type="number" class="form-control py-0 text-end" style="font-size: 0.8rem; box-shadow: none;">
                                             <span class="my-auto">&nbsp;&nbsp;kg</span>
                                         </div>
 
                                         <div class="input-group mt-2">
                                             <span class="my-auto">혈액형&nbsp;&nbsp;</span>
-                                            <select id="writeMoreInfoBloodType" class="form-select py-0 text-end" style="font-size: 0.8rem;">
+                                            <select id="writeMoreInfoBloodType" class="form-select py-0 text-end" style="font-size: 0.8rem; box-shadow: none;">
                                                 <option value="0" selected>선택</option>
                                                 <option value="A">A</option>
                                                 <option value="B">B</option>
@@ -3095,7 +3410,7 @@
                                             <span class="my-auto">&nbsp;&nbsp;형&nbsp;&nbsp;</span>
                                             <span class="my-auto">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
                                             <span class="my-auto">&nbsp;&nbsp;MBTI&nbsp;&nbsp;</span>
-                                            <select id="writeMoreInfoMbtiType" class="form-select py-0 text-end rounded-0" style="font-size: 0.8rem;">
+                                            <select id="writeMoreInfoMbtiType" class="form-select py-0 text-end rounded-0" style="font-size: 0.8rem; box-shadow: none;">
                                                 <option value="0" selected>선택</option>
                                                 <option value="ENTP">ENTP</option>
                                                 <option value="ENTJ">ENTJ</option>
@@ -3118,7 +3433,7 @@
 
                                         <div class="input-group mt-2">
                                             <span class="my-auto">취미&nbsp;&nbsp;</span>
-                                            <input id="writeMoreInfoHobby" type="text" class="form-control py-0" max="10" style="font-size: 0.8rem;">
+                                            <input id="writeMoreInfoHobby" type="text" class="form-control py-0" max="10" style="font-size: 0.8rem; box-shadow: none;">
                                             <span class="my-auto" style="font-size: 0.6rem;">&nbsp;&nbsp;10글자이내</span>
                                         </div>
 
@@ -3138,7 +3453,7 @@
 
                                         <div class="input-group mt-2">
                                             <span class="my-auto">성적지향&nbsp;&nbsp;</span>
-                                            <select id="writeMoreInfoPreference" class="form-select py-0 text-end rounded-0" style="font-size: 0.8rem;">
+                                            <select id="writeMoreInfoPreference" class="form-select py-0 text-end rounded-0" style="font-size: 0.8rem; box-shadow: none;">
                                                 <option value="0" selected>선택</option>
                                                 <option value="L">이성애</option>
                                                 <option value="B">게이</option>
@@ -3245,7 +3560,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="row">
-                                                        <div id="previewTrackMarkerOpenRating" class="col text-center fw-bold" style="font-size: 0.56rem;">
+                                                        <div id="previewTrackMarkerOpenRating" class="col text-center fw-bold px-0" style="font-size: 0.56rem;">
                                                             Lv ? ( ?? / ?? )
                                                         </div>
                                                     </div>
@@ -3384,7 +3699,7 @@
                                             </div>
                                             <div class="row align-items-center">
                                                 <div class="col-auto pe-0 text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                    인스타 활동온도
+                                                    멍스타 활동온도
                                                 </div>
                                                 <div class="col">
                                                     <div class="row align-items-center">
@@ -3496,7 +3811,7 @@
                                         <div id="trackMarkerCommentHidden" class="row mt-1">
                                             <div class="col">
                                                 <div class="input-group">
-                                                    <input id="trackMarkerCommentContent" type="text" class="form-control py-0 rounded" style="font-size: 0.8rem;">&nbsp;&nbsp;
+                                                    <input id="trackMarkerCommentContent" type="text" class="form-control py-0 rounded" style="font-size: 0.8rem; box-shadow: none;">&nbsp;&nbsp;
                                                     <button id="trackMarkerCommentButton" class="btn py-1 rounded text-white" style="font-size: 0.8rem; background: #81461A; border: 2.5px solid #CEB597;">저장하기</button>
                                                 </div>
                                             </div>
@@ -3511,12 +3826,12 @@
 
                         <div id="collectionModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute; z-index: 4000;">
                             <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 1rem; padding-right: 1rem; padding-top: 1rem;">
-                                    <div style="position: absolute; width: 12rem; height: 3rem; z-index: 1; top: -0.4rem;">
+                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 1rem; padding-right: 1rem;">
+                                    <div style="position: absolute; width: 12rem; height: 3rem; z-index: 1; top: -1.4rem;">
                                         <img class="img-fluid" th:src="@{/public/image/follow/banner.png}" style="width: 12rem; height: 3rem;">
                                     </div>
-                                    <span class="text-white fw-bold" style="position: absolute; z-index: 1; font-size: 1rem; left: 5.5rem; top: 0.3rem; color: #f3ecdd;">내 가 방</span>
-                                    <button type="button" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" data-bs-dismiss="modal" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.7rem; top: 0.6rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
+                                    <span class="text-white fw-bold" style="position: absolute; z-index: 1; font-size: 1rem; left: 5.5rem; top: -0.7rem; color: #f3ecdd;">내 가 방</span>
+                                    <button onclick="hideCollectionModal()" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.7rem; top: -0.4rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
                                         <div style="border-radius: 50%; background: #ac5e23; width: 1.3rem; height: 1.3rem; border: 1px solid #7D3A05;">
                                             <span id="collectionModalCloseIcon" class="material-symbols-rounded" style="position: absolute; font-size: 1.2rem; left: 0.2rem; color: #f3ecdd;">
                                                 close
@@ -3565,12 +3880,12 @@
 
                         <div id="collectionDetailModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute; z-index: 4100;">
                             <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 1rem; padding-right: 1rem; padding-top: 1rem;">
-                                    <div style="position: absolute; width: 12rem; height: 3rem; z-index: 1; top: -0.4rem;">
+                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 1rem; padding-right: 1rem;">
+                                    <div style="position: absolute; width: 12rem; height: 3rem; z-index: 1; top: -1.4rem;">
                                         <img class="img-fluid" th:src="@{/public/image/follow/banner.png}" style="width: 12rem; height: 3rem;">
                                     </div>
-                                    <span class="text-white fw-bold" style="position: absolute; z-index: 1; font-size: 1rem; left: 5rem; top: 0.3rem; color: #f3ecdd;">상 세 정 보</span>
-                                    <button type="button" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" onclick="hideCollectionDetailModal()" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.7rem; top: 0.6rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
+                                    <span class="text-white fw-bold" style="position: absolute; z-index: 1; font-size: 1rem; left: 5rem; top: -0.7rem; color: #f3ecdd;">상 세 정 보</span>
+                                    <button type="button" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" onclick="hideCollectionDetailModal()" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.7rem; top: -0.4rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
                                         <div style="border-radius: 50%; background: #ac5e23; width: 1.3rem; height: 1.3rem; border: 1px solid #7D3A05;">
                                             <span id="collectionModalCloseIcon" class="material-symbols-rounded" style="position: absolute; font-size: 1.2rem; left: 0.2rem; color: #f3ecdd;">
                                                 close
@@ -3598,7 +3913,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="row">
-                                                                <div id="collectionDetailOpenRating" class="col text-center fw-bold" style="font-size: 0.56rem;">
+                                                                <div id="collectionDetailOpenRating" class="col text-center fw-bold px-0" style="font-size: 0.56rem;">
                                                                     Lv ? ( ?? / ?? )
                                                                 </div>
                                                             </div>
@@ -3737,7 +4052,7 @@
                                                     </div>
                                                     <div class="row align-items-center">
                                                         <div class="col-auto pe-0 text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                            인스타 활동온도
+                                                            멍스타 활동온도
                                                         </div>
                                                         <div class="col">
                                                             <div class="row align-items-center">
@@ -3846,7 +4161,7 @@
 
                         <div id="collectionCardModal" class="modal fade" tabindex="-1" style="position: absolute; z-index: 4200;">
                             <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 2.5rem; padding-right: 2.5rem;">
+                                <div class="modal-content border-0" style="position: relative; background: transparent; margin-left: 2.5rem; margin-right: 2.5rem;">
                                     <div class="modal-body rounded" style="border: 1px solid #81461A; padding: 0;">
                                         <div class="rounded" style="border: 2px solid #f3ecdd;">
                                             <div id="collectionCardModalHeight" class="rounded px-2" style="width: 100%; background: rgb(45, 23, 11, 0.95);">
@@ -4062,12 +4377,12 @@
 
                         <div id="myPageModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute; z-index: 4000;">
                             <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 1rem; padding-right: 1rem; padding-top: 1rem;">
-                                    <div style="position: absolute; width: 12rem; height: 3rem; z-index: 1; top: -0.4rem;">
+                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 1rem; padding-right: 1rem;">
+                                    <div style="position: absolute; width: 12rem; height: 3rem; z-index: 1; top: -1.4rem;">
                                         <img class="img-fluid" th:src="@{/public/image/follow/banner.png}" style="width: 12rem; height: 3rem;">
                                     </div>
-                                    <span class="text-white fw-bold" style="position: absolute; z-index: 1; font-size: 1rem; left: 5.5rem; top: 0.3rem; color: #f3ecdd;">내 정 보</span>
-                                    <button type="button" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" data-bs-dismiss="modal" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.7rem; top: 0.6rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
+                                    <span class="text-white fw-bold" style="position: absolute; z-index: 1; font-size: 1rem; left: 5.5rem; top: -0.7rem; color: #f3ecdd;">내 정 보</span>
+                                    <button onclick="hideMyPageModal()" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.7rem; top: -0.4rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
                                         <div style="border-radius: 50%; background: #ac5e23; width: 1.3rem; height: 1.3rem; border: 1px solid #7D3A05;">
                                             <span id="collectionModalCloseIcon" class="material-symbols-rounded" style="position: absolute; font-size: 1.2rem; left: 0.2rem; color: #f3ecdd;">
                                                 close
@@ -4215,7 +4530,7 @@
                                                     </div>
                                                     <div class="row align-items-center px-2">
                                                         <div class="col-auto pe-0 text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                                            인스타 활동온도
+                                                            멍스타 활동온도
                                                         </div>
                                                         <div class="col">
                                                             <div class="row align-items-center">
@@ -4239,7 +4554,7 @@
                                             <div class="row px-4 py-1">
                                                 <div class="col">
                                                     <div class="row">
-                                                        <div class="col text-center" style="font-size: 0.7rem; color: #980000;">
+                                                        <div class="col text-center px-0" style="font-size: 0.7rem; color: #980000;">
                                                             <span class="material-symbols-rounded" style="font-variation-settings: 'FILL' 1;">
                                                                 footprint
                                                             </span>
@@ -4247,7 +4562,7 @@
                                                             <span id="myPageSombodyTraceCount" class="fw-bold text-dark" style="font-size: 1rem;">4</span>
                                                             <span class="text-secondary">회</span>
                                                         </div>
-                                                        <div class="col text-center" style="font-size: 0.8rem; color: #980000;">
+                                                        <div class="col text-center px-0" style="font-size: 0.8rem; color: #980000;">
                                                             <span class="material-symbols-rounded" style="font-variation-settings: 'FILL' 1;">
                                                                 wash
                                                             </span>
@@ -4257,7 +4572,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="row mt-1">
-                                                        <div class="col text-center" style="font-size: 0.8rem; color: #980000;">
+                                                        <div class="col text-center px-0" style="font-size: 0.8rem; color: #980000;">
                                                             <span class="material-symbols-rounded" style="font-variation-settings: 'FILL' 1;">
                                                                 favorite
                                                             </span>
@@ -4265,7 +4580,7 @@
                                                             <span id="myPageSombodyLikeCount" class="fw-bold text-dark" style="font-size: 1rem;">40</span>
                                                             <span class="text-secondary">회</span>
                                                         </div>
-                                                        <div class="col text-center" style="font-size: 0.8rem; color: #980000;">
+                                                        <div class="col text-center px-0" style="font-size: 0.8rem; color: #980000;">
                                                             <span class="material-symbols-rounded" style="font-variation-settings: 'FILL' 1;">
                                                                 visibility
                                                             </span>
@@ -4284,7 +4599,7 @@
                                             <div class="row px-4 py-1">
                                                 <div class="col">
                                                     <div class="row">
-                                                        <div class="col text-center" style="font-size: 0.7rem; color: #980000;">
+                                                        <div class="col text-center px-0" style="font-size: 0.7rem; color: #980000;">
                                                             <span class="material-symbols-rounded">
                                                                 footprint
                                                             </span>
@@ -4292,7 +4607,7 @@
                                                             <span id="myPageMyTraceCount" class="fw-bold text-dark" style="font-size: 1rem;">4</span>
                                                             <span class="text-secondary">회</span>
                                                         </div>
-                                                        <div class="col text-center" style="font-size: 0.8rem; color: #980000;">
+                                                        <div class="col text-center px-0" style="font-size: 0.8rem; color: #980000;">
                                                             <span class="material-symbols-rounded">
                                                                 wash
                                                             </span>
@@ -4302,7 +4617,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="row mt-1">
-                                                        <div class="col text-center" style="font-size: 0.8rem; color: #980000;">
+                                                        <div class="col text-center px-0" style="font-size: 0.8rem; color: #980000;">
                                                             <span class="material-symbols-rounded">
                                                                 favorite
                                                             </span>
@@ -4310,7 +4625,7 @@
                                                             <span id="myPageMyLikeCount" class="fw-bold text-dark" style="font-size: 1rem;">40</span>
                                                             <span class="text-secondary">회</span>
                                                         </div>
-                                                        <div class="col text-center" style="font-size: 0.8rem; color: #980000;">
+                                                        <div class="col text-center px-0" style="font-size: 0.8rem; color: #980000;">
                                                             <span class="material-symbols-rounded">
                                                                 visibility
                                                             </span>
@@ -4320,7 +4635,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="row mt-2">
-                                                        <div class="col text-center" style="font-size: 0.8rem; color: #980000;">
+                                                        <div class="col text-center px-0" style="font-size: 0.8rem; color: #980000;">
                                                             <span class="material-symbols-rounded">
                                                                 sentiment_very_satisfied
                                                             </span>
@@ -4413,12 +4728,12 @@
 
                         <div id="myTrackModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="position: absolute; z-index: 4100;">
                             <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 1rem; padding-right: 1rem; padding-top: 1rem;">
-                                    <div style="position: absolute; width: 12rem; height: 3rem; z-index: 1; top: -0.4rem;">
+                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 1rem; padding-right: 1rem;">
+                                    <div style="position: absolute; width: 12rem; height: 3rem; z-index: 1; top: -1.4rem;">
                                         <img class="img-fluid" th:src="@{/public/image/follow/banner.png}" style="width: 12rem; height: 3rem;">
                                     </div>
-                                    <span class="text-white fw-bold" style="position: absolute; z-index: 1; font-size: 1rem; left: 4.5rem; top: 0.3rem; color: #f3ecdd;">내 체취 / 흔적</span>
-                                    <button type="button" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" data-bs-dismiss="modal" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.7rem; top: 0.6rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
+                                    <span class="text-white fw-bold" style="position: absolute; z-index: 1; font-size: 1rem; left: 4.5rem; top: -0.7rem; color: #f3ecdd;">내 체취 / 흔적</span>
+                                    <button type="button" class="btn px-0 py-0 float-end d-grid align-items-center justify-content-center" data-bs-dismiss="modal" style="position: absolute; z-index: 1; width: 1.7rem; height: 1.7rem; right: 0.7rem; top: -0.4rem; border-radius: 50%; background: #E0C9A9; border: 1px solid #7D3A05;">
                                         <div style="border-radius: 50%; background: #ac5e23; width: 1.3rem; height: 1.3rem; border: 1px solid #7D3A05;">
                                             <span id="collectionModalCloseIcon" class="material-symbols-rounded" style="position: absolute; font-size: 1.2rem; left: 0.2rem; color: #f3ecdd;">
                                                 close
@@ -4447,7 +4762,7 @@
 
                         <div id="myTrackCardModal" class="modal fade" tabindex="-1" style="position: absolute; z-index: 4200;">
                             <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content border-0" style="position: relative; background: transparent; padding-left: 2.5rem; padding-right: 2.5rem;">
+                                <div class="modal-content border-0" style="position: relative; background: transparent; margin-left: 2.5rem; margin-right: 2.5rem;">
                                     <div class="modal-body rounded" style="border: 1px solid #81461A; padding: 0;">
                                         <div class="rounded" style="border: 2px solid #f3ecdd;">
                                             <div id="myTrackCardModalHeight" class="rounded px-2" style="width: 100%; background: rgb(45, 23, 11, 0.95);">
@@ -4656,7 +4971,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="likeListOpenRating col text-center fw-bold" style="font-size: 0.56rem;">
+                                        <div class="likeListOpenRating col text-center fw-bold px-0" style="font-size: 0.56rem;">
                                             Lv ? ( ?? / ?? )
                                         </div>
                                     </div>
@@ -4795,7 +5110,7 @@
                             </div>
                             <div class="row align-items-center">
                                 <div class="col-auto pe-0 text-body-tertiary text-center" style="font-size: 0.6rem;">
-                                    인스타 활동온도
+                                    멍스타 활동온도
                                 </div>
                                 <div class="col">
                                     <div class="row align-items-center">
@@ -4969,7 +5284,7 @@
                         </div>
                         <div onclick="toggleAction()" id="actionToggle" class="commonStyle"></div>
                     </div>
-                    <div onclick="getMyLocation()" id="locationButton" class="text-center d-grid align-items-center float-end">
+                    <div onclick="getMyLocation(0)" id="locationButton" class="text-center d-grid align-items-center float-end">
                         <span id="locationIcon" class="material-symbols-rounded">
                             my_location
                         </span>
