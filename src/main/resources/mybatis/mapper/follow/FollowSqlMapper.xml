@@ -406,7 +406,7 @@
         )t7
         order by t7.is_trace desc,
             t7.cnt desc,
-            field('star_rating', 'SSR', 'SR', 'S', 'fiveStar', 'fourStar', 'threeStar', 'twoStar', 'oneStar'),
+            field(star_rating, 'SSR', 'SR', 'S', 'fiveStar', 'fourStar', 'threeStar', 'twoStar', 'oneStar'),
             t7.nick_name
     </select>
 
@@ -554,6 +554,7 @@
         on t1.user_pk = t4.user_pk
         inner join ms_mstar_profile_info mmpi on t1.user_pk = mmpi.user_pk
         inner join ms_user mu on t1.user_pk = mu.user_pk
+        order by FIELD(t3.star_rating, 'SSR', 'SR', 'S', 'fiveStar', 'fourStar', 'threeStar', 'twoStar', 'oneStar')
     </select>
 
     <select id="getCollectionLogList" resultType="map">
@@ -801,6 +802,7 @@
             END
         ) as card_rating FROM ms_follow_log mfl
         where mfl.user_pk = #{user_pk}
+        order by mfl.created_date desc
     </select>
 
     <select id="getTracingTrackMarkerLogPk" resultType="int">
